@@ -1,0 +1,824 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useCrypto } from './hooks/useCrypto'
+
+export default function HomePage() {
+  const [step, setStep] = useState(0)
+  const [category, setCategory] = useState('')
+  const [content, setContent] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; id?: string } | null>(null)
+  const [stats, setStats] = useState<{ total: number; encrypted: number; leaks: number } | null>(null)
+  const [myFeedbacks, setMyFeedbacks] = useState<any[]>([])
+  const [isMobile, setIsMobile] = useState(false)
+  
+  // 评论相关状态
+  const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(null)
+  const [feedbackComments, setFeedbackComments] = useState<any[]>([])
+  const [newComment, setNewComment] = useState('')
+
+  const { deviceId, encrypt } = useCrypto()
+
+  // 检测是否为移动端
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const categories = [
+    { id: 'suggestion', name: '建议', description: '产品改进建议', icon: '💡' },
+    { id: 'complaint', name: '投诉', description: '问题反馈', icon: '⚠️' },
+    { id: 'report', name: '举报', description: '违规举报', icon: '🔔' },
+  ]
+
+  // 获取统计数据
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/anonyproof/api/stats')
+        const data = await res.json()
+        setStats(data)
+      } catch (error) {
+        console.error('获取统计失败:', error)
+      }
+    }
+    fetchStats()
+    const interval = setInterval(fetchStats, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // 提交成功后自动返回首页
+  useEffect(() => {
+    if (submitResult?.success) {
+      const timer = setTimeout(() => {
+        setSubmitResult(null)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [submitResult?.success])
+
+  // 获取我的反馈列表 - 当deviceId准备好时自动获取
+  useEffect(() => {
+    if (deviceId && step === 5) {
+      const fetchMyFeedbacks = async () => {
+        try {
+          console.log('=== 调试信息 ===')
+          console.log('设备ID:', deviceId)
+          console.log('LocalStorage中的设备ID:', localStorage.getItem('anonyproof_device_id'))
+          
+          // 直接访问后端API
+          const res = await fetch(`/anonyproof/api/feedback/device/${deviceId}`)
+          const data = await res.json()
+          console.log('API响应:', data)
+          
+          if (data.success) {
+            console.log('找到反馈数量:', data.feedbacks.length)
+            setMyFeedbacks(data.feedbacks)
+          } else {
+            console.error('API返回错误:', data)
+          }
+        } catch (error) {
+          console.error('获取我的反馈失败:', error)
+        }
+      }
+      fetchMyFeedbacks()
+    }
+  }, [deviceId, step])
+
+  // 获取评论
+  const fetchComments = async (feedbackId: string) => {
+    try {
+      const res = await fetch('/anonyproof/api/feedback/' + feedbackId + '/comments')
+      const data = await res.json()
+      if (data.success) {
+        setFeedbackComments(data.comments)
+      }
+    } catch (error) {
+      console.error('获取评论失败:', error)
+    }
+  }
+
+  // 添加评论
+  const handleAddComment = async () => {
+    if (!selectedFeedbackId) return
+
+    if (!newComment.trim() || newComment.trim().length < 2) {
+      alert('评论内容至少需要 2 个字符')
+      return
+    }
+
+    if (newComment.trim().length > 1000) {
+      alert('评论内容不能超过 1000 个字符')
+      return
+    }
+
+    try {
+      const res = await fetch('/anonyproof/api/feedback/' + selectedFeedbackId + '/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: newComment.trim(),
+          commenterType: 'user'
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setNewComment('')
+        fetchComments(selectedFeedbackId)
+      } else {
+        alert(data.error || '添加失败')
+      }
+    } catch (error) {
+      console.error('添加评论失败:', error)
+      alert('添加失败')
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (!content.trim()) {
+      setSubmitResult({ success: false, message: '请输入反馈内容' })
+      return
+    }
+
+    setIsSubmitting(true)
+    setSubmitResult(null)
+
+    try {
+      console.log('开始加密...')
+      const encryptedContent = await encrypt(content)
+      console.log('加密完成，开始提交...')
+
+      const res = await fetch('/anonyproof/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category,
+          encryptedContent,
+          deviceId,
+          originalContent: content,
+        }),
+      })
+
+      const data = await res.json()
+      console.log('提交响应:', data)
+
+      if (data.success) {
+        setSubmitResult({
+          success: true,
+          message: '✅ 提交成功！您的反馈已被加密并安全存储。',
+          id: data.id,
+        })
+        setContent('')
+        // 刷新统计数据
+        const statsRes = await fetch('/anonyproof/api/stats')
+        const statsData = await statsRes.json()
+        setStats(statsData)
+        // 返回首页
+        setStep(0)
+      } else {
+        setSubmitResult({ success: false, message: data.error || '提交失败，请重试' })
+      }
+    } catch (error) {
+      console.error('提交失败:', error)
+      const errorMsg = error instanceof Error ? error.message : '请稍后重试'
+      setSubmitResult({ success: false, message: `❌ 提交失败: ${errorMsg}` })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // 提交成功提示（短暂显示）
+  if (submitResult?.success) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: '20px'
+      }}>
+        <div style={{ 
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          padding: '60px 40px', 
+          borderRadius: '24px', 
+          boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)',
+          textAlign: 'center', 
+          maxWidth: '500px',
+          border: '1px solid rgba(255, 255, 255, 0.3)'
+        }}>
+          <div style={{ fontSize: '64px', marginBottom: '16px' }}>✅</div>
+          <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#1d1d1f', marginBottom: '12px' }}>
+            提交成功！
+          </h2>
+          <p style={{ fontSize: '16px', color: '#86868b', lineHeight: '1.5', marginBottom: '0' }}>
+            {submitResult.message}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // 首页
+  if (step === 0) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
+        padding: isMobile ? '20px' : '60px 80px', 
+        display: 'flex', 
+        flexDirection: 'column' 
+      }}>
+        <div style={{ 
+          flex: 1, 
+          maxWidth: isMobile ? '100%' : '1000px', 
+          margin: '0 auto', 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          gap: isMobile ? '32px' : '100px'
+        }}>
+          {/* 左侧：标题和按钮 */}
+          <div style={{ 
+            flex: 1,
+            width: isMobile ? '100%' : 'auto'
+          }}>
+            <div style={{ textAlign: isMobile ? 'center' : 'left', marginBottom: isMobile ? '24px' : '32px' }}>
+              <div style={{ 
+                display: 'inline-block', 
+                padding: '8px 20px', 
+                background: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '20px', 
+                marginBottom: '16px', 
+                fontSize: '14px', 
+                fontWeight: '600',
+                color: '#1d1d1f',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)'
+              }}>
+                🔒 端到端加密 · 完全匿名
+              </div>
+              <h1 style={{ 
+                fontSize: isMobile ? 'clamp(40px, 10vw, 56px)' : '64px', 
+                fontWeight: '800', 
+                margin: '0 0 16px 0',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '-1px'
+              }}>
+                匿证
+              </h1>
+              <p style={{ fontSize: isMobile ? '16px' : '20px', color: '#86868b', margin: 0, fontWeight: '500' }}>
+                安全、匿名的反馈平台
+              </p>
+            </div>
+
+            {/* CTA按钮 */}
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: isMobile ? 'column' : 'row',
+              gap: isMobile ? '12px' : '12px',
+              marginBottom: isMobile ? '24px' : '32px',
+              justifyContent: isMobile ? 'center' : 'flex-start'
+            }}>
+              <button
+                onClick={() => setStep(1)}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  padding: isMobile ? '14px 32px' : '16px 40px',
+                  border: 'none',
+                  borderRadius: '50px',
+                  fontSize: isMobile ? '16px' : '17px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
+                  transition: 'all 0.3s ease',
+                  width: isMobile ? '100%' : 'auto',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.5)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.4)'
+                }}
+              >
+                开始匿名反馈 →
+              </button>
+              <button
+                onClick={() => {
+                  setSubmitResult(null)
+                  setStep(5)
+                }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  color: '#667eea',
+                  padding: isMobile ? '14px 32px' : '16px 32px',
+                  border: '2px solid rgba(102, 126, 234, 0.2)',
+                  borderRadius: '50px',
+                  fontSize: isMobile ? '15px' : '16px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  backdropFilter: 'blur(10px)',
+                  width: isMobile ? '100%' : 'auto',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.5)'
+                }}
+              >
+                我的反馈
+              </button>
+            </div>
+
+            {/* 安全提醒 - 只在桌面端显示 */}
+            {!isMobile && (
+              <p style={{ color: '#86868b', fontSize: '13px', margin: 0 }}>
+                🔒 您的内容将在客户端加密，服务器无法查看真实内容
+              </p>
+            )}
+          </div>
+
+          {/* 右侧：统计和特性 */}
+          <div style={{ 
+            flex: 1,
+            width: isMobile ? '100%' : 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isMobile ? '20px' : '24px'
+          }}>
+            {/* 统计数据 */}
+            {stats && (
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)', 
+                gap: isMobile ? '10px' : '12px'
+              }}>
+                <div style={{ 
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  padding: isMobile ? '16px' : '20px', 
+                  borderRadius: '16px', 
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  textAlign: 'center',
+                  border: '1px solid rgba(255, 255, 255, 0.4)'
+                }}>
+                  <div style={{ fontSize: isMobile ? '28px' : '32px', fontWeight: '800', color: '#667eea', marginBottom: '4px' }}>
+                    {stats.total}
+                  </div>
+                  <div style={{ fontSize: isMobile ? '11px' : '12px', color: '#86868b', fontWeight: '500' }}>总反馈数</div>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  padding: isMobile ? '16px' : '20px', 
+                  borderRadius: '16px', 
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  textAlign: 'center',
+                  border: '1px solid rgba(255, 255, 255, 0.4)'
+                }}>
+                  <div style={{ fontSize: isMobile ? '28px' : '32px', fontWeight: '800', color: '#34c759', marginBottom: '4px' }}>
+                    {stats.total > 0 ? '100' : '0'}%
+                  </div>
+                  <div style={{ fontSize: isMobile ? '11px' : '12px', color: '#86868b', fontWeight: '500' }}>加密率</div>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(10)(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  padding: isMobile ? '16px' : '20px', 
+                  borderRadius: '16px', 
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  textAlign: 'center',
+                  border: '1px solid rgba(255, 255, 255, 0.4)'
+                }}>
+                  <div style={{ fontSize: isMobile ? '28px' : '32px', fontWeight: '800', color: '#ff3b30', marginBottom: '4px' }}>
+                    {stats.leaks}
+                  </div>
+                  <div style={{ fontSize: isMobile ? '11px' : '12px', color: '#86868b', fontWeight: '500' }}>数据泄露</div>
+                </div>
+              </div>
+            )}
+
+            {/* 特性介绍 */}
+            <div style={{ display: 'grid', gap: isMobile ? '10px' : '12px' }}>
+              <div style={{ 
+                background: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                padding: isMobile ? '18px' : '20px', 
+                borderRadius: '16px', 
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: isMobile ? '12px' : '12px'
+              }}>
+                <div style={{ fontSize: isMobile ? '26px' : '28px' }}>🔒</div>
+                <div>
+                  <h3 style={{ fontSize: isMobile ? '15px' : '15px', fontWeight: '700', color: '#1d1d1f', marginBottom: '4px' }}>端到端加密</h3>
+                  <p style={{ fontSize: isMobile ? '13px' : '13px', color: '#86868b', lineHeight: '1.4', margin: 0 }}>您的反馈在客户端加密，服务器无法查看真实内容</p>
+                </div>
+              </div>
+              <div style={{ 
+                background: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                padding: isMobile ? '18px' : '20px', 
+                borderRadius: '16px', 
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: isMobile ? '12px' : '12px'
+              }}>
+                <div style={{ fontSize: isMobile ? '26px' : '28px' }}>🛡️</div>
+                <div>
+                  <h3 style={{ fontSize: isMobile ? '15px' : '15px', fontWeight: '700', color: '#1d1d1f', marginBottom: '4px' }}>防偷看机制</h3>
+                  <p style={{ fontSize: isMobile ? '13px' : '13px', color: '#86868b', lineHeight: '1.4', margin: 0 }}>所有管理员操作都会被记录，确保透明可追溯</p>
+                </div>
+              </div>
+              <div style={{ 
+                background: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                padding: isMobile ? '18px' : '20px', 
+                borderRadius: '16px', 
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: isMobile ? '12px' : '12px'
+              }}>
+                <div style={{ fontSize: isMobile ? '26px' : '28px' }}>📱</div>
+                <div>
+                  <h3 style={{ fontSize: isMobile ? '15px' : '15px', fontWeight: '700', color: '#1d1d1f', marginBottom: '4px' }}>设备绑定</h3>
+                  <p style={{ fontSize: isMobile ? '13px' : '13px', color: '#86868b', lineHeight: '1.4', margin: 0 }}>您可以查看自己提交的历史反馈，随时跟踪处理进度</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 安全提醒 - 只在手机端显示在底部 */}
+            {isMobile && (
+              <p style={{ textAlign: 'center', color: '#86868b', fontSize: '12px', margin: '16px 0 0 0' }}>
+                🔒 您的内容将在客户端加密，服务器无法查看真实内容
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 选择分类
+  if (step === 1) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
+        padding: '20px' 
+      }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', paddingTop: '40px' }}>
+          <button
+            onClick={() => setStep(0)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.5)',
+              color: '#667eea',
+              padding: '12px 24px',
+              border: '2px solid rgba(102, 126, 234, 0.2)',
+              borderRadius: '50px',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              marginBottom: '32px',
+              transition: 'all 0.2s ease',
+              backdropFilter: 'blur(10px)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)'
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.4)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.5)'
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.2)'
+            }}
+          >
+            ← 返回首页
+          </button>
+
+          <h2 style={{ fontSize: '36px', fontWeight: '800', color: '#1d1d1f', marginBottom: '16px', textAlign: 'center' }}>
+            选择反馈类型
+          </h2>
+          <p style={{ fontSize: '16px', color: '#86868b', textAlign: 'center', marginBottom: '32px' }}>
+            请选择最符合您反馈内容的分类
+          </p>
+
+          <div style={{ display: 'grid', gap: '16px' }}>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setCategory(cat.id)
+                  setStep(2)
+                }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  padding: '24px 28px',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '20px',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateX(4px)'
+                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.12)'
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateX(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)'
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)'
+                }}
+              >
+                <div style={{ fontSize: '40px' }}>{cat.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '22px', fontWeight: '700', color: '#1d1d1f', marginBottom: '6px' }}>
+                    {cat.name}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#86868b' }}>{cat.description}</div>
+                </div>
+                <div style={{ fontSize: '24px', color: '#667eea' }}>→</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 输入内容
+  if (step === 2) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
+        padding: '20px' 
+      }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', paddingTop: '30px' }}>
+          <button
+            onClick={() => setStep(1)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.5)',
+              color: '#667eea',
+              padding: '12px 24px',
+              border: '2px solid rgba(102, 126, 234, 0.2)',
+              borderRadius: '50px',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              marginBottom: '24px',
+              transition: 'all 0.2s ease',
+              backdropFilter: 'blur(10px)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)'
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.4)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.5)'
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.2)'
+            }}
+          >
+            ← 返回选择
+          </button>
+
+          <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#1d1d1f', marginBottom: '24px' }}>
+            请输入反馈内容
+          </h2>
+
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.6)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            padding: '28px', 
+            borderRadius: '24px', 
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.4)'
+          }}>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="请详细描述您的反馈内容..."
+              style={{
+                width: '100%',
+                minHeight: '200px',
+                padding: '16px',
+                fontSize: '16px',
+                border: '2px solid rgba(102, 126, 234, 0.15)',
+                borderRadius: '16px',
+                resize: 'vertical',
+                fontFamily: 'inherit',
+                outline: 'none',
+                background: 'rgba(255, 255, 255, 0.5)',
+                transition: 'border-color 0.2s',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#667eea'
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.15)'
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.5)'
+              }}
+            />
+            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+              <button
+                onClick={() => setStep(1)}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  color: '#86868b',
+                  border: '2px solid rgba(0, 0, 0, 0.1)',
+                  borderRadius: '14px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                }}
+              >
+                返回
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting || !content.trim()}
+                style={{
+                  flex: 2,
+                  padding: '14px',
+                  background: isSubmitting || !content.trim() ? 'rgba(134, 134, 134, 0.3)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '14px',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  cursor: isSubmitting || !content.trim() ? 'not-allowed' : 'pointer',
+                  opacity: isSubmitting || !content.trim() ? 0.6 : 1,
+                }}
+              >
+                {isSubmitting ? '提交中...' : '提交反馈'}
+              </button>
+            </div>
+          </div>
+
+          <p style={{ textAlign: 'center', color: '#86868b', marginTop: '16px', fontSize: '13px' }}>
+            🔒 您的内容将在客户端加密，服务器无法查看
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // 我的反馈
+  if (step === 5) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
+        padding: '20px' 
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '40px' }}>
+          <button
+            onClick={() => setStep(0)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.5)',
+              color: '#667eea',
+              padding: '12px 24px',
+              border: '2px solid rgba(102, 126, 234, 0.2)',
+              borderRadius: '50px',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              marginBottom: '24px',
+              transition: 'all 0.2s ease',
+              backdropFilter: 'blur(10px)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)'
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.4)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.5)'
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.2)'
+            }}
+          >
+            ← 返回首页
+          </button>
+
+          <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#1d1d1f', marginBottom: '28px', textAlign: 'center' }}>
+            我的反馈
+          </h2>
+
+          {myFeedbacks.length === 0 ? (
+            <div style={{ 
+              background: 'rgba(255, 255, 255, 0.6)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              padding: '60px 40px', 
+              borderRadius: '24px', 
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+              textAlign: 'center',
+              border: '1px solid rgba(255, 255, 255, 0.4)'
+            }}>
+              <div style={{ fontSize: '64px', marginBottom: '16px' }}>📭</div>
+              <p style={{ fontSize: '17px', color: '#86868b', marginBottom: '24px' }}>您还没有提交过任何反馈</p>
+              <button
+                onClick={() => setStep(1)}
+                style={{
+                  padding: '14px 40px',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50px',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
+                }}
+              >
+                立即提交反馈
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {myFeedbacks.map((feedback) => (
+                <div
+                  key={feedback.id}
+                  style={{ 
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    padding: '24px', 
+                    borderRadius: '20px', 
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div style={{ fontSize: '20px', fontWeight: '700', color: '#1d1d1f' }}>
+                      {feedback.category === 'suggestion' ? '💡' : feedback.category === 'complaint' ? '⚠️' : '🔔'} {feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#86868b' }}>
+                      {new Date(feedback.created_at).toLocaleString('zh-CN')}
+                    </div>
+                  </div>
+                  {feedback.original_content && (
+                    <div style={{
+                      background: 'rgba(255, 255, 255, 0.4)',
+                      padding: '16px',
+                      borderRadius: '12px',
+                      marginBottom: '12px',
+                      border: '1px solid rgba(0, 0, 0, 0.05)'
+                    }}>
+                      <div style={{ fontSize: '13px', color: '#86868b', marginBottom: '8px', fontWeight: '600' }}>
+                        提交内容：
+                      </div>
+                      <div style={{ fontSize: '15px', color: '#1d1d1f', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                        {feedback.original_content}
+                      </div>
+                    </div>
+                  )}
+                  <div style={{ fontSize: '13px', color: '#34c759', fontWeight: '600' }}>
+                    ✓ 已加密存储 · ID: {feedback.id.slice(0, 8)}...
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  return null
+}

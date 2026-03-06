@@ -1,0 +1,21 @@
+{
+  "name": "anonyproof-server",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tsx watch index.ts",
+    "start": "tsx index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@types/multer": "^2.0.0",
+    "better-sqlite3": "^9.2.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.1",
+    "multer": "^2.1.0",
+    "user-agent": "^1.0.4",
+    "uuid": "^9.0.1",
+    "winston": "^3.19.0"
+  }
+}
