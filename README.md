@@ -383,7 +383,17 @@ npm run test:coverage
 
 **💬 联系我**: 微信（广东 深圳）- 备注 "AnonyProof"
 
-**☕ 请我喝杯咖啡**: [查看支持方式](SPONSORS.md)
+![作者微信二维码](docs/images/author-wechat-qr.jpg)
+
+**☕ 请我喝杯咖啡**
+
+微信收款码：
+
+![微信收款码](docs/images/wechat-payment-qr.jpg)
+
+支付宝收款码：
+
+![支付宝收款码](docs/images/alipay-payment-qr.jpg)
 
 > 💡 **关于项目**: AnonyProof 是一个**完全独立开发**的项目，**未借鉴任何现有开源项目**。从需求分析、架构设计、前后端开发到部署上线，全部由作者一个人完成，采用 **Vibe Coding** 方式打造。
 
@@ -426,13 +436,21 @@ npm run test:coverage
 
 ## ☕ 觉得有用？请我喝杯咖啡！
 
-如果 AnonyProof 对你有帮助，欢迎通过微信或支付宝支持我：
+如果 AnonyProof 对你有帮助，欢迎直接扫码支持：
 
-**[💰 查看支持方式](SPONSORS.md)**
+**💬 作者微信（广东 深圳）**
+
+![作者微信二维码](docs/images/author-wechat-qr.jpg)
+
+**🟢 微信收款码**
+
+![微信收款码](docs/images/wechat-payment-qr.jpg)
+
+**🔵 支付宝收款码**
+
+![支付宝收款码](docs/images/alipay-payment-qr.jpg)
 
 或者给个项目 Star ⭐
-
-**💬 微信（广东 深圳）**: 备注 "AnonyProof"
 
 > 💡 **本项目完全由独立开发，未借鉴任何现有开源项目，采用 Vibe Coding 方式打造。**
 
