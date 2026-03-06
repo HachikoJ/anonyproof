@@ -59,14 +59,27 @@
 ### 用户端主页
 > 简洁大方的反馈提交界面，支持三种反馈类型
 
+![用户端主页](docs/screenshots/user-home.jpg)
+
 ### 用户端 - 我的反馈
 > 清晰展示所有反馈，支持筛选和搜索
+
+![我的反馈](docs/screenshots/cc986338-f959-481c-bb1e-782ccb8c48a0.jpg)
 
 ### 管理端后台
 > 专业的管理界面，高效处理反馈
 
+![管理端后台](docs/screenshots/admin-dashboard.jpg)
+
+### 管理端 - 反馈列表
+> 批量管理所有反馈，实时更新状态
+
+![反馈列表](docs/screenshots/admin-feedbacks.jpg)
+
 ### 通知中心
 > 实时通知，不错过任何重要消息
+
+![通知中心](docs/screenshots/notifications.jpg)
 
 ---
 
