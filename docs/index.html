@@ -358,7 +358,7 @@
       display: grid;
       gap: 18px;
     }
-    .features-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .features-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
     .support-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
     .feature,
@@ -371,6 +371,7 @@
       border-radius: 22px;
       box-shadow: var(--shadow);
       transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+      overflow: hidden;
     }
     .feature:hover,
     .screenshot-item:hover,
@@ -382,6 +383,27 @@
     }
     .feature,
     .support-item { padding: 22px; }
+    .feature {
+      min-height: 220px;
+    }
+    .feature::before,
+    .screenshot-item::before,
+    .support-item::before,
+    .tech-item::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(96,165,250,.16), transparent 22%);
+      opacity: 0;
+      transition: opacity .28s ease;
+      pointer-events: none;
+    }
+    .feature:hover::before,
+    .screenshot-item:hover::before,
+    .support-item:hover::before,
+    .tech-item:hover::before {
+      opacity: 1;
+    }
     .feature-icon {
       width: 48px;
       height: 48px;
@@ -563,6 +585,7 @@
         grid-template-columns: 1fr;
       }
       .hero { min-height: auto; }
+      .features-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 768px) {
       .container { padding: 0 18px; }
@@ -841,5 +864,19 @@
     <p>本项目完全独立开发，采用 Vibe Coding 方式打造。</p>
     <p>Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a> · 广东 深圳</p>
   </footer>
+
+  <script>
+    const glowCards = document.querySelectorAll('.feature, .screenshot-item, .support-item, .tech-item');
+
+    glowCards.forEach((card) => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mx', `${x}%`);
+        card.style.setProperty('--my', `${y}%`);
+      });
+    });
+  </script>
 </body>
 </html>
