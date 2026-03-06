@@ -120,7 +120,7 @@ Key Derivation          - 密钥派生
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/yourusername/anonyproof.git
+git clone https://github.com/HachikoJ/anonyproof.git
 cd anonyproof
 ```
 
@@ -348,7 +348,7 @@ npm run test:coverage
 
 ## 👥 作者
 
-**Wilson** - [@yourusername](https://github.com/yourusername)
+**Wilson** - [@HachikoJ](https://github.com/HachikoJ)
 
 ---
 
@@ -363,8 +363,8 @@ npm run test:coverage
 
 ## 📞 联系方式
 
-- 项目主页: [https://github.com/yourusername/anonyproof](https://github.com/yourusername/anonyproof)
-- 问题反馈: [GitHub Issues](https://github.com/yourusername/anonyproof/issues)
+- 项目主页: [https://github.com/HachikoJ/anonyproof](https://github.com/HachikoJ/anonyproof)
+- 问题反馈: [GitHub Issues](https://github.com/HachikoJ/anonyproof/issues)
 - 邮箱: your-email@example.com
 
 ---
@@ -373,7 +373,7 @@ npm run test:coverage
 
 如果这个项目对你有帮助，请给个 Star ⭐
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/anonyproof&type=Date)](https://star-history.com/#yourusername/anonyproof&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=HachikoJ/anonyproof&type=Date)](https://star-history.com/#HachikoJ/anonyproof&Date)
 
 ---
 
