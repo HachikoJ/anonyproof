@@ -10,7 +10,7 @@
 
 扫描下方二维码添加我为好友：
 
-![微信二维码](./docs/images/wechat-qr.jpg)
+![微信二维码](./docs/images/author-wechat-qr.jpg)
 
 ## 💰 赞赏支持
 
@@ -19,12 +19,12 @@
 ### 微信支付
 推荐使用微信支付，扫码即可支持作者。
 
-![微信支付收款码](./docs/images/payment-wechat.jpg)
+![微信支付收款码](./docs/images/wechat-payment-qr.jpg)
 
 ### 支付宝
 推荐使用支付宝，打开支付宝扫一扫即可支持作者。
 
-![支付宝收款码](./docs/images/payment-alipay.jpg)
+![支付宝收款码](./docs/images/alipay-payment-qr.jpg)
 
 ---
 
