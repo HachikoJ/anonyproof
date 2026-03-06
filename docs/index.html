@@ -117,6 +117,7 @@
         
         .screenshot-item img {
             width: 100%;
+            height: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
@@ -185,6 +186,56 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
+        .contact {
+            background: #f5f5f7;
+            padding: 80px 0;
+        }
+        
+        .contact h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #1d1d1f;
+        }
+        
+        .contact-content {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+        
+        .contact-info p {
+            margin-bottom: 15px;
+            color: #86868b;
+            font-size: 1.1rem;
+        }
+        
+        .contact-qr {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .contact-qr img {
+            max-width: 300px;
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
         footer {
             background: #1d1d1f;
             color: white;
@@ -216,6 +267,11 @@
             
             .screenshot-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .contact-content {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -277,20 +333,44 @@
             <h2>📸 界面展示</h2>
             <div class="screenshot-grid">
                 <div class="screenshot-item">
-                    <img src="docs/screenshots/user-home.jpg" alt="用户端主页">
-                    <p>用户端 - 反馈提交</p>
+                    <img src="./screenshots/user-home.jpg" alt="用户端主页 - 反馈提交">
+                    <p>用户端主页（电脑版）- 反馈提交</p>
                 </div>
                 <div class="screenshot-item">
-                    <img src="docs/screenshots/admin-dashboard.jpg" alt="管理端后台">
-                    <p>管理端 - 数据仪表板</p>
+                    <img src="./screenshots/cc986338-f959-481c-bb1e-782ccb8c48a0.jpg" alt="用户端 - 我的反馈">
+                    <p>用户端 - 我的反馈列表</p>
                 </div>
                 <div class="screenshot-item">
-                    <img src="docs/screenshots/admin-feedbacks.jpg" alt="反馈列表">
-                    <p>管理端 - 反馈管理</p>
+                    <img src="./screenshots/admin-dashboard.jpg" alt="管理端仪表板">
+                    <p>管理端 - 数据仪表板（电脑版）</p>
                 </div>
                 <div class="screenshot-item">
-                    <img src="docs/screenshots/notifications.jpg" alt="通知中心">
-                    <p>通知中心</p>
+                    <img src="./screenshots/admin-feedbacks.jpg" alt="管理端反馈列表">
+                    <p>管理端 - 反馈管理列表</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="contact">
+        <div class="container">
+            <h2>💬 联系作者</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Wilson</h3>
+                    <p><strong>🌍 地区</strong>: 广东 深圳</p>
+                    <p><strong>💼 职位</strong>: 独立开发者</p>
+                    <p><strong>🎯 专长</strong>: 全栈开发、Vibe Coding</p>
+                    <p><strong>💬 微信</strong>: 扫描右侧二维码添加好友</p>
+                    <p style="margin-top: 20px; font-size: 0.95rem; color: #86868b;">
+                        <strong>备注</strong>: "AnonyProof" 或项目咨询
+                    </p>
+                </div>
+                <div class="contact-qr">
+                    <img src="./images/wechat-qr.jpg" alt="微信二维码 - Wilson">
+                    <p style="margin-top: 15px; font-weight: 600; color: #1d1d1f;">
+                        扫码添加微信好友
+                    </p>
                 </div>
             </div>
         </div>
@@ -328,9 +408,10 @@
     
     <footer>
         <div class="container">
-            <p>💡 本项目 <strong>完全独立开发</strong>，未借鉴任何现有开源项目，采用 Vibe Coding 方式打造</p>
-            <p>Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a></p>
-            <p style="margin-top: 20px;">
+            <p>💡 <strong>项目特点</strong>: 本项目 <strong>完全独立开发</strong>，未借鉴任何现有开源项目，采用 Vibe Coding 方式打造</p>
+            <p>从需求分析、架构设计、前后端开发到部署上线，全部由作者独立完成</p>
+            <p style="margin-top: 20px;">Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a></p>
+            <p style="margin-top: 15px;">
                 <a href="https://github.com/HachikoJ/anonyproof">GitHub</a> ·
                 <a href="https://github.com/HachikoJ/anonyproof/blob/main/LICENSE">License</a> ·
                 <a href="https://github.com/HachikoJ/anonyproof/blob/main/SPONSORS.md">☕ 支持</a>
