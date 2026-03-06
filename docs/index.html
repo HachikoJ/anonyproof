@@ -38,28 +38,28 @@
       box-shadow: 0 10px 20px rgba(102,126,234,.3);
       margin: 8px;
     }
-    .features, .screenshots, .contact, .payment, .tech-stack, .cta {
+    .features, .screenshots, .support, .tech-stack, .cta {
       background: white;
       margin-top: 0;
       padding: 90px 0;
     }
-    .features-grid, .screenshot-grid, .payment-content {
+    .features-grid, .screenshot-grid, .support-grid {
       display: grid;
       gap: 30px;
     }
     .features-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
-    .payment-content { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-    .feature, .screenshot-item, .payment-item {
+    .support-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .feature, .screenshot-item, .support-item {
       background: #f7f8fb;
       border-radius: 20px;
       padding: 24px;
       box-shadow: 0 8px 24px rgba(0,0,0,.06);
     }
     .feature-icon { font-size: 2.6rem; margin-bottom: 16px; }
-    .feature h3, .screenshot-item h4, .payment-item h4 { color: #1d1d1f; margin-bottom: 10px; }
-    .feature p, .screenshot-item p, .payment-item p, .subtitle { color: #6b7280; }
-    .screenshots h2, .contact h2, .payment h2, .tech-stack h2, .cta h2 {
+    .feature h3, .screenshot-item h4, .support-item h4 { color: #1d1d1f; margin-bottom: 10px; }
+    .feature p, .screenshot-item p, .support-item p, .subtitle { color: #6b7280; }
+    .screenshots h2, .support h2, .tech-stack h2, .cta h2 {
       text-align: center;
       font-size: 2.5rem;
       margin-bottom: 14px;
@@ -83,21 +83,12 @@
       font-size: .9rem;
       vertical-align: middle;
     }
-    .screenshot-item img, .payment-item img, .contact-qr img {
+    .screenshot-item img, .support-item img {
       width: 100%;
       height: auto;
       border-radius: 14px;
       box-shadow: 0 6px 18px rgba(0,0,0,.08);
     }
-    .contact-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 48px;
-      align-items: center;
-      margin-top: 40px;
-    }
-    .contact-info h3 { font-size: 2rem; margin-bottom: 18px; }
-    .contact-info p { margin-bottom: 12px; color: #6b7280; }
     .tech-items {
       display: flex;
       flex-wrap: wrap;
@@ -203,38 +194,24 @@
     </div>
   </div>
 
-  <div class="contact">
+  <div class="support">
     <div class="container">
-      <h2>💬 联系作者</h2>
-      <div class="contact-content">
-        <div class="contact-info">
-          <h3>Wilson</h3>
-          <p><strong>地区：</strong>广东 深圳</p>
-          <p><strong>身份：</strong>独立开发者</p>
-          <p><strong>风格：</strong>Vibe Coding / 全栈开发</p>
-          <p><strong>微信：</strong>扫描右侧二维码添加好友</p>
-          <p><strong>备注：</strong>AnonyProof 或项目咨询</p>
-        </div>
-        <div class="contact-qr">
+      <h2>💬 联系作者 / ☕ 支持作者</h2>
+      <p class="subtitle">联系作者与赞赏支持合并展示，横向排列更紧凑</p>
+      <div class="support-grid">
+        <div class="support-item">
           <img src="./images/author-wechat-qr.jpg" alt="作者微信二维码" />
+          <h4>作者微信</h4>
+          <p>Wilson · 广东深圳 · 备注 AnonyProof 或项目咨询。</p>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="payment">
-    <div class="container">
-      <h2>☕ 请作者喝杯咖啡</h2>
-      <p class="subtitle">如果这个项目对你有帮助，欢迎通过以下方式支持作者</p>
-      <div class="payment-content">
-        <div class="payment-item">
+        <div class="support-item">
           <img src="./images/wechat-payment-qr.jpg" alt="微信收款码" />
-          <h4>微信支付</h4>
+          <h4>微信收款码</h4>
           <p>推荐使用微信支付，扫码即可支持作者。</p>
         </div>
-        <div class="payment-item">
+        <div class="support-item">
           <img src="./images/alipay-payment-qr.jpg" alt="支付宝收款码" />
-          <h4>支付宝支付</h4>
+          <h4>支付宝收款码</h4>
           <p>打开支付宝扫一扫，即可支持作者。</p>
         </div>
       </div>
