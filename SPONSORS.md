@@ -17,10 +17,14 @@
 如果本项目对你有帮助，欢迎通过以下方式支持：
 
 ### 微信支付
-![微信支付收款码](./docs/images/payment-qr.jpg)
+推荐使用微信支付，扫码即可支持作者。
+
+![微信支付收款码](./docs/images/payment-wechat.jpg)
 
 ### 支付宝
-![支付宝收款码](./docs/images/payment-qr.jpg)
+推荐使用支付宝，打开支付宝扫一扫即可支持作者。
+
+![支付宝收款码](./docs/images/payment-alipay.jpg)
 
 ---
 
