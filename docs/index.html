@@ -1,549 +1,274 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnonyProof - 匿证 | 完全匿名的端到端加密反馈平台</title>
-    <meta name="description" content="完全匿名·端到端加密·防偷看机制 - 现代化的匿名反馈平台">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: #1d1d1f;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .hero {
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            padding: 60px 20px;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            opacity: 0.95;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 60px 0;
-        }
-        
-        .feature {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .feature:hover {
-            transform: translateY(-10px);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        
-        .feature h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #1d1d1f;
-        }
-        
-        .feature p {
-            color: #86868b;
-            line-height: 1.8;
-        }
-        
-        .screenshots {
-            background: white;
-            padding: 100px 0;
-        }
-        
-        .screenshots h2 {
-            text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            color: #1d1d1f;
-        }
-        
-        .screenshots .subtitle {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #86868b;
-            margin-bottom: 60px;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            margin: 60px 0 40px;
-            color: #1d1d1f;
-            font-weight: 700;
-        }
-        
-        .section-title .badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-left: 10px;
-        }
-        
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 40px;
-            margin-top: 40px;
-        }
-        
-        .screenshot-item {
-            background: #f5f5f7;
-            padding: 25px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .screenshot-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        }
-        
-        .screenshot-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .screenshot-item h4 {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            color: #1d1d1f;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-        
-        .screenshot-item p {
-            text-align: center;
-            color: #86868b;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        
-        .contact {
-            background: #f5f5f7;
-            padding: 100px 0;
-        }
-        
-        .contact h2 {
-            text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            color: #1d1d1f;
-        }
-        
-        .contact-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 80px;
-            flex-wrap: wrap;
-            margin-top: 60px;
-        }
-        
-        .contact-info {
-            flex: 1;
-            min-width: 350px;
-        }
-        
-        .contact-info h3 {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: #1d1d1f;
-        }
-        
-        .contact-info p {
-            margin-bottom: 15px;
-            color: #86868b;
-            font-size: 1.1rem;
-        }
-        
-        .contact-info strong {
-            color: #1d1d1f;
-        }
-        
-        .contact-qr {
-            text-align: center;
-        }
-        
-        .contact-qr img {
-            max-width: 320px;
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        
-        .payment {
-            background: white;
-            padding: 100px 0;
-        }
-        
-        .payment h2 {
-            text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            color: #1d1d1f;
-        }
-        
-        .payment-content {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            flex-wrap: wrap;
-            margin-top: 60px;
-        }
-        
-        .payment-item {
-            text-align: center;
-            background: #f9f9f9;
-            padding: 40px;
-            border-radius: 20px;
-            min-width: 300px;
-        }
-        
-        .payment-item img {
-            max-width: 280px;
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .payment-item h4 {
-            font-size: 1.3rem;
-            color: #1d1d1f;
-            margin-bottom: 10px;
-        }
-        
-        .tech-stack {
-            background: #f5f5f7;
-            padding: 80px 0;
-            text-align: center;
-        }
-        
-        .tech-stack h2 {
-            font-size: 2.2rem;
-            margin-bottom: 50px;
-            color: #1d1d1f;
-        }
-        
-        .tech-items {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .tech-item {
-            background: white;
-            padding: 18px 35px;
-            border-radius: 50px;
-            font-weight: 600;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            font-size: 1rem;
-        }
-        
-        .cta {
-            background: white;
-            padding: 100px 0;
-            text-align: center;
-        }
-        
-        .cta h2 {
-            font-size: 2.8rem;
-            margin-bottom: 30px;
-            color: #1d1d1f;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 18px 45px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.15rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-        }
-        
-        footer {
-            background: #1d1d1f;
-            color: white;
-            padding: 60px 0;
-            text-align: center;
-        }
-        
-        footer p {
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-        
-        footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
-            
-            .screenshot-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .contact-content {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .payment-content {
-                flex-direction: column;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnonyProof - 匿证 | 完全匿名的端到端加密反馈平台</title>
+  <meta name="description" content="完全匿名·端到端加密·防偷看机制 - 现代化的匿名反馈平台" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      color: #1d1d1f;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 60px 20px;
+    }
+    .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; }
+    .hero p { font-size: 1.2rem; margin-bottom: 24px; opacity: 0.95; }
+    .btn {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba(102,126,234,.3);
+      margin: 8px;
+    }
+    .features, .screenshots, .contact, .payment, .tech-stack, .cta {
+      background: white;
+      margin-top: 0;
+      padding: 90px 0;
+    }
+    .features-grid, .screenshot-grid, .payment-content {
+      display: grid;
+      gap: 30px;
+    }
+    .features-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+    .payment-content { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .feature, .screenshot-item, .payment-item {
+      background: #f7f8fb;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    }
+    .feature-icon { font-size: 2.6rem; margin-bottom: 16px; }
+    .feature h3, .screenshot-item h4, .payment-item h4 { color: #1d1d1f; margin-bottom: 10px; }
+    .feature p, .screenshot-item p, .payment-item p, .subtitle { color: #6b7280; }
+    .screenshots h2, .contact h2, .payment h2, .tech-stack h2, .cta h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 14px;
+      color: #1d1d1f;
+    }
+    .subtitle { text-align: center; margin-bottom: 50px; }
+    .section-title {
+      text-align: center;
+      font-size: 1.9rem;
+      color: #1d1d1f;
+      margin: 56px 0 28px;
+      font-weight: 700;
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: .9rem;
+      vertical-align: middle;
+    }
+    .screenshot-item img, .payment-item img, .contact-qr img {
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    }
+    .contact-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 48px;
+      align-items: center;
+      margin-top: 40px;
+    }
+    .contact-info h3 { font-size: 2rem; margin-bottom: 18px; }
+    .contact-info p { margin-bottom: 12px; color: #6b7280; }
+    .tech-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .tech-item {
+      background: #f7f8fb;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,.05);
+    }
+    footer {
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    footer a { color: #93c5fd; text-decoration: none; }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      .screenshot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="container">
-            <h1>🔒 AnonyProof</h1>
-            <p>完全匿名 · 端到端加密 · 防偷看机制</p>
-            <p style="font-size: 1.1rem; margin-bottom: 30px;">
-                现代化的匿名反馈平台，保护你的隐私安全
-            </p>
-            <a href="https://github.com/HachikoJ/anonyproof" class="btn">
-                <i class="fab fa-github"></i> 查看源码
-            </a>
-            <a href="#features" class="btn" style="margin-left: 15px; background: rgba(255,255,255,0.2);">
-                了解更多
-            </a>
-        </div>
+  <div class="hero">
+    <div class="container">
+      <h1>🔒 AnonyProof</h1>
+      <p>完全匿名 · 端到端加密 · 防偷看机制</p>
+      <p>现代化的匿名反馈平台，保护你的隐私安全</p>
+      <a href="https://github.com/HachikoJ/anonyproof" class="btn"><i class="fab fa-github"></i> 查看源码</a>
+      <a href="#screens" class="btn" style="background: rgba(255,255,255,.18);">查看界面</a>
     </div>
-    
-    <div id="features" class="container">
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🔒</div>
-                <h3>完全匿名</h3>
-                <p>无需注册登录，基于设备 ID 识别，彻底保护用户身份隐私</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🛡️</div>
-                <h3>端到端加密</h3>
-                <p>采用 AES-256 加密算法，客户端加密，服务器无法解密查看</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">👁️</div>
-                <h3>防偷看机制</h3>
-                <p>所有管理员操作都被记录，确保透明可追溯，建立信任</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">💬</div>
-                <h3>实时沟通</h3>
-                <p>内置评论系统，支持用户与管理员双向交流，及时解决问题</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🔔</div>
-                <h3>智能通知</h3>
-                <p>实时通知系统，及时提醒新消息和处理进度</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📱</div>
-                <h3>响应式设计</h3>
-                <p>完美适配桌面端和移动端，随时随地使用</p>
-            </div>
-        </div>
+  </div>
+
+  <div class="features">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature"><div class="feature-icon">🔒</div><h3>完全匿名</h3><p>无需注册登录，基于设备 ID 识别，保护用户身份隐私。</p></div>
+        <div class="feature"><div class="feature-icon">🛡️</div><h3>端到端加密</h3><p>采用 AES-256 加密算法，客户端加密，服务器无法解密查看。</p></div>
+        <div class="feature"><div class="feature-icon">👁️</div><h3>防偷看机制</h3><p>所有管理员操作都被记录，确保透明可追溯。</p></div>
+        <div class="feature"><div class="feature-icon">💬</div><h3>实时沟通</h3><p>支持用户与管理员在反馈详情中双向交流。</p></div>
+        <div class="feature"><div class="feature-icon">🔔</div><h3>智能通知</h3><p>支持通知中心与状态提醒，及时掌握处理进度。</p></div>
+        <div class="feature"><div class="feature-icon">📱</div><h3>响应式设计</h3><p>同时适配桌面端与移动端，操作体验一致。</p></div>
+      </div>
     </div>
-    
-    <div class="screenshots">
-        <div class="container">
-            <h2>📸 界面展示</h2>
-            <p class="subtitle">真实应用界面截图，功能一目了然</p>
-            
-            <h3 class="section-title">管理端界面 <span class="badge">💻 桌面版</span></h3>
-            <div class="screenshot-grid">
-                <div class="screenshot-item">
-                    <img src="./screenshots/admin-homepage.jpg" alt="管理端主页">
-                    <h4>管理端主页</h4>
-                    <p>设备认证管理后台，显示总反馈52条，含分类筛选、状态筛选、搜索框、反馈列表及导出功能</p>
-                </div>
-                <div class="screenshot-item">
-                    <img src="./screenshots/admin-dashboard.jpg" alt="管理端仪表板">
-                    <h4>管理端仪表板</h4>
-                    <p>数据统计：总反馈52（建议37、投诉6、举报8），含分类统计卡片和实时数据展示</p>
-                </div>
-            </div>
-            
-            <h3 class="section-title">用户端界面 <span class="badge">💻 桌面版</span></h3>
-            <div class="screenshot-grid">
-                <div class="screenshot-item">
-                    <img src="./screenshots/user-home-desktop.jpg" alt="用户端主页（桌面版）">
-                    <h4>用户端主页</h4>
-                    <p>"匿证"标题，"开始匿名反馈"和"我的反馈"按钮，端到端加密提示，通知中心面板</p>
-                </div>
-                <div class="screenshot-item">
-                    <img src="./screenshots/cc986338-f959-481c-bb1e-782ccb8c48a0.jpg" alt="我的反馈（桌面版）">
-                    <h4>我的反馈</h4>
-                    <p>设备ID显示，反馈统计（全部40、处理中40等），含搜索框、分类和状态筛选</p>
-                </div>
-            </div>
-            
-            <h3 class="section-title">用户端界面 <span class="badge">📱 移动版</span></h3>
-            <div class="screenshot-grid">
-                <div class="screenshot-item">
-                    <img src="./screenshots/image---2ef9a05e-d8d4-47c8-b28e-c412d8e2b6a8.jpg" alt="用户端主页（移动版）">
-                    <h4>用户端主页</h4>
-                    <p>移动端主页，显示总反馈数53、加密率100%、数据泄露0，含功能说明</p>
-                </div>
-                <div class="screenshot-item">
-                    <img src="./screenshots/notifications.jpg" alt="通知中心（移动版）">
-                    <h4>通知中心</h4>
-                    <p>未读通知(2)、已读通知(10)，含管理员回复和状态更新通知</p>
-                </div>
-            </div>
+  </div>
+
+  <div id="screens" class="screenshots">
+    <div class="container">
+      <h2>📸 界面展示</h2>
+      <p class="subtitle">所有图片与说明均按已确认映射整理，顺序为管理端 → 用户端桌面版 → 用户端移动版</p>
+
+      <h3 class="section-title">管理端界面 <span class="badge">💻 桌面版</span></h3>
+      <div class="screenshot-grid">
+        <div class="screenshot-item">
+          <img src="./images/admin-homepage.jpg" alt="管理端主页" />
+          <h4>管理端主页</h4>
+          <p>设备认证管理后台界面，显示总反馈 52 条（建议 37、投诉 6、举报 8），含分类筛选、状态筛选、搜索框、反馈列表、导出数据、退出按钮与通知图标。</p>
         </div>
+        <div class="screenshot-item">
+          <img src="./images/admin-comment-page.jpg" alt="管理端评论页" />
+          <h4>管理端评论页</h4>
+          <p>反馈界面显示“已有解决方案”与“讨论与沟通”区，展示用户与管理员对话记录，底部有回复输入框与“收起评论”按钮。</p>
+        </div>
+      </div>
+
+      <h3 class="section-title">用户端界面 <span class="badge">💻 桌面版</span></h3>
+      <div class="screenshot-grid">
+        <div class="screenshot-item">
+          <img src="./images/user-home-with-notifications-desktop.jpg" alt="用户端带通知电脑版主页" />
+          <h4>用户端带通知电脑版主页</h4>
+          <p>左侧为“匿证”首页，包含“开始匿名反馈”“我的反馈”按钮与“端到端加密·完全匿名”提示；右侧为通知中心，显示未读通知与已读通知。</p>
+        </div>
+        <div class="screenshot-item">
+          <img src="./images/user-feedbacks-desktop.jpg" alt="用户端我的反馈页电脑版" />
+          <h4>用户端我的反馈页电脑版</h4>
+          <p>页面标题为“我的反馈”，展示设备 ID、反馈统计、搜索框、分类筛选、状态筛选与反馈列表，以及底部加密存储提示。</p>
+        </div>
+      </div>
+
+      <h3 class="section-title">用户端界面 <span class="badge">📱 移动版</span></h3>
+      <div class="screenshot-grid">
+        <div class="screenshot-item">
+          <img src="./images/user-home-mobile.jpg" alt="用户端主页移动版" />
+          <h4>用户端主页移动版</h4>
+          <p>移动端首页展示“匿证 - 匿名反馈平台”、通知铃铛、总反馈数 53、加密率 100%、数据泄露 0，以及“端到端加密 / 防偷看机制 / 设备绑定”等功能说明。</p>
+        </div>
+        <div class="screenshot-item">
+          <img src="./images/user-notification-detail-mobile.jpg" alt="用户端通知详情页移动版" />
+          <h4>用户端通知详情页移动版</h4>
+          <p>通知中心显示未读通知（2）与已读通知（10），包含管理员回复、状态更新以及“标为已读”“查看详情”等操作入口。</p>
+        </div>
+        <div class="screenshot-item">
+          <img src="./images/user-feedback-detail-mobile.jpg" alt="用户端反馈详情页移动版" />
+          <h4>用户端反馈详情页移动版</h4>
+          <p>反馈详情页展示反馈类型、状态、提交内容、处理进展、评论区与管理员回复，完整体现反馈跟进流程。</p>
+        </div>
+      </div>
     </div>
-    
-    <div class="contact">
-        <div class="container">
-            <h2>💬 联系作者</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Wilson</h3>
-                    <p><strong>🌍 地区</strong>: 广东 深圳</p>
-                    <p><strong>💼 职位</strong>: 独立开发者</p>
-                    <p><strong>🎯 专长</strong>: 全栈开发、Vibe Coding</p>
-                    <p><strong>💬 微信</strong>: 扫描右侧二维码添加好友</p>
-                    <p style="margin-top: 20px; font-size: 0.95rem; color: #86868b;">
-                        <strong>备注</strong>: "AnonyProof" 或项目咨询
-                    </p>
-                </div>
-                <div class="contact-qr">
-                    <img src="./images/wechat-qr.jpg" alt="微信二维码 - Wilson">
-                    <p style="margin-top: 15px; font-weight: 600; color: #1d1d1f;">
-                        扫码添加微信好友
-                    </p>
-                </div>
-            </div>
+  </div>
+
+  <div class="contact">
+    <div class="container">
+      <h2>💬 联系作者</h2>
+      <div class="contact-content">
+        <div class="contact-info">
+          <h3>Wilson</h3>
+          <p><strong>地区：</strong>广东 深圳</p>
+          <p><strong>身份：</strong>独立开发者</p>
+          <p><strong>风格：</strong>Vibe Coding / 全栈开发</p>
+          <p><strong>微信：</strong>扫描右侧二维码添加好友</p>
+          <p><strong>备注：</strong>AnonyProof 或项目咨询</p>
         </div>
+        <div class="contact-qr">
+          <img src="./images/author-wechat-qr.jpg" alt="作者微信二维码" />
+        </div>
+      </div>
     </div>
-    
-    <div class="payment">
-        <div class="container">
-            <h2>☕ 请作者喝杯咖啡</h2>
-            <p style="text-align: center; font-size: 1.2rem; color: #86868b; margin-bottom: 40px;">
-                如果 AnonyProof 对你有帮助，欢迎通过以下方式支持
-            </p>
-            <div class="payment-content">
-                <div class="payment-item">
-                    <img src="./images/payment-wechat.jpg" alt="微信支付">
-                    <h4>微信支付</h4>
-                    <p style="color: #86868b;">推荐使用微信支付</p>
-                </div>
-            </div>
+  </div>
+
+  <div class="payment">
+    <div class="container">
+      <h2>☕ 请作者喝杯咖啡</h2>
+      <p class="subtitle">如果这个项目对你有帮助，欢迎通过以下方式支持作者</p>
+      <div class="payment-content">
+        <div class="payment-item">
+          <img src="./images/wechat-payment-qr.jpg" alt="微信收款码" />
+          <h4>微信支付</h4>
+          <p>推荐使用微信支付，扫码即可支持作者。</p>
         </div>
+        <div class="payment-item">
+          <img src="./images/alipay-payment-qr.jpg" alt="支付宝收款码" />
+          <h4>支付宝支付</h4>
+          <p>打开支付宝扫一扫，即可支持作者。</p>
+        </div>
+      </div>
     </div>
-    
-    <div class="tech-stack">
-        <div class="container">
-            <h2>🛠️ 技术栈</h2>
-            <div class="tech-items">
-                <div class="tech-item">Next.js 14</div>
-                <div class="tech-item">TypeScript 5</div>
-                <div class="tech-item">React 18</div>
-                <div class="tech-item">Express 5</div>
-                <div class="tech-item">SQLite</div>
-                <div class="tech-item">PM2</div>
-                <div class="tech-item">Nginx</div>
-            </div>
-        </div>
+  </div>
+
+  <div class="tech-stack">
+    <div class="container">
+      <h2>🛠️ 技术栈</h2>
+      <div class="tech-items">
+        <div class="tech-item">Next.js 14</div>
+        <div class="tech-item">TypeScript 5</div>
+        <div class="tech-item">React 18</div>
+        <div class="tech-item">Express 5</div>
+        <div class="tech-item">SQLite</div>
+        <div class="tech-item">PM2</div>
+        <div class="tech-item">Nginx</div>
+      </div>
     </div>
-    
-    <div class="cta">
-        <div class="container">
-            <h2>🚀 立即开始</h2>
-            <p style="font-size: 1.1rem; color: #86868b; margin-bottom: 30px;">
-                快速部署，简单易用，保护隐私
-            </p>
-            <a href="https://github.com/HachikoJ/anonyproof#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B" class="btn">
-                <i class="fas fa-book"></i> 查看文档
-            </a>
-            <a href="https://github.com/HachikoJ/anonyproof/blob/main/docs/DEPLOYMENT.md" class="btn" style="margin-left: 15px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                <i class="fas fa-server"></i> 部署指南
-            </a>
-        </div>
+  </div>
+
+  <div class="cta">
+    <div class="container">
+      <h2>🚀 立即开始</h2>
+      <p class="subtitle">快速部署，简单易用，保护隐私</p>
+      <a href="https://github.com/HachikoJ/anonyproof#-快速开始" class="btn">查看文档</a>
+      <a href="https://github.com/HachikoJ/anonyproof/blob/main/docs/DEPLOYMENT.md" class="btn">部署指南</a>
     </div>
-    
-    <footer>
-        <div class="container">
-            <p>💡 <strong>项目特点</strong>: 本项目 <strong>完全独立开发</strong>，未借鉴任何现有开源项目，采用 Vibe Coding 方式打造</p>
-            <p>从需求分析、架构设计、前后端开发到部署上线，全部由作者独立完成</p>
-            <p style="margin-top: 30px;">Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a> - 广东 深圳</p>
-            <p style="margin-top: 20px;">
-                <a href="https://github.com/HachikoJ/anonyproof">GitHub</a> ·
-                <a href="https://github.com/HachikoJ/anonyproof/blob/main/LICENSE">MIT License</a> ·
-                <a href="https://github.com/HachikoJ/anonyproof/blob/main/SPONSORS.md">☕ 支持作者</a>
-            </p>
-        </div>
-    </footer>
+  </div>
+
+  <footer>
+    <p>💡 本项目完全独立开发，未借鉴任何现有开源项目，采用 Vibe Coding 方式打造。</p>
+    <p>Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a> · 广东 深圳</p>
+    <p><a href="https://github.com/HachikoJ/anonyproof">GitHub</a> · <a href="https://github.com/HachikoJ/anonyproof/blob/main/SPONSORS.md">支持作者</a></p>
+  </footer>
 </body>
 </html>
