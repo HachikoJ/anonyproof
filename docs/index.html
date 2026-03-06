@@ -10,8 +10,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --bg: #020617;
-      --card: rgba(8, 14, 28, 0.86);
-      --card-2: rgba(15, 23, 42, 0.82);
+      --card: rgba(8, 14, 28, 0.88);
       --border: rgba(148, 163, 184, 0.16);
       --border-strong: rgba(96, 165, 250, 0.36);
       --text: #e5eefb;
@@ -129,7 +128,7 @@
       z-index: 1;
       width: 100%;
       display: grid;
-      grid-template-columns: 1.04fr 0.96fr;
+      grid-template-columns: 1.02fr 0.98fr;
       gap: 34px;
       align-items: center;
       padding: 112px 0 84px;
@@ -147,24 +146,32 @@
       margin-bottom: 18px;
       backdrop-filter: blur(14px);
     }
-    .hero-copy h1 {
-      font-size: clamp(3rem, 6vw, 5.1rem);
-      line-height: .96;
-      letter-spacing: -0.05em;
+    .product-name {
+      font-size: clamp(4.4rem, 10vw, 8rem);
+      line-height: .9;
       font-weight: 900;
-      margin-bottom: 18px;
+      letter-spacing: -0.08em;
+      margin-bottom: 10px;
+      color: #ffffff;
+      text-shadow: 0 0 32px rgba(96,165,250,.18);
+    }
+    .product-tagline {
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+      color: #dbe7ff;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
     .hero-copy p {
-      font-size: 1.06rem;
+      font-size: .98rem;
       color: var(--muted-2);
-      margin-bottom: 12px;
-      max-width: 620px;
+      margin-bottom: 10px;
+      max-width: 560px;
     }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 26px;
+      margin-top: 22px;
     }
     .btn {
       display: inline-flex;
@@ -191,7 +198,7 @@
     }
     .btn:hover { transform: translateY(-3px); }
     .hero-meta {
-      margin-top: 22px;
+      margin-top: 18px;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -202,7 +209,7 @@
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(148,163,184,.14);
       color: #d7e3f4;
-      font-size: .9rem;
+      font-size: .88rem;
     }
     .hero-side {
       display: grid;
@@ -222,6 +229,7 @@
       border-radius: 22px;
       box-shadow: var(--shadow);
       overflow: hidden;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
     }
     .terminal-card::before,
     .metric-card::before,
@@ -249,16 +257,6 @@
     .tech-item:hover::before,
     .cta-card:hover::before {
       opacity: 1;
-    }
-    .terminal-card,
-    .metric-card,
-    .signal-card,
-    .feature,
-    .screenshot-item,
-    .support-item,
-    .tech-item,
-    .cta-card {
-      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
     }
     .terminal-card:hover,
     .metric-card:hover,
@@ -314,7 +312,7 @@
     .signal-card { padding: 18px; }
     .metric-card h3,
     .signal-card h3 {
-      font-size: .88rem;
+      font-size: .84rem;
       letter-spacing: .08em;
       text-transform: uppercase;
       color: var(--muted);
@@ -337,7 +335,7 @@
       color: #fff;
       margin-bottom: 4px;
     }
-    .metric span { color: var(--muted); font-size: .86rem; }
+    .metric span { color: var(--muted); font-size: .84rem; }
     .signal-card ul {
       list-style: none;
       display: grid;
@@ -347,30 +345,30 @@
       display: flex;
       gap: 12px;
       color: var(--muted-2);
-      font-size: .92rem;
+      font-size: .9rem;
     }
     .signal-card i { color: var(--green); margin-top: 4px; }
-    section { padding: 76px 0; }
+    section { padding: 74px 0; }
     .section-head {
       display: flex;
       align-items: end;
       justify-content: space-between;
       gap: 18px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
     .section-head h2 {
-      font-size: clamp(1.9rem, 3vw, 2.7rem);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
       letter-spacing: -0.04em;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .section-head p {
       color: var(--muted);
-      max-width: 560px;
-      font-size: .96rem;
+      max-width: 480px;
+      font-size: .92rem;
     }
     .section-kicker {
       color: #7dd3fc;
-      font-size: .8rem;
+      font-size: .78rem;
       letter-spacing: .14em;
       text-transform: uppercase;
       font-weight: 800;
@@ -382,18 +380,16 @@
       display: grid;
       gap: 18px;
     }
-    .features-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    .features-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
     .support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .tech-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
     .feature,
     .support-item { padding: 20px; }
-    .feature { min-height: 190px; }
+    .feature { min-height: 180px; }
     .feature-icon {
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       border-radius: 16px;
       display: inline-flex;
       align-items: center;
@@ -401,12 +397,12 @@
       background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(124,58,237,.18));
       border: 1px solid rgba(99,102,241,.22);
       margin-bottom: 14px;
-      font-size: 1.28rem;
+      font-size: 1.24rem;
     }
     .feature h3,
     .screenshot-item h4,
     .support-item h4 {
-      font-size: 1rem;
+      font-size: .98rem;
       margin-bottom: 8px;
       color: #f8fbff;
     }
@@ -414,17 +410,17 @@
     .screenshot-item p,
     .support-item p {
       color: var(--muted);
-      font-size: .9rem;
+      font-size: .88rem;
     }
     .section-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin: 30px 0 14px;
+      margin: 28px 0 14px;
     }
     .section-title strong {
-      font-size: 1.04rem;
+      font-size: 1.02rem;
       color: #fff;
       letter-spacing: -.02em;
     }
@@ -437,12 +433,10 @@
       background: rgba(37,99,235,.14);
       border: 1px solid rgba(96,165,250,.22);
       color: #bfdbfe;
-      font-size: .8rem;
+      font-size: .78rem;
       font-weight: 700;
     }
-    .screenshot-item {
-      padding: 14px;
-    }
+    .screenshot-item { padding: 14px; }
     .screenshot-top {
       display: flex;
       align-items: center;
@@ -463,12 +457,12 @@
       background: linear-gradient(135deg, rgba(34,211,238,.16), rgba(37,99,235,.18));
       border: 1px solid rgba(34,211,238,.2);
       color: #a5f3fc;
-      font-size: .86rem;
+      font-size: .84rem;
       font-weight: 800;
     }
     .shot-type {
       color: #93c5fd;
-      font-size: .76rem;
+      font-size: .74rem;
       letter-spacing: .1em;
       text-transform: uppercase;
       font-weight: 700;
@@ -501,21 +495,22 @@
       text-align: center;
       font-weight: 700;
       color: #e2e8f0;
-      font-size: .92rem;
+      font-size: .88rem;
     }
     .cta-card {
-      padding: 42px 26px;
+      padding: 40px 24px;
       text-align: center;
     }
     .cta-card h2 {
-      font-size: clamp(2rem, 3vw, 2.6rem);
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
       letter-spacing: -0.04em;
       margin-bottom: 10px;
     }
     .cta-card p {
       color: var(--muted-2);
-      max-width: 620px;
-      margin: 0 auto 22px;
+      max-width: 520px;
+      margin: 0 auto 20px;
+      font-size: .92rem;
     }
     footer {
       padding: 30px 20px 52px;
@@ -529,7 +524,6 @@
       text-decoration: none;
     }
     @media (max-width: 1100px) {
-      .features-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .tech-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
@@ -559,6 +553,7 @@
       .metric-grid {
         grid-template-columns: 1fr;
       }
+      .product-name { font-size: 4.5rem; }
     }
   </style>
 </head>
@@ -583,18 +578,18 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow"><i class="fa-solid fa-sparkles"></i> Product-grade anonymous feedback system</div>
-          <h1>匿证，让匿名反馈更安全，也更像一款成熟产品。</h1>
-          <p>匿名提交、通知中心、状态跟进、双向沟通，一套轻量闭环全部打通。</p>
-          <p>适用于校园、企业、团队、社群等需要安全反馈机制的场景。</p>
+          <div class="product-name">匿证</div>
+          <div class="product-tagline">完全匿名 · 端到端加密 · 防偷看机制</div>
+          <p>匿名提交、通知中心、状态跟进、双向沟通，一套闭环全部打通。</p>
           <div class="hero-actions">
             <a href="https://github.com/HachikoJ/anonyproof" class="btn btn-primary"><i class="fab fa-github"></i> 查看源码</a>
             <a href="#screens" class="btn btn-secondary"><i class="fa-regular fa-image"></i> 浏览界面</a>
           </div>
           <div class="hero-meta">
-            <span class="hero-chip">端到端加密</span>
+            <span class="hero-chip">匿名反馈</span>
             <span class="hero-chip">通知中心</span>
-            <span class="hero-chip">防偷看机制</span>
-            <span class="hero-chip">桌面 + 移动适配</span>
+            <span class="hero-chip">状态跟进</span>
+            <span class="hero-chip">多端适配</span>
           </div>
         </div>
 
@@ -642,15 +637,15 @@
           <div class="section-kicker">Core Features</div>
           <h2>核心能力</h2>
         </div>
-        <p>围绕匿名、安全、通知与跟进体验打造。</p>
+        <p>匿名、安全、通知、跟进。</p>
       </div>
       <div class="features-grid">
-        <div class="feature"><div class="feature-icon">🔒</div><h3>完全匿名</h3><p>无需注册登录，降低身份暴露风险。</p></div>
-        <div class="feature"><div class="feature-icon">🛡️</div><h3>端到端加密</h3><p>反馈内容在客户端完成加密处理。</p></div>
-        <div class="feature"><div class="feature-icon">👁️</div><h3>可审计操作</h3><p>管理操作留痕，处理过程更透明。</p></div>
-        <div class="feature"><div class="feature-icon">💬</div><h3>双向沟通</h3><p>支持评论与追加说明，反馈不止提交一次。</p></div>
+        <div class="feature"><div class="feature-icon">🔒</div><h3>完全匿名</h3><p>无需注册登录。</p></div>
+        <div class="feature"><div class="feature-icon">🛡️</div><h3>端到端加密</h3><p>内容在客户端完成加密。</p></div>
+        <div class="feature"><div class="feature-icon">👁️</div><h3>可审计操作</h3><p>管理操作留痕。</p></div>
+        <div class="feature"><div class="feature-icon">💬</div><h3>双向沟通</h3><p>支持评论与追加说明。</p></div>
         <div class="feature"><div class="feature-icon">🔔</div><h3>通知中心</h3><p>新消息与状态变化及时可见。</p></div>
-        <div class="feature"><div class="feature-icon">📱</div><h3>多端适配</h3><p>桌面与移动端都保持轻量好用。</p></div>
+        <div class="feature"><div class="feature-icon">📱</div><h3>多端适配</h3><p>桌面与移动端都轻量好用。</p></div>
       </div>
     </div>
   </section>
@@ -662,7 +657,7 @@
           <div class="section-kicker">Interface Showcase</div>
           <h2>界面预览</h2>
         </div>
-        <p>管理端强调效率，用户端强调安全与跟进体验。</p>
+        <p>管理端重效率，用户端重体验。</p>
       </div>
 
       <div class="section-title">
@@ -758,7 +753,7 @@
           <div class="section-kicker">Contact & Support</div>
           <h2>联系与支持</h2>
         </div>
-        <p>交流项目，或通过赞赏支持匿证继续迭代。</p>
+        <p>交流项目，或支持匿证继续迭代。</p>
       </div>
       <div class="support-grid">
         <div class="support-item">
