@@ -56,46 +56,25 @@
 
 ## 📸 界面展示
 
-### 管理端界面（💻 桌面版）
+| 管理端主页（💻） | 管理端评论页（💻） |
+|---|---|
+| 设备认证管理后台界面，显示总反馈 52 条（建议 37、投诉 6、举报 8），包含分类筛选、状态筛选、搜索框、反馈列表、导出数据、退出按钮与通知图标。 | 反馈界面显示“已有解决方案”已勾选，绿色框展示处理结论；下方“讨论与沟通”区展示用户与管理员对话，底部有回复输入框与“收起评论”按钮。 |
+| ![管理端主页](docs/images/admin-homepage.jpg) | ![管理端评论页](docs/images/admin-comment-page.jpg) |
 
-#### 管理端主页
-设备认证管理后台界面，显示总反馈 52 条（建议 37、投诉 6、举报 8），包含分类筛选、状态筛选、搜索框、反馈列表、导出数据、退出按钮与通知图标。
+| 用户端带通知主页（💻） | 用户端我的反馈页（💻） |
+|---|---|
+| 左侧为“匿证”首页入口，包含“开始匿名反馈”“我的反馈”按钮与“端到端加密·完全匿名”提示；右侧为通知中心，显示未读通知与已读通知。 | 页面标题为“我的反馈”，展示设备 ID、反馈统计、搜索框、分类筛选、状态筛选，以及反馈列表与加密存储提示。 |
+| ![用户端带通知电脑版主页](docs/images/user-home-with-notifications-desktop.jpg) | ![用户端我的反馈页电脑版](docs/images/user-feedbacks-desktop.jpg) |
 
-![管理端主页](docs/images/admin-homepage.jpg)
+| 用户端主页移动版（📱） | 用户端通知详情页移动版（📱） |
+|---|---|
+| 移动端首页展示“匿证 - 匿名反馈平台”、通知铃铛、总反馈数 53、加密率 100%、数据泄露 0，以及“端到端加密 / 防偷看机制 / 设备绑定”等功能说明。 | 通知中心显示未读通知（2）与已读通知（10），包含管理员回复与状态更新，并带有“标为已读”“查看详情”等操作入口。 |
+| ![用户端主页移动版](docs/images/user-home-mobile.jpg) | ![用户端通知详情页移动版](docs/images/user-notification-detail-mobile.jpg) |
 
-#### 管理端评论页
-反馈界面显示“已有解决方案”已勾选，绿色框展示处理结论；下方“讨论与沟通”区展示用户与管理员对话，底部有回复输入框与“收起评论”按钮。
-
-![管理端评论页](docs/images/admin-comment-page.jpg)
-
-### 用户端界面（💻 桌面版）
-
-#### 用户端带通知主页
-左侧为“匿证”首页入口，包含“开始匿名反馈”“我的反馈”按钮与“端到端加密·完全匿名”提示；右侧为通知中心，显示未读通知与已读通知。
-
-![用户端带通知电脑版主页](docs/images/user-home-with-notifications-desktop.jpg)
-
-#### 用户端我的反馈页
-页面标题为“我的反馈”，展示设备 ID、反馈统计、搜索框、分类筛选、状态筛选，以及反馈列表与加密存储提示。
-
-![用户端我的反馈页电脑版](docs/images/user-feedbacks-desktop.jpg)
-
-### 用户端界面（📱 移动版）
-
-#### 用户端主页移动版
-移动端首页展示“匿证 - 匿名反馈平台”、通知铃铛、总反馈数 53、加密率 100%、数据泄露 0，以及“端到端加密 / 防偷看机制 / 设备绑定”等功能说明。
-
-![用户端主页移动版](docs/images/user-home-mobile.jpg)
-
-#### 用户端通知详情页移动版
-通知中心显示未读通知（2）与已读通知（10），包含管理员回复与状态更新，并带有“标为已读”“查看详情”等操作入口。
-
-![用户端通知详情页移动版](docs/images/user-notification-detail-mobile.jpg)
-
-#### 用户端反馈详情页移动版
-反馈详情页展示反馈类型、状态、提交内容、处理进展、评论区与管理员回复内容，适合展示用户查看处理进度的完整流程。
-
-![用户端反馈详情页移动版](docs/images/user-feedback-detail-mobile.jpg)
+| 用户端反馈详情页移动版（📱） |
+|---|
+| 反馈详情页展示反馈类型、状态、提交内容、处理进展、评论区与管理员回复内容，适合展示用户查看处理进度的完整流程。 |
+| ![用户端反馈详情页移动版](docs/images/user-feedback-detail-mobile.jpg) |
 
 ---
 
@@ -157,39 +136,19 @@ cd anonyproof
 
 2. **安装依赖**
 ```bash
-# 安装前端依赖
 npm install
-
-# 安装后端依赖
 cd server && npm install
 ```
 
 3. **配置环境变量**
 ```bash
-# 创建 .env.local 文件
 cp .env.example .env.local
-
-# 编辑配置
 nano .env.local
-```
-
-```env
-# 管理员密码（必须修改）
-ADMIN_PASSWORD=your_secure_password_here
-
-# API 密钥（可选）
-API_TOKEN=your_api_token_here
-
-# 数据库路径
-DATABASE_PATH=./data/anonyproof.db
 ```
 
 4. **启动开发服务器**
 ```bash
-# 启动后端（端口 4000）
 cd server && npm run dev
-
-# 启动前端（端口 3000）
 npm run dev
 ```
 
@@ -201,138 +160,30 @@ npm run dev
 
 ## 📦 部署指南
 
-### 生产环境部署
-
-1. **构建前端**
-```bash
-npm run build
-```
-
-2. **使用 PM2 启动**
-```bash
-# 启动后端
-pm2 start server/index.ts --name anonyproof-backend --interpreter tsx
-
-# 启动前端
-pm2 start npm --name anonyproof-frontend -- start
-```
-
-3. **配置 Nginx**
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    # 前端
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # 后端 API
-    location /api/ {
-        proxy_pass http://127.0.0.1:4000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-    }
-}
-```
-
-### Docker 部署
-
-```bash
-# 构建镜像
-docker build -t anonyproof .
-
-# 运行容器
-docker run -d \
-  --name anonyproof \
-  -p 3000:3000 \
-  -p 4000:4000 \
-  -v $(pwd)/data:/app/data \
-  anonyproof
-```
+详见 `docs/DEPLOYMENT.md`。
 
 ---
 
 ## 📁 项目结构
 
-```
+```text
 anonyproof/
-├── app/                      # Next.js 应用目录
-│   ├── page.tsx             # 用户端主页
-│   ├── foorpynona/          # 管理端
-│   ├── hooks/               # 自定义 Hooks
-│   ├── components/          # React 组件
-│   ├── utils/               # 工具函数
-│   └── globals.css          # 全局样式
-├── server/                   # Express 后端
-│   ├── index.ts             # 入口文件
-│   ├── middleware/          # 中间件
-│   └── utils/               # 工具函数
-├── data/                     # SQLite 数据库
-├── public/                   # 静态资源
-├── next.config.js           # Next.js 配置
-├── package.json             # 前端依赖
-├── tsconfig.json            # TypeScript 配置
-└── README.md                # 项目说明
+├── app/
+├── server/
+├── docs/
+├── public/
+├── package.json
+└── README.md
 ```
 
 ---
 
 ## 🔒 安全性说明
 
-### 加密流程
-
-1. **客户端加密**
-   - 用户提交反馈时，使用 AES-256-GCM 加密内容
-   - 生成随机 IV（初始化向量）
-   - 加密后的内容传输到服务器
-
-2. **服务器存储**
-   - 服务器只存储加密后的内容
-   - 即使数据库泄露，也无法解密查看原始内容
-
-3. **管理员查看**
-   - 管理员只能看到加密内容（base64 编码）
-   - 所有查看和操作都被记录到日志
-
-### 防偷看机制
-
-- ✅ 记录所有管理员操作
-- ✅ 操作日志不可删除
-- ✅ IP 地址和时间戳记录
-- ✅ 定期审计日志
-
----
-
-## 🧪 测试
-
-```bash
-# 运行单元测试
-npm test
-
-# 运行 E2E 测试
-npm run test:e2e
-
-# 生成测试覆盖率报告
-npm run test:coverage
-```
-
----
-
-## 📊 性能优化
-
-- ✅ React 18 并发渲染
-- ✅ Next.js 自动代码分割
-- ✅ 图片懒加载
-- ✅ API 响应缓存
-- ✅ 数据库查询优化
-- ✅ Gzip 压缩
+- ✅ 客户端加密
+- ✅ 服务器仅存储加密内容
+- ✅ 管理员操作可审计
+- ✅ 防偷看机制
 
 ---
 
@@ -354,26 +205,13 @@ npm run test:coverage
 
 ## 🤝 贡献指南
 
-我们欢迎所有形式的贡献！
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
-
-### 开发规范
-
-- 遵循 ESLint 配置
-- 添加单元测试
-- 更新相关文档
-- 遵循 Conventional Commits 规范
+欢迎 Fork、提 Issue、提 PR。
 
 ---
 
 ## 📄 许可证
 
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
+本项目采用 MIT 许可证 - 详见 `LICENSE`
 
 ---
 
@@ -389,10 +227,10 @@ npm run test:coverage
 
 ## 🙏 致谢
 
-- [Next.js](https://nextjs.org/) - React 框架
-- [Express](https://expressjs.com/) - Web 框架
-- [Crypto-JS](https://cryptojs.gitbook.io/) - 加密库
-- [Better SQLite3](https://github.com/WiseLibs/better-sqlite3) - SQLite 驱动
+- [Next.js](https://nextjs.org/)
+- [Express](https://expressjs.com/)
+- [Crypto-JS](https://cryptojs.gitbook.io/)
+- [Better SQLite3](https://github.com/WiseLibs/better-sqlite3)
 
 ---
 
@@ -400,7 +238,6 @@ npm run test:coverage
 
 - 项目主页: [https://github.com/HachikoJ/anonyproof](https://github.com/HachikoJ/anonyproof)
 - 问题反馈: [GitHub Issues](https://github.com/HachikoJ/anonyproof/issues)
-- 邮箱: your-email@example.com
 
 ---
 
@@ -420,23 +257,13 @@ npm run test:coverage
 
 ---
 
-<div align="center">
-
 ## ☕ 觉得有用？请我喝杯咖啡！
 
 如果 AnonyProof 对你有帮助，欢迎直接扫码支持：
 
-**💬 作者微信（广东 深圳）**
-
-![作者微信二维码](docs/images/author-wechat-qr.jpg)
-
-**🟢 微信收款码**
-
-![微信收款码](docs/images/wechat-payment-qr.jpg)
-
-**🔵 支付宝收款码**
-
-![支付宝收款码](docs/images/alipay-payment-qr.jpg)
+| 作者微信 | 微信收款码 | 支付宝收款码 |
+|---|---|---|
+| ![作者微信二维码](docs/images/author-wechat-qr.jpg) | ![微信收款码](docs/images/wechat-payment-qr.jpg) | ![支付宝收款码](docs/images/alipay-payment-qr.jpg) |
 
 或者给个项目 Star ⭐
 
