@@ -93,8 +93,15 @@
         .screenshots h2 {
             text-align: center;
             font-size: 2.5rem;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
             color: #1d1d1f;
+        }
+        
+        .screenshots .subtitle {
+            text-align: center;
+            color: #86868b;
+            margin-bottom: 50px;
+            font-size: 1.1rem;
         }
         
         .screenshot-grid {
@@ -120,6 +127,7 @@
             height: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: block;
         }
         
         .screenshot-item p {
@@ -127,6 +135,17 @@
             text-align: center;
             font-weight: 600;
             color: #1d1d1f;
+            font-size: 1rem;
+        }
+        
+        .screenshot-item .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 8px;
         }
         
         .cta {
@@ -331,22 +350,27 @@
     <div class="screenshots">
         <div class="container">
             <h2>📸 界面展示</h2>
+            <p class="subtitle">真实应用界面截图，功能一目了然</p>
             <div class="screenshot-grid">
                 <div class="screenshot-item">
-                    <img src="./screenshots/user-home.jpg" alt="用户端主页 - 反馈提交">
-                    <p>用户端主页（电脑版）- 反馈提交</p>
-                </div>
-                <div class="screenshot-item">
-                    <img src="./screenshots/cc986338-f959-481c-bb1e-782ccb8c48a0.jpg" alt="用户端 - 我的反馈">
-                    <p>用户端 - 我的反馈列表</p>
+                    <img src="./screenshots/user-home.jpg" alt="用户端主页 - 反馈提交页面">
+                    <p>用户端主页</p>
+                    <span class="badge">💻 桌面版</span>
                 </div>
                 <div class="screenshot-item">
                     <img src="./screenshots/admin-dashboard.jpg" alt="管理端仪表板">
-                    <p>管理端 - 数据仪表板（电脑版）</p>
+                    <p>管理端仪表板</p>
+                    <span class="badge">💻 桌面版</span>
                 </div>
                 <div class="screenshot-item">
                     <img src="./screenshots/admin-feedbacks.jpg" alt="管理端反馈列表">
-                    <p>管理端 - 反馈管理列表</p>
+                    <p>管理端反馈列表</p>
+                    <span class="badge">💻 桌面版</span>
+                </div>
+                <div class="screenshot-item">
+                    <img src="./screenshots/notifications.jpg" alt="通知中心">
+                    <p>通知中心</p>
+                    <span class="badge">💻 桌面版</span>
                 </div>
             </div>
         </div>
