@@ -3,28 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AnonyProof - 匿证 | 完全匿名的端到端加密反馈平台</title>
-  <meta name="description" content="完全匿名·端到端加密·防偷看机制 - 现代化的匿名反馈平台" />
+  <title>匿证 | 完全匿名的端到端加密反馈平台</title>
+  <meta name="description" content="匿证 - 完全匿名·端到端加密·防偷看机制的反馈平台" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --bg: #020617;
-      --bg-2: #0f172a;
-      --panel: rgba(15, 23, 42, 0.72);
-      --panel-soft: rgba(255, 255, 255, 0.04);
-      --card: rgba(9, 15, 28, 0.78);
-      --card-light: rgba(15, 23, 42, 0.82);
+      --card: rgba(8, 14, 28, 0.86);
+      --card-2: rgba(15, 23, 42, 0.82);
       --border: rgba(148, 163, 184, 0.16);
-      --border-strong: rgba(99, 102, 241, 0.34);
+      --border-strong: rgba(96, 165, 250, 0.36);
       --text: #e5eefb;
       --muted: #94a3b8;
       --muted-2: #cbd5e1;
-      --primary: #7c3aed;
-      --primary-2: #2563eb;
+      --primary: #2563eb;
+      --primary-2: #7c3aed;
       --cyan: #22d3ee;
       --green: #34d399;
-      --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+      --shadow: 0 24px 60px rgba(2, 6, 23, 0.42);
       --shadow-hover: 0 28px 80px rgba(37, 99, 235, 0.18);
     }
     html { scroll-behavior: smooth; }
@@ -33,10 +30,9 @@
       line-height: 1.6;
       color: var(--text);
       background:
-        radial-gradient(circle at 10% 10%, rgba(37,99,235,.18), transparent 22%),
-        radial-gradient(circle at 90% 12%, rgba(124,58,237,.18), transparent 24%),
-        radial-gradient(circle at 50% 100%, rgba(34,211,238,.10), transparent 32%),
-        linear-gradient(180deg, #020617 0%, #081122 22%, #0b1324 52%, #020617 100%);
+        radial-gradient(circle at 12% 10%, rgba(37,99,235,.18), transparent 22%),
+        radial-gradient(circle at 88% 12%, rgba(124,58,237,.18), transparent 24%),
+        linear-gradient(180deg, #020617 0%, #081120 28%, #0a1426 60%, #020617 100%);
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -46,14 +42,14 @@
       inset: 0;
       pointer-events: none;
       background-image:
-        linear-gradient(rgba(148,163,184,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(148,163,184,.06) 1px, transparent 1px);
-      background-size: 32px 32px;
-      mask-image: radial-gradient(circle at center, black 35%, transparent 88%);
-      opacity: .28;
+        linear-gradient(rgba(148,163,184,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,.05) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: radial-gradient(circle at center, black 32%, transparent 86%);
+      opacity: .22;
     }
     a { color: inherit; }
-    .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
     .hero {
       position: relative;
       min-height: 100vh;
@@ -67,9 +63,9 @@
       content: "";
       position: absolute;
       border-radius: 999px;
-      filter: blur(60px);
-      opacity: .65;
+      filter: blur(70px);
       pointer-events: none;
+      opacity: .58;
     }
     .hero::before {
       width: 360px;
@@ -81,16 +77,16 @@
     .hero::after {
       width: 420px;
       height: 420px;
+      top: 18%;
       right: -120px;
-      top: 14%;
-      background: rgba(124,58,237,.24);
+      background: rgba(124,58,237,.22);
     }
     .navbar {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      z-index: 5;
+      z-index: 10;
       padding: 22px 0;
     }
     .nav-inner {
@@ -113,7 +109,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, rgba(37,99,235,.22), rgba(124,58,237,.26));
+      background: linear-gradient(135deg, rgba(37,99,235,.24), rgba(124,58,237,.24));
       border: 1px solid rgba(255,255,255,.08);
       box-shadow: 0 10px 30px rgba(37,99,235,.18);
     }
@@ -133,13 +129,10 @@
       z-index: 1;
       width: 100%;
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 38px;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 34px;
       align-items: center;
-      padding: 110px 0 80px;
-    }
-    .hero-copy {
-      max-width: 680px;
+      padding: 112px 0 84px;
     }
     .eyebrow {
       display: inline-flex;
@@ -147,31 +140,31 @@
       gap: 10px;
       padding: 10px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(96, 165, 250, 0.18);
-      background: rgba(15, 23, 42, 0.46);
-      backdrop-filter: blur(14px);
+      border: 1px solid rgba(96,165,250,.18);
+      background: rgba(15,23,42,.46);
       color: #c4d7ff;
-      font-size: .92rem;
-      margin-bottom: 20px;
+      font-size: .9rem;
+      margin-bottom: 18px;
+      backdrop-filter: blur(14px);
     }
     .hero-copy h1 {
-      font-size: clamp(3rem, 6vw, 5.3rem);
+      font-size: clamp(3rem, 6vw, 5.1rem);
       line-height: .96;
       letter-spacing: -0.05em;
       font-weight: 900;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
-    .hero-copy .lead {
-      font-size: 1.14rem;
+    .hero-copy p {
+      font-size: 1.06rem;
       color: var(--muted-2);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       max-width: 620px;
     }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 28px;
+      margin-top: 26px;
     }
     .btn {
       display: inline-flex;
@@ -183,42 +176,33 @@
       text-decoration: none;
       font-weight: 700;
       border: 1px solid transparent;
-      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
     }
     .btn-primary {
       color: white;
-      background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
-      box-shadow: 0 20px 44px rgba(37, 99, 235, 0.28);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      box-shadow: 0 18px 42px rgba(37,99,235,.28);
     }
     .btn-secondary {
       color: #e2e8f0;
       background: rgba(255,255,255,.04);
-      border-color: rgba(148,163,184,.18);
+      border-color: rgba(148,163,184,.16);
       backdrop-filter: blur(12px);
     }
-    .btn:hover {
-      transform: translateY(-3px);
-    }
-    .btn-primary:hover {
-      box-shadow: 0 24px 56px rgba(124, 58, 237, 0.28);
-    }
-    .btn-secondary:hover {
-      border-color: rgba(99,102,241,.36);
-      background: rgba(255,255,255,.07);
-    }
+    .btn:hover { transform: translateY(-3px); }
     .hero-meta {
-      margin-top: 24px;
+      margin-top: 22px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
     .hero-chip {
-      padding: 10px 14px;
+      padding: 9px 14px;
       border-radius: 999px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(148,163,184,.14);
       color: #d7e3f4;
-      font-size: .92rem;
+      font-size: .9rem;
     }
     .hero-side {
       display: grid;
@@ -226,23 +210,79 @@
     }
     .terminal-card,
     .metric-card,
-    .signal-card {
+    .signal-card,
+    .feature,
+    .screenshot-item,
+    .support-item,
+    .tech-item,
+    .cta-card {
       position: relative;
-      background: linear-gradient(180deg, rgba(15,23,42,.84), rgba(2,6,23,.82));
+      background: linear-gradient(180deg, rgba(10,16,30,.9), rgba(4,8,20,.9));
       border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: 22px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
       overflow: hidden;
     }
     .terminal-card::before,
     .metric-card::before,
-    .signal-card::before {
+    .signal-card::before,
+    .feature::before,
+    .screenshot-item::before,
+    .support-item::before,
+    .tech-item::before,
+    .cta-card::before {
       content: "";
       position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(37,99,235,.08), transparent 36%, rgba(124,58,237,.08));
+      inset: -35%;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(96,165,250,.24), transparent 18%);
+      opacity: 0;
+      transition: opacity .22s ease;
       pointer-events: none;
+      z-index: 0;
+    }
+    .terminal-card:hover::before,
+    .metric-card:hover::before,
+    .signal-card:hover::before,
+    .feature:hover::before,
+    .screenshot-item:hover::before,
+    .support-item:hover::before,
+    .tech-item:hover::before,
+    .cta-card:hover::before {
+      opacity: 1;
+    }
+    .terminal-card,
+    .metric-card,
+    .signal-card,
+    .feature,
+    .screenshot-item,
+    .support-item,
+    .tech-item,
+    .cta-card {
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .terminal-card:hover,
+    .metric-card:hover,
+    .signal-card:hover,
+    .feature:hover,
+    .screenshot-item:hover,
+    .support-item:hover,
+    .tech-item:hover,
+    .cta-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-hover);
+    }
+    .terminal-head,
+    .terminal-body,
+    .metric-card > *,
+    .signal-card > *,
+    .feature > *,
+    .screenshot-item > *,
+    .support-item > *,
+    .tech-item > *,
+    .cta-card > * {
+      position: relative;
+      z-index: 1;
     }
     .terminal-head {
       display: flex;
@@ -251,63 +291,53 @@
       padding: 16px 18px 0;
     }
     .dots { display: flex; gap: 8px; }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.2);
-    }
+    .dot { width: 10px; height: 10px; border-radius: 999px; }
     .dot:nth-child(1) { background: #f87171; }
     .dot:nth-child(2) { background: #fbbf24; }
     .dot:nth-child(3) { background: #34d399; }
-    .terminal-label {
-      color: var(--muted);
-      font-size: .88rem;
-    }
+    .terminal-label { color: var(--muted); font-size: .86rem; }
     .terminal-body {
       padding: 18px;
       font-family: 'SFMono-Regular', Consolas, monospace;
-      font-size: .92rem;
+      font-size: .9rem;
       color: #d7e3f4;
     }
     .terminal-line { margin-bottom: 10px; }
     .terminal-line span { color: var(--cyan); }
-    .terminal-line strong { color: #fff; font-weight: 700; }
+    .terminal-line strong { color: #fff; }
     .hero-lower {
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
+      grid-template-columns: 1.08fr .92fr;
       gap: 16px;
     }
     .metric-card,
-    .signal-card {
-      padding: 20px;
-    }
+    .signal-card { padding: 18px; }
     .metric-card h3,
     .signal-card h3 {
-      font-size: .92rem;
+      font-size: .88rem;
       letter-spacing: .08em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      gap: 12px;
     }
     .metric {
       padding: 14px;
-      border-radius: 18px;
+      border-radius: 16px;
       background: rgba(255,255,255,.03);
       border: 1px solid rgba(148,163,184,.1);
     }
     .metric strong {
       display: block;
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       color: #fff;
       margin-bottom: 4px;
     }
-    .metric span { color: var(--muted); font-size: .88rem; }
+    .metric span { color: var(--muted); font-size: .86rem; }
     .signal-card ul {
       list-style: none;
       display: grid;
@@ -315,132 +345,86 @@
     }
     .signal-card li {
       display: flex;
-      align-items: flex-start;
       gap: 12px;
       color: var(--muted-2);
-      font-size: .94rem;
+      font-size: .92rem;
     }
-    .signal-card i {
-      color: var(--green);
-      margin-top: 4px;
-    }
-    section {
-      position: relative;
-      padding: 82px 0;
-    }
+    .signal-card i { color: var(--green); margin-top: 4px; }
+    section { padding: 76px 0; }
     .section-head {
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 28px;
+      gap: 18px;
+      margin-bottom: 24px;
     }
     .section-head h2 {
-      font-size: clamp(2rem, 3vw, 2.9rem);
+      font-size: clamp(1.9rem, 3vw, 2.7rem);
       letter-spacing: -0.04em;
       margin-bottom: 8px;
     }
     .section-head p {
       color: var(--muted);
-      max-width: 640px;
-      font-size: 1rem;
+      max-width: 560px;
+      font-size: .96rem;
     }
     .section-kicker {
       color: #7dd3fc;
-      font-size: .84rem;
+      font-size: .8rem;
       letter-spacing: .14em;
       text-transform: uppercase;
       font-weight: 800;
     }
     .features-grid,
     .screenshot-grid,
-    .support-grid {
+    .support-grid,
+    .tech-grid {
       display: grid;
       gap: 18px;
     }
-    .features-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .features-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
     .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
-    .support-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tech-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
     .feature,
-    .screenshot-item,
-    .support-item,
-    .tech-item {
-      position: relative;
-      background: linear-gradient(180deg, rgba(8, 14, 28, 0.88), rgba(4, 8, 20, 0.88));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
-      overflow: hidden;
-    }
-    .feature:hover,
-    .screenshot-item:hover,
-    .support-item:hover,
-    .tech-item:hover {
-      transform: translateY(-6px);
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-hover);
-    }
-    .feature,
-    .support-item { padding: 22px; }
-    .feature {
-      min-height: 220px;
-    }
-    .feature::before,
-    .screenshot-item::before,
-    .support-item::before,
-    .tech-item::before {
-      content: "";
-      position: absolute;
-      inset: -30%;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(96,165,250,.16), transparent 22%);
-      opacity: 0;
-      transition: opacity .28s ease;
-      pointer-events: none;
-    }
-    .feature:hover::before,
-    .screenshot-item:hover::before,
-    .support-item:hover::before,
-    .tech-item:hover::before {
-      opacity: 1;
-    }
+    .support-item { padding: 20px; }
+    .feature { min-height: 190px; }
     .feature-icon {
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       border-radius: 16px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(124,58,237,.18));
       border: 1px solid rgba(99,102,241,.22);
-      margin-bottom: 16px;
-      font-size: 1.35rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+      margin-bottom: 14px;
+      font-size: 1.28rem;
     }
     .feature h3,
     .screenshot-item h4,
     .support-item h4 {
-      font-size: 1.04rem;
+      font-size: 1rem;
       margin-bottom: 8px;
       color: #f8fbff;
     }
     .feature p,
     .screenshot-item p,
-    .support-item p,
-    .tech-note {
+    .support-item p {
       color: var(--muted);
-      font-size: .94rem;
+      font-size: .9rem;
     }
     .section-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin: 34px 0 16px;
-      padding-top: 6px;
+      margin: 30px 0 14px;
     }
     .section-title strong {
-      font-size: 1.1rem;
+      font-size: 1.04rem;
       color: #fff;
       letter-spacing: -.02em;
     }
@@ -453,24 +437,11 @@
       background: rgba(37,99,235,.14);
       border: 1px solid rgba(96,165,250,.22);
       color: #bfdbfe;
-      font-size: .82rem;
+      font-size: .8rem;
       font-weight: 700;
     }
     .screenshot-item {
       padding: 14px;
-      overflow: hidden;
-    }
-    .screenshot-item::after,
-    .support-item::after,
-    .feature::after {
-      content: "";
-      position: absolute;
-      inset: auto -20% -50% auto;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, rgba(37,99,235,.18), transparent 72%);
-      pointer-events: none;
-      opacity: .55;
     }
     .screenshot-top {
       display: flex;
@@ -479,6 +450,8 @@
       gap: 10px;
       margin-bottom: 12px;
       padding: 0 2px;
+      position: relative;
+      z-index: 1;
     }
     .shot-index {
       width: 34px;
@@ -490,13 +463,12 @@
       background: linear-gradient(135deg, rgba(34,211,238,.16), rgba(37,99,235,.18));
       border: 1px solid rgba(34,211,238,.2);
       color: #a5f3fc;
-      font-size: .88rem;
+      font-size: .86rem;
       font-weight: 800;
-      flex-shrink: 0;
     }
     .shot-type {
       color: #93c5fd;
-      font-size: .78rem;
+      font-size: .76rem;
       letter-spacing: .1em;
       text-transform: uppercase;
       font-weight: 700;
@@ -508,67 +480,45 @@
       display: block;
       border-radius: 18px;
       border: 1px solid rgba(148,163,184,.1);
-      box-shadow: 0 18px 34px rgba(2,6,23,.3);
-      margin-bottom: 14px;
-      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+      box-shadow: 0 16px 30px rgba(2,6,23,.28);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
     }
     .screenshot-item:hover img,
     .support-item:hover img {
-      transform: translateY(-2px) scale(1.015);
+      transform: translateY(-2px) scale(1.014);
       border-color: rgba(96,165,250,.24);
-      box-shadow: 0 24px 40px rgba(37,99,235,.18);
+      box-shadow: 0 22px 38px rgba(37,99,235,.18);
     }
     .support-item {
       text-align: center;
       padding: 18px;
-      backdrop-filter: blur(14px);
-    }
-    .support-item p { min-height: 48px; }
-    .tech-stack { padding-top: 44px; }
-    .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 14px;
     }
     .tech-item {
-      padding: 16px 18px;
+      padding: 14px 12px;
       text-align: center;
       font-weight: 700;
       color: #e2e8f0;
+      font-size: .92rem;
     }
     .cta-card {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, rgba(15,23,42,.9) 0%, rgba(30,41,59,.92) 45%, rgba(76,29,149,.92) 100%);
-      border: 1px solid rgba(99,102,241,.24);
-      border-radius: 30px;
-      padding: 48px 28px;
+      padding: 42px 26px;
       text-align: center;
-      box-shadow: var(--shadow);
-    }
-    .cta-card::before {
-      content: "";
-      position: absolute;
-      width: 260px;
-      height: 260px;
-      border-radius: 999px;
-      right: -80px;
-      top: -120px;
-      background: radial-gradient(circle, rgba(34,211,238,.2), transparent 68%);
-      pointer-events: none;
     }
     .cta-card h2 {
-      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-size: clamp(2rem, 3vw, 2.6rem);
       letter-spacing: -0.04em;
       margin-bottom: 10px;
     }
     .cta-card p {
       color: var(--muted-2);
-      max-width: 700px;
-      margin: 0 auto 24px;
+      max-width: 620px;
+      margin: 0 auto 22px;
     }
     footer {
-      padding: 32px 20px 56px;
+      padding: 30px 20px 52px;
       text-align: center;
       color: #64748b;
       border-top: 1px solid rgba(148,163,184,.08);
@@ -578,18 +528,23 @@
       color: #93c5fd;
       text-decoration: none;
     }
+    @media (max-width: 1100px) {
+      .features-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .tech-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
     @media (max-width: 980px) {
       .nav-links { display: none; }
       .hero-grid,
-      .hero-lower {
-        grid-template-columns: 1fr;
-      }
+      .hero-lower,
+      .support-grid { grid-template-columns: 1fr; }
       .hero { min-height: auto; }
       .features-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tech-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
     @media (max-width: 768px) {
       .container { padding: 0 18px; }
-      .hero-grid { padding: 104px 0 64px; }
+      .hero-grid { padding: 102px 0 60px; }
       .section-head,
       .section-title {
         flex-direction: column;
@@ -613,7 +568,7 @@
       <div class="container nav-inner">
         <div class="brand">
           <span class="brand-mark"><i class="fa-solid fa-shield-halved"></i></span>
-          <span>AnonyProof</span>
+          <span>匿证</span>
         </div>
         <nav class="nav-links">
           <a href="#features">核心能力</a>
@@ -628,9 +583,9 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow"><i class="fa-solid fa-sparkles"></i> Product-grade anonymous feedback system</div>
-          <h1>匿名反馈，也可以做得像一款成熟产品。</h1>
-          <p class="lead">AnonyProof 把匿名提交、隐私保护、通知中心、状态跟进与双向沟通整合进一套轻量系统里，让反馈不再石沉大海。</p>
-          <p class="lead">适用于校园、企业、团队、社群或任何需要安全反馈机制的场景。</p>
+          <h1>匿证，让匿名反馈更安全，也更像一款成熟产品。</h1>
+          <p>匿名提交、通知中心、状态跟进、双向沟通，一套轻量闭环全部打通。</p>
+          <p>适用于校园、企业、团队、社群等需要安全反馈机制的场景。</p>
           <div class="hero-actions">
             <a href="https://github.com/HachikoJ/anonyproof" class="btn btn-primary"><i class="fab fa-github"></i> 查看源码</a>
             <a href="#screens" class="btn btn-secondary"><i class="fa-regular fa-image"></i> 浏览界面</a>
@@ -650,10 +605,10 @@
               <div class="terminal-label">system overview</div>
             </div>
             <div class="terminal-body">
+              <div class="terminal-line"><span>$</span> product <strong>匿证</strong></div>
               <div class="terminal-line"><span>$</span> mode <strong>anonymous</strong></div>
               <div class="terminal-line"><span>$</span> encryption <strong>AES-256</strong></div>
-              <div class="terminal-line"><span>$</span> feedback status <strong>tracked</strong></div>
-              <div class="terminal-line"><span>$</span> notification flow <strong>enabled</strong></div>
+              <div class="terminal-line"><span>$</span> notification <strong>enabled</strong></div>
             </div>
           </div>
           <div class="hero-lower">
@@ -669,9 +624,9 @@
             <div class="signal-card">
               <h3>Flow Signals</h3>
               <ul>
-                <li><i class="fa-solid fa-circle-check"></i><span>支持通知、评论与状态推进</span></li>
-                <li><i class="fa-solid fa-circle-check"></i><span>适合快速部署上线</span></li>
-                <li><i class="fa-solid fa-circle-check"></i><span>界面轻量但具备完整闭环</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>通知、评论、状态推进一体化</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>可快速部署上线</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>轻量但闭环完整</span></li>
               </ul>
             </div>
           </div>
@@ -685,17 +640,17 @@
       <div class="section-head">
         <div>
           <div class="section-kicker">Core Features</div>
-          <h2>不只是匿名，更是完整反馈闭环</h2>
+          <h2>核心能力</h2>
         </div>
-        <p>从内容提交、状态变化到管理员回复与通知触达，整套体验围绕“反馈被认真处理”来设计。</p>
+        <p>围绕匿名、安全、通知与跟进体验打造。</p>
       </div>
       <div class="features-grid">
-        <div class="feature"><div class="feature-icon">🔒</div><h3>完全匿名</h3><p>无需注册登录，尽量减少额外身份暴露与使用门槛。</p></div>
-        <div class="feature"><div class="feature-icon">🛡️</div><h3>端到端加密</h3><p>在客户端完成加密处理，降低反馈内容暴露风险。</p></div>
-        <div class="feature"><div class="feature-icon">👁️</div><h3>可审计操作</h3><p>管理操作留痕，让后台处理过程更透明、更可追踪。</p></div>
-        <div class="feature"><div class="feature-icon">💬</div><h3>双向沟通</h3><p>支持评论与追加说明，让处理过程不止停留在单次提交。</p></div>
-        <div class="feature"><div class="feature-icon">🔔</div><h3>通知中心</h3><p>新消息与状态更新可快速直达，减少重复确认成本。</p></div>
-        <div class="feature"><div class="feature-icon">📱</div><h3>多端适配</h3><p>桌面与移动端都保持清晰、轻量且可用的交互体验。</p></div>
+        <div class="feature"><div class="feature-icon">🔒</div><h3>完全匿名</h3><p>无需注册登录，降低身份暴露风险。</p></div>
+        <div class="feature"><div class="feature-icon">🛡️</div><h3>端到端加密</h3><p>反馈内容在客户端完成加密处理。</p></div>
+        <div class="feature"><div class="feature-icon">👁️</div><h3>可审计操作</h3><p>管理操作留痕，处理过程更透明。</p></div>
+        <div class="feature"><div class="feature-icon">💬</div><h3>双向沟通</h3><p>支持评论与追加说明，反馈不止提交一次。</p></div>
+        <div class="feature"><div class="feature-icon">🔔</div><h3>通知中心</h3><p>新消息与状态变化及时可见。</p></div>
+        <div class="feature"><div class="feature-icon">📱</div><h3>多端适配</h3><p>桌面与移动端都保持轻量好用。</p></div>
       </div>
     </div>
   </section>
@@ -707,7 +662,7 @@
           <div class="section-kicker">Interface Showcase</div>
           <h2>界面预览</h2>
         </div>
-        <p>管理端强调效率，用户端强调安全与跟进体验，整体风格统一但角色分明。</p>
+        <p>管理端强调效率，用户端强调安全与跟进体验。</p>
       </div>
 
       <div class="section-title">
@@ -722,7 +677,7 @@
           </div>
           <img src="./images/admin-homepage.jpg" alt="管理端主页" />
           <h4>管理端主页</h4>
-          <p>集中查看反馈总览、状态筛选、搜索与导出，处理入口更聚焦。</p>
+          <p>总览、筛选、搜索与导出集中在一屏内。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
@@ -731,7 +686,7 @@
           </div>
           <img src="./images/admin-comment-page.jpg" alt="管理端评论页" />
           <h4>管理端评论页</h4>
-          <p>围绕单条反馈进行方案记录、持续跟进与上下文清晰的沟通。</p>
+          <p>围绕单条反馈持续跟进与沟通。</p>
         </div>
       </div>
 
@@ -747,7 +702,7 @@
           </div>
           <img src="./images/user-home-with-notifications-desktop.jpg" alt="用户端带通知电脑版主页" />
           <h4>首页与通知中心</h4>
-          <p>反馈入口与通知面板同屏呈现，新动态无需来回切换也能看到。</p>
+          <p>反馈入口与通知面板同屏呈现。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
@@ -756,7 +711,7 @@
           </div>
           <img src="./images/user-feedbacks-desktop.jpg" alt="用户端我的反馈页电脑版" />
           <h4>我的反馈</h4>
-          <p>支持按分类、状态与关键词筛选，更快定位需要继续关注的内容。</p>
+          <p>支持分类、状态与关键词筛选。</p>
         </div>
       </div>
 
@@ -772,7 +727,7 @@
           </div>
           <img src="./images/user-home-mobile.jpg" alt="用户端主页移动版" />
           <h4>移动端首页</h4>
-          <p>在手机上也能快速完成反馈提交与查看，路径简洁直接。</p>
+          <p>在手机上也能快速完成反馈提交与查看。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
@@ -781,7 +736,7 @@
           </div>
           <img src="./images/user-notification-detail-mobile.jpg" alt="用户端通知详情页移动版" />
           <h4>通知详情</h4>
-          <p>未读、已读与状态变化集中呈现，点击后可快速进入相关内容。</p>
+          <p>未读、已读与状态变化集中呈现。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
@@ -790,7 +745,7 @@
           </div>
           <img src="./images/user-feedback-detail-mobile.jpg" alt="用户端反馈详情页移动版" />
           <h4>反馈详情</h4>
-          <p>反馈内容、处理进展、评论互动与管理员回复都能完整查看。</p>
+          <p>完整查看反馈内容、处理进展与回复。</p>
         </div>
       </div>
     </div>
@@ -803,23 +758,23 @@
           <div class="section-kicker">Contact & Support</div>
           <h2>联系与支持</h2>
         </div>
-        <p>欢迎交流项目、讨论部署，也欢迎通过赞赏支持这个项目继续打磨。</p>
+        <p>交流项目，或通过赞赏支持匿证继续迭代。</p>
       </div>
       <div class="support-grid">
         <div class="support-item">
           <img src="./images/author-wechat-qr.jpg" alt="作者微信二维码" />
           <h4>作者微信</h4>
-          <p>Wilson · 广东深圳 · 备注 AnonyProof 或项目咨询</p>
+          <p>Wilson · 广东深圳</p>
         </div>
         <div class="support-item">
           <img src="./images/wechat-payment-qr.jpg" alt="微信收款码" />
           <h4>微信收款码</h4>
-          <p>支持作者继续迭代体验、功能与整体产品完成度。</p>
+          <p>支持匿证继续打磨体验与功能。</p>
         </div>
         <div class="support-item">
           <img src="./images/alipay-payment-qr.jpg" alt="支付宝收款码" />
           <h4>支付宝收款码</h4>
-          <p>如果这个项目对你有帮助，欢迎扫码支持。</p>
+          <p>如果这个项目对你有帮助，欢迎支持。</p>
         </div>
       </div>
     </div>
@@ -832,7 +787,7 @@
           <div class="section-kicker">Stack</div>
           <h2>技术栈</h2>
         </div>
-        <p>以现代前端栈和轻量后端组合为基础，保持开发效率、部署简洁与可维护性。</p>
+        <p>现代前端栈 + 轻量后端组合。</p>
       </div>
       <div class="tech-grid">
         <div class="tech-item">Next.js 14</div>
@@ -850,8 +805,8 @@
     <div class="container">
       <div class="cta-card">
         <div class="section-kicker" style="margin-bottom:10px;">Get Started</div>
-        <h2>快速部署一套真正可用的匿名反馈系统</h2>
-        <p>开源、轻量、清晰，适合直接部署，也适合作为匿名沟通场景的产品原型与基础设施。</p>
+        <h2>快速部署匿证</h2>
+        <p>开源、轻量、清晰，适合直接部署上线。</p>
         <div class="hero-actions" style="justify-content:center; margin-top: 0;">
           <a href="https://github.com/HachikoJ/anonyproof#-快速开始" class="btn btn-primary">查看文档</a>
           <a href="https://github.com/HachikoJ/anonyproof/blob/main/docs/DEPLOYMENT.md" class="btn btn-secondary">部署指南</a>
@@ -861,20 +816,25 @@
   </section>
 
   <footer>
-    <p>本项目完全独立开发，采用 Vibe Coding 方式打造。</p>
+    <p>匿证 · 完全独立开发 · Vibe Coding</p>
     <p>Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a> · 广东 深圳</p>
   </footer>
 
   <script>
-    const glowCards = document.querySelectorAll('.feature, .screenshot-item, .support-item, .tech-item');
+    const interactiveCards = document.querySelectorAll('.terminal-card, .metric-card, .signal-card, .feature, .screenshot-item, .support-item, .tech-item, .cta-card');
 
-    glowCards.forEach((card) => {
+    interactiveCards.forEach((card) => {
       card.addEventListener('mousemove', (event) => {
         const rect = card.getBoundingClientRect();
         const x = ((event.clientX - rect.left) / rect.width) * 100;
         const y = ((event.clientY - rect.top) / rect.height) * 100;
         card.style.setProperty('--mx', `${x}%`);
         card.style.setProperty('--my', `${y}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--mx', '50%');
+        card.style.setProperty('--my', '50%');
       });
     });
   </script>
