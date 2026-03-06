@@ -37,6 +37,12 @@
       font-weight: 700;
       box-shadow: 0 10px 20px rgba(102,126,234,.3);
       margin: 8px;
+      transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+    }
+    .btn:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 16px 30px rgba(102,126,234,.35);
+      opacity: .98;
     }
     .features, .screenshots, .support, .tech-stack, .cta {
       background: white;
@@ -48,13 +54,19 @@
       gap: 30px;
     }
     .features-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-    .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+    .screenshot-grid { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
     .support-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     .feature, .screenshot-item, .support-item {
       background: #f7f8fb;
       border-radius: 20px;
-      padding: 24px;
+      padding: 22px;
       box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      transition: transform .28s ease, box-shadow .28s ease, background-color .28s ease;
+    }
+    .feature:hover, .screenshot-item:hover, .support-item:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+      background: #fbfcff;
     }
     .feature-icon { font-size: 2.6rem; margin-bottom: 16px; }
     .feature h3, .screenshot-item h4, .support-item h4 { color: #1d1d1f; margin-bottom: 10px; }
@@ -88,6 +100,11 @@
       height: auto;
       border-radius: 14px;
       box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .screenshot-item:hover img, .support-item:hover img {
+      transform: scale(1.02);
+      box-shadow: 0 12px 28px rgba(0,0,0,.14);
     }
     .tech-items {
       display: flex;
@@ -178,17 +195,17 @@
         <div class="screenshot-item">
           <img src="./images/user-home-mobile.jpg" alt="用户端主页移动版" />
           <h4>用户端主页移动版</h4>
-          <p>移动端首页展示“匿证 - 匿名反馈平台”、通知铃铛、总反馈数 53、加密率 100%、数据泄露 0，以及“端到端加密 / 防偷看机制 / 设备绑定”等功能说明。</p>
+          <p>展示移动端首页、通知铃铛、反馈统计与安全机制说明。</p>
         </div>
         <div class="screenshot-item">
           <img src="./images/user-notification-detail-mobile.jpg" alt="用户端通知详情页移动版" />
           <h4>用户端通知详情页移动版</h4>
-          <p>通知中心显示未读通知（2）与已读通知（10），包含管理员回复、状态更新以及“标为已读”“查看详情”等操作入口。</p>
+          <p>展示通知中心、未读/已读状态与查看详情等操作入口。</p>
         </div>
         <div class="screenshot-item">
           <img src="./images/user-feedback-detail-mobile.jpg" alt="用户端反馈详情页移动版" />
           <h4>用户端反馈详情页移动版</h4>
-          <p>反馈详情页展示反馈类型、状态、提交内容、处理进展、评论区与管理员回复，完整体现反馈跟进流程。</p>
+          <p>展示反馈详情、处理进展、评论区与管理员回复。</p>
         </div>
       </div>
     </div>
