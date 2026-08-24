@@ -270,3 +270,15 @@ anonyproof/
 > 💡 **本项目完全由独立开发，未借鉴任何现有开源项目，采用 Vibe Coding 方式打造。**
 
 </div>
+
+---
+
+## 📢 加入交流群
+
+欢迎扫码加入微信交流群，一起交流使用经验、反馈问题：
+
+<p align="center">
+  <img src="docs/images/group-qr.jpg" alt="微信交流群二维码" width="260">
+</p>
+
+---
