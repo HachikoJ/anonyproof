@@ -475,13 +475,15 @@ export function seedDemoData(db: Database.Database) {
   seedAccessDemoData(db)
 }
 
-// 演示站点所有访客共用同一台“设备”，任何一次点开记录都会把未读状态写库清零，
-// 后续访客再打开页面就看不到通知提醒；因此每次下发演示配置时把演示收件人的未读状态恢复为种子默认值。
-export function resetDemoUserNotifications(db: Database.Database) {
+// 演示站点所有访客共用同一批演示数据，任何一个访客点开记录都会把未读状态写库清零，
+// 后续访客再打开页面就看不到通知提醒；因此每次打开演示页面时，
+// 把提交人和管理员的未读状态都恢复为种子默认值。
+export function resetDemoNotifications(db: Database.Database) {
   const result = db.prepare(`
     UPDATE notifications
     SET is_read = CASE WHEN created_at < ? THEN 1 ELSE 0 END
-    WHERE recipient_type = 'user' AND recipient_id IN (?, ?)
+    WHERE (recipient_type = 'user' AND recipient_id IN (?, ?))
+       OR (recipient_type = 'admin' AND recipient_id = 'admin')
   `).run(demoReadCutoff, DEMO_DEVICE_ID, DEMO_SECONDARY_DEVICE_ID)
 
   return result.changes

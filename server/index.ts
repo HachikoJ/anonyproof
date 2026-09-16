@@ -17,7 +17,7 @@ import {
   DEMO_DEVICE_ID,
   DEMO_NOTICE,
   isDemoMode,
-  resetDemoUserNotifications,
+  resetDemoNotifications,
   seedDemoData,
 } from './demo'
 
@@ -94,7 +94,7 @@ app.get('/api/demo/config', (_req, res) => {
   }
 
   // 演示数据由所有访客共用，这里恢复默认未读状态，保证每次打开页面都能看到通知提醒。
-  resetDemoUserNotifications(db)
+  resetDemoNotifications(db)
 
   return res.json({
     success: true,
@@ -197,10 +197,14 @@ app.post(['/api/admin/auth/login', '/api/admin/login'], (req, res) => {
   }
   loginAttempts.delete(ip)
   setSessionCookie(res, createSession())
+  // 演示模式下每次登录都恢复默认未读状态，让访客总能看到后台通知提醒。
+  if (demoMode) resetDemoNotifications(db)
   res.json({ success: true })
 })
 
 app.get(['/api/admin/auth/session', '/api/admin/session'], (req, res) => {
+  // 后台页面每次加载都会校验会话，这里同步恢复默认未读状态，效果与前端保持一致。
+  if (demoMode) resetDemoNotifications(db)
   const authenticated = validSession(getCookie(req, cookieName))
   if (authenticated) res.setHeader('Cache-Control', 'no-store')
   res.json({ authenticated })
