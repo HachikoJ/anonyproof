@@ -17,6 +17,7 @@ import {
   DEMO_DEVICE_ID,
   DEMO_NOTICE,
   isDemoMode,
+  resetDemoUserNotifications,
   seedDemoData,
 } from './demo'
 
@@ -91,6 +92,9 @@ app.get('/api/demo/config', (_req, res) => {
   if (!demoMode) {
     return res.json({ success: true, demoMode: false })
   }
+
+  // 演示数据由所有访客共用，这里恢复默认未读状态，保证每次打开页面都能看到通知提醒。
+  resetDemoUserNotifications(db)
 
   return res.json({
     success: true,
