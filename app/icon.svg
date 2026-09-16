@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="ap-icon-gradient" x1="88" y1="48" x2="424" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#667EEA"/>
+      <stop offset="0.58" stop-color="#5B6FE8"/>
+      <stop offset="1" stop-color="#764BA2"/>
+    </linearGradient>
+    <linearGradient id="ap-icon-accent" x1="276" y1="249" x2="326" y2="285" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A7F3D0"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+  </defs>
+  <path
+    fill="url(#ap-icon-gradient)"
+    d="M256 48C286 48 309 62 332 78C374 105 424 126 424 172C424 210 415 236 401 266C377 322 338 383 282 430C274 437 265 447 256 460C247 447 238 437 230 430C174 383 135 322 111 266C97 236 88 210 88 172C88 126 138 105 180 78C203 62 226 48 256 48Z"
+  />
+  <path
+    fill="#FFFFFF"
+    fill-opacity="0.98"
+    d="M161 166c0-25 20-45 45-45h100c25 0 45 20 45 45v108c0 25-20 45-45 45h-27l-23 28-23-28h-27c-25 0-45-20-45-45V166Z"
+  />
+  <g fill="none" stroke="url(#ap-icon-gradient)" stroke-linecap="round" stroke-width="14">
+    <path d="M207 226c0-36 19-59 49-59s49 23 49 59"/>
+    <path d="M224 239c0-33 14-52 32-52s32 19 32 52"/>
+    <path d="M241 251c0-26 7-40 15-40s15 14 15 40"/>
+  </g>
+  <path
+    fill="none"
+    stroke="url(#ap-icon-accent)"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="15"
+    d="m276 269 17 16 33-36"
+  />
+</svg>

@@ -2,6 +2,8 @@
 
 <div align="center">
 
+<img src="public/brand/anonyproof-logo.svg" alt="AnonyProof 匿证 Logo" width="520" />
+
 **完全匿名 · 端到端加密 · 防偷看机制**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

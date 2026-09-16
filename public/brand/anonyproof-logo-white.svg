@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 360" role="img" aria-labelledby="title desc">
+  <title id="title">AnonyProof 匿证反白横版标识</title>
+  <desc id="desc">用于深色背景的 AnonyProof 匿证横向组合标识。</desc>
+  <defs>
+    <linearGradient id="ap-white-logo-gradient" x1="88" y1="48" x2="424" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A5B4FC"/>
+      <stop offset="0.58" stop-color="#818CF8"/>
+      <stop offset="1" stop-color="#C4B5FD"/>
+    </linearGradient>
+    <linearGradient id="ap-white-logo-accent" x1="276" y1="249" x2="326" y2="285" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6EE7B7"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(36 30) scale(0.5859375)">
+    <path
+      fill="url(#ap-white-logo-gradient)"
+      d="M256 48C286 48 309 62 332 78C374 105 424 126 424 172C424 210 415 236 401 266C377 322 338 383 282 430C274 437 265 447 256 460C247 447 238 437 230 430C174 383 135 322 111 266C97 236 88 210 88 172C88 126 138 105 180 78C203 62 226 48 256 48Z"
+    />
+    <path
+      fill="#0F172A"
+      fill-opacity="0.98"
+      d="M161 166c0-25 20-45 45-45h100c25 0 45 20 45 45v108c0 25-20 45-45 45h-27l-23 28-23-28h-27c-25 0-45-20-45-45V166Z"
+    />
+    <g fill="none" stroke="url(#ap-white-logo-gradient)" stroke-linecap="round" stroke-width="14">
+      <path d="M207 226c0-36 19-59 49-59s49 23 49 59"/>
+      <path d="M224 239c0-33 14-52 32-52s32 19 32 52"/>
+      <path d="M241 251c0-26 7-40 15-40s15 14 15 40"/>
+    </g>
+    <path
+      fill="none"
+      stroke="url(#ap-white-logo-accent)"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="15"
+      d="m276 269 17 16 33-36"
+    />
+  </g>
+
+  <text
+    x="392"
+    y="166"
+    fill="#FFFFFF"
+    font-family="'Avenir Next', Inter, 'SF Pro Display', 'PingFang SC', sans-serif"
+    font-size="92"
+    font-weight="700"
+    letter-spacing="-3"
+  >Anony<tspan fill="#A5B4FC">Proof</tspan></text>
+  <text
+    x="399"
+    y="231"
+    fill="#E2E8F0"
+    font-family="'Avenir Next', 'PingFang SC', 'Noto Sans CJK SC', sans-serif"
+    font-size="38"
+    font-weight="600"
+    letter-spacing="10"
+  >匿证</text>
+  <text
+    x="401"
+    y="276"
+    fill="#94A3B8"
+    font-family="'Avenir Next', Inter, 'SF Pro Display', sans-serif"
+    font-size="14"
+    font-weight="700"
+    letter-spacing="3.1"
+  >ANONYMOUS FEEDBACK</text>
+</svg>
