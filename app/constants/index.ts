@@ -41,9 +41,6 @@ export const API_ENDPOINTS = {
   ADMIN_LOGS: '/anonyproof/api/admin/logs',
 }
 
-// 管理员密码（从环境变量读取，开发环境使用默认值）
-export const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'anonyproof_admin_2026'
-
 // 自动返回时间（毫秒）
 export const AUTO_RETURN_DELAY = 1000
 

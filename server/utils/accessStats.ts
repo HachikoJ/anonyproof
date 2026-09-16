@@ -1,9 +1,7 @@
 // 访问统计 API 工具
-import Database from 'better-sqlite3'
-import path from 'path'
+import { openDatabase } from './database'
 
-const dbPath = path.join(__dirname, '../../data/anonyproof.db')
-const db = new Database(dbPath)
+const db = openDatabase()
 
 // 获取访问统计概览
 export function getAccessStatsOverview() {

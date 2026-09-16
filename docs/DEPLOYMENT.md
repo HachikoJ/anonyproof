@@ -7,7 +7,7 @@
 ### 系统要求
 
 - **操作系统**: Linux (Ubuntu 20.04+, CentOS 7+, Debian 10+)
-- **Node.js**: >= 18.0.0
+- **Node.js**: 20 LTS
 - **内存**: >= 1GB
 - **磁盘**: >= 10GB
 - **域名**: 已注册域名（可选）
@@ -19,7 +19,7 @@
 sudo apt update && sudo apt upgrade -y
 
 # 安装 Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # 安装 PM2
@@ -65,12 +65,40 @@ nano .env.local
 
 **必须修改的配置**:
 ```env
-# 修改为强密码（至少16位，包含大小写字母、数字、特殊字符）
+# 演示部署可保持 1，正式上线前必须改为 0
+DEMO_MODE=1
+
+# 正式部署时修改为强密码（至少 12 位）
 ADMIN_PASSWORD=your_strong_password_here
+
+# 至少 32 位随机字符
+SESSION_SECRET=your_random_secret_at_least_32_characters
 
 # API Token（生产环境必须修改）
 API_TOKEN=your_api_token_here
+
+# 经 Nginx 等反向代理部署时启用
+TRUST_PROXY=1
 ```
+
+### 演示部署说明
+
+演示模式用于功能展示，管理员默认密码为 `demo12345678`。开启后：
+
+- 服务端会自动写入 7 条固定示例线索（覆盖企业、学校、组织等场景）及评论、通知、访问统计
+- 所有访客使用同一固定演示设备数据，用户端提交与后台处理记录可以联动展示
+- 登录页会明确显示演示密码和清理提醒
+- 需要一份只含演示数据的干净数据库时，把 `DATABASE_PATH` 指向新文件（例如 `./data/anonyproof-demo.db`），首次启动会建库并写入示例数据，原有 `./data/anonyproof.db` 不受影响
+
+**正式部署前必须关闭演示模式**：
+
+```env
+DEMO_MODE=0
+ADMIN_PASSWORD=your_real_strong_password
+SESSION_SECRET=your_real_random_secret_at_least_32_characters
+```
+
+修改后重启服务。关闭演示模式后，`demo12345678` 将不再可用，`/api/demo/config` 也不会返回演示密码。若数据库曾写入演示记录，正式上线前请根据实际需要单独清理 `data/anonyproof.db` 中的演示数据，不要直接删除包含真实提交的数据库。
 
 ### 4. 构建前端
 
@@ -81,11 +109,8 @@ npm run build
 ### 5. 启动服务
 
 ```bash
-# 使用 PM2 启动后端
-pm2 start server/index.ts --name anonyproof-backend --interpreter tsx
-
-# 使用 PM2 启动前端
-pm2 start npm --name anonyproof-frontend -- start
+# 使用项目内的 PM2 配置启动前后端
+npm run pm2:prod
 
 # 保存 PM2 配置
 pm2 save
@@ -120,14 +145,7 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 
-    # 匿证 API
-    location /api/ {
-        proxy_pass http://127.0.0.1:4000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
+    # /anonyproof/api 由 Next.js 转发到后端，无需额外暴露 4000 端口
 }
 ```
 
@@ -159,7 +177,7 @@ sudo certbot renew --dry-run
 ### 创建 Dockerfile
 
 ```dockerfile
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 

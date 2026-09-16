@@ -98,7 +98,7 @@ npm install --save winston
 ### 6. 生产环境配置（零风险）✅
 
 **创建文件**:
-- `ecosystem.config.prod.js` - PM2 生产配置
+- `ecosystem.prod.config.js` - PM2 生产配置
 
 **改进**:
 - ✅ 使用 `next start` 代替 `next dev`

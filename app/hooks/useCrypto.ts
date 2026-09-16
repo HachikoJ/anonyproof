@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'react'
+import { useDemoConfig } from './useDemoConfig'
 
 export function useCrypto() {
+  const { config: demoConfig, loading: demoConfigLoading } = useDemoConfig()
   const [deviceId, setDeviceId] = useState<string>('')
 
   useEffect(() => {
+    if (demoConfigLoading) return
+
     // 生成或获取设备 ID
-    let did = localStorage.getItem('anonyproof_device_id')
+    let did = demoConfig?.demoMode && demoConfig.deviceId
+      ? demoConfig.deviceId
+      : localStorage.getItem('anonyproof_device_id')
     if (!did) {
       // 使用兼容性更好的方法生成UUID
       did = 'device-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9)
       localStorage.setItem('anonyproof_device_id', did)
     }
     setDeviceId(did)
-  }, [])
+  }, [demoConfig, demoConfigLoading])
 
   // 加密函数 - 降级方案：如果Web Crypto API不可用，使用简单Base64编码
   const encrypt = async (content: string): Promise<string> => {

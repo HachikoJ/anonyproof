@@ -8,8 +8,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black)](https://nextjs.org/)
-[![Node](https://img.shields.io/badge/Node-%3E=18.0.0-green)](https://nodejs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-black)](https://nextjs.org/)
+[![Node](https://img.shields.io/badge/Node-20%20LTS-green)](https://nodejs.org/)
 
 [功能特性](#-功能特性) • [快速开始](#-快速开始) • [技术架构](#%EF%B8%8F-技术架构) • [部署指南](#-部署指南) • [贡献指南](#-贡献指南)
 
@@ -85,7 +85,7 @@
 ### 前端技术栈
 
 ```
-Next.js 14.2.5          - React 框架
+Next.js 16.3.3          - React 框架
 React 18.3.1            - UI 库
 TypeScript 5.0          - 类型安全
 Tailwind CSS            - 样式框架
@@ -96,7 +96,7 @@ Crypto-JS               - 客户端加密
 
 ```
 Express 5.2.1           - Web 框架
-Node.js 22+             - 运行环境
+Node.js 20 LTS          - 运行环境
 SQLite                  - 数据库
 better-sqlite3          - SQLite 驱动
 UUID                    - 唯一标识生成
@@ -124,7 +124,7 @@ Key Derivation          - 密钥派生
 
 ### 环境要求
 
-- Node.js >= 18.0.0
+- Node.js 20 LTS
 - npm >= 9.0.0
 - SQLite 3
 
@@ -155,8 +155,23 @@ npm run dev
 ```
 
 5. **访问应用**
-- 用户端: http://localhost:3000
-- 管理端: http://localhost:3000/foorpynona
+- 用户端: http://localhost:3000/anonyproof
+- 管理端: http://localhost:3000/anonyproof/foorpynona
+- 访问与风控: http://localhost:3000/anonyproof/access-stats
+
+### 演示模式
+
+`.env.example` 默认启用演示模式：
+
+```env
+DEMO_MODE=1
+```
+
+- 管理员演示密码：`demo12345678`
+- 系统会自动写入 7 条示例线索（覆盖企业、学校、组织等场景）及评论、通知、访问统计
+- 所有演示访客共享同一组用户端示例记录，便于联调用户端与管理端
+
+演示密码仅用于功能展示。正式部署前必须设置 `DEMO_MODE=0`，同时配置真实的 `ADMIN_PASSWORD` 和至少 32 位的 `SESSION_SECRET`；关闭演示模式后，`demo12345678` 立即失效。
 
 ---
 

@@ -1,1564 +1,990 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useRef } from 'react'
-import { useCrypto } from '../hooks/useCrypto'
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useDemoConfig } from "../hooks/useDemoConfig";
+import ExternalLinks from "../components/ExternalLinks";
+
+type Feedback = {
+  id: string;
+  category: "suggestion" | "complaint" | "report";
+  original_content: string;
+  device_id: string;
+  created_at: string;
+  status: "pending" | "in_progress" | "resolved" | "no_solution";
+  solution?: string;
+  unread_notifications?: number;
+};
+type Comment = {
+  id: number;
+  commenter_type: "user" | "admin";
+  content: string;
+  created_at: string;
+};
+type Notification = {
+  id: number;
+  feedback_id: string;
+  type: string;
+  title: string;
+  content: string;
+  created_at: string;
+  is_read: number;
+};
+type MessageTone = "info" | "success" | "error";
+
+const categoryLabels = {
+  suggestion: "建议",
+  complaint: "投诉",
+  report: "举报",
+};
+const statusLabels = {
+  pending: "待受理",
+  in_progress: "处理中",
+  resolved: "已办结",
+  no_solution: "暂无法处理",
+};
+
+class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status = 0) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+async function readApiJson(response: Response) {
+  if (response.status === 401) {
+    throw new ApiError("需要管理员登录", 401);
+  }
+  if (!response.headers.get("content-type")?.includes("application/json")) {
+    throw new ApiError("服务响应异常，请稍后重试", response.status);
+  }
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    throw new ApiError(data.error || "请求失败，请稍后重试", response.status);
+  }
+  return data;
+}
+
+function getRequestErrorMessage(error: unknown, fallback: string) {
+  return error instanceof ApiError && error.message
+    ? error.message
+    : fallback;
+}
+
+function syncFeedbackQuery(id: string | null) {
+  const url = new URL(window.location.href);
+  if (id) {
+    url.searchParams.set("feedback", id);
+  } else {
+    url.searchParams.delete("feedback");
+  }
+  const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (nextUrl !== currentUrl) {
+    window.history.replaceState(window.history.state, "", nextUrl);
+  }
+}
 
 export default function AdminPage() {
-  const notificationPanelRef = useRef<HTMLDivElement>(null)
-  const [password, setPassword] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [feedbacks, setFeedbacks] = useState<any[]>([])
-  const [selectedFeedback, setSelectedFeedback] = useState<any>(null)
-  const [logs, setLogs] = useState<any[]>([])
-  const [stats, setStats] = useState({ total: 0, encrypted: 0, leaks: 0 })
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [selectedStatus, setSelectedStatus] = useState<string>('all')
-  const [categoryStats, setCategoryStats] = useState({ suggestion: 0, complaint: 0, report: 0 })
+  const { config: demoConfig } = useDemoConfig();
+  const notificationPanelRef = useRef<HTMLDivElement>(null);
+  const feedbackListRef = useRef<HTMLDivElement>(null);
+  const feedbackListScrollTopRef = useRef(0);
+  const feedbacksLoadedRef = useRef(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [selected, setSelected] = useState<Feedback | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [comment, setComment] = useState("");
+  const [solution, setSolution] = useState("");
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<MessageTone>("info");
+  const [actionLoading, setActionLoading] = useState("");
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationError, setNotificationError] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
 
-  // 评论相关状态
-  const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(null)
-  const [feedbackComments, setFeedbackComments] = useState<any[]>([])
-  const [newComment, setNewComment] = useState('')
-
-  // 搜索相关状态
-  const [searchKeyword, setSearchKeyword] = useState<string>('')
-
-  // 通知相关状态
-  const [unreadCount, setUnreadCount] = useState(0)
-  const [showNotificationPanel, setShowNotificationPanel] = useState(false)
-  const [notifications, setNotifications] = useState<any[]>([])
-
-  const statusConfig = {
-    pending: { label: '待处理', icon: '⏰', color: '#ff9500', bg: 'rgba(255, 149, 0, 0.1)' },
-    in_progress: { label: '持续跟进', icon: '🔄', color: '#ff9500', bg: 'rgba(255, 149, 0, 0.1)' },
-    resolved: { label: '已解决', icon: '✅', color: '#34c759', bg: 'rgba(52, 199, 89, 0.1)' },
-    no_solution: { label: '暂不解决', icon: '⚠️', color: '#8e8e93', bg: 'rgba(142, 142, 147, 0.1)' },
-  }
-
-  const ADMIN_PASSWORD = 'anonyproof_admin_2026'
-
-  // 当选择反馈时自动展开评论
-  useEffect(() => {
-    if (selectedFeedback && !selectedFeedback.logs) {
-      setSelectedFeedbackId(selectedFeedback.id)
-      fetchComments(selectedFeedback.id)
+  const handleRequestError = (error: unknown, fallback: string) => {
+    if (error instanceof ApiError && error.status === 401) {
+      setAuthenticated(false);
+      setFeedbacks([]);
+      setSelected(null);
+      setShowNotifications(false);
+      setMessage("");
+      feedbacksLoadedRef.current = false;
+      return;
     }
-  }, [selectedFeedback])
+    setMessage(getRequestErrorMessage(error, fallback));
+    setMessageTone("error");
+  };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true)
-      fetchData()
-    } else {
-      alert('密码错误')
-    }
-  }
-
-  const fetchData = async () => {
+  const fetchData = async (): Promise<Feedback[]> => {
+    setLoading(true);
     try {
-      const feedbacksRes = await fetch('/anonyproof/api/admin/feedbacks')
-      const feedbacksData = await feedbacksRes.json()
-      if (feedbacksData.success) {
-        setFeedbacks(feedbacksData.feedbacks)
-        // 计算分类统计
-        const stats = {
-          suggestion: feedbacksData.feedbacks.filter((f: any) => f.category === 'suggestion').length,
-          complaint: feedbacksData.feedbacks.filter((f: any) => f.category === 'complaint').length,
-          report: feedbacksData.feedbacks.filter((f: any) => f.category === 'report').length
-        }
-        setCategoryStats(stats)
-      }
-
-      const logsRes = await fetch('/anonyproof/api/admin/logs')
-      const logsData = await logsRes.json()
-      if (logsData.success) {
-        setLogs(logsData.logs)
-      }
-
-      const statsRes = await fetch('/anonyproof/api/stats')
-      const statsData = await statsRes.json()
-      setStats(statsData)
+      const response = await fetch("/anonyproof/api/admin/feedbacks", {
+        credentials: "same-origin",
+      });
+      const data = await readApiJson(response);
+      const nextFeedbacks = data.feedbacks as Feedback[];
+      setFeedbacks(nextFeedbacks);
+      feedbacksLoadedRef.current = true;
+      setSelected((current) =>
+        current
+          ? nextFeedbacks.find((item) => item.id === current.id) ?? current
+          : current,
+      );
+      return nextFeedbacks;
     } catch (error) {
-      console.error('获取数据失败:', error)
-      alert('获取数据失败')
+      handleRequestError(
+        error,
+        feedbacksLoadedRef.current
+          ? "无法连接管理服务，当前显示上次数据"
+          : "无法连接管理服务，请检查网络后重试",
+      );
+      return [];
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  // 计算统计数据
-  const statsData = feedbacks.reduce((acc, feedback) => {
-    acc.total++
-    acc[feedback.category] = (acc[feedback.category] || 0) + 1
-    acc[feedback.status] = (acc[feedback.status] || 0) + 1
-    return acc
-  }, { total: 0, suggestion: 0, complaint: 0, report: 0, pending: 0, in_progress: 0, resolved: 0, no_solution: 0 })
-
-  // 计算筛选后的统计数据（用于动态显示数量）
-  const getFilteredStats = () => {
-    // 如果按分类筛选，计算该分类下各状态的数量
-    if (selectedCategory !== 'all') {
-      const categoryFeedbacks = feedbacks.filter(f => f.category === selectedCategory)
-      return categoryFeedbacks.reduce((acc, feedback) => {
-        acc[feedback.status] = (acc[feedback.status] || 0) + 1
-        return acc
-      }, { pending: 0, in_progress: 0, resolved: 0, no_solution: 0 })
-    }
-    // 如果按状态筛选，计算该状态下各分类的数量
-    if (selectedStatus !== 'all') {
-      const statusFeedbacks = feedbacks.filter(f => f.status === selectedStatus)
-      return statusFeedbacks.reduce((acc, feedback) => {
-        acc[feedback.category] = (acc[feedback.category] || 0) + 1
-        return acc
-      }, { suggestion: 0, complaint: 0, report: 0 })
-    }
-    // 未筛选时返回全部统计
-    return null
-  }
-
-  const filteredStats = getFilteredStats()
-
-  const handleStatusUpdate = async (id: string, newStatus: string, solution?: string) => {
+  const fetchUnreadCount = async () => {
     try {
-      const res = await fetch(`/anonyproof/api/admin/feedback/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus, solution }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        alert('状态已更新')
-        fetchData()
-        setSelectedFeedback(null)
-        setSelectedFeedbackId(null)
-        setFeedbackComments([])
-        setNewComment('')
-      } else {
-        alert(data.error || '更新失败')
-      }
+      const response = await fetch(
+        "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+        { credentials: "same-origin" },
+      );
+      const data = await readApiJson(response);
+      setUnreadCount(data.count);
     } catch (error) {
-      console.error('更新状态失败:', error)
-      alert('更新失败')
+      handleRequestError(error, "通知数量暂时无法加载");
     }
-  }
+  };
 
-  const handleExportData = () => {
-    const filteredFeedbacks = selectedCategory === 'all'
-      ? feedbacks
-      : feedbacks.filter(f => f.category === selectedCategory)
-
-    // 准备 CSV 数据
-    const headers = ['ID', '分类', '设备ID', '提交时间', '状态', '内容']
-    const rows = filteredFeedbacks.map(f => [
-      f.id,
-      f.category === 'suggestion' ? '建议' : f.category === 'complaint' ? '投诉' : '举报',
-      f.device_id,
-      new Date(f.created_at).toLocaleString('zh-CN'),
-      f.status === 'pending' ? '待处理' : f.status === 'in_progress' ? '持续跟进' : f.status === 'resolved' ? '已解决' : '暂不解决',
-      f.original_content || ''
-    ])
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-    ].join('\n')
-
-    // 创建下载
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', `anonyproof_export_${new Date().toISOString().split('T')[0]}.csv`)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  // 获取评论
-  const fetchComments = async (feedbackId: string) => {
-    try {
-      const res = await fetch('/anonyproof/api/feedback/' + feedbackId + '/comments')
-      const data = await res.json()
-      if (data.success) {
-        setFeedbackComments(data.comments)
-      }
-    } catch (error) {
-      console.error('获取评论失败:', error)
-    }
-  }
-
-  // 获取通知列表
   const fetchNotifications = async () => {
+    setNotificationError("");
     try {
-      const res = await fetch('/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=20')
-      const data = await res.json()
-      if (data.success) {
-        setNotifications(data.notifications)
-      }
+      const [countResponse, listResponse] = await Promise.all([
+        fetch(
+          "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+          { credentials: "same-origin" },
+        ),
+        fetch(
+          "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+          { credentials: "same-origin" },
+        ),
+      ]);
+      const [countData, listData] = await Promise.all([
+        readApiJson(countResponse),
+        readApiJson(listResponse),
+      ]);
+      setUnreadCount(countData.count);
+      setNotifications(listData.notifications);
     } catch (error) {
-      console.error('获取通知列表失败:', error)
-    }
-  }
-
-  // 标记通知为已读
-  const markAsRead = async (notificationId: string) => {
-    try {
-      await fetch(`/anonyproof/api/notifications/${notificationId}/read`, { method: 'PUT' })
-      // 刷新未读数量和通知列表
-      const countRes = await fetch('/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin')
-      const countData = await countRes.json()
-      if (countData.success) {
-        setUnreadCount(countData.count)
-      }
-      fetchNotifications()
-    } catch (error) {
-      console.error('标记已读失败:', error)
-    }
-  }
-
-  // 标记所有为已读
-  const markAllAsRead = async () => {
-    try {
-      await fetch('/anonyproof/api/notifications/read-all?recipientType=admin&recipientId=admin', { method: 'PUT' })
-      setUnreadCount(0)
-      fetchNotifications()
-    } catch (error) {
-      console.error('标记全部已读失败:', error)
-    }
-  }
-
-  // 轮询未读通知数量
-  useEffect(() => {
-    // 只有登录后才轮询
-    if (!isAuthenticated) return
-
-    const fetchUnreadCount = async () => {
-      try {
-        const res = await fetch('/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin')
-        const data = await res.json()
-        if (data.success) {
-          setUnreadCount(data.count)
-        }
-      } catch (error) {
-        console.error('获取未读数量失败:', error)
-      }
-    }
-
-    // 立即获取一次
-    fetchUnreadCount()
-
-    // 每30秒检查一次
-    const interval = setInterval(fetchUnreadCount, 30000)
-
-    return () => clearInterval(interval)
-  }, [isAuthenticated])
-
-  // 点击外部关闭通知面板
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (notificationPanelRef.current && !notificationPanelRef.current.contains(event.target as Node)) {
-        setShowNotificationPanel(false)
-      }
-    }
-
-    if (showNotificationPanel) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside)
-      }
-    }
-  }, [showNotificationPanel])
-
-  // 轮询检查新评论（当展开评论时）
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-
-    if (selectedFeedbackId && selectedFeedback && !selectedFeedback.logs) {
-      // 每30秒检查一次新评论和新状态
-      interval = setInterval(async () => {
-        try {
-          // 检查新评论
-          const res = await fetch(`/anonyproof/api/feedback/${selectedFeedbackId}/comments`)
-          const data = await res.json()
-          if (data.success) {
-            const newComments = data.comments
-            // 如果评论数量增加，自动更新
-            if (newComments.length > feedbackComments.length) {
-              console.log('检测到新评论，自动刷新')
-              setFeedbackComments(newComments)
-            }
-          }
-
-          // 检查当前反馈的状态是否改变（用户可能提交了新反馈）
-          fetchData()
-        } catch (error) {
-          console.error('检查更新失败:', error)
-        }
-      }, 30000) // 30秒检查一次
-    }
-
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [selectedFeedbackId, feedbackComments.length, selectedFeedback])
-
-  // 添加评论
-  const handleAddComment = async () => {
-    if (!selectedFeedbackId) return
-    if (!newComment.trim() || newComment.trim().length < 2) {
-      alert('评论内容至少需要 2 个字符')
-      return
-    }
-    if (newComment.trim().length > 1000) {
-      alert('评论内容不能超过 1000 个字符')
-      return
-    }
-    try {
-      const res = await fetch('/anonyproof/api/feedback/' + selectedFeedbackId + '/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: newComment.trim(),
-          commenterType: 'admin'
-        }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setNewComment('')
-        fetchComments(selectedFeedbackId)
+      if (error instanceof ApiError && error.status === 401) {
+        handleRequestError(error, "");
       } else {
-        alert(data.error || '添加失败')
+        setNotificationError(
+          getRequestErrorMessage(
+            error,
+            notifications.length
+              ? "通知暂时无法加载，当前显示上次通知"
+              : "通知暂时无法加载，线索数据不受影响",
+          ),
+        );
       }
-    } catch (error) {
-      console.error('添加评论失败:', error)
-      alert('添加失败')
     }
-  }
+  };
 
-  const filteredFeedbacks = feedbacks.filter((f) => {
-    const categoryMatch = selectedCategory === 'all' || f.category === selectedCategory
-    const statusMatch = selectedStatus === 'all' || f.status === selectedStatus
-    // 搜索匹配：反馈内容或设备ID包含关键词
-    const searchMatch = !searchKeyword || 
-      searchKeyword.trim() === '' ||
-      (f.original_content && f.original_content.toLowerCase().includes(searchKeyword.toLowerCase())) ||
-      (f.device_id && f.device_id.toLowerCase().includes(searchKeyword.toLowerCase()))
-    return categoryMatch && statusMatch && searchMatch
-  })
+  const fetchComments = async (id: string) => {
+    setCommentsLoading(true);
+    setComments([]);
+    try {
+      const response = await fetch(`/anonyproof/api/feedback/${id}/comments`, {
+        credentials: "same-origin",
+      });
+      const data = await readApiJson(response);
+      setComments(data.comments);
+    } catch (error) {
+      handleRequestError(error, "沟通记录暂时无法加载，请稍后重试");
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
 
-  if (!isAuthenticated) {
+  useEffect(() => {
+    fetch("/anonyproof/api/admin/auth/session")
+      .then((response) => readApiJson(response))
+      .then(async (data) => {
+        setAuthenticated(data.authenticated);
+        if (data.authenticated) {
+          const items = await fetchData();
+          const targetId = new URLSearchParams(window.location.search).get("feedback");
+          const target = targetId
+            ? items.find((item) => item.id === targetId)
+            : undefined;
+          if (target) {
+            setSearch("");
+            setCategory("all");
+            setStatus("all");
+            selectFeedback(target, true);
+          } else if (targetId && feedbacksLoadedRef.current) {
+            syncFeedbackQuery(null);
+          }
+          fetchNotifications();
+        }
+      })
+      .catch((error) =>
+        setLoginError(getRequestErrorMessage(error, "无法连接管理服务，请稍后重试")),
+      )
+      .finally(() => setChecking(false));
+  }, []);
+
+  useEffect(() => {
+    if (!authenticated) return;
+    const interval = setInterval(fetchNotifications, 20000);
+    return () => clearInterval(interval);
+  }, [authenticated]);
+
+  useEffect(() => {
+    if (!showNotifications) return;
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (
+        notificationPanelRef.current &&
+        !notificationPanelRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowNotifications(false);
+    };
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [showNotifications]);
+
+  const filtered = useMemo(
+    () =>
+      feedbacks.filter((item) => {
+        const text = `${item.original_content} ${item.device_id}`.toLowerCase();
+        return (
+          (category === "all" || item.category === category) &&
+          (status === "all" || item.status === status) &&
+          (!search.trim() || text.includes(search.toLowerCase().trim()))
+        );
+      }),
+    [feedbacks, category, status, search],
+  );
+
+  const clearSelection = (restoreListPosition = false) => {
+    syncFeedbackQuery(null);
+    setSelected(null);
+    setComments([]);
+    setSolution("");
+    if (restoreListPosition) {
+      window.requestAnimationFrame(() => {
+        if (feedbackListRef.current) {
+          feedbackListRef.current.scrollTop = feedbackListScrollTopRef.current;
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (selected && !filtered.some((item) => item.id === selected.id)) {
+      clearSelection();
+    }
+  }, [filtered, selected]);
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoginLoading(true);
+    setLoginError("");
+    try {
+      const response = await fetch("/anonyproof/api/admin/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ password }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        setLoginError(data.error || "登录失败，请检查密码");
+        return;
+      }
+      setAuthenticated(true);
+      setPassword("");
+      setMessage("");
+      fetchData();
+      fetchNotifications();
+    } catch {
+      setLoginError("无法连接管理服务，请稍后重试");
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const selectFeedback = async (
+    item: Feedback,
+    forceReadNotifications = false,
+  ) => {
+    feedbackListScrollTopRef.current =
+      feedbackListRef.current?.scrollTop ?? feedbackListScrollTopRef.current;
+    syncFeedbackQuery(item.id);
+    setSelected(item);
+    setSolution("");
+    setMessage("");
+    fetchComments(item.id);
+    if (forceReadNotifications || (item.unread_notifications ?? 0) > 0) {
+      try {
+        const response = await fetch(
+          `/anonyproof/api/notifications/read-all?recipientType=admin&recipientId=admin&feedbackId=${encodeURIComponent(item.id)}`,
+          { method: "PUT", credentials: "same-origin" },
+        );
+        await readApiJson(response);
+        setFeedbacks((items) =>
+          items.map((entry) =>
+            entry.id === item.id
+              ? { ...entry, unread_notifications: 0 }
+              : entry,
+          ),
+        );
+        await fetchUnreadCount();
+      } catch (error) {
+        handleRequestError(error, "通知状态更新失败");
+      }
+    }
+  };
+
+  const updateStatus = async (nextStatus: Feedback["status"]) => {
+    if (!selected) return;
+    if (selected.status === nextStatus) {
+      setMessage("");
+      return;
+    }
+    if (
+      (nextStatus === "resolved" || nextStatus === "no_solution") &&
+      solution.trim().length < 10
+    ) {
+      setMessage("办结或暂无法处理时，请填写至少 10 个字的处理说明");
+      setMessageTone("error");
+      return;
+    }
+    setActionLoading(nextStatus);
+    try {
+      const response = await fetch(
+        `/anonyproof/api/admin/feedback/${selected.id}/status`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ status: nextStatus, solution }),
+        },
+      );
+      await readApiJson(response);
+      setMessage("");
+      setMessageTone("info");
+      setSolution("");
+      setSelected((current) =>
+        current ? { ...current, status: nextStatus, solution } : current,
+      );
+      await fetchData();
+      fetchNotifications();
+    } catch (error) {
+      handleRequestError(error, "状态更新失败，请稍后重试");
+    } finally {
+      setActionLoading("");
+    }
+  };
+
+  const addComment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!selected || comment.trim().length < 2) return;
+    setActionLoading("comment");
+    try {
+      const response = await fetch(
+        `/anonyproof/api/admin/feedback/${selected.id}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ content: comment.trim() }),
+        },
+      );
+      await readApiJson(response);
+      setComment("");
+      await fetchComments(selected.id);
+      setMessage("回复已发送");
+      setMessageTone("success");
+      fetchNotifications();
+    } catch (error) {
+      handleRequestError(error, "回复失败，请稍后重试");
+    } finally {
+      setActionLoading("");
+    }
+  };
+
+  const markNotificationRead = async (notification: Notification) => {
+    const item = feedbacks.find(
+      (feedback) => feedback.id === notification.feedback_id,
+    );
+    if (item) {
+      if (!filtered.some((feedback) => feedback.id === item.id)) {
+        setSearch("");
+        setCategory("all");
+        setStatus("all");
+      }
+      await selectFeedback(item, !notification.is_read);
+    } else if (!notification.is_read) {
+      try {
+        const response = await fetch(`/anonyproof/api/notifications/${notification.id}/read`, {
+          method: "PUT",
+          credentials: "same-origin",
+        });
+        await readApiJson(response);
+        setNotifications((items) =>
+          items.map((entry) =>
+            entry.id === notification.id ? { ...entry, is_read: 1 } : entry,
+          ),
+        );
+        await fetchUnreadCount();
+      } catch (error) {
+        handleRequestError(error, "通知状态更新失败");
+      }
+    }
+    setShowNotifications(false);
+  };
+  const markAllNotificationsRead = async () => {
+    setNotificationError("");
+    try {
+      const response = await fetch(
+        "/anonyproof/api/notifications/read-all?recipientType=admin&recipientId=admin",
+        { method: "PUT", credentials: "same-origin" },
+      );
+      await readApiJson(response);
+      setUnreadCount(0);
+      setNotifications((items) => items.map((item) => ({ ...item, is_read: 1 })));
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        handleRequestError(error, "");
+      } else {
+        setNotificationError(
+          getRequestErrorMessage(error, "通知状态更新失败，请稍后重试"),
+        );
+      }
+    }
+  };
+
+  const logout = async () => {
+    await fetch("/anonyproof/api/admin/auth/logout", {
+      method: "POST",
+      credentials: "same-origin",
+    });
+    setAuthenticated(false);
+    setFeedbacks([]);
+    setSelected(null);
+    setNotifications([]);
+    setUnreadCount(0);
+    setShowNotifications(false);
+    setMessage("");
+    feedbacksLoadedRef.current = false;
+    syncFeedbackQuery(null);
+  };
+
+  if (checking)
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        padding: '20px'
-      }}>
-        <div style={{ 
-          background: 'rgba(255, 255, 255, 0.7)',
-          backdropFilter: 'blur(20px)',
-          padding: '40px',
-          borderRadius: '24px',
-          boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)',
-          maxWidth: '400px',
-          width: '100%',
-          border: '1px solid rgba(255, 255, 255, 0.3)'
-        }}>
-          <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#1d1d1f', marginBottom: '24px', textAlign: 'center' }}>
-            🔐 管理员登录
-          </h1>
-          <form onSubmit={handleLogin}>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="请输入管理员密码"
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                fontSize: '16px',
-                border: '2px solid rgba(0, 0, 0, 0.1)',
-                borderRadius: '12px',
-                marginBottom: '20px',
-                boxSizing: 'border-box',
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                width: '100%',
-                padding: '14px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-              }}
-            >
-              登录
-            </button>
-          </form>
-        </div>
+      <div className="admin-loading">
+        <span className="spinner" />
+        正在验证管理员会话
       </div>
-    )
-  }
-
-  return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)',
-      padding: '24px',
-      position: 'relative'
-    }}>
-      {/* 通知铃铛 - 右上角，在按钮旁边 */}
-      <div style={{ 
-        position: 'absolute',
-        top: '24px',
-        right: '24px',
-        zIndex: 100
-      }}>
-        <button
-          onClick={() => {
-            if (showNotificationPanel) {
-              setShowNotificationPanel(false)
-            } else {
-              setShowNotificationPanel(true)
-              fetchNotifications()
-            }
-          }}
-          style={{
-            fontSize: '24px',
-            background: 'rgba(255, 255, 255, 0.5)',
-            backdropFilter: 'blur(10px)',
-            border: 'none',
-            borderRadius: '50%',
-            width: '48px',
-            height: '48px',
-            cursor: 'pointer',
-            position: 'relative',
-            padding: '0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+    );
+  if (!authenticated)
+    return (
+      <main className="admin-auth-page">
+        <nav className="admin-auth-links" aria-label="外部链接">
+          <ExternalLinks linkClassName="admin-external-link" />
+        </nav>
+        <section
+          className="admin-auth-panel"
+          aria-labelledby="admin-login-title"
         >
-          🔔
-          {unreadCount > 0 && (
-            <span style={{
-              position: 'absolute',
-              top: '-2px',
-              right: '-2px',
-              background: '#ff3b30',
-              color: 'white',
-              borderRadius: '50%',
-              width: '20px',
-              height: '20px',
-              fontSize: '11px',
-              fontWeight: '700',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '2px solid white',
-            }}>
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
-          )}
-        </button>
-
-        {/* 通知面板 */}
-        {showNotificationPanel && (
-          <div 
-            ref={notificationPanelRef}
-            style={{
-              position: 'absolute',
-              top: '55px',
-              right: '0',
-              width: '380px',
-              maxHeight: '500px',
-              background: 'white',
-              borderRadius: '16px',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-              zIndex: 1000,
-              overflow: 'hidden',
-            }}
-          >
-            <div style={{
-              padding: '16px',
-              borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700' }}>🔔 通知中心</h3>
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllAsRead}
-                  style={{
-                    padding: '6px 12px',
-                    background: 'rgba(102, 126, 234, 0.1)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    color: '#667eea',
-                  }}
-                >
-                  全部已读
-                </button>
-              )}
+          <div className="admin-auth-intro">
+            <div className="brand-lockup">
+              <img className="brand-mark" src="/anonyproof/brand/anonyproof-mark.svg" alt="" width="36" height="36" />
+              <span>AnonyProof 管理台</span>
             </div>
-
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {notifications.length === 0 ? (
-                <div style={{ padding: '40px 20px', textAlign: 'center', color: '#86868b' }}>
-                  暂无通知
-                </div>
-              ) : (
-                <>
-                  {/* 未读通知 */}
-                  {notifications.filter(n => !n.is_read).length > 0 && (
-                    <>
-                      <div
-                        onClick={() => {
-                          // 滚动到未读通知区域
-                          const unreadSection = document.getElementById('first-unread-notification')
-                          if (unreadSection) {
-                            unreadSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                          }
-                        }}
-                        style={{
-                          padding: '10px 16px',
-                          fontSize: '13px',
-                          fontWeight: '700',
-                          color: '#667eea',
-                          background: 'rgba(102, 126, 234, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                          WebkitBackdropFilter: 'blur(10px)',
-                          borderBottom: '1px solid rgba(102, 126, 234, 0.3)',
-                          position: 'sticky',
-                          top: 0,
-                          zIndex: 10,
-                          cursor: 'pointer',
-                          userSelect: 'none',
-                        }}
-                      >
-                        未读通知 ({notifications.filter(n => !n.is_read).length})
-                      </div>
-                      {notifications.filter(n => !n.is_read).map((notif, index) => (
-                        <div
-                          key={notif.id}
-                          id={index === 0 ? 'first-unread-notification' : undefined}
-                          onClick={async () => {
-                            markAsRead(notif.id)
-                            
-                            // 先尝试在当前列表中查找
-                            let feedback = feedbacks.find(f => f.id === notif.feedback_id)
-                            
-                            // 如果找不到，直接从 API 获取所有反馈
-                            if (!feedback) {
-                              try {
-                                const res = await fetch('/anonyproof/api/admin/feedbacks')
-                                const data = await res.json()
-                                
-                                if (data.success && data.feedbacks) {
-                                  // 更新状态
-                                  setFeedbacks(data.feedbacks)
-                                  
-                                  // 从返回的数据中查找
-                                  feedback = data.feedbacks.find((f: any) => f.id === notif.feedback_id)
-                                }
-                              } catch (error) {
-                                console.error('获取反馈列表失败:', error)
-                              }
-                            }
-                            
-                            if (feedback) {
-                              setSelectedFeedback(feedback)
-                              setSelectedFeedbackId(notif.feedback_id)
-                              fetchComments(notif.feedback_id)
-                              setShowNotificationPanel(false)
-                            } else {
-                              alert('无法找到该反馈，请稍后重试')
-                            }
-                          }}
-                          style={{
-                            padding: '16px',
-                            borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-                            cursor: 'pointer',
-                            background: 'rgba(102, 126, 234, 0.08)',
-                            transition: 'all 0.2s ease',
-                            borderRadius: '8px',
-                            marginBottom: '8px',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(102, 126, 234, 0.12)'
-                            e.currentTarget.style.transform = 'translateX(4px)'
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(102, 126, 234, 0.08)'
-                            e.currentTarget.style.transform = 'translateX(0)'
-                          }}
-                        >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ 
-                                fontSize: '14px', 
-                                fontWeight: '700', 
-                                color: notif.type === 'comment' ? '#667eea' : notif.type === 'status_update' ? '#34c759' : '#ff9500',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px'
-                              }}>
-                                {notif.type === 'new_feedback' && '📝'}
-                                {notif.type === 'comment' && '💬'}
-                                {notif.type === 'status_update' && '✅'}
-                                {notif.title}
-                              </span>
-                              <span style={{
-                                width: '8px',
-                                height: '8px',
-                                borderRadius: '50%',
-                                background: '#667eea',
-                                display: 'inline-block'
-                              }}></span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '11px', color: '#86868b', whiteSpace: 'nowrap' }}>
-                                {new Date(notif.created_at).toLocaleString('zh-CN')}
-                              </span>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  markAsRead(notif.id)
-                                }}
-                                style={{
-                                  padding: '2px 8px',
-                                  background: 'rgba(102, 126, 234, 0.15)',
-                                  border: '1px solid rgba(102, 126, 234, 0.3)',
-                                  borderRadius: '4px',
-                                  fontSize: '11px',
-                                  fontWeight: '600',
-                                  cursor: 'pointer',
-                                  color: '#667eea',
-                                }}
-                              >
-                                标为已读
-                              </button>
-                            </div>
-                          </div>
-                          <div style={{ fontSize: '13px', color: '#1d1d1f', lineHeight: '1.6', marginBottom: '10px' }}>
-                            {notif.content}
-                          </div>
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end'
-                          }}>
-                            <span style={{
-                              padding: '4px 12px',
-                              background: 'rgba(102, 126, 234, 0.1)',
-                              border: '1px solid rgba(102, 126, 234, 0.3)',
-                              borderRadius: '6px',
-                              fontSize: '12px',
-                              fontWeight: '600',
-                              color: '#667eea',
-                            }}>
-                              查看详情 →
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                  
-                  {/* 已读通知 */}
-                  {notifications.filter(n => n.is_read).length > 0 && (
-                    <>
-                      <div
-                        onClick={() => {
-                          // 滚动到已读通知区域
-                          const readSection = document.getElementById('first-read-notification')
-                          if (readSection) {
-                            readSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                          }
-                        }}
-                        style={{
-                          padding: '10px 16px',
-                          fontSize: '13px',
-                          fontWeight: '700',
-                          color: '#86868b',
-                          background: 'rgba(134, 134, 134, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                          WebkitBackdropFilter: 'blur(10px)',
-                          borderBottom: '1px solid rgba(134, 134, 134, 0.3)',
-                          position: 'sticky',
-                          top: notifications.filter(n => !n.is_read).length > 0 ? '40px' : '0',
-                          zIndex: 10,
-                          cursor: 'pointer',
-                          userSelect: 'none',
-                        }}
-                      >
-                        已读通知 ({notifications.filter(n => n.is_read).length})
-                      </div>
-                      {notifications.filter(n => n.is_read).map((notif, index) => (
-                        <div
-                          key={notif.id}
-                          id={index === 0 ? 'first-read-notification' : undefined}
-                          onClick={async () => {
-                            // 先尝试在当前列表中查找
-                            let feedback = feedbacks.find(f => f.id === notif.feedback_id)
-                            
-                            // 如果找不到，直接从 API 获取所有反馈
-                            if (!feedback) {
-                              try {
-                                const res = await fetch('/anonyproof/api/admin/feedbacks')
-                                const data = await res.json()
-                                
-                                if (data.success && data.feedbacks) {
-                                  // 更新状态
-                                  setFeedbacks(data.feedbacks)
-                                  
-                                  // 从返回的数据中查找
-                                  feedback = data.feedbacks.find((f: any) => f.id === notif.feedback_id)
-                                }
-                              } catch (error) {
-                                console.error('获取反馈列表失败:', error)
-                              }
-                            }
-                            
-                            if (feedback) {
-                              setSelectedFeedback(feedback)
-                              setSelectedFeedbackId(notif.feedback_id)
-                              fetchComments(notif.feedback_id)
-                              setShowNotificationPanel(false)
-                            } else {
-                              alert('无法找到该反馈，请稍后重试')
-                            }
-                          }}
-                          style={{
-                            padding: '16px',
-                            borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-                            cursor: 'pointer',
-                            background: 'transparent',
-                            transition: 'all 0.2s ease',
-                            borderRadius: '8px',
-                            marginBottom: '8px',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(102, 126, 234, 0.06)'
-                            e.currentTarget.style.transform = 'translateX(4px)'
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent'
-                            e.currentTarget.style.transform = 'translateX(0)'
-                          }}
-                        >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ 
-                                fontSize: '14px', 
-                                fontWeight: '600', 
-                                color: '#86868b',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px'
-                              }}>
-                                {notif.type === 'new_feedback' && '📝'}
-                                {notif.type === 'comment' && '💬'}
-                                {notif.type === 'status_update' && '✅'}
-                                {notif.title}
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '11px', color: '#86868b', whiteSpace: 'nowrap' }}>
-                                {new Date(notif.created_at).toLocaleString('zh-CN')}
-                              </span>
-                              <button
-                                onClick={async (e) => {
-                                  e.stopPropagation()
-                                  // 标记为未读
-                                  await fetch(`/anonyproof/api/notifications/${notif.id}/unread`, { method: 'PUT' })
-                                  await fetchNotifications()
-                                  // 立即更新未读数量
-                                  const countRes = await fetch('/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin')
-                                  const countData = await countRes.json()
-                                  if (countData.success) {
-                                    setUnreadCount(countData.count)
-                                  }
-                                }}
-                                style={{
-                                  padding: '2px 8px',
-                                  background: 'rgba(134, 134, 134, 0.1)',
-                                  border: '1px solid rgba(134, 134, 134, 0.2)',
-                                  borderRadius: '4px',
-                                  fontSize: '11px',
-                                  fontWeight: '600',
-                                  cursor: 'pointer',
-                                  color: '#86868b',
-                                }}
-                              >
-                                标为未读
-                              </button>
-                            </div>
-                          </div>
-                          <div style={{ fontSize: '13px', color: '#86868b', lineHeight: '1.6', marginBottom: '10px' }}>
-                            {notif.content}
-                          </div>
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end'
-                          }}>
-                            <span style={{
-                              padding: '4px 12px',
-                              background: 'rgba(134, 134, 134, 0.1)',
-                              border: '1px solid rgba(134, 134, 134, 0.2)',
-                              borderRadius: '6px',
-                              fontSize: '12px',
-                              fontWeight: '600',
-                              color: '#86868b',
-                            }}>
-                              查看详情 →
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
+            <div>
+              <p className="eyebrow">管理入口</p>
+              <h1 id="admin-login-title">管理员登录</h1>
+              <p className="admin-auth-copy">验证身份后进入管理台。</p>
             </div>
           </div>
-        )}
-      </div>
-
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '32px',
-          paddingBottom: '20px',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-        }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1d1d1f', margin: 0 }}>
-              🔐 匿证管理后台
-            </h1>
-            <p style={{ fontSize: '14px', color: '#86868b', margin: '4px 0 0 0' }}>
-              总反馈: {stats.total} · 加密率: 100% · 数据泄露: {stats.leaks}
+          <div className="admin-auth-form-panel">
+            {demoConfig?.demoMode && demoConfig.adminPassword && (
+              <aside className="admin-demo-notice" role="status">
+                <strong>演示默认密码</strong>
+                <code>{demoConfig.adminPassword}</code>
+                <p>
+                  {demoConfig.notice ||
+                    "仅用于效果演示，正式部署前必须清除预设管理员密码。"}
+                </p>
+              </aside>
+            )}
+            <form onSubmit={handleLogin} className="admin-auth-form">
+              <label htmlFor="admin-password">访问密码</label>
+              <input
+                id="admin-password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                placeholder="请输入管理员密码"
+                required
+              />
+              {loginError && (
+                <p className="form-error" role="alert">
+                  {loginError}
+                </p>
+              )}
+              <button
+                className="admin-primary-button"
+                type="submit"
+                disabled={loginLoading}
+              >
+                {loginLoading ? (
+                  <>
+                    <span className="spinner spinner-light" />
+                    正在登录
+                  </>
+                ) : (
+                  "登录管理台"
+                )}
+              </button>
+            </form>
+            <p className="admin-auth-footnote">
+              会话仅保留在当前浏览器。
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button
-              onClick={handleExportData}
-              style={{
-                padding: '10px 20px',
-                background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer',
-              }}
-            >
-              📥 导出数据
-            </button>
-            <button
-              onClick={() => {
-                setIsAuthenticated(false)
-                setPassword('')
-                setSelectedFeedback(null)
-                setFeedbacks([])
-                setLogs([])
-              }}
-              style={{
-                padding: '10px 20px',
-                background: 'rgba(255, 255, 255, 0.5)',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-                borderRadius: '8px',
-                fontSize: '14px',
-                cursor: 'pointer',
-              }}
-            >
+        </section>
+      </main>
+    );
+
+  const counts = {
+    total: feedbacks.length,
+    pending: feedbacks.filter((item) => item.status === "pending").length,
+    processing: feedbacks.filter((item) => item.status === "in_progress")
+      .length,
+    resolved: feedbacks.filter((item) => item.status === "resolved").length,
+    noSolution: feedbacks.filter((item) => item.status === "no_solution")
+      .length,
+  };
+  return (
+    <main className="admin-shell">
+      <header className="admin-topbar">
+        <div className="admin-topbar-inner">
+          <a href="/anonyproof" className="brand-lockup">
+            <img className="brand-mark" src="/anonyproof/brand/anonyproof-mark.svg" alt="" width="36" height="36" />
+            <span>AnonyProof</span>
+          </a>
+          <nav className="admin-nav" aria-label="管理导航">
+            <a className="is-active" href="/anonyproof/foorpynona">
+              线索管理
+            </a>
+            <a href="/anonyproof/access-stats">访问与风控</a>
+          </nav>
+          <div className="admin-tools">
+            <ExternalLinks linkClassName="admin-external-link" />
+            <div className="admin-notification-wrap" ref={notificationPanelRef}>
+              <button
+                className="admin-notification-button"
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+                  if (!showNotifications) fetchNotifications();
+                }}
+                aria-expanded={showNotifications}
+              >
+                通知
+                {unreadCount > 0 && (
+                  <span>{unreadCount > 99 ? "99+" : unreadCount}</span>
+                )}
+              </button>
+              {showNotifications && (
+                <section
+                  className="admin-notification-panel"
+                  aria-label="管理员通知中心"
+                >
+                  <div className="notification-head">
+                    <div>
+                      <strong>通知中心</strong>
+                      <span>
+                        {unreadCount ? `${unreadCount} 条未读` : "已全部读完"}
+                      </span>
+                    </div>
+                    {unreadCount > 0 && (
+                      <button onClick={markAllNotificationsRead}>
+                        全部已读
+                      </button>
+                    )}
+                  </div>
+                  <div className="notification-list">
+                    {notifications.length ? (
+                      notifications.map((item) => (
+                        <button
+                          key={item.id}
+                          className={`notification-item ${item.is_read ? "" : "is-unread"}`}
+                          onClick={() => markNotificationRead(item)}
+                        >
+                          <span className="notification-meta">
+                            <strong>{item.title}</strong>
+                            <time>
+                              {new Date(item.created_at).toLocaleString(
+                                "zh-CN",
+                              )}
+                            </time>
+                          </span>
+                          <span>{item.content}</span>
+                        </button>
+                      ))
+                    ) : (
+                      <p className="empty-compact">暂无通知</p>
+                    )}
+                  </div>
+                  {notificationError && (
+                    <p className="notification-error" role="alert">
+                      {notificationError}
+                    </p>
+                  )}
+                </section>
+              )}
+            </div>
+            <button className="admin-quiet-button" onClick={logout}>
               退出登录
             </button>
           </div>
         </div>
-
-        {/* 分类统计卡片 */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '16px',
-          marginBottom: '24px',
-        }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            padding: '20px',
-            borderRadius: '16px',
-            color: 'white',
-          }}>
-            <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>全部反馈</div>
-            <div style={{ fontSize: '32px', fontWeight: '800' }}>{stats.total}</div>
+      </header>
+      <section
+        className={`admin-content ${selected ? "is-detail-open" : ""}`}
+      >
+        <div className="admin-heading-row">
+          <div>
+            <h1>提交处理</h1>
           </div>
-          <div style={{
-            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            padding: '20px',
-            borderRadius: '16px',
-            color: 'white',
-          }}>
-            <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>💡 建议</div>
-            <div style={{ fontSize: '32px', fontWeight: '800' }}>{categoryStats.suggestion}</div>
-          </div>
-          <div style={{
-            background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-            padding: '20px',
-            borderRadius: '16px',
-            color: 'white',
-          }}>
-            <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>⚠️ 投诉</div>
-            <div style={{ fontSize: '32px', fontWeight: '800' }}>{categoryStats.complaint}</div>
-          </div>
-          <div style={{
-            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-            padding: '20px',
-            borderRadius: '16px',
-            color: 'white',
-          }}>
-            <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>🔔 举报</div>
-            <div style={{ fontSize: '32px', fontWeight: '800' }}>{categoryStats.report}</div>
-          </div>
-        </div>
-
-        {/* 分类筛选按钮 */}
-        <div style={{ marginBottom: '16px' }}>
-          <span style={{ fontSize: '14px', fontWeight: '600', color: '#86868b', marginRight: '12px' }}>分类筛选:</span>
           <button
-            onClick={() => {
-              setSelectedCategory('all')
-              setSelectedFeedback(null)
-            }}
-            style={{
-              padding: '8px 16px',
-              background: selectedCategory === 'all' ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: selectedCategory === 'all' ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: selectedCategory === 'all' ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-              marginRight: '8px',
-            }}
+            className="admin-secondary-button"
+            onClick={fetchData}
+            disabled={loading}
           >
-            全部 ({stats.total})
-          </button>
-          <button
-            onClick={() => {
-              setSelectedCategory('suggestion')
-              setSelectedFeedback(null)
-            }}
-            style={{
-              padding: '8px 16px',
-              background: selectedCategory === 'suggestion' ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: selectedCategory === 'suggestion' ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: selectedCategory === 'suggestion' ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-              marginRight: '8px',
-            }}
-          >
-            💡 建议 ({categoryStats.suggestion})
-          </button>
-          <button
-            onClick={() => {
-              setSelectedCategory('complaint')
-              setSelectedFeedback(null)
-            }}
-            style={{
-              padding: '8px 16px',
-              background: selectedCategory === 'complaint' ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: selectedCategory === 'complaint' ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: selectedCategory === 'complaint' ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-              marginRight: '8px',
-            }}
-          >
-            ⚠️ 投诉 ({categoryStats.complaint})
-          </button>
-          <button
-            onClick={() => {
-              setSelectedCategory('report')
-              setSelectedFeedback(null)
-            }}
-            style={{
-              padding: '8px 16px',
-              background: selectedCategory === 'report' ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: selectedCategory === 'report' ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: selectedCategory === 'report' ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-            }}
-          >
-            🔔 举报 ({categoryStats.report})
-          </button>
-        </div>
-
-        {/* 搜索框 */}
-        <div style={{ marginBottom: '24px' }}>
-          <div style={{ fontSize: '14px', fontWeight: '600', color: '#86868b', marginBottom: '8px' }}>
-            🔍 搜索反馈
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input
-              type="text"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                }
-              }}
-              placeholder="输入关键词搜索反馈内容或设备ID..."
-              style={{
-                flex: 1,
-                padding: '10px 12px',
-                fontSize: '14px',
-                border: '2px solid rgba(0, 0, 0, 0.1)',
-                borderRadius: '8px',
-                background: 'rgba(255, 255, 255, 0.5)',
-                backdropFilter: 'blur(10px)',
-                boxSizing: 'border-box',
-              }}
-            />
-            {searchKeyword && (
-              <button
-                onClick={() => {
-                  setSearchKeyword('')
-                }}
-                style={{
-                  padding: '10px 16px',
-                  background: 'rgba(102, 126, 234, 0.1)',
-                  border: '1px solid #667eea',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  color: '#667eea',
-                }}
-              >
-                清除搜索
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* 状态筛选按钮 */}
-        <div style={{ marginBottom: '24px' }}>
-          <span style={{ fontSize: '14px', fontWeight: '600', color: '#86868b', marginRight: '12px' }}>状态筛选:</span>
-          <button
-            onClick={() => {
-              setSelectedStatus('all')
-              setSelectedFeedback(null)
-            }}
-            style={{
-              padding: '8px 16px',
-              background: selectedStatus === 'all' ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: selectedStatus === 'all' ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: selectedStatus === 'all' ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-              marginRight: '8px',
-            }}
-          >
-            全部
-          </button>
-          {Object.entries(statusConfig).map(([key, config]) => {
-            // 计算该状态的数量（如果已按分类筛选，则显示该分类下该状态的数量）
-            const count = selectedCategory !== 'all'
-              ? feedbacks.filter(f => f.category === selectedCategory && f.status === key).length
-              : statsData[key as keyof typeof statsData] || 0
-            return (
-              <button
-                key={key}
-                onClick={() => {
-                  setSelectedStatus(key as any)
-                  setSelectedFeedback(null)
-                }}
-                style={{
-                  padding: '8px 16px',
-                  background: selectedStatus === key ? (key === 'pending' || key === 'in_progress' ? 'rgba(255, 149, 0, 0.1)' : key === 'resolved' ? 'rgba(52, 199, 89, 0.1)' : 'rgba(142, 142, 147, 0.1)') : 'transparent',
-                  border: selectedStatus === key ? `2px solid ${config.color}` : '1px solid rgba(0, 0, 0, 0.1)',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: selectedStatus === key ? config.color : '#86868b',
-                  cursor: 'pointer',
-                  marginRight: '8px',
-                }}
-              >
-                {config.icon} {config.label} ({count})
-              </button>
-            )
-          })}
-        </div>
-
-        {/* 视图切换按钮 */}
-        <div style={{ marginBottom: '24px' }}>
-          <button
-            onClick={async () => {
-              setSelectedFeedback(null)
-              // 返回列表时刷新数据
-              await fetchData()
-              await fetchNotifications()
-            }}
-            style={{
-              padding: '10px 20px',
-              background: !selectedFeedback ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: !selectedFeedback ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: !selectedFeedback ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-              marginRight: '12px',
-            }}
-          >
-            反馈列表
-          </button>
-          <button
-            onClick={() => setSelectedFeedback({logs: true})}
-            style={{
-              padding: '10px 20px',
-              background: selectedFeedback?.logs ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-              border: selectedFeedback?.logs ? '2px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: selectedFeedback?.logs ? '#667eea' : '#86868b',
-              cursor: 'pointer',
-            }}
-          >
-            操作日志
-          </button>
-        </div>
-
-        {!selectedFeedback && (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-            gap: '16px'
-          }}>
-            {filteredFeedbacks.length === 0 ? (
-              <div style={{
-                gridColumn: '1 / -1',
-                textAlign: 'center',
-                padding: '60px 20px',
-                color: '#86868b',
-                fontSize: '16px',
-              }}>
-                暂无{selectedCategory !== 'all' ? (selectedCategory === 'suggestion' ? '建议' : selectedCategory === 'complaint' ? '投诉' : '举报') : ''}反馈
-              </div>
+            {loading ? (
+              <>
+                <span className="spinner" />
+                正在刷新
+              </>
             ) : (
-              filteredFeedbacks.map((feedback) => (
-                <div
-                  key={feedback.id}
-                  onClick={() => setSelectedFeedback(feedback)}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.6)',
-                    backdropFilter: 'blur(10px)',
-                    padding: '20px',
-                    borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.4)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '12px', color: '#86868b' }}>
-                      {new Date(feedback.created_at).toLocaleString('zh-CN')}
-                    </span>
-                    {feedback.status && statusConfig[feedback.status as keyof typeof statusConfig] && (
-                      <span style={{
-                        fontSize: '12px',
-                        padding: '4px 10px',
-                        borderRadius: '12px',
-                        background: statusConfig[feedback.status as keyof typeof statusConfig].bg,
-                        color: statusConfig[feedback.status as keyof typeof statusConfig].color,
-                        border: `1px solid ${statusConfig[feedback.status as keyof typeof statusConfig].color}`,
-                      }}>
-                        {statusConfig[feedback.status as keyof typeof statusConfig].icon} {statusConfig[feedback.status as keyof typeof statusConfig].label}
-                      </span>
-                    )}
-                  </div>
-                  <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1d1d1d', marginBottom: '8px' }}>
-                    {feedback.category === 'suggestion' ? '💡 建议' : feedback.category === 'complaint' ? '⚠️ 投诉' : '🔔 举报'}
-                  </h3>
-                  <p style={{ fontSize: '13px', color: '#86868b', margin: 0 }}>
-                    设备ID: {feedback.device_id?.slice(0, 16)}...
-                  </p>
-                  <p style={{ fontSize: '13px', color: '#86868b', margin: '0' }}>
-                    ID: {feedback.id}
-                  </p>
-                </div>
-              ))
+              "刷新"
             )}
+          </button>
+        </div>
+        <div className="admin-metric-grid">
+          <div>
+            <span>全部</span>
+            <strong>{counts.total}</strong>
           </div>
-        )}
-
-        {selectedFeedback && !selectedFeedback.logs && (
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.6)',
-            backdropFilter: 'blur(10px)',
-            padding: '24px',
-            borderRadius: '16px',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.4)'
-          }}>
-            <button
-              onClick={() => {
-                setSelectedFeedback(null)
-                setSelectedFeedbackId(null)
-                setFeedbackComments([])
-                setNewComment('')
+          <div>
+            <span>待受理</span>
+            <strong className="metric-warn">{counts.pending}</strong>
+          </div>
+          <div>
+            <span>处理中</span>
+            <strong className="metric-info">{counts.processing}</strong>
+          </div>
+          <div>
+            <span>已办结</span>
+            <strong className="metric-success">{counts.resolved}</strong>
+          </div>
+          <div>
+            <span>暂无法处理</span>
+            <strong className="metric-muted">{counts.noSolution}</strong>
+          </div>
+        </div>
+        <div className="admin-toolbar">
+          <label className="admin-search">
+            <span>搜索</span>
+            <input
+              value={search}
+              onChange={(event) => {
+                clearSelection();
+                feedbackListScrollTopRef.current = 0;
+                setSearch(event.target.value);
               }}
-              style={{
-                marginBottom: '16px',
-                padding: '8px 16px',
-                background: 'rgba(102, 126, 234, 0.1)',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                color: '#667eea',
-                fontSize: '14px',
-                fontWeight: '600',
+              placeholder="内容或设备标识"
+            />
+          </label>
+          <label>
+            <span>类型</span>
+            <select
+              value={category}
+              onChange={(event) => {
+                clearSelection();
+                feedbackListScrollTopRef.current = 0;
+                setCategory(event.target.value);
               }}
             >
-              ← 返回列表
-            </button>
-
-            <div style={{ marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1d1d1d', marginBottom: '12px' }}>
-                反馈详情
-              </h2>
-              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                <p style={{ fontSize: '14px', color: '#86868b', margin: 0 }}>
-                  提交时间: {new Date(selectedFeedback.created_at).toLocaleString('zh-CN')}
-                </p>
-                <p style={{ fontSize: '14px', color: '#86868b', margin: 0 }}>
-                  设备ID: {selectedFeedback.device_id?.slice(0, 16)}...
-                </p>
-                <p style={{ fontSize: '14px', color: '#86868b', margin: 0 }}>
-                  反馈ID: {selectedFeedback.id?.slice(0, 8)}...
-                </p>
-              </div>
-              {selectedFeedback.status && statusConfig[selectedFeedback.status as keyof typeof statusConfig] && (
-                <div style={{
-                  display: 'inline-block',
-                  padding: '6px 12px',
-                  borderRadius: '12px',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  background: statusConfig[selectedFeedback.status as keyof typeof statusConfig].bg,
-                  color: statusConfig[selectedFeedback.status as keyof typeof statusConfig].color,
-                  border: `1px solid ${statusConfig[selectedFeedback.status as keyof typeof statusConfig].color}`,
-                }}>
-                  {statusConfig[selectedFeedback.status as keyof typeof statusConfig].icon} {statusConfig[selectedFeedback.status as keyof typeof statusConfig].label}
-                </div>
-              )}
+              <option value="all">全部类型</option>
+              <option value="suggestion">建议</option>
+              <option value="complaint">投诉</option>
+              <option value="report">举报</option>
+            </select>
+          </label>
+          <label>
+            <span>状态</span>
+            <select
+              value={status}
+              onChange={(event) => {
+                clearSelection();
+                feedbackListScrollTopRef.current = 0;
+                setStatus(event.target.value);
+              }}
+            >
+              <option value="all">全部状态</option>
+              <option value="pending">待受理</option>
+              <option value="in_progress">处理中</option>
+              <option value="resolved">已办结</option>
+              <option value="no_solution">暂无法处理</option>
+            </select>
+          </label>
+        </div>
+        {message && (
+          <div
+            className={`admin-message is-${messageTone}`}
+            role={messageTone === "error" ? "alert" : "status"}
+          >
+            {message}
+          </div>
+        )}
+        <div
+          className={`admin-workspace ${selected ? "is-detail-open" : ""}`}
+        >
+          <section className="admin-list-panel">
+            <div className="panel-heading">
+              <h2>提交记录</h2>
+              <span>{filtered.length} 条</span>
             </div>
-
-            <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1d1d1d', marginBottom: '12px' }}>
-                📝 反馈内容
-              </h3>
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.8)',
-                padding: '16px',
-                borderRadius: '12px',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-              }}>
-                <div style={{ fontSize: '14px', color: '#1d1d1f', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                  {selectedFeedback.original_content}
-                </div>
+            {filtered.length === 0 ? (
+              <div className="admin-empty">
+                <strong>暂无匹配提交</strong>
+                <span>请调整筛选条件。</span>
               </div>
-            </div>
-
-            {/* 已有解决方案显示 */}
-            {selectedFeedback.status && selectedFeedback.status !== 'pending' && selectedFeedback.solution && (
-              <div style={{ marginBottom: '24px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1d1d1d', marginBottom: '12px' }}>
-                  {selectedFeedback.status === 'resolved' ? '✅ 已有解决方案' : selectedFeedback.status === 'in_progress' ? '🔄 已有处理进展' : '⚠️ 已有处理说明'}
-                </h3>
-                <div style={{
-                  background: selectedFeedback.status === 'resolved' ? 'rgba(52, 199, 89, 0.1)' :
-                             selectedFeedback.status === 'in_progress' ? 'rgba(255, 149, 0, 0.1)' :
-                             'rgba(142, 142, 147, 0.1)',
-                  padding: '16px',
-                  borderRadius: '12px',
-                  border: `1px solid ${selectedFeedback.status === 'resolved' ? '#34c759' : selectedFeedback.status === 'in_progress' ? '#ff9500' : '#8e8e93'}`,
-                }}>
-                  <div style={{ fontSize: '14px', color: '#1d1d1f', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                    {selectedFeedback.solution}
-                  </div>
-                  {selectedFeedback.solution_updated_at && (
-                    <div style={{ fontSize: '12px', color: '#86868b', marginTop: '8px' }}>
-                      更新时间: {new Date(selectedFeedback.solution_updated_at).toLocaleString('zh-CN')}
+            ) : (
+              <div
+                className="feedback-list"
+                ref={feedbackListRef}
+                onScroll={(event) => {
+                  feedbackListScrollTopRef.current = event.currentTarget.scrollTop;
+                }}
+              >
+                {filtered.map((item) => (
+                  <button
+                    key={item.id}
+                    className={`feedback-row ${selected?.id === item.id ? "is-selected" : ""}`}
+                    onClick={() => selectFeedback(item)}
+                  >
+                    <div className="feedback-row-main">
+                      <div className="feedback-row-title">
+                        <span className={`status-dot status-${item.status}`} />
+                        {categoryLabels[item.category]}
+                        <span className="feedback-id">
+                          #{item.id.slice(0, 8)}
+                        </span>
+                        {(item.unread_notifications || 0) > 0 && (
+                          <span className="feedback-unread">
+                            {item.unread_notifications} 条新消息
+                          </span>
+                        )}
+                      </div>
+                      <p>{item.original_content || "未提供正文内容"}</p>
+                      <time>
+                        {new Date(item.created_at).toLocaleString("zh-CN")}
+                      </time>
                     </div>
-                  )}
-                </div>
+                    <span
+                      className={`status-badge status-badge-${item.status}`}
+                    >
+                      {statusLabels[item.status]}
+                    </span>
+                  </button>
+                ))}
               </div>
             )}
-
-            {/* 更新状态和解决方案 */}
-            {selectedFeedback.status === 'pending' || selectedFeedback.status === 'in_progress' ? (
-              <div style={{ marginBottom: '24px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1d1d1d', marginBottom: '12px' }}>
-                  更新状态
-                </h3>
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.5)',
-                  padding: '16px',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(0, 0, 0, 0.1)',
-                }}>
-                  <textarea
-                    id="solution-input"
-                    placeholder="解决方案 / 处理意见（标记为已解决或暂不解决时必填，≥10字）"
-                    style={{
-                      width: '100%',
-                      minHeight: '80px',
-                      padding: '10px',
-                      fontSize: '13px',
-                      border: '2px solid rgba(0, 0, 0, 0.1)',
-                      borderRadius: '8px',
-                      resize: 'vertical',
-                      fontFamily: 'inherit',
-                      boxSizing: 'border-box',
-                      marginBottom: '12px',
-                    }}
-                  />
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    <button
-                      onClick={() => {
-                        const input = document.getElementById('solution-input') as HTMLTextAreaElement
-                        handleStatusUpdate(selectedFeedback.id, 'in_progress', input?.value)
-                      }}
-                      style={{
-                        padding: '8px 16px',
-                        background: 'rgba(255, 149, 0, 0.1)',
-                        border: '1px solid #ff9500',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        color: '#ff9500',
-                      }}
-                    >
-                      🔄 持续跟进
-                    </button>
-                    <button
-                      onClick={() => {
-                        const input = document.getElementById('solution-input') as HTMLTextAreaElement
-                        if (!input?.value || input.value.trim().length < 10) {
-                          alert('标记为已解决时，解决方案必须至少 10 个字符')
-                          return
-                        }
-                        handleStatusUpdate(selectedFeedback.id, 'resolved', input?.value)
-                      }}
-                      style={{
-                        padding: '8px 16px',
-                        background: 'rgba(52, 199, 89, 0.1)',
-                        border: '1px solid #34c759',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        color: '#34c759',
-                      }}
-                    >
-                      ✅ 已解决
-                    </button>
-                    <button
-                      onClick={() => {
-                        const input = document.getElementById('solution-input') as HTMLTextAreaElement
-                        if (!input?.value || input.value.trim().length < 10) {
-                          alert('标记为暂不解决时，处理说明必须至少 10 个字符')
-                          return
-                        }
-                        handleStatusUpdate(selectedFeedback.id, 'no_solution', input?.value)
-                      }}
-                      style={{
-                        padding: '8px 16px',
-                        background: 'rgba(142, 142, 147, 0.1)',
-                        border: '1px solid #8e8e93',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        color: '#8e8e93',
-                      }}
-                    >
-                      ⚠️ 暂不解决
-                    </button>
-                  </div>
-                </div>
+          </section>
+          <aside className="admin-detail-panel">
+            {!selected ? (
+              <div className="admin-detail-empty">
+                <span className="detail-icon">↗</span>
+                <h2>选择提交记录</h2>
+                <p>详情与处理操作会显示在这里。</p>
               </div>
-            ) : null}
-
-            {/* 评论功能 */}
-            <div style={{ marginTop: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1d1d1d', margin: 0 }}>
-                  💬 讨论与沟通
-                </h3>
-                <button
-                  onClick={() => {
-                    if (selectedFeedbackId === selectedFeedback.id) {
-                      setSelectedFeedbackId(null)
-                      setFeedbackComments([])
-                    } else {
-                      setSelectedFeedbackId(selectedFeedback.id)
-                      fetchComments(selectedFeedback.id)
-                    }
-                  }}
-                  style={{
-                    padding: '6px 12px',
-                    background: 'rgba(102, 126, 234, 0.1)',
-                    border: '1px solid #667eea',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    color: '#667eea',
-                  }}
-                >
-                  {selectedFeedbackId === selectedFeedback.id ? '收起评论' : '展开评论'}
-                </button>
-              </div>
-
-              {selectedFeedbackId === selectedFeedback.id && (
-                <>
-                  <div style={{ background: 'rgba(255, 255, 255, 0.3)', padding: '16px', borderRadius: '12px', marginBottom: '12px', border: '1px solid rgba(0, 0, 0, 0.05)', maxHeight: '400px', overflowY: 'auto' }}>
-                    {feedbackComments.length === 0 ? (
-                      <p style={{ color: '#86868b', textAlign: 'center', padding: '20px', fontSize: '13px' }}>暂无评论</p>
-                    ) : (
-                      feedbackComments.map((comment) => (
-                        <div key={comment.id} style={{
-                          background: comment.commenter_type === 'admin' ? 'rgba(102, 126, 234, 0.1)' : 'rgba(255, 255, 255, 0.4)',
-                          padding: '10px',
-                          borderRadius: '8px',
-                          marginBottom: '8px',
-                          border: comment.commenter_type === 'admin' ? '1px solid #667eea' : '1px solid rgba(0, 0, 0, 0.1)'
-                        }}>
-                          <div style={{ fontSize: '11px', color: '#86868b', marginBottom: '4px' }}>
-                            {comment.commenter_type === 'admin' ? '👨‍💼 管理员' : '👤 用户'} · {new Date(comment.created_at).toLocaleString('zh-CN')}
-                          </div>
-                          <div style={{ fontSize: '13px', color: '#1d1d1f', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
-                            {comment.content}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-
-                  <div>
-                    <textarea
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      placeholder="💬 回复用户，说明处理情况或提出疑问..."
-                      style={{
-                        width: '100%',
-                        minHeight: '60px',
-                        padding: '10px',
-                        fontSize: '13px',
-                        border: '2px solid rgba(0, 0, 0, 0.1)',
-                        borderRadius: '8px',
-                        resize: 'vertical',
-                        fontFamily: 'inherit',
-                        boxSizing: 'border-box',
-                      }}
-                    />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
-                      <span style={{ fontSize: '11px', color: '#86868b' }}>{newComment.length}/1000 字符</span>
-                      <button
-                        onClick={handleAddComment}
-                        disabled={!newComment.trim()}
-                        style={{
-                          padding: '6px 14px',
-                          background: !newComment.trim() ? 'rgba(134, 134, 134, 0.3)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          cursor: !newComment.trim() ? 'not-allowed' : 'pointer',
-                          opacity: !newComment.trim() ? 0.6 : 1,
-                        }}
-                      >
-                        发送评论
-                      </button>
+            ) : (
+              <>
+                <div className="detail-header">
+                  <div className="admin-detail-title">
+                    <button
+                      type="button"
+                      className="admin-detail-back"
+                      onClick={() => clearSelection(true)}
+                    >
+                      <span aria-hidden="true">←</span>
+                      提交记录
+                    </button>
+                    <div className="admin-detail-heading">
+                      <h2>
+                        {categoryLabels[selected.category]}{" "}
+                        <span>#{selected.id.slice(0, 8)}</span>
+                      </h2>
+                      <div className="detail-tags">
+                        <span className="detail-tag">
+                          <span className="detail-tag-label">提交</span>
+                          <time>
+                            {new Date(selected.created_at).toLocaleString(
+                              "zh-CN",
+                            )}
+                          </time>
+                        </span>
+                        <span
+                          className="detail-tag detail-tag-device"
+                          title={selected.device_id || "未记录设备标识"}
+                        >
+                          <span className="detail-tag-label">设备</span>
+                          <b>{selected.device_id || "未记录"}</b>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {selectedFeedback?.logs && (
-          <div style={{ 
-            background: 'rgba(255, 255, 255, 0.6)',
-            backdropFilter: 'blur(10px)',
-            padding: '24px',
-            borderRadius: '16px',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.4)'
-          }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1d1d1d', marginBottom: '20px' }}>
-              📋 操作日志
-            </h2>
-            <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
-              {logs.map((log, index) => (
-                <div
-                  key={index}
-                  style={{
-                    padding: '12px',
-                    borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-                    fontSize: '13px',
-                    display: 'grid',
-                    gridTemplateColumns: '150px 1fr 1fr',
-                    gap: '12px',
-                  }}
-                >
-                  <div style={{ color: '#86868b' }}>
-                    {new Date(log.created_at).toLocaleString('zh-CN')}
+                </div>
+                <div className="admin-detail-body" key={selected.id}>
+                  <div className="detail-overview">
+                    <div className="detail-content">
+                      <h3>提交内容</h3>
+                      <p>{selected.original_content || "未提供正文内容"}</p>
+                    </div>
+                    <div className="detail-section">
+                      <h3>处理说明</h3>
+                      <textarea
+                        id="solution"
+                        aria-label="处理说明"
+                        value={solution}
+                        onChange={(event) => setSolution(event.target.value)}
+                        placeholder="填写本次核查结论、处理动作或原因"
+                        rows={3}
+                      />
+                      <div className="status-actions">
+                        <button
+                          className={`process-action ${selected.status === "in_progress" ? "is-active" : ""}`}
+                          aria-pressed={selected.status === "in_progress"}
+                          disabled={Boolean(actionLoading)}
+                          onClick={() => updateStatus("in_progress")}
+                        >
+                          {actionLoading === "in_progress"
+                            ? "正在保存…"
+                            : "设为处理中"}
+                        </button>
+                        <button
+                          className={`success-action ${selected.status === "resolved" ? "is-active" : ""}`}
+                          aria-pressed={selected.status === "resolved"}
+                          disabled={Boolean(actionLoading)}
+                          onClick={() => updateStatus("resolved")}
+                        >
+                          {actionLoading === "resolved"
+                            ? "正在保存…"
+                            : "标记已办结"}
+                        </button>
+                        <button
+                          className={`muted-action ${selected.status === "no_solution" ? "is-active" : ""}`}
+                          aria-pressed={selected.status === "no_solution"}
+                          disabled={Boolean(actionLoading)}
+                          onClick={() => updateStatus("no_solution")}
+                        >
+                          {actionLoading === "no_solution"
+                            ? "正在保存…"
+                            : "暂无法处理"}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ color: '#667eea', fontWeight: '600' }}>
-                    {log.action}
-                  </div>
-                  <div style={{ color: '#86868b' }}>
-                    {log.target_id ? `反馈ID: ${log.target_id.slice(0, 8)}...` : '-'}
+                  <div className="detail-conversation">
+                    <h3>
+                      沟通记录 <span>{comments.length}</span>
+                    </h3>
+                    <div className="comment-list">
+                      {commentsLoading ? (
+                        <div className="admin-inline-loading">
+                          <span className="spinner" />
+                          正在加载沟通记录…
+                        </div>
+                      ) : comments.length ? (
+                        comments.map((item) => (
+                          <div
+                            className={`comment ${item.commenter_type === "admin" ? "comment-admin" : ""}`}
+                            key={item.id}
+                          >
+                            <div>
+                              <strong>
+                                {item.commenter_type === "admin"
+                                  ? "处理人员回复"
+                                  : "提交人补充"}
+                              </strong>
+                              <time>
+                                {new Date(item.created_at).toLocaleString(
+                                  "zh-CN",
+                                )}
+                              </time>
+                            </div>
+                            <p>{item.content}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="empty-inline">暂无补充说明。</p>
+                      )}
+                    </div>
+                    <form className="comment-form" onSubmit={addComment}>
+                      <input
+                        value={comment}
+                        onChange={(event) => setComment(event.target.value)}
+                        placeholder="输入回复内容"
+                        aria-label="回复内容"
+                      />
+                      <button
+                        type="submit"
+                        disabled={
+                          actionLoading === "comment" ||
+                          comment.trim().length < 2
+                        }
+                      >
+                        {actionLoading === "comment" ? "正在发送…" : "发送"}
+                      </button>
+                    </form>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )
+              </>
+            )}
+          </aside>
+        </div>
+      </section>
+    </main>
+  );
 }

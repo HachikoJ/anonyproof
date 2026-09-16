@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <link rel="icon" href="brand/anonyproof-mark.svg" type="image/svg+xml" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>匿证 | 完全匿名的端到端加密反馈平台</title>
@@ -97,20 +98,29 @@
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       font-weight: 800;
-      letter-spacing: -0.02em;
     }
     .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(37,99,235,.24), rgba(124,58,237,.24));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 10px 30px rgba(37,99,235,.18);
+      display: block;
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+    .brand-copy {
+      display: grid;
+      line-height: 1.05;
+    }
+    .brand-copy strong {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 750;
+    }
+    .brand-copy small {
+      margin-top: 4px;
+      color: rgba(226,232,240,.72);
+      font-size: 9px;
+      font-weight: 700;
     }
     .nav-links {
       display: flex;
@@ -562,8 +572,11 @@
     <div class="navbar">
       <div class="container nav-inner">
         <div class="brand">
-          <span class="brand-mark"><i class="fa-solid fa-shield-halved"></i></span>
-          <span>匿证</span>
+          <img class="brand-mark" src="brand/anonyproof-mark.svg" alt="" width="512" height="512" />
+          <span class="brand-copy">
+            <strong>匿证</strong>
+            <small>ANONYPROOF</small>
+          </span>
         </div>
         <nav class="nav-links">
           <a href="#features">核心能力</a>
@@ -789,7 +802,7 @@
         <p>现代前端栈 + 轻量后端组合。</p>
       </div>
       <div class="tech-grid">
-        <div class="tech-item">Next.js 14</div>
+        <div class="tech-item">Next.js 16</div>
         <div class="tech-item">TypeScript 5</div>
         <div class="tech-item">React 18</div>
         <div class="tech-item">Express 5</div>

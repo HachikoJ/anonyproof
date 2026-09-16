@@ -27,7 +27,7 @@
 - ✅ `logs/` - 日志目录
 
 ### 配置文件
-- ✅ `ecosystem.config.prod.js` - PM2 生产配置
+- ✅ `ecosystem.prod.config.js` - PM2 生产配置
 
 ---
 

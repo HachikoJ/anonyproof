@@ -7,15 +7,17 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/multer": "^2.0.0",
-    "better-sqlite3": "^9.2.2",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "express-rate-limit": "^8.2.1",
-    "express-validator": "^7.3.1",
-    "multer": "^2.1.0",
-    "user-agent": "^1.0.4",
-    "uuid": "^9.0.1",
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.0",
+    "uuid": "^14.0.2",
     "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.19.43",
+    "typescript": "^5.9.3"
   }
 }

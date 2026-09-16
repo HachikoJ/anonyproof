@@ -7,36 +7,38 @@ module.exports = {
     {
       name: 'anonyproof-frontend',
       script: 'npm',
-      args: 'run dev',
+      args: 'run start',
       cwd: projectRoot,
       env: {
-        NODE_ENV: 'development',
-        PORT: 3000
+        NODE_ENV: 'production',
+        PORT: 3000,
       },
       instances: 1,
       autorestart: true,
       watch: false,
       max_memory_restart: '500M',
-      env_development: {
-        NODE_ENV: 'development'
-      }
+      error_file: './logs/frontend-error.log',
+      out_file: './logs/frontend-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
+      merge_logs: true,
     },
     {
       name: 'anonyproof-backend',
       script: 'npm',
-      args: 'run dev',
+      args: 'run start',
       cwd: path.join(projectRoot, 'server'),
       env: {
-        NODE_ENV: 'development',
-        PORT: 4000
+        NODE_ENV: 'production',
+        PORT: 4000,
       },
       instances: 1,
       autorestart: true,
       watch: false,
       max_memory_restart: '300M',
-      env_development: {
-        NODE_ENV: 'development'
-      }
-    }
-  ]
+      error_file: './logs/backend-error.log',
+      out_file: './logs/backend-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
+      merge_logs: true,
+    },
+  ],
 }

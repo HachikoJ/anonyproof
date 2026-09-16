@@ -1,10 +1,8 @@
 // 访问统计中间件
 import { logger } from '../utils/logger'
-import Database from 'better-sqlite3'
-import path from 'path'
+import { openDatabase } from '../utils/database'
 
-const dbPath = path.join(__dirname, '../../data/anonyproof.db')
-const db = new Database(dbPath)
+const db = openDatabase()
 
 // 创建访问统计表
 db.exec(`

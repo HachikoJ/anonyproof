@@ -10,6 +10,7 @@ export interface Feedback {
   solution?: string
   solution_updated_at?: string
   solution_admin_ip?: string
+  unread_notifications?: number
 }
 
 // 评论类型
