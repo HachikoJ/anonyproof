@@ -26,8 +26,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    # npm 10.8 偶发 "Exit handler never called!"，且可能以退出码 0 结束并留下残缺的
-    # node_modules，因此这里重试并显式校验直接依赖是否装全。
+    # Node 20 自带的 npm 10.8.2 存在 "Exit handler never called!" 崩溃问题
+    # （npm/cli#7666），固定到 npm 11 规避。
+    - name: Upgrade npm
+      run: npm install --global npm@11
+
+    # 崩溃时会留下残缺的 node_modules，因此重试并显式校验直接依赖是否装全。
     - name: Install dependencies
       run: |
         verify_dependencies() {
@@ -61,6 +65,14 @@ jobs:
 
         echo "::error::npm ci failed after 3 attempts"
         exit 1
+
+    - name: Show npm debug log
+      if: failure()
+      run: |
+        log_dir="$HOME/.npm/_logs"
+        if [ -d "$log_dir" ]; then
+          tail -n 60 "$(ls -t "$log_dir"/*.log | head -n 1)" || true
+        fi
 
     - name: Type check
       run: npm run type-check
