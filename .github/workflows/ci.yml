@@ -9,8 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     strategy:
+      fail-fast: false
       matrix:
         node-version: [20.x]
 
@@ -24,8 +26,41 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+    # npm 10.8 偶发 "Exit handler never called!"，且可能以退出码 0 结束并留下残缺的
+    # node_modules，因此这里重试并显式校验直接依赖是否装全。
     - name: Install dependencies
-      run: npm ci
+      run: |
+        verify_dependencies() {
+          node -e '
+            const fs = require("fs");
+            const pkg = require("./package.json");
+            const required = [
+              ...Object.keys(pkg.dependencies || {}),
+              ...Object.keys(pkg.devDependencies || {}),
+            ];
+            const missing = required.filter(
+              (name) => !fs.existsSync("node_modules/" + name + "/package.json")
+            );
+            if (missing.length > 0) {
+              console.error("missing dependencies: " + missing.join(", "));
+              process.exit(1);
+            }
+            console.log("dependency tree verified: " + required.length + " direct dependencies");
+          '
+        }
+
+        for attempt in 1 2 3; do
+          if npm ci --no-audit --no-fund --ignore-scripts && verify_dependencies; then
+            echo "npm ci succeeded on attempt ${attempt}"
+            exit 0
+          fi
+          echo "::warning::npm ci attempt ${attempt} failed or left an incomplete tree, retrying"
+          rm -rf node_modules
+          npm cache clean --force || true
+        done
+
+        echo "::error::npm ci failed after 3 attempts"
+        exit 1
 
     - name: Type check
       run: npm run type-check
