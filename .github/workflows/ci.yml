@@ -85,3 +85,5 @@ jobs:
       with:
         name: build-${{ matrix.node-version }}
         path: .next
+        # .next 以点开头，v4 默认会跳过隐藏文件，需显式开启。
+        include-hidden-files: true
