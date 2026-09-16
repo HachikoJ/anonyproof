@@ -605,11 +605,12 @@ export default function HomePage() {
                 <span className="back-link-label">返回我的提交</span>
               </button>
               <div className="detail-head-main">
-                <div className="detail-title-line">
-                  <h1>提交详情</h1>
-                  <span className="detail-reference">{categoryName(selectedFeedback.category)} · {selectedFeedback.id.slice(0, 8).toUpperCase()}</span>
+                <h1>提交详情</h1>
+                <div className="detail-subline">
+                  <span className={`category-tag category-tag-${selectedFeedback.category}`}>{categoryName(selectedFeedback.category)}</span>
+                  <span className="detail-code">#{selectedFeedback.id.slice(0, 8).toUpperCase()}</span>
+                  <time>{formatDate(selectedFeedback.created_at)}</time>
                 </div>
-                <time>{formatDate(selectedFeedback.created_at)}</time>
               </div>
               <StatusBadge status={selectedFeedback.status} />
             </div>
