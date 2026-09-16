@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDemoConfig } from '../hooks/useDemoConfig'
+import { demoPageSessionHeaders } from '../utils/pageSession'
 import ExternalLinks from '../components/ExternalLinks'
 import type {
   AccessLog,
@@ -32,7 +33,14 @@ class ApiError extends Error {
 }
 
 const api = (path: string, init?: RequestInit) =>
-  fetch(`/anonyproof/api${path}`, { credentials: 'same-origin', ...init })
+  fetch(`/anonyproof/api${path}`, {
+    credentials: 'same-origin',
+    ...init,
+    headers: {
+      ...demoPageSessionHeaders(),
+      ...((init?.headers as Record<string, string> | undefined) ?? {}),
+    },
+  })
 
 async function readResponseJson(response: Response) {
   if (!response.headers.get('content-type')?.includes('application/json')) {

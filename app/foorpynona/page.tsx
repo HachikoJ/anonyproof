@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDemoConfig } from "../hooks/useDemoConfig";
+import { demoPageSessionHeaders } from "../utils/pageSession";
 import ExternalLinks from "../components/ExternalLinks";
 
 type Feedback = {
@@ -224,7 +225,9 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    fetch("/anonyproof/api/admin/auth/session")
+    fetch("/anonyproof/api/admin/auth/session", {
+      headers: demoPageSessionHeaders(),
+    })
       .then((response) => readApiJson(response))
       .then(async (data) => {
         setAuthenticated(data.authenticated);
@@ -318,7 +321,10 @@ export default function AdminPage() {
     try {
       const response = await fetch("/anonyproof/api/admin/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...demoPageSessionHeaders(),
+        },
         credentials: "same-origin",
         body: JSON.stringify({ password }),
       });

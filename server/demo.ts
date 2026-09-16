@@ -476,7 +476,7 @@ export function seedDemoData(db: Database.Database) {
 }
 
 // 演示站点所有访客共用同一批演示数据，任何一个访客点开记录都会把未读状态写库清零，
-// 后续访客再打开页面就看不到通知提醒；因此每次打开演示页面时，
+// 后续访客再打开页面就看不到通知提醒；因此新访客首次进入时，
 // 把提交人和管理员的未读状态都恢复为种子默认值。
 export function resetDemoNotifications(db: Database.Database) {
   const result = db.prepare(`
@@ -487,4 +487,39 @@ export function resetDemoNotifications(db: Database.Database) {
   `).run(demoReadCutoff, DEMO_DEVICE_ID, DEMO_SECONDARY_DEVICE_ID)
 
   return result.changes
+}
+
+let demoSessionTableReady = false
+
+function ensureDemoSessionTable(db: Database.Database) {
+  if (demoSessionTableReady) return
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS demo_page_sessions (
+      id TEXT PRIMARY KEY,
+      created_at INTEGER NOT NULL
+    )
+  `)
+  demoSessionTableReady = true
+}
+
+// 未读状态只在“新访客进入”时恢复一次：同一个标签页会话内的站内跳转、软导航和接口轮询都不会重复重置，
+// 因此用户已经读完的通知不会在浏览过程中重新变成未读，数字也不会自行上涨。
+// 新开标签页或手动刷新页面会带上新的会话标识，此时恢复演示默认未读状态。
+export function resetDemoNotificationsForSession(db: Database.Database, sessionId?: string | null) {
+  const id = sessionId?.trim()
+  if (!id) return 0
+
+  ensureDemoSessionTable(db)
+
+  const now = Date.now()
+  const inserted = db
+    .prepare('INSERT OR IGNORE INTO demo_page_sessions (id, created_at) VALUES (?, ?)')
+    .run(id, now)
+
+  if (inserted.changes === 0) return 0
+
+  db.prepare('DELETE FROM demo_page_sessions WHERE created_at < ?')
+    .run(now - 7 * 24 * 60 * 60 * 1000)
+
+  return resetDemoNotifications(db)
 }

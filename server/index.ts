@@ -17,7 +17,7 @@ import {
   DEMO_DEVICE_ID,
   DEMO_NOTICE,
   isDemoMode,
-  resetDemoNotifications,
+  resetDemoNotificationsForSession,
   seedDemoData,
 } from './demo'
 
@@ -88,13 +88,18 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' })
 })
 
-app.get('/api/demo/config', (_req, res) => {
+// 浏览器每个标签页会话只带一个新的标识，据此判断是否需要恢复演示未读状态。
+function demoPageSessionId(req: express.Request) {
+  return req.get('x-anonyproof-demo-session')
+}
+
+app.get('/api/demo/config', (req, res) => {
   if (!demoMode) {
     return res.json({ success: true, demoMode: false })
   }
 
-  // 演示数据由所有访客共用，这里恢复默认未读状态，保证每次打开页面都能看到通知提醒。
-  resetDemoNotifications(db)
+  // 演示数据由所有访客共用，新访客首次进入时恢复默认未读状态；同一会话内的请求不会重复重置。
+  resetDemoNotificationsForSession(db, demoPageSessionId(req))
 
   return res.json({
     success: true,
@@ -197,14 +202,14 @@ app.post(['/api/admin/auth/login', '/api/admin/login'], (req, res) => {
   }
   loginAttempts.delete(ip)
   setSessionCookie(res, createSession())
-  // 演示模式下每次登录都恢复默认未读状态，让访客总能看到后台通知提醒。
-  if (demoMode) resetDemoNotifications(db)
+  // 演示模式下由新会话触发一次默认未读状态恢复，登录不会覆盖用户已经读过的状态。
+  if (demoMode) resetDemoNotificationsForSession(db, demoPageSessionId(req))
   res.json({ success: true })
 })
 
 app.get(['/api/admin/auth/session', '/api/admin/session'], (req, res) => {
-  // 后台页面每次加载都会校验会话，这里同步恢复默认未读状态，效果与前端保持一致。
-  if (demoMode) resetDemoNotifications(db)
+  // 后台页面加载会校验会话，新会话在此恢复一次默认未读状态，与前台保持一致。
+  if (demoMode) resetDemoNotificationsForSession(db, demoPageSessionId(req))
   const authenticated = validSession(getCookie(req, cookieName))
   if (authenticated) res.setHeader('Cache-Control', 'no-store')
   res.json({ authenticated })

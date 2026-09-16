@@ -86,7 +86,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://anonyproof.deline.top/anonyproo
 - 种子逻辑在 `server/demo.ts`，只在 `DEMO_MODE` 开启且库中无反馈时写入 7 条记录。
 - 覆盖企业、学校、协会/组织、工地、商业楼等场景，状态含待受理 2、处理中 2、已办结 2、暂无法处理 1，沟通记录 1~4 轮不等。
 - 浏览器侧设备标识由 `/api/demo/config` 统一下发为 `demo-device-anonyproof-2026`，因此任何访客打开“我的提交”都能看到同一批演示记录。
-- 演示访客共用同一批数据，点开记录会把未读写库清零，因此 `server/demo.ts` 的 `resetDemoNotifications()` 会在打开前台页面（`/api/demo/config`）、管理员登录与后台页面加载（`/api/admin/auth/session`）时，把用户端与管理端的未读状态恢复为种子默认值，保证每位访客都能看到通知提醒。
+- 演示访客共用同一批数据，点开记录会把未读写库清零。前端整页加载会带上标签页会话标识（请求头 `x-anonyproof-demo-session`），`server/demo.ts` 的 `resetDemoNotificationsForSession()` 只在该标识首次出现时恢复用户端与管理端的种子默认未读状态：站内跳转、软导航和接口轮询不会让已读通知重新变成未读，只有手动刷新或新开标签页才会重置。
 
 ## 上线自检
 
