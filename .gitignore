@@ -51,6 +51,10 @@ pm2-*.log
 *.swo
 *~
 
+# 本地工具产物
+.playwright-cli/
+/output/
+
 # OS
 Thumbs.db
 .DS_Store

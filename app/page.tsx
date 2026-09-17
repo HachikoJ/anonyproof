@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useCrypto } from './hooks/useCrypto'
 import ExternalLinks from './components/ExternalLinks'
+import { recordCode } from './utils/recordCode'
 import type { Feedback, FeedbackComment, FeedbackStatus } from './types'
 
 type View = 'home' | 'category' | 'compose' | 'records' | 'detail'
@@ -135,7 +136,12 @@ export default function HomePage() {
   const [showNotifications, setShowNotifications] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [notificationError, setNotificationError] = useState('')
-  const { deviceId, encrypt } = useCrypto()
+  const [showIdentity, setShowIdentity] = useState(false)
+  const [recoveryInput, setRecoveryInput] = useState('')
+  const [recoveryMessage, setRecoveryMessage] = useState<{ tone: 'success' | 'error'; text: string } | null>(null)
+  const [recovering, setRecovering] = useState(false)
+  const [codeCopied, setCodeCopied] = useState(false)
+  const { deviceId, recoveryCode, recoverIdentity, identityLoading, identityError, encrypt } = useCrypto()
 
   const goHome = () => {
     setView('home')
@@ -212,9 +218,14 @@ export default function HomePage() {
   const openRecords = useCallback(() => {
     setView('records')
     setShowNotifications(false)
-    fetchRecords()
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [fetchRecords])
+  }, [])
+
+  // 身份初始化或换机恢复完成后，如果用户已经进入列表页，立即读取新身份名下的记录。
+  useEffect(() => {
+    if (view !== 'records' || !deviceId) return
+    fetchRecords()
+  }, [view, deviceId, fetchRecords])
 
   useEffect(() => {
     fetch('/anonyproof/api/stats')
@@ -362,6 +373,37 @@ export default function HomePage() {
       setCommentError(getErrorMessage(error, '补充说明未发送，请检查网络后重试。'))
     } finally {
       setCommentSending(false)
+    }
+  }
+
+  const copyRecoveryCode = async () => {
+    if (!recoveryCode) return
+    setRecoveryMessage(null)
+    try {
+      await navigator.clipboard.writeText(recoveryCode)
+      setCodeCopied(true)
+      window.setTimeout(() => setCodeCopied(false), 2000)
+    } catch {
+      setRecoveryMessage({ tone: 'error', text: '复制失败，请手动选择恢复码。' })
+    }
+  }
+
+  const handleRecoverIdentity = async () => {
+    const code = recoveryInput.trim()
+    if (!code) {
+      setRecoveryMessage({ tone: 'error', text: '请输入恢复码。' })
+      return
+    }
+    setRecovering(true)
+    setRecoveryMessage(null)
+    try {
+      await recoverIdentity(code)
+      setRecoveryInput('')
+      setRecoveryMessage({ tone: 'success', text: '已切换到该恢复码对应的提交记录。' })
+    } catch (error) {
+      setRecoveryMessage({ tone: 'error', text: getErrorMessage(error, '恢复失败，请检查恢复码后重试。') })
+    } finally {
+      setRecovering(false)
     }
   }
 
@@ -565,6 +607,46 @@ export default function HomePage() {
               </div>
               <button className="button button-primary" type="button" onClick={() => setView('category')}>新增提交</button>
             </div>
+            <div className="identity-bar">
+              <div className="identity-bar-code">
+                <span>本机恢复码</span>
+                <code>{recoveryCode || '正在生成…'}</code>
+              </div>
+              <div className="identity-bar-actions">
+                <button type="button" onClick={copyRecoveryCode} disabled={!recoveryCode}>{codeCopied ? '已复制' : '复制'}</button>
+                <button
+                  type="button"
+                  aria-expanded={showIdentity}
+                  onClick={() => { setShowIdentity((current) => !current); setRecoveryMessage(null) }}
+                >
+                  {showIdentity ? '收起' : '换机找回'}
+                </button>
+              </div>
+            </div>
+            {showIdentity && (
+              <div className="identity-recover">
+                <p>换浏览器或清除数据后，输入恢复码即可重新打开同一批提交。恢复码只保存在本机，恢复其他身份后需要原恢复码才能回到当前记录。</p>
+                <div className="identity-recover-form">
+                  <label className="visually-hidden" htmlFor="recovery-code">恢复码</label>
+                  <input
+                    id="recovery-code"
+                    value={recoveryInput}
+                    onChange={(event) => setRecoveryInput(event.target.value)}
+                    placeholder="输入恢复码，例如 XXXXX-XXXXX-XXXXX-XXXXX"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  <button className="button button-primary" type="button" onClick={handleRecoverIdentity} disabled={recovering || !recoveryInput.trim()}>
+                    {recovering ? '正在恢复…' : '恢复'}
+                  </button>
+                </div>
+                {recoveryMessage && (
+                  <p className={recoveryMessage.tone === 'error' ? 'identity-message is-error' : 'identity-message'} role="alert">
+                    {recoveryMessage.text}
+                  </p>
+                )}
+              </div>
+            )}
             <div className="record-summary" aria-label="提交状态概览">
               <div><span>{records.length}</span><small>全部提交</small></div>
               <div><span>{recordCounts.pending ?? 0}</span><small>待受理</small></div>
@@ -579,8 +661,10 @@ export default function HomePage() {
             </div>
             <div className="records-results">
               {recordsError && <div className="inline-error" role="alert"><span>{recordsError}</span><button type="button" onClick={fetchRecords}>重试</button></div>}
-              {recordsLoading ? (
+              {identityLoading || recordsLoading ? (
                 <div className="records-loading" aria-live="polite"><span /><p>正在读取当前浏览器的提交记录…</p></div>
+              ) : identityError ? (
+                <div className="inline-error" role="alert"><span>{identityError}</span><button type="button" onClick={() => window.location.reload()}>重新载入</button></div>
               ) : filteredRecords.length === 0 ? (
                 <div className="empty-state"><strong>{records.length ? '没有符合当前条件的记录' : '当前浏览器暂无提交记录'}</strong><p>{records.length ? '调整搜索词或筛选条件后重试。' : '提交后，处理状态和沟通记录会显示在这里。'}</p>{!records.length && <button className="button button-primary" type="button" onClick={() => setView('category')}>提交第一条线索</button>}</div>
               ) : (
@@ -591,7 +675,7 @@ export default function HomePage() {
                         <span className="record-meta">
                           <span className={`category-tag category-tag-${record.category}`}>{categoryName(record.category)}</span>
                           <time>{formatDate(record.created_at)}</time>
-                          <small className="record-id">#{record.id.slice(0, 8).toUpperCase()}</small>
+                          <small className="record-id">#{recordCode(record.id)}</small>
                           {(record.unread_notifications ?? 0) > 0 && <em className="record-unread">{record.unread_notifications} 条新消息</em>}
                         </span>
                         <strong>{record.original_content || '未提供可预览内容'}</strong>
@@ -616,7 +700,7 @@ export default function HomePage() {
                 <h1>提交详情</h1>
                 <div className="detail-subline">
                   <span className={`category-tag category-tag-${selectedFeedback.category}`}>{categoryName(selectedFeedback.category)}</span>
-                  <span className="detail-code">#{selectedFeedback.id.slice(0, 8).toUpperCase()}</span>
+                  <span className="detail-code">#{recordCode(selectedFeedback.id)}</span>
                   <time>{formatDate(selectedFeedback.created_at)}</time>
                 </div>
               </div>

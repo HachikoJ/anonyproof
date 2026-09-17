@@ -1,4 +1,5 @@
 import type Database from 'better-sqlite3'
+import crypto from 'crypto'
 
 export const DEMO_ADMIN_PASSWORD = 'demo12345678'
 export const DEMO_DEVICE_ID = 'demo-device-anonyproof-2026'
@@ -375,8 +376,9 @@ export function seedDemoData(db: Database.Database) {
   const insertFeedback = db.prepare(`
     INSERT OR IGNORE INTO feedbacks (
       id, category, encrypted_content, device_id, created_at, status,
-      original_content, solution, solution_updated_at, solution_admin_ip
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      original_content, solution, solution_updated_at, solution_admin_ip,
+      is_demo_template, is_demo_clone
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0)
   `)
 
   const summary = (content: string) => (
@@ -468,58 +470,150 @@ export function seedDemoData(db: Database.Database) {
     }
   }
 
-  const total = db.prepare('SELECT COUNT(*) AS count FROM feedbacks').get() as { count: number }
+  // 旧版本的示例数据没有模板标记；按固定 ID 回填，不能把用户真实提交误标为演示数据。
+  const markTemplate = db.prepare('UPDATE feedbacks SET is_demo_template = 1, is_demo_clone = 0 WHERE id = ?')
+  for (const feedback of feedbacks) markTemplate.run(feedback.id)
+
+  // 演示模板代表公开示例总量；逐浏览器副本只用于隔离交互状态，不能反复抬高首页统计。
+  const total = db.prepare('SELECT COUNT(*) AS count FROM feedbacks WHERE is_demo_clone = 0').get() as { count: number }
   db.prepare('UPDATE stats SET total_feedbacks = ?, encrypted_count = ? WHERE id = 1')
     .run(total.count, total.count)
 
   seedAccessDemoData(db)
 }
 
-// 演示站点所有访客共用同一批演示数据，任何一个访客点开记录都会把未读状态写库清零，
-// 后续访客再打开页面就看不到通知提醒；因此新访客首次进入时，
-// 把提交人和管理员的未读状态都恢复为种子默认值。
-export function resetDemoNotifications(db: Database.Database) {
-  const result = db.prepare(`
-    UPDATE notifications
-    SET is_read = CASE WHEN created_at < ? THEN 1 ELSE 0 END
-    WHERE (recipient_type = 'user' AND recipient_id IN (?, ?))
-       OR (recipient_type = 'admin' AND recipient_id = 'admin')
-  `).run(demoReadCutoff, DEMO_DEVICE_ID, DEMO_SECONDARY_DEVICE_ID)
-
-  return result.changes
+type DemoFeedbackRow = {
+  id: string
+  category: DemoCategory
+  encrypted_content: string
+  created_at: number
+  status: DemoStatus
+  original_content: string
+  solution: string
+  solution_updated_at: number | null
+  solution_admin_ip: string
 }
 
-let demoSessionTableReady = false
+type DemoCommentRow = {
+  commenter_type: 'user' | 'admin'
+  content: string
+  created_at: number
+  admin_ip: string | null
+  attachment_id: string | null
+}
 
-function ensureDemoSessionTable(db: Database.Database) {
-  if (demoSessionTableReady) return
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS demo_page_sessions (
-      id TEXT PRIMARY KEY,
-      created_at INTEGER NOT NULL
-    )
+type DemoNotificationRow = {
+  recipient_type: 'user' | 'admin'
+  type: 'comment' | 'status_update' | 'new_feedback'
+  title: string
+  content: string
+  is_read: number
+  created_at: number
+}
+
+// 演示副本按浏览器各存一份。正常访客量下开销可以忽略，但爬虫反复创建身份会持续放大数据库，
+// 因此达到上限后只签发身份、不再复制演示数据。
+const maxDemoClones = Math.max(0, Number(process.env.DEMO_MAX_CLONES || 3000))
+
+// 每个浏览器首次获得身份时，复制一份独立的演示记录。
+// 这样示例内容仍然完整，但任何浏览器的已读状态、补充回复和后台处理都不会影响其他访客。
+export function cloneDemoDataForDevice(db: Database.Database, deviceId: string) {
+  const state = db.prepare(
+    'SELECT demo_initialized FROM client_identities WHERE device_id = ?',
+  ).get(deviceId) as { demo_initialized: number } | undefined
+
+  if (!state || state.demo_initialized) return 0
+
+  const initialized = db.prepare(
+    'SELECT COUNT(*) AS count FROM client_identities WHERE demo_initialized = 1',
+  ).get() as { count: number }
+  if (initialized.count >= maxDemoClones) return 0
+
+  const templates = db.prepare(`
+    SELECT id, category, encrypted_content, created_at, status, original_content,
+      solution, solution_updated_at, solution_admin_ip
+    FROM feedbacks
+    WHERE is_demo_template = 1
+    ORDER BY created_at ASC
+  `).all() as DemoFeedbackRow[]
+
+  const insertFeedback = db.prepare(`
+    INSERT INTO feedbacks (
+      id, category, encrypted_content, device_id, created_at, status,
+      original_content, solution, solution_updated_at, solution_admin_ip,
+      is_demo_template, is_demo_clone
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)
   `)
-  demoSessionTableReady = true
-}
+  const insertComment = db.prepare(`
+    INSERT INTO feedback_comments (
+      feedback_id, commenter_type, content, created_at, admin_ip, attachment_id
+    ) VALUES (?, ?, ?, ?, ?, ?)
+  `)
+  const insertNotification = db.prepare(`
+    INSERT INTO notifications (
+      recipient_type, recipient_id, feedback_id, type, title, content, is_read, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `)
 
-// 未读状态只在“新访客进入”时恢复一次：同一个标签页会话内的站内跳转、软导航和接口轮询都不会重复重置，
-// 因此用户已经读完的通知不会在浏览过程中重新变成未读，数字也不会自行上涨。
-// 新开标签页或手动刷新页面会带上新的会话标识，此时恢复演示默认未读状态。
-export function resetDemoNotificationsForSession(db: Database.Database, sessionId?: string | null) {
-  const id = sessionId?.trim()
-  if (!id) return 0
+  const clone = db.transaction(() => {
+    for (const template of templates) {
+      const feedbackId = `demo-${crypto.randomUUID()}`
+      insertFeedback.run(
+        feedbackId,
+        template.category,
+        template.encrypted_content,
+        deviceId,
+        template.created_at,
+        template.status,
+        template.original_content,
+        template.solution,
+        template.solution_updated_at,
+        template.solution_admin_ip,
+      )
 
-  ensureDemoSessionTable(db)
+      const comments = db.prepare(`
+        SELECT commenter_type, content, created_at, admin_ip, attachment_id
+        FROM feedback_comments
+        WHERE feedback_id = ?
+        ORDER BY created_at ASC
+      `).all(template.id) as DemoCommentRow[]
+      for (const comment of comments) {
+        insertComment.run(
+          feedbackId,
+          comment.commenter_type,
+          comment.content,
+          comment.created_at,
+          comment.admin_ip,
+          comment.attachment_id,
+        )
+      }
 
-  const now = Date.now()
-  const inserted = db
-    .prepare('INSERT OR IGNORE INTO demo_page_sessions (id, created_at) VALUES (?, ?)')
-    .run(id, now)
+      // 只复制用户端通知：管理端通知是全站共用的一条时间线，按浏览器复制会迅速淹没后台，
+      // 而管理端本身可以看到演示模板记录，无需依赖副本通知。
+      const notifications = db.prepare(`
+        SELECT recipient_type, type, title, content, is_read, created_at
+        FROM notifications
+        WHERE feedback_id = ? AND recipient_type = 'user'
+        ORDER BY created_at ASC
+      `).all(template.id) as DemoNotificationRow[]
+      for (const notification of notifications) {
+        insertNotification.run(
+          notification.recipient_type,
+          deviceId,
+          feedbackId,
+          notification.type,
+          notification.title,
+          notification.content,
+          notification.is_read,
+          notification.created_at,
+        )
+      }
+    }
 
-  if (inserted.changes === 0) return 0
+    db.prepare('UPDATE client_identities SET demo_initialized = 1 WHERE device_id = ?')
+      .run(deviceId)
+    return templates.length
+  })
 
-  db.prepare('DELETE FROM demo_page_sessions WHERE created_at < ?')
-    .run(now - 7 * 24 * 60 * 60 * 1000)
-
-  return resetDemoNotifications(db)
+  return clone()
 }

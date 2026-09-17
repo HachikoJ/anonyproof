@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { demoPageSessionHeaders } from '../utils/pageSession'
 
 export type DemoConfig = {
   demoMode: boolean
@@ -19,7 +18,6 @@ export function useDemoConfig() {
 
     fetch('/anonyproof/api/demo/config', {
       cache: 'no-store',
-      headers: demoPageSessionHeaders(),
     })
       .then(async (response) => {
         if (!response.ok) return null

@@ -16,8 +16,9 @@ import {
   DEMO_ADMIN_PASSWORD,
   DEMO_DEVICE_ID,
   DEMO_NOTICE,
+  DEMO_SECONDARY_DEVICE_ID,
+  cloneDemoDataForDevice,
   isDemoMode,
-  resetDemoNotificationsForSession,
   seedDemoData,
 } from './demo'
 
@@ -45,7 +46,7 @@ if (isProduction && !demoMode && (!configuredAdminPassword || configuredAdminPas
 }
 
 // 中间件
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,https://deline.top')
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,https://deline.top,https://anonyproof.deline.top')
   .split(',').map(origin => origin.trim()).filter(Boolean)
 app.use(cors({ origin: allowedOrigins, credentials: true }))
 app.use(express.json())
@@ -88,24 +89,15 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' })
 })
 
-// 浏览器每个标签页会话只带一个新的标识，据此判断是否需要恢复演示未读状态。
-function demoPageSessionId(req: express.Request) {
-  return req.get('x-anonyproof-demo-session')
-}
-
-app.get('/api/demo/config', (req, res) => {
+app.get('/api/demo/config', (_req, res) => {
   if (!demoMode) {
     return res.json({ success: true, demoMode: false })
   }
-
-  // 演示数据由所有访客共用，新访客首次进入时恢复默认未读状态；同一会话内的请求不会重复重置。
-  resetDemoNotificationsForSession(db, demoPageSessionId(req))
 
   return res.json({
     success: true,
     demoMode: true,
     adminPassword: DEMO_ADMIN_PASSWORD,
-    deviceId: DEMO_DEVICE_ID,
     notice: DEMO_NOTICE,
   })
 })
@@ -169,7 +161,9 @@ function requireSameOrigin(req: express.Request, res: express.Response) {
   const origin = req.get('origin')
   if (!origin) return true
   try {
-    return allowedOrigins.includes(new URL(origin).origin)
+    const parsed = new URL(origin)
+    const requestHost = req.get('x-forwarded-host') || req.get('host')
+    return allowedOrigins.includes(parsed.origin) || (Boolean(requestHost) && parsed.host === requestHost)
   } catch {
     res.status(403).json({ error: '请求来源不受信任' })
     return false
@@ -202,14 +196,10 @@ app.post(['/api/admin/auth/login', '/api/admin/login'], (req, res) => {
   }
   loginAttempts.delete(ip)
   setSessionCookie(res, createSession())
-  // 演示模式下由新会话触发一次默认未读状态恢复，登录不会覆盖用户已经读过的状态。
-  if (demoMode) resetDemoNotificationsForSession(db, demoPageSessionId(req))
   res.json({ success: true })
 })
 
 app.get(['/api/admin/auth/session', '/api/admin/session'], (req, res) => {
-  // 后台页面加载会校验会话，新会话在此恢复一次默认未读状态，与前台保持一致。
-  if (demoMode) resetDemoNotificationsForSession(db, demoPageSessionId(req))
   const authenticated = validSession(getCookie(req, cookieName))
   if (authenticated) res.setHeader('Cache-Control', 'no-store')
   res.json({ authenticated })
@@ -255,7 +245,9 @@ db.exec(`
     encrypted_content TEXT NOT NULL,
     device_id TEXT NOT NULL,
     created_at INTEGER NOT NULL,
-    status TEXT DEFAULT 'pending'
+    status TEXT DEFAULT 'pending',
+    is_demo_template INTEGER NOT NULL DEFAULT 0,
+    is_demo_clone INTEGER NOT NULL DEFAULT 0
   );
 
   CREATE TABLE IF NOT EXISTS admin_logs (
@@ -294,9 +286,36 @@ db.exec(`
     attachment_id TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS client_identities (
+    device_id TEXT PRIMARY KEY,
+    token_hash TEXT NOT NULL,
+    recovery_hash TEXT NOT NULL UNIQUE,
+    install_key_hash TEXT,
+    created_at INTEGER NOT NULL,
+    last_seen_at INTEGER NOT NULL,
+    demo_initialized INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS client_identity_sessions (
+    token_hash TEXT PRIMARY KEY,
+    device_id TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    last_seen_at INTEGER NOT NULL,
+    expires_at INTEGER NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS client_identity_install_keys (
+    install_key_hash TEXT PRIMARY KEY,
+    device_id TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    last_seen_at INTEGER NOT NULL
+  );
+
   CREATE INDEX IF NOT EXISTS idx_feedback_comments_feedback_id ON feedback_comments(feedback_id);
   CREATE INDEX IF NOT EXISTS idx_notifications_recipient_read ON notifications(recipient_type, recipient_id, is_read);
   CREATE INDEX IF NOT EXISTS idx_notifications_feedback_id ON notifications(feedback_id);
+  CREATE INDEX IF NOT EXISTS idx_client_identity_sessions_device ON client_identity_sessions(device_id);
+  CREATE INDEX IF NOT EXISTS idx_client_identity_install_keys_device ON client_identity_install_keys(device_id);
 
   INSERT OR IGNORE INTO stats (id, total_feedbacks, encrypted_count)
   VALUES (1, 0, 0);
@@ -310,14 +329,515 @@ const feedbackMigrations: Array<[string, string]> = [
   ['solution', "TEXT NOT NULL DEFAULT ''"],
   ['solution_updated_at', 'INTEGER'],
   ['solution_admin_ip', "TEXT NOT NULL DEFAULT ''"],
+  ['is_demo_template', 'INTEGER NOT NULL DEFAULT 0'],
+  ['is_demo_clone', 'INTEGER NOT NULL DEFAULT 0'],
 ]
 for (const [column, definition] of feedbackMigrations) {
   if (!existingFeedbackColumns.has(column)) db.exec(`ALTER TABLE feedbacks ADD COLUMN ${column} ${definition}`)
 }
+db.exec('CREATE INDEX IF NOT EXISTS idx_feedback_demo_visibility ON feedbacks(is_demo_template, is_demo_clone)')
+
+const identityColumns = db.prepare('PRAGMA table_info(client_identities)').all() as Array<{ name: string }>
+if (!identityColumns.some(column => column.name === 'install_key_hash')) {
+  db.exec('ALTER TABLE client_identities ADD COLUMN install_key_hash TEXT')
+}
+db.exec(`
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_client_identity_install_key
+  ON client_identities(install_key_hash)
+  WHERE install_key_hash IS NOT NULL
+`)
+db.prepare(`
+  INSERT OR IGNORE INTO client_identity_install_keys (
+    install_key_hash, device_id, created_at, last_seen_at
+  )
+  SELECT install_key_hash, device_id, created_at, last_seen_at
+  FROM client_identities
+  WHERE install_key_hash IS NOT NULL AND install_key_hash <> ''
+`).run()
 
 if (demoMode) {
   seedDemoData(db)
 }
+
+const identityCookieName = 'anonyproof_device_session'
+const identityCookieTtlMs = 365 * 24 * 60 * 60 * 1000
+const maxIdentitySessions = 20
+
+// 旧版本只保存了一个 token_hash。升级后把它迁移为独立会话，保证同一身份在多个浏览器
+// 使用恢复码登录时不会互相踢下线，也不会覆盖后续新会话。
+db.prepare(`
+  INSERT OR IGNORE INTO client_identity_sessions (
+    token_hash, device_id, created_at, last_seen_at, expires_at
+  )
+  SELECT token_hash, device_id, created_at, last_seen_at, last_seen_at + ?
+  FROM client_identities
+  WHERE token_hash <> ''
+`).run(identityCookieTtlMs)
+
+type ClientIdentityRow = {
+  device_id: string
+  token_hash: string
+  recovery_hash: string
+  install_key_hash: string | null
+  created_at: number
+  last_seen_at: number
+  demo_initialized: number
+}
+
+type ResolvedIdentity = {
+  deviceId: string
+  recoveryCode?: string
+  created: boolean
+  adoptedLegacyDevice?: boolean
+}
+
+function hashIdentityValue(value: string) {
+  return crypto.createHash('sha256').update(value).digest('hex')
+}
+
+function safeIdentityHashEqual(value: string, expectedHash: string) {
+  const actual = Buffer.from(hashIdentityValue(value))
+  const expected = Buffer.from(expectedHash)
+  return actual.length === expected.length && crypto.timingSafeEqual(actual, expected)
+}
+
+function normalizeRecoveryCode(value: string) {
+  return value.replace(/[^a-z0-9]/gi, '').toUpperCase()
+}
+
+function formatRecoveryCode(value: string) {
+  const normalized = normalizeRecoveryCode(value)
+  return normalized.match(/.{1,5}/g)?.join('-') ?? normalized
+}
+
+function isValidRecoveryCode(value: string) {
+  return /^[A-F0-9]{20}$/.test(normalizeRecoveryCode(value))
+}
+
+function normalizeInstallKey(value: string) {
+  return value.trim()
+}
+
+function isValidInstallKey(value: string) {
+  return /^[A-Za-z0-9_-]{32,128}$/.test(value)
+}
+
+function createDeviceId() {
+  return `device-${crypto.randomBytes(18).toString('base64url')}`
+}
+
+function createRecoveryCode() {
+  const value = crypto.randomBytes(10).toString('hex').toUpperCase()
+  return formatRecoveryCode(value)
+}
+
+const recentRecoveryCodes = new Map<string, { code: string; expiresAt: number }>()
+const recentRecoveryCodeTtlMs = 10 * 60 * 1000
+
+function rememberRecoveryCode(deviceId: string, recoveryCode: string) {
+  recentRecoveryCodes.set(deviceId, {
+    code: formatRecoveryCode(recoveryCode),
+    expiresAt: Date.now() + recentRecoveryCodeTtlMs,
+  })
+}
+
+function getRecentRecoveryCode(deviceId: string) {
+  const entry = recentRecoveryCodes.get(deviceId)
+  if (!entry) return ''
+  if (entry.expiresAt <= Date.now()) {
+    recentRecoveryCodes.delete(deviceId)
+    return ''
+  }
+  return entry.code
+}
+
+function rotateRecoveryCode(deviceId: string) {
+  const recoveryCode = createRecoveryCode()
+  db.prepare('UPDATE client_identities SET recovery_hash = ? WHERE device_id = ?')
+    .run(hashIdentityValue(normalizeRecoveryCode(recoveryCode)), deviceId)
+  rememberRecoveryCode(deviceId, recoveryCode)
+  return recoveryCode
+}
+
+function setIdentityCookie(res: express.Response, deviceId: string, token: string) {
+  const secure = isProduction ? '; Secure' : ''
+  const value = encodeURIComponent(`${deviceId}.${token}`)
+  res.append(
+    'Set-Cookie',
+    `${identityCookieName}=${value}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${identityCookieTtlMs / 1000}${secure}`,
+  )
+}
+
+function identityFromCookie(req: express.Request) {
+  const value = getCookie(req, identityCookieName)
+  if (!value) return null
+
+  const separator = value.lastIndexOf('.')
+  if (separator <= 0) return null
+
+  const deviceId = value.slice(0, separator)
+  const token = value.slice(separator + 1)
+  if (!deviceId || !token) return null
+
+  const now = Date.now()
+  const identity = db.prepare(
+    `SELECT i.device_id, i.token_hash, i.recovery_hash, i.install_key_hash,
+       i.created_at, i.last_seen_at, i.demo_initialized
+     FROM client_identity_sessions s
+     JOIN client_identities i ON i.device_id = s.device_id
+     WHERE s.token_hash = ? AND s.device_id = ? AND s.expires_at > ?`,
+  ).get(hashIdentityValue(token), deviceId, now) as ClientIdentityRow | undefined
+
+  if (!identity) return null
+
+  db.prepare('UPDATE client_identity_sessions SET last_seen_at = ? WHERE token_hash = ?')
+    .run(now, hashIdentityValue(token))
+  db.prepare('UPDATE client_identities SET last_seen_at = ? WHERE device_id = ?')
+    .run(now, deviceId)
+  return identity
+}
+
+function issueIdentitySession(res: express.Response, deviceId: string) {
+  const token = crypto.randomBytes(32).toString('base64url')
+  const tokenHash = hashIdentityValue(token)
+  const now = Date.now()
+  const expiresAt = now + identityCookieTtlMs
+
+  db.transaction(() => {
+    db.prepare(`
+      INSERT INTO client_identity_sessions (
+        token_hash, device_id, created_at, last_seen_at, expires_at
+      ) VALUES (?, ?, ?, ?, ?)
+    `).run(tokenHash, deviceId, now, now, expiresAt)
+
+    db.prepare('UPDATE client_identities SET token_hash = ?, last_seen_at = ? WHERE device_id = ?')
+      .run(tokenHash, now, deviceId)
+
+    db.prepare('DELETE FROM client_identity_sessions WHERE expires_at <= ?').run(now)
+    db.prepare(`
+      DELETE FROM client_identity_sessions
+      WHERE device_id = ?
+        AND token_hash NOT IN (
+          SELECT token_hash FROM client_identity_sessions
+          WHERE device_id = ?
+          ORDER BY last_seen_at DESC
+          LIMIT ?
+        )
+    `).run(deviceId, deviceId, maxIdentitySessions)
+  })()
+
+  setIdentityCookie(res, deviceId, token)
+}
+
+function isDemoDeviceId(deviceId: string) {
+  return deviceId === DEMO_DEVICE_ID || deviceId === DEMO_SECONDARY_DEVICE_ID
+}
+
+function issueClientIdentity(
+  res: express.Response,
+  presetDeviceId?: string,
+  installKeyHash?: string,
+): ResolvedIdentity {
+  const now = Date.now()
+  const deviceId = presetDeviceId || createDeviceId()
+  const recoveryCode = createRecoveryCode()
+
+  db.transaction(() => {
+    db.prepare(`
+      INSERT INTO client_identities (
+        device_id, token_hash, recovery_hash, install_key_hash, created_at, last_seen_at, demo_initialized
+      ) VALUES (?, ?, ?, ?, ?, ?, 0)
+    `).run(
+      deviceId,
+      '',
+      hashIdentityValue(normalizeRecoveryCode(recoveryCode)),
+      installKeyHash || null,
+      now,
+      now,
+    )
+
+    if (installKeyHash) {
+      db.prepare(`
+        INSERT INTO client_identity_install_keys (
+          install_key_hash, device_id, created_at, last_seen_at
+        ) VALUES (?, ?, ?, ?)
+      `).run(installKeyHash, deviceId, now, now)
+    }
+  })()
+
+  rememberRecoveryCode(deviceId, recoveryCode)
+  if (demoMode) cloneDemoDataForDevice(db, deviceId)
+  issueIdentitySession(res, deviceId)
+  return { deviceId, recoveryCode, created: !presetDeviceId }
+}
+
+function findIdentityByInstallKey(installKeyHash: string) {
+  return db.prepare(
+    `SELECT i.device_id, i.token_hash, i.recovery_hash, i.install_key_hash,
+       i.created_at, i.last_seen_at, i.demo_initialized
+     FROM client_identity_install_keys k
+     JOIN client_identities i ON i.device_id = k.device_id
+     WHERE k.install_key_hash = ?`,
+  ).get(installKeyHash) as ClientIdentityRow | undefined
+}
+
+function bindInstallKey(deviceId: string, installKeyHash: string, reassign = false) {
+  if (!deviceId || !installKeyHash) return
+
+  const owner = findIdentityByInstallKey(installKeyHash)
+  if (owner?.device_id === deviceId) return
+  if (owner && !reassign) return
+
+  const now = Date.now()
+  if (owner) {
+    db.prepare(`
+      UPDATE client_identity_install_keys
+      SET device_id = ?, last_seen_at = ?
+      WHERE install_key_hash = ?
+    `).run(deviceId, now, installKeyHash)
+  } else {
+    db.prepare(`
+      INSERT INTO client_identity_install_keys (
+        install_key_hash, device_id, created_at, last_seen_at
+      ) VALUES (?, ?, ?, ?)
+    `).run(installKeyHash, deviceId, now, now)
+  }
+}
+
+// 旧版本浏览器只保存了设备 ID，没有服务端身份记录，升级后会丢掉原有提交。
+// 只有当该设备 ID 名下确实存在历史提交、且尚未被任何身份占用时才接管；固定演示设备永远不允许被访客认领。
+function canAdoptLegacyDevice(deviceId: string) {
+  if (!deviceId || isDemoDeviceId(deviceId)) return false
+  if (deviceId.length < 10 || deviceId.length > 100) return false
+
+  const claimed = db.prepare('SELECT 1 FROM client_identities WHERE device_id = ?').get(deviceId)
+  if (claimed) return false
+
+  const owned = db.prepare(`
+    SELECT 1 FROM feedbacks
+    WHERE device_id = ? AND is_demo_template = 0 AND is_demo_clone = 0
+    LIMIT 1
+  `).get(deviceId)
+
+  return Boolean(owned)
+}
+
+function resolveClientIdentity(req: express.Request, res: express.Response): ResolvedIdentity {
+  const requestedInstallKey = normalizeInstallKey(req.get('x-anonyproof-install-key') || '')
+  const installKeyHash = isValidInstallKey(requestedInstallKey)
+    ? hashIdentityValue(requestedInstallKey)
+    : ''
+  const requestedDeviceId = req.get('x-anonyproof-device-id')?.trim()
+  const requestedRecoveryCode = normalizeRecoveryCode(req.get('x-anonyproof-recovery-code') || '')
+  const matchingRequestedCode = (identity: ClientIdentityRow) => (
+    isValidRecoveryCode(requestedRecoveryCode)
+    && safeIdentityHashEqual(requestedRecoveryCode, identity.recovery_hash)
+      ? formatRecoveryCode(requestedRecoveryCode)
+      : ''
+  )
+
+  const existing = identityFromCookie(req)
+  if (existing) {
+    bindInstallKey(existing.device_id, installKeyHash)
+    const recoveryCode = matchingRequestedCode(existing)
+      || getRecentRecoveryCode(existing.device_id)
+      || rotateRecoveryCode(existing.device_id)
+    return { deviceId: existing.device_id, recoveryCode, created: false }
+  }
+
+  // Cookie 过期或丢失时，使用浏览器本地保存的设备 ID 与恢复码重新签发凭证。
+  if (requestedDeviceId && isValidRecoveryCode(requestedRecoveryCode)) {
+    const identity = db.prepare(
+      `SELECT device_id, token_hash, recovery_hash, install_key_hash,
+         created_at, last_seen_at, demo_initialized
+       FROM client_identities WHERE device_id = ?`,
+    ).get(requestedDeviceId) as ClientIdentityRow | undefined
+
+    if (identity && safeIdentityHashEqual(requestedRecoveryCode, identity.recovery_hash)) {
+      issueIdentitySession(res, identity.device_id)
+      bindInstallKey(identity.device_id, installKeyHash, true)
+      rememberRecoveryCode(identity.device_id, requestedRecoveryCode)
+      return {
+        deviceId: identity.device_id,
+        recoveryCode: formatRecoveryCode(requestedRecoveryCode),
+        created: false,
+      }
+    }
+  }
+
+  // 同一浏览器可能同时打开多个标签页。安装密钥在首次访问前就写入 localStorage，
+  // 因此并发初始化会复用同一身份，不会因为前后两次 Set-Cookie 产生两套数据。
+  if (installKeyHash) {
+    const identity = findIdentityByInstallKey(installKeyHash)
+    if (identity) {
+      issueIdentitySession(res, identity.device_id)
+      const recoveryCode = matchingRequestedCode(identity)
+        || getRecentRecoveryCode(identity.device_id)
+        || rotateRecoveryCode(identity.device_id)
+      return {
+        deviceId: identity.device_id,
+        recoveryCode,
+        created: false,
+      }
+    }
+
+    if (requestedDeviceId && canAdoptLegacyDevice(requestedDeviceId)) {
+      return {
+        ...issueClientIdentity(res, requestedDeviceId, installKeyHash),
+        adoptedLegacyDevice: true,
+      }
+    }
+
+    try {
+      return issueClientIdentity(res, undefined, installKeyHash)
+    } catch (error) {
+      if (!String((error as Error)?.message || error).includes('UNIQUE constraint failed')) throw error
+
+      const racedIdentity = findIdentityByInstallKey(installKeyHash)
+      if (!racedIdentity) throw error
+      issueIdentitySession(res, racedIdentity.device_id)
+      return { deviceId: racedIdentity.device_id, created: false }
+    }
+  }
+
+  if (requestedDeviceId && canAdoptLegacyDevice(requestedDeviceId)) {
+    return { ...issueClientIdentity(res, requestedDeviceId), adoptedLegacyDevice: true }
+  }
+
+  return issueClientIdentity(res)
+}
+
+function recoverClientIdentity(
+  recoveryCode: string,
+  res: express.Response,
+  installKeyHash = '',
+): ResolvedIdentity | null {
+  const normalized = normalizeRecoveryCode(recoveryCode)
+  if (!isValidRecoveryCode(normalized)) return null
+
+  const identity = db.prepare(
+    `SELECT device_id, token_hash, recovery_hash, install_key_hash,
+       created_at, last_seen_at, demo_initialized
+     FROM client_identities WHERE recovery_hash = ?`,
+  ).get(hashIdentityValue(normalized)) as ClientIdentityRow | undefined
+
+  if (!identity) return null
+
+  issueIdentitySession(res, identity.device_id)
+  bindInstallKey(identity.device_id, installKeyHash, true)
+  rememberRecoveryCode(identity.device_id, normalized)
+  return {
+    deviceId: identity.device_id,
+    recoveryCode: formatRecoveryCode(normalized),
+    created: false,
+  }
+}
+
+function requireClientIdentity(req: express.Request, res: express.Response) {
+  const identity = identityFromCookie(req)
+  if (!identity) {
+    res.status(401).json({ error: '本机身份已失效，请刷新页面后重试' })
+    return null
+  }
+  return identity
+}
+
+function isAdminAuthenticated(req: express.Request) {
+  return validSession(getCookie(req, cookieName))
+}
+
+function canAccessDevice(req: express.Request, deviceId: string) {
+  return isAdminAuthenticated(req) || identityFromCookie(req)?.device_id === deviceId
+}
+
+// 管理端记录范围：正式模式只包含真实提交；演示模式额外包含公开展示用的演示模板和游客演示副本，
+// 这样管理员既能演示处理流程，也能看到访客在该浏览器内产生的补充与状态。
+function adminRecordScope(alias: string) {
+  return demoMode ? '1 = 1' : `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`
+}
+
+// 管理端列表范围：演示副本每个浏览器一份，全部堆在列表里会迅速淹没真实提交，
+// 因此列表只展示演示模板与真实提交，副本仍可通过通知链接直接打开处理。
+function adminListScope(alias: string) {
+  return demoMode
+    ? `(${alias}.is_demo_template = 1 OR ${alias}.is_demo_clone = 0)`
+    : `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`
+}
+
+// 用户端记录范围：只在本机身份名下的记录中可见。演示模式关闭后，之前生成的演示副本自动隐藏，
+// 真实提交不受影响。
+function userRecordScope(alias: string) {
+  return `${alias}.is_demo_template = 0 AND (${alias}.is_demo_clone = 0 OR ${demoMode ? 1 : 0} = 1)`
+}
+
+// 管理端通知只展示指向“管理员有权查看的记录”的条目；用户端通知按接收者身份隔离，无需联表过滤。
+function notificationVisibilitySql(recipientType: string) {
+  if (recipientType === 'admin') {
+    return `AND EXISTS (
+      SELECT 1 FROM feedbacks f
+      WHERE f.id = notifications.feedback_id AND ${adminRecordScope('f')}
+    )`
+  }
+
+  return `AND EXISTS (
+    SELECT 1 FROM feedbacks f
+    WHERE f.id = notifications.feedback_id
+      AND f.device_id = notifications.recipient_id
+      AND ${userRecordScope('f')}
+  )`
+}
+
+function notificationRecordVisible(
+  recipientType: string,
+  recipientId: string,
+  feedbackId: string | null,
+) {
+  if (!feedbackId) return false
+
+  if (recipientType === 'admin') {
+    return Boolean(db.prepare(`
+      SELECT 1 FROM feedbacks
+      WHERE id = ? AND ${adminRecordScope('feedbacks')}
+    `).get(feedbackId))
+  }
+
+  return Boolean(db.prepare(`
+    SELECT 1 FROM feedbacks
+    WHERE id = ? AND device_id = ? AND ${userRecordScope('feedbacks')}
+  `).get(feedbackId, recipientId))
+}
+
+app.get('/api/identity', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store')
+  const identity = resolveClientIdentity(req, res)
+  res.json({
+    success: true,
+    deviceId: identity.deviceId,
+    recoveryCode: identity.recoveryCode,
+    created: identity.created,
+    adoptedLegacyDevice: identity.adoptedLegacyDevice === true,
+    demoMode,
+  })
+})
+
+app.post('/api/identity/recover', (req, res) => {
+  if (!requireSameOrigin(req, res)) return
+  res.setHeader('Cache-Control', 'no-store')
+  const recoveryCode = typeof req.body?.recoveryCode === 'string' ? req.body.recoveryCode : ''
+  const requestedInstallKey = normalizeInstallKey(req.get('x-anonyproof-install-key') || '')
+  const installKeyHash = isValidInstallKey(requestedInstallKey)
+    ? hashIdentityValue(requestedInstallKey)
+    : ''
+  const identity = recoverClientIdentity(recoveryCode, res, installKeyHash)
+  if (!identity) {
+    return res.status(404).json({ error: '恢复码无效，请检查后重试' })
+  }
+  res.json({
+    success: true,
+    deviceId: identity.deviceId,
+    recoveryCode: identity.recoveryCode,
+  })
+})
 
 // 工具函数：记录管理员操作
 const logAdminAction = (action: string, targetId: string, ip: string) => {
@@ -329,7 +849,10 @@ const logAdminAction = (action: string, targetId: string, ip: string) => {
 
 // 工具函数：更新统计
 const updateStats = () => {
-  const feedbacks = db.prepare('SELECT COUNT(*) as count FROM feedbacks').get() as { count: number }
+  const feedbacks = db.prepare(`
+    SELECT COUNT(*) AS count FROM feedbacks
+    WHERE is_demo_clone = 0 AND (${demoMode ? '1 = 1' : 'is_demo_template = 0'})
+  `).get() as { count: number }
   const stats = db.prepare('UPDATE stats SET total_feedbacks = ?, encrypted_count = ? WHERE id = 1')
   stats.run(feedbacks.count, feedbacks.count)
 }
@@ -338,9 +861,17 @@ const updateStats = () => {
 app.post('/api/feedback', (req, res) => {
   try {
     const { category, encryptedContent, deviceId, originalContent } = req.body
+    const identity = requireClientIdentity(req, res)
+    if (!identity) return
 
     if (!category || !encryptedContent || !deviceId) {
       return res.status(400).json({ error: '缺少必要参数' })
+    }
+    if (identity.device_id !== deviceId) {
+      return res.status(403).json({ error: '本机身份与提交身份不一致' })
+    }
+    if (!['suggestion', 'complaint', 'report'].includes(category)) {
+      return res.status(400).json({ error: '无效的提交类型' })
     }
 
     const id = uuidv4()
@@ -379,10 +910,14 @@ app.post('/api/feedback', (req, res) => {
 // API: 获取统计（公开）
 app.get('/api/stats', (req, res) => {
   try {
-    const stats = db.prepare('SELECT * FROM stats WHERE id = 1').get() as any
+    const stats = db.prepare(`
+      SELECT COUNT(*) AS total
+      FROM feedbacks
+      WHERE is_demo_clone = 0 AND (${demoMode ? '1 = 1' : 'is_demo_template = 0'})
+    `).get() as { total: number }
     res.json({
-      total: stats.total_feedbacks,
-      encrypted: stats.encrypted_count,
+      total: stats.total,
+      encrypted: stats.total,
       leaks: 0
     })
   } catch (error) {
@@ -401,8 +936,11 @@ app.get('/api/admin/feedbacks', (req, res) => {
 
     const feedbacks = db.prepare(
       `SELECT id, category, encrypted_content, device_id, created_at, status, original_content, solution, solution_updated_at,
+        is_demo_template, is_demo_clone,
         (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'admin' AND n.recipient_id = 'admin' AND n.is_read = 0) AS unread_notifications
-       FROM feedbacks ORDER BY created_at DESC`
+       FROM feedbacks
+       WHERE ${adminListScope('feedbacks')}
+       ORDER BY created_at DESC`
     ).all() as any[]
 
     res.json({
@@ -427,9 +965,13 @@ app.get('/api/admin/feedback/:id', (req, res) => {
     // 记录查看操作
     logAdminAction('view_detail', id, ip)
 
-    const feedback = db.prepare(
-      'SELECT id, category, encrypted_content, device_id, created_at, status, original_content, solution, solution_updated_at, solution_admin_ip FROM feedbacks WHERE id = ?'
-    ).get(id) as any
+    const feedback = db.prepare(`
+      SELECT id, category, encrypted_content, device_id, created_at, status,
+        original_content, solution, solution_updated_at, solution_admin_ip,
+        is_demo_template, is_demo_clone
+      FROM feedbacks
+      WHERE id = ? AND ${adminRecordScope('feedbacks')}
+    `).get(id) as any
 
     if (!feedback) {
       return res.status(404).json({ error: '反馈不存在' })
@@ -454,44 +996,56 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
     const { id } = req.params
     const { status, solution } = req.body
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
+    const visibleFeedback = db.prepare(`
+      SELECT id, status, solution FROM feedbacks
+      WHERE id = ? AND ${adminRecordScope('feedbacks')}
+    `).get(id) as { id: string; status: string; solution: string } | undefined
 
-    if (!['pending', 'in_progress', 'resolved', 'no_solution'].includes(status)) {
+    if (!visibleFeedback) {
+      return res.status(404).json({ error: '反馈不存在' })
+    }
+
+    if (!['in_progress', 'resolved', 'no_solution'].includes(status)) {
       return res.status(400).json({ error: '无效的状态' })
     }
 
+    const trimmedSolution = typeof solution === 'string' ? solution.trim() : ''
+
     // 验证解决方案
-    if ((status === 'resolved' || status === 'no_solution') && (!solution || solution.trim().length < 10)) {
+    if ((status === 'resolved' || status === 'no_solution') && trimmedSolution.length < 10) {
       return res.status(400).json({ error: '标记为已办结或暂无法处理时，处理说明必须至少 10 个字符' })
     }
 
     // 记录操作
     logAdminAction('update_status', id, ip)
 
-    // 更新状态和解决方案
-    if (status !== 'pending' && solution) {
-      const stmt = db.prepare(
-        'UPDATE feedbacks SET status = ?, solution = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
-      )
-      stmt.run(status, solution.trim(), Date.now(), ip, id)
+    const statusChanged = visibleFeedback.status !== status
+    const solutionChanged = Boolean(trimmedSolution && trimmedSolution !== visibleFeedback.solution)
 
-      // 创建通知
-      const feedback = db.prepare('SELECT device_id, category FROM feedbacks WHERE id = ?').get(id) as any
-      if (feedback) {
-        const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
-        const statusLabel = status === 'in_progress' ? '处理中' : status === 'resolved' ? '已办结' : '暂无法处理'
-        const solutionSummary = solution.trim().substring(0, 50) + (solution.trim().length > 50 ? '...' : '')
-        createNotification(
-          'user',
-          feedback.device_id,
-          id,
-          'status_update',
-          `提交记录状态已更新：${statusLabel}`,
-          `您提交的${categoryName}当前状态为“${statusLabel}”${solution ? `，处理说明：${solutionSummary}` : ''}`
-        )
-      }
+    // 状态变化与处理说明相互独立：即使“处理中”暂未填写说明，也必须通知提交人。
+    if (trimmedSolution) {
+      db.prepare(
+        'UPDATE feedbacks SET status = ?, solution = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
+      ).run(status, trimmedSolution, Date.now(), ip, id)
     } else {
-      const stmt = db.prepare('UPDATE feedbacks SET status = ? WHERE id = ?')
-      stmt.run(status, id)
+      db.prepare('UPDATE feedbacks SET status = ? WHERE id = ?').run(status, id)
+    }
+
+    const feedback = db.prepare('SELECT device_id, category FROM feedbacks WHERE id = ?').get(id) as any
+    if (feedback && (statusChanged || solutionChanged)) {
+      const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
+      const statusLabel = status === 'in_progress' ? '处理中' : status === 'resolved' ? '已办结' : '暂无法处理'
+      const solutionSummary = trimmedSolution
+        ? trimmedSolution.substring(0, 50) + (trimmedSolution.length > 50 ? '...' : '')
+        : ''
+      createNotification(
+        'user',
+        feedback.device_id,
+        id,
+        'status_update',
+        statusChanged ? `提交记录状态已更新：${statusLabel}` : `处理说明已更新：${statusLabel}`,
+        `您提交的${categoryName}当前状态为“${statusLabel}”${solutionSummary ? `，处理说明：${solutionSummary}` : ''}`,
+      )
     }
 
     res.json({ success: true })
@@ -506,6 +1060,15 @@ app.delete('/api/admin/feedback/:id', (req, res) => {
   try {
     const { id } = req.params
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
+    // 演示模板由服务端种子维护，重启后会重新写入，因此不允许删除；其余可访问记录允许删除。
+    const visibleFeedback = db.prepare(`
+      SELECT id FROM feedbacks
+      WHERE id = ? AND feedbacks.is_demo_template = 0 AND ${adminRecordScope('feedbacks')}
+    `).get(id)
+
+    if (!visibleFeedback) {
+      return res.status(404).json({ error: '反馈不存在' })
+    }
 
     // 记录删除操作
     logAdminAction('delete', id, ip)
@@ -551,6 +1114,18 @@ app.get('/api/admin/logs', (req, res) => {
 app.get('/api/feedback/:feedbackId/comments', (req, res) => {
   try {
     const feedbackId = String(req.params.feedbackId)
+    const scope = isAdminAuthenticated(req) ? adminRecordScope('feedbacks') : userRecordScope('feedbacks')
+    const feedback = db.prepare(`
+      SELECT device_id FROM feedbacks
+      WHERE id = ? AND ${scope}
+    `).get(feedbackId) as { device_id: string } | undefined
+
+    if (!feedback) {
+      return res.status(404).json({ error: '反馈不存在' })
+    }
+    if (!canAccessDevice(req, feedback.device_id)) {
+      return res.status(401).json({ error: '无权查看该记录的沟通内容' })
+    }
 
     const comments = db.prepare(
       'SELECT * FROM feedback_comments WHERE feedback_id = ? ORDER BY created_at ASC'
@@ -572,9 +1147,20 @@ app.get('/api/feedback/:feedbackId/comments', (req, res) => {
 // API: 添加评论
 const addFeedbackComment = (req: express.Request, res: express.Response, commenterType: 'user' | 'admin') => {
   try {
-    if (commenterType === 'admin' && (!validSession(getCookie(req, cookieName)) || !requireSameOrigin(req, res))) return res.status(401).json({ error: '需要管理员登录' })
     const feedbackId = String(req.params.feedbackId)
     const { content } = req.body
+    const scope = commenterType === 'admin' ? adminRecordScope('feedbacks') : userRecordScope('feedbacks')
+    const feedback = db.prepare(`
+      SELECT device_id, category, original_content FROM feedbacks
+      WHERE id = ? AND ${scope}
+    `).get(feedbackId) as { device_id: string; category: string; original_content: string } | undefined
+
+    if (!feedback) {
+      return res.status(404).json({ error: '反馈不存在' })
+    }
+    if (commenterType === 'user' && !canAccessDevice(req, feedback.device_id)) {
+      return res.status(401).json({ error: '无权补充该记录' })
+    }
     if (!content) {
       return res.status(400).json({ error: '缺少必要参数' })
     }
@@ -598,34 +1184,28 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     // 创建通知
     if (commenterType === 'admin') {
       // 管理员评论 -> 通知用户
-      const feedback = db.prepare('SELECT device_id, category FROM feedbacks WHERE id = ?').get(feedbackId) as any
-      if (feedback) {
-        const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
-        const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
-        createNotification(
-          'user',
-          feedback.device_id,
-          feedbackId,
-          'comment',
-          '处理人员回复了您的提交',
-          `您提交的${categoryName}收到一条回复：${summary}`
-        )
-      }
+      const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
+      const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
+      createNotification(
+        'user',
+        feedback.device_id,
+        feedbackId,
+        'comment',
+        '处理人员回复了您的提交',
+        `您提交的${categoryName}收到一条回复：${summary}`
+      )
     } else {
       // 用户评论 -> 通知管理员
-      const feedback = db.prepare('SELECT category, original_content FROM feedbacks WHERE id = ?').get(feedbackId) as any
-      if (feedback) {
-        const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
-        const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
-        createNotification(
-          'admin',
-          'admin',
-          feedbackId,
-          'comment',
-          '提交人补充了说明',
-          `该${categoryName}线索收到一条补充：${summary}`
-        )
-      }
+      const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
+      const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
+      createNotification(
+        'admin',
+        'admin',
+        feedbackId,
+        'comment',
+        '提交人补充了说明',
+        `该${categoryName}线索收到一条补充：${summary}`
+      )
     }
 
     res.json({
@@ -651,11 +1231,16 @@ app.post('/api/admin/feedback/:feedbackId/comments', (req, res) => addFeedbackCo
 app.get('/api/feedback/device/:deviceId', (req, res) => {
   try {
     const { deviceId } = req.params
+    if (!canAccessDevice(req, deviceId)) {
+      return res.status(401).json({ error: '无权查看该浏览器的提交记录' })
+    }
 
     const feedbacks = db.prepare(
       `SELECT id, category, original_content, created_at, status, solution, solution_updated_at,
         (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'user' AND n.recipient_id = ? AND n.is_read = 0) AS unread_notifications
-       FROM feedbacks WHERE device_id = ? ORDER BY created_at DESC`
+       FROM feedbacks
+       WHERE device_id = ? AND ${userRecordScope('feedbacks')}
+       ORDER BY created_at DESC`
     ).all(deviceId, deviceId) as any[]
 
     res.json({
@@ -681,6 +1266,9 @@ const createNotification = (
   content: string
 ) => {
   try {
+    // 演示模板归属内置演示设备，没有真实浏览器能登录该身份，因此不必为它生成用户通知。
+    if (recipientType === 'user' && isDemoDeviceId(recipientId)) return
+
     const stmt = db.prepare(
       'INSERT INTO notifications (recipient_type, recipient_id, feedback_id, type, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
     )
@@ -690,9 +1278,6 @@ const createNotification = (
   }
 }
 
-app.post('/api/feedback/:feedbackId/comments', (req, res) => addFeedbackComment(req, res, 'user'))
-app.post('/api/admin/feedback/:feedbackId/comments', (req, res) => addFeedbackComment(req, res, 'admin'))
-
 // API: 获取未读通知数量
 app.get('/api/notifications/unread-count', (req, res) => {
   try {
@@ -701,12 +1286,25 @@ app.get('/api/notifications/unread-count', (req, res) => {
     if (!recipientType || !recipientId) {
       return res.status(400).json({ error: '缺少必要参数' })
     }
-    if (recipientType === 'admin' && (recipientId !== 'admin' || !validSession(getCookie(req, cookieName)))) {
+    if (!['user', 'admin'].includes(String(recipientType))) {
+      return res.status(400).json({ error: '无效的通知接收方' })
+    }
+    if (recipientType === 'admin' && (recipientId !== 'admin' || !isAdminAuthenticated(req))) {
       return res.status(401).json({ error: '需要管理员登录' })
     }
+    if (recipientType === 'user') {
+      const identity = requireClientIdentity(req, res)
+      if (!identity) return
+      if (identity.device_id !== recipientId) {
+        return res.status(403).json({ error: '无权查看该浏览器的通知' })
+      }
+    }
 
+    const visibility = notificationVisibilitySql(String(recipientType))
     const count = db.prepare(
-      'SELECT COUNT(*) as count FROM notifications WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0'
+      `SELECT COUNT(*) as count
+       FROM notifications
+       WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0 ${visibility}`
     ).get(recipientType, recipientId) as { count: number }
 
     res.json({
@@ -727,12 +1325,25 @@ app.get('/api/notifications', (req, res) => {
     if (!recipientType || !recipientId) {
       return res.status(400).json({ error: '缺少必要参数' })
     }
-    if (recipientType === 'admin' && (recipientId !== 'admin' || !validSession(getCookie(req, cookieName)))) {
+    if (!['user', 'admin'].includes(String(recipientType))) {
+      return res.status(400).json({ error: '无效的通知接收方' })
+    }
+    if (recipientType === 'admin' && (recipientId !== 'admin' || !isAdminAuthenticated(req))) {
       return res.status(401).json({ error: '需要管理员登录' })
     }
+    if (recipientType === 'user') {
+      const identity = requireClientIdentity(req, res)
+      if (!identity) return
+      if (identity.device_id !== recipientId) {
+        return res.status(403).json({ error: '无权查看该浏览器的通知' })
+      }
+    }
 
+    const visibility = notificationVisibilitySql(String(recipientType))
     const notifications = db.prepare(
-      'SELECT * FROM notifications WHERE recipient_type = ? AND recipient_id = ? ORDER BY created_at DESC LIMIT ?'
+      `SELECT * FROM notifications
+       WHERE recipient_type = ? AND recipient_id = ? ${visibility}
+       ORDER BY created_at DESC LIMIT ?`
     ).all(recipientType, recipientId, Number(limit)) as any[]
 
     res.json({
@@ -752,17 +1363,38 @@ app.get('/api/notifications', (req, res) => {
 app.put('/api/notifications/:id/read', (req, res) => {
   try {
     const { id } = req.params
-    const notification = db.prepare('SELECT recipient_type, recipient_id FROM notifications WHERE id = ?').get(id) as { recipient_type: string; recipient_id: string } | undefined
-    if (notification?.recipient_type === 'admin' && (notification.recipient_id !== 'admin' || !validSession(getCookie(req, cookieName)))) {
+    const notification = db.prepare(
+      'SELECT recipient_type, recipient_id, feedback_id FROM notifications WHERE id = ?',
+    ).get(id) as { recipient_type: string; recipient_id: string; feedback_id: string | null } | undefined
+    if (!notification) {
+      return res.status(404).json({ error: '通知不存在' })
+    }
+    if (notification.recipient_type === 'admin' && (notification.recipient_id !== 'admin' || !isAdminAuthenticated(req))) {
       return res.status(401).json({ error: '需要管理员登录' })
     }
+    if (notification.recipient_type === 'user') {
+      const identity = requireClientIdentity(req, res)
+      if (!identity) return
+      if (identity.device_id !== notification.recipient_id) {
+        return res.status(403).json({ error: '无权操作该通知' })
+      }
+    }
+    if (!notificationRecordVisible(
+      notification.recipient_type,
+      notification.recipient_id,
+      notification.feedback_id,
+    )) {
+      return res.status(404).json({ error: '通知对应的记录已不可用' })
+    }
 
-    const stmt = notification?.recipient_type === 'admin'
+    const stmt = notification.recipient_type === 'admin'
       ? db.prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND recipient_type = 'admin' AND recipient_id = 'admin'")
-      : db.prepare('UPDATE notifications SET is_read = 1 WHERE id = ?')
-    stmt.run(id)
+      : db.prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND recipient_type = 'user' AND recipient_id = ?")
+    const result = notification.recipient_type === 'admin'
+      ? stmt.run(id)
+      : stmt.run(id, notification.recipient_id)
 
-    res.json({ success: true })
+    res.json({ success: true, updated: result.changes })
   } catch (error) {
     console.error('标记已读失败:', error)
     res.status(500).json({ error: '标记失败' })
@@ -773,17 +1405,38 @@ app.put('/api/notifications/:id/read', (req, res) => {
 app.put('/api/notifications/:id/unread', (req, res) => {
   try {
     const { id } = req.params
-    const notification = db.prepare('SELECT recipient_type, recipient_id FROM notifications WHERE id = ?').get(id) as { recipient_type: string; recipient_id: string } | undefined
-    if (notification?.recipient_type === 'admin' && (notification.recipient_id !== 'admin' || !validSession(getCookie(req, cookieName)))) {
+    const notification = db.prepare(
+      'SELECT recipient_type, recipient_id, feedback_id FROM notifications WHERE id = ?',
+    ).get(id) as { recipient_type: string; recipient_id: string; feedback_id: string | null } | undefined
+    if (!notification) {
+      return res.status(404).json({ error: '通知不存在' })
+    }
+    if (notification.recipient_type === 'admin' && (notification.recipient_id !== 'admin' || !isAdminAuthenticated(req))) {
       return res.status(401).json({ error: '需要管理员登录' })
     }
+    if (notification.recipient_type === 'user') {
+      const identity = requireClientIdentity(req, res)
+      if (!identity) return
+      if (identity.device_id !== notification.recipient_id) {
+        return res.status(403).json({ error: '无权操作该通知' })
+      }
+    }
+    if (!notificationRecordVisible(
+      notification.recipient_type,
+      notification.recipient_id,
+      notification.feedback_id,
+    )) {
+      return res.status(404).json({ error: '通知对应的记录已不可用' })
+    }
 
-    const stmt = notification?.recipient_type === 'admin'
+    const stmt = notification.recipient_type === 'admin'
       ? db.prepare("UPDATE notifications SET is_read = 0 WHERE id = ? AND recipient_type = 'admin' AND recipient_id = 'admin'")
-      : db.prepare('UPDATE notifications SET is_read = 0 WHERE id = ?')
-    stmt.run(id)
+      : db.prepare("UPDATE notifications SET is_read = 0 WHERE id = ? AND recipient_type = 'user' AND recipient_id = ?")
+    const result = notification.recipient_type === 'admin'
+      ? stmt.run(id)
+      : stmt.run(id, notification.recipient_id)
 
-    res.json({ success: true })
+    res.json({ success: true, updated: result.changes })
   } catch (error) {
     console.error('标记未读失败:', error)
     res.status(500).json({ error: '标记失败' })
@@ -798,13 +1451,28 @@ app.put('/api/notifications/read-all', (req, res) => {
     if (!recipientType || !recipientId) {
       return res.status(400).json({ error: '缺少必要参数' })
     }
-    if (recipientType === 'admin' && (recipientId !== 'admin' || !validSession(getCookie(req, cookieName)))) {
+    if (!['user', 'admin'].includes(String(recipientType))) {
+      return res.status(400).json({ error: '无效的通知接收方' })
+    }
+    if (recipientType === 'admin' && (recipientId !== 'admin' || !isAdminAuthenticated(req))) {
       return res.status(401).json({ error: '需要管理员登录' })
     }
+    if (recipientType === 'user') {
+      const identity = requireClientIdentity(req, res)
+      if (!identity) return
+      if (identity.device_id !== recipientId) {
+        return res.status(403).json({ error: '无权操作该浏览器的通知' })
+      }
+    }
 
+    const visibility = notificationVisibilitySql(String(recipientType))
     const stmt = feedbackId
-      ? db.prepare('UPDATE notifications SET is_read = 1 WHERE recipient_type = ? AND recipient_id = ? AND feedback_id = ? AND is_read = 0')
-      : db.prepare('UPDATE notifications SET is_read = 1 WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0')
+      ? db.prepare(`UPDATE notifications
+          SET is_read = 1
+          WHERE recipient_type = ? AND recipient_id = ? AND feedback_id = ? AND is_read = 0 ${visibility}`)
+      : db.prepare(`UPDATE notifications
+          SET is_read = 1
+          WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0 ${visibility}`)
     const result = feedbackId ? stmt.run(recipientType, recipientId, feedbackId) : stmt.run(recipientType, recipientId)
 
     res.json({

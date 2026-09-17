@@ -33,10 +33,11 @@ CORS_ORIGINS=https://anonyproof.deline.top
 TRUST_PROXY=1
 ADMIN_UI_URL=https://anonyproof.deline.top/anonyproof/foorpynona
 API_PROXY_TARGET=http://127.0.0.1:4000
+DEMO_MAX_CLONES=3000
 ```
 
-- `DEMO_MODE=1` 时，管理员密码固定为 `demo12345678`，并在 `/api/demo/config` 暴露给登录页提示；同时首次连接空库时会写入示例数据。
-- 正式项目必须把 `DEMO_MODE` 置为 `0`、设置 12 位以上 `ADMIN_PASSWORD`，并删除演示数据库。
+- `DEMO_MODE=1` 时，管理员密码固定为 `demo12345678`，并在 `/api/demo/config` 暴露给登录页提示；首次连接空库时会写入 7 条示例线索模板。
+- 正式项目必须把 `DEMO_MODE` 置为 `0` 并设置 12 位以上 `ADMIN_PASSWORD`；关闭演示模式后示例数据只是从界面隐藏，仍在库中，可按需再单独清理。
 - `API_PROXY_TARGET` 在 `next build` 时写进产物，改完需要重新构建前端。
 
 ## 进程管理
@@ -55,7 +56,7 @@ pm2 save                  # 同步开机自启快照（systemd 单元 pm2-ubuntu
 
 ```bash
 # 1. 本地打包（排除依赖、构建产物、环境变量与本地数据库）
-cd "/Users/wilson/Documents/Codex/AnonyProof /anonyproof-main"
+cd /Users/wilson/Documents/Codex/anonyproof
 tar czf /tmp/anonyproof-src.tar.gz \
   --exclude='node_modules' --exclude='.next' --exclude='.env.local' \
   --exclude='data' --exclude='logs' \
@@ -83,10 +84,13 @@ curl -s -o /dev/null -w "%{http_code}\n" https://anonyproof.deline.top/anonyproo
 
 ## 演示数据
 
-- 种子逻辑在 `server/demo.ts`，只在 `DEMO_MODE` 开启且库中无反馈时写入 7 条记录。
+- 种子逻辑在 `server/demo.ts`，只在 `DEMO_MODE` 开启时写入 7 条示例模板（`is_demo_template=1`），重启不会重复插入。
 - 覆盖企业、学校、协会/组织、工地、商业楼等场景，状态含待受理 2、处理中 2、已办结 2、暂无法处理 1，沟通记录 1~4 轮不等。
-- 浏览器侧设备标识由 `/api/demo/config` 统一下发为 `demo-device-anonyproof-2026`，因此任何访客打开“我的提交”都能看到同一批演示记录。
-- 演示访客共用同一批数据，点开记录会把未读写库清零。前端整页加载会带上标签页会话标识（请求头 `x-anonyproof-demo-session`），`server/demo.ts` 的 `resetDemoNotificationsForSession()` 只在该标识首次出现时恢复用户端与管理端的种子默认未读状态：站内跳转、软导航和接口轮询不会让已读通知重新变成未读，只有手动刷新或新开标签页才会重置。
+- 每个浏览器身份首次访问时，服务端复制一份独立示例副本（`is_demo_clone=1`）及用户端通知，未读状态、补充回复、后台处理都只影响该浏览器，互不串数据。
+- 用户端只能访问本机身份名下的记录；换浏览器或清空浏览器数据后需用“我的提交”页面的恢复码找回，设备 ID 不再作为访问凭证。
+- 后台列表默认过滤逐浏览器副本（避免淹没真实线索），但可查看示例模板与全部真实提交；首页统计排除副本，保持示例总量稳定。
+- `DEMO_MAX_CLONES` 控制副本上限，达到上限后只签发身份不再复制，避免爬虫反复创建身份把库撑大。
+- 置 `DEMO_MODE=0` 后不再生成副本，示例模板与副本自动隐藏且不会丢失真实数据，通知与已读逻辑回到正式行为。
 
 ## 上线自检
 

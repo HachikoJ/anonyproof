@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDemoConfig } from "../hooks/useDemoConfig";
-import { demoPageSessionHeaders } from "../utils/pageSession";
 import ExternalLinks from "../components/ExternalLinks";
+import { recordCode } from "../utils/recordCode";
 
 type Feedback = {
   id: string;
@@ -14,6 +14,8 @@ type Feedback = {
   status: "pending" | "in_progress" | "resolved" | "no_solution";
   solution?: string;
   unread_notifications?: number;
+  is_demo_template?: number;
+  is_demo_clone?: number;
 };
 type Comment = {
   id: number;
@@ -226,7 +228,6 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetch("/anonyproof/api/admin/auth/session", {
-      headers: demoPageSessionHeaders(),
     })
       .then((response) => readApiJson(response))
       .then(async (data) => {
@@ -310,6 +311,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (selected && !filtered.some((item) => item.id === selected.id)) {
+      // 后台列表会过滤逐浏览器的演示副本，但通知仍可能指向其中一条。
+      // 此时保留当前详情，避免用户点击通知后详情被立即清空。
+      if (selected.is_demo_clone) return;
       clearSelection();
     }
   }, [filtered, selected]);
@@ -323,7 +327,6 @@ export default function AdminPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...demoPageSessionHeaders(),
         },
         credentials: "same-origin",
         body: JSON.stringify({ password }),
@@ -446,9 +449,30 @@ export default function AdminPage() {
   };
 
   const markNotificationRead = async (notification: Notification) => {
-    const item = feedbacks.find(
+    let item = feedbacks.find(
       (feedback) => feedback.id === notification.feedback_id,
     );
+    if (!item) {
+      try {
+        const response = await fetch(
+          `/anonyproof/api/admin/feedback/${encodeURIComponent(notification.feedback_id)}`,
+          { credentials: "same-origin" },
+        );
+        const data = await readApiJson(response);
+        item = {
+          ...(data.feedback as Feedback),
+          unread_notifications: 0,
+        };
+        setFeedbacks((items) => [
+          item as Feedback,
+          ...items.filter((entry) => entry.id !== item?.id),
+        ]);
+      } catch (error) {
+        handleRequestError(error, "通知对应的记录暂时无法打开");
+        setShowNotifications(false);
+        return;
+      }
+    }
     if (item) {
       if (!filtered.some((feedback) => feedback.id === item.id)) {
         setSearch("");
@@ -815,7 +839,7 @@ export default function AdminPage() {
                         <span className={`status-dot status-${item.status}`} />
                         {categoryLabels[item.category]}
                         <span className="feedback-id">
-                          #{item.id.slice(0, 8)}
+                          #{recordCode(item.id)}
                         </span>
                         {(item.unread_notifications || 0) > 0 && (
                           <span className="feedback-unread">
@@ -860,7 +884,7 @@ export default function AdminPage() {
                     <div className="admin-detail-heading">
                       <h2>
                         {categoryLabels[selected.category]}{" "}
-                        <span>#{selected.id.slice(0, 8)}</span>
+                        <span>#{recordCode(selected.id)}</span>
                       </h2>
                       <div className="detail-tags">
                         <span className="detail-tag">

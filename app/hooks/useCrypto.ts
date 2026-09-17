@@ -1,24 +1,167 @@
-import { useState, useEffect } from 'react'
-import { useDemoConfig } from './useDemoConfig'
+import { useCallback, useEffect, useState } from 'react'
+
+const DEVICE_ID_KEY = 'anonyproof_device_id'
+const RECOVERY_CODE_KEY = 'anonyproof_recovery_code'
+const INSTALL_KEY_KEY = 'anonyproof_install_key'
+
+type IdentityResponse = {
+  success: boolean
+  deviceId?: string
+  recoveryCode?: string
+  created?: boolean
+  adoptedLegacyDevice?: boolean
+  error?: string
+}
+
+function readStored(key: string) {
+  try {
+    return window.localStorage.getItem(key) || ''
+  } catch {
+    return ''
+  }
+}
+
+function writeStored(key: string, value: string) {
+  try {
+    if (value) window.localStorage.setItem(key, value)
+  } catch {
+    // 隐私模式下 localStorage 可能不可用，此时仍可依赖 Cookie 完成本次访问。
+  }
+}
+
+function persistIdentity(data: IdentityResponse) {
+  if (data.deviceId) writeStored(DEVICE_ID_KEY, data.deviceId)
+  if (data.recoveryCode) writeStored(RECOVERY_CODE_KEY, data.recoveryCode)
+}
+
+let memoryInstallKey = ''
+
+function createInstallKey() {
+  if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+    const bytes = new Uint8Array(32)
+    window.crypto.getRandomValues(bytes)
+    return btoa(Array.from(bytes, value => String.fromCharCode(value)).join(''))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/g, '')
+  }
+
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`
+}
+
+// 安装密钥用于同一浏览器在 Cookie 失效后继续拿到原身份；它只在本地保存，
+// 与恢复码分工不同：前者负责本机续接，后者负责换浏览器找回。
+function getInstallKey() {
+  if (memoryInstallKey) return memoryInstallKey
+
+  const stored = readStored(INSTALL_KEY_KEY)
+  if (stored) {
+    memoryInstallKey = stored
+    return stored
+  }
+
+  memoryInstallKey = createInstallKey()
+  writeStored(INSTALL_KEY_KEY, memoryInstallKey)
+  return memoryInstallKey
+}
+
+async function fetchIdentity(): Promise<IdentityResponse> {
+  const storedDeviceId = readStored(DEVICE_ID_KEY)
+  const storedRecoveryCode = readStored(RECOVERY_CODE_KEY)
+  const headers: Record<string, string> = {
+    'X-AnonyProof-Install-Key': getInstallKey(),
+  }
+  if (storedDeviceId) headers['X-AnonyProof-Device-Id'] = storedDeviceId
+  if (storedRecoveryCode) headers['X-AnonyProof-Recovery-Code'] = storedRecoveryCode
+
+  const response = await fetch('/anonyproof/api/identity', {
+    cache: 'no-store',
+    headers,
+  })
+  const data = await response.json().catch(() => null) as IdentityResponse | null
+  if (!response.ok || !data?.success || !data.deviceId) {
+    throw new Error(data?.error || '无法初始化本机身份')
+  }
+  return data
+}
+
+let initialIdentityRequest: Promise<IdentityResponse> | null = null
+
+// 并发调用（例如 React 严格模式重复挂载）共用同一次身份请求，避免同一浏览器被签发两个身份，
+// 导致本地标识和 Cookie 指向不同数据。刚创建或接管身份时再确认一次，以 Cookie 实际落地的身份为准。
+function loadIdentity() {
+  if (!initialIdentityRequest) {
+    initialIdentityRequest = (async () => {
+      const data = await fetchIdentity()
+      persistIdentity(data)
+
+      if (data.created || data.adoptedLegacyDevice) {
+        const confirmed = await fetchIdentity().catch(() => null)
+        if (confirmed) {
+          persistIdentity(confirmed)
+          return confirmed
+        }
+      }
+
+      return data
+    })().catch((error) => {
+      initialIdentityRequest = null
+      throw error
+    })
+  }
+
+  return initialIdentityRequest
+}
 
 export function useCrypto() {
-  const { config: demoConfig, loading: demoConfigLoading } = useDemoConfig()
   const [deviceId, setDeviceId] = useState<string>('')
+  const [recoveryCode, setRecoveryCode] = useState<string>('')
+  const [identityLoading, setIdentityLoading] = useState(true)
+  const [identityError, setIdentityError] = useState('')
 
   useEffect(() => {
-    if (demoConfigLoading) return
+    let active = true
+    loadIdentity()
+      .then((data) => {
+        if (!active || !data.deviceId) return
+        setDeviceId(data.deviceId)
+        setRecoveryCode(data.recoveryCode || readStored(RECOVERY_CODE_KEY))
+        setIdentityError('')
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        // 页面本身仍可阅读，需要身份的操作会给出可重试的错误提示。
+        setIdentityError(error instanceof Error ? error.message : '无法初始化本机身份')
+      })
+      .finally(() => {
+        if (active) setIdentityLoading(false)
+      })
 
-    // 生成或获取设备 ID
-    let did = demoConfig?.demoMode && demoConfig.deviceId
-      ? demoConfig.deviceId
-      : localStorage.getItem('anonyproof_device_id')
-    if (!did) {
-      // 使用兼容性更好的方法生成UUID
-      did = 'device-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9)
-      localStorage.setItem('anonyproof_device_id', did)
+    return () => {
+      active = false
     }
-    setDeviceId(did)
-  }, [demoConfig, demoConfigLoading])
+  }, [])
+
+  const recoverIdentity = useCallback(async (code: string) => {
+    const response = await fetch('/anonyproof/api/identity/recover', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-AnonyProof-Install-Key': getInstallKey(),
+      },
+      body: JSON.stringify({ recoveryCode: code }),
+    })
+    const data = await response.json().catch(() => null) as IdentityResponse | null
+    if (!response.ok || !data?.success || !data.deviceId) {
+      throw new Error(data?.error || '恢复码无效')
+    }
+
+    persistIdentity(data)
+    initialIdentityRequest = null
+    setDeviceId(data.deviceId)
+    setRecoveryCode(data.recoveryCode || code)
+    return data.deviceId
+  }, [])
 
   // 加密函数 - 降级方案：如果Web Crypto API不可用，使用简单Base64编码
   const encrypt = async (content: string): Promise<string> => {
@@ -112,6 +255,10 @@ export function useCrypto() {
 
   return {
     deviceId,
+    recoveryCode,
+    recoverIdentity,
+    identityLoading,
+    identityError,
     encrypt,
     decrypt,
   }

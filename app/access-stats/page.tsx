@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDemoConfig } from '../hooks/useDemoConfig'
-import { demoPageSessionHeaders } from '../utils/pageSession'
 import ExternalLinks from '../components/ExternalLinks'
 import type {
   AccessLog,
@@ -37,7 +36,6 @@ const api = (path: string, init?: RequestInit) =>
     credentials: 'same-origin',
     ...init,
     headers: {
-      ...demoPageSessionHeaders(),
       ...((init?.headers as Record<string, string> | undefined) ?? {}),
     },
   })
