@@ -4,8 +4,8 @@
   <link rel="icon" href="brand/anonyproof-mark.svg" type="image/svg+xml" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>匿证 | 完全匿名的端到端加密反馈平台</title>
-  <meta name="description" content="匿证 - 完全匿名·端到端加密·防偷看机制的反馈平台" />
+  <title>匿证 | 匿名线索提交与跟进平台</title>
+  <meta name="description" content="匿证 - 无需实名的线索提交与跟进平台，支持进度查看、沟通记录与通知提醒" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -579,6 +579,7 @@
           </span>
         </div>
         <nav class="nav-links">
+          <a href="https://anonyproof.deline.top/anonyproof" target="_blank" rel="noreferrer">在线演示</a>
           <a href="#features">核心能力</a>
           <a href="#screens">界面预览</a>
           <a href="#support">联系支持</a>
@@ -590,20 +591,22 @@
     <div class="container">
       <div class="hero-grid">
         <div class="hero-copy">
-          <div class="eyebrow"><i class="fa-solid fa-sparkles"></i> Product-grade anonymous feedback system</div>
+          <div class="eyebrow"><i class="fa-solid fa-sparkles"></i> 匿名线索提交与跟进系统</div>
           <div class="product-name">匿证</div>
           <div class="hero-actions">
-            <a href="http://www.deline.top/anonyproof" class="btn btn-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> 立即访问项目</a>
+            <a href="https://anonyproof.deline.top/anonyproof" class="btn btn-primary"><i class="fa-solid fa-arrow-up-right-from-square"></i> 在线演示</a>
+            <a href="https://anonyproof.deline.top/anonyproof/foorpynona" class="btn btn-secondary"><i class="fa-solid fa-user-shield"></i> 管理端</a>
             <a href="https://github.com/HachikoJ/anonyproof" class="btn btn-secondary"><i class="fab fa-github"></i> 查看源码</a>
             <a href="#screens" class="btn btn-secondary"><i class="fa-regular fa-image"></i> 浏览界面</a>
           </div>
           <div class="repo-link-card" style="margin-top: 16px; max-width: 620px;">
-            <strong style="display:block; margin-bottom: 6px; color: #ffffff;">真实访问地址</strong>
-            <span style="color: var(--muted-2);">可直接点击访问在线项目：</span>
-            <a href="http://www.deline.top/anonyproof" style="display:block; margin-top: 8px; color: var(--cyan); text-decoration: none; word-break: break-all;">http://www.deline.top/anonyproof</a>
+            <strong style="display:block; margin-bottom: 6px; color: #ffffff;">演示环境说明</strong>
+            <span style="color: var(--muted-2);">管理端密码为 <code>demo12345678</code>，仅用于效果展示，正式部署前必须清除：</span>
+            <a href="https://anonyproof.deline.top/anonyproof" style="display:block; margin-top: 8px; color: var(--cyan); text-decoration: none; word-break: break-all;">用户端 https://anonyproof.deline.top/anonyproof</a>
+            <a href="https://anonyproof.deline.top/anonyproof/foorpynona" style="display:block; margin-top: 4px; color: var(--cyan); text-decoration: none; word-break: break-all;">管理端 https://anonyproof.deline.top/anonyproof/foorpynona</a>
           </div>
           <div class="hero-meta">
-            <span class="hero-chip">匿名反馈</span>
+            <span class="hero-chip">无需实名</span>
             <span class="hero-chip">通知中心</span>
             <span class="hero-chip">状态跟进</span>
             <span class="hero-chip">多端适配</span>
@@ -619,7 +622,8 @@
             <div class="terminal-body">
               <div class="terminal-line"><span>$</span> product <strong>匿证</strong></div>
               <div class="terminal-line"><span>$</span> mode <strong>anonymous</strong></div>
-              <div class="terminal-line"><span>$</span> encryption <strong>AES-256</strong></div>
+              <div class="terminal-line"><span>$</span> identity <strong>device-bound</strong></div>
+              <div class="terminal-line"><span>$</span> encryption <strong>AES-256-GCM</strong></div>
               <div class="terminal-line"><span>$</span> notification <strong>enabled</strong></div>
             </div>
           </div>
@@ -627,16 +631,16 @@
             <div class="metric-card">
               <h3>Key Metrics</h3>
               <div class="metric-grid">
-                <div class="metric"><strong>100%</strong><span>加密传输</span></div>
-                <div class="metric"><strong>24/7</strong><span>反馈可达</span></div>
                 <div class="metric"><strong>3</strong><span>提交类型</span></div>
-                <div class="metric"><strong>2</strong><span>多端体验</span></div>
+                <div class="metric"><strong>4</strong><span>处理状态</span></div>
+                <div class="metric"><strong>1</strong><span>屏内布局</span></div>
+                <div class="metric"><strong>2</strong><span>桌面 / 移动</span></div>
               </div>
             </div>
             <div class="signal-card">
               <h3>Flow Signals</h3>
               <ul>
-                <li><i class="fa-solid fa-circle-check"></i><span>通知、评论、状态推进一体化</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>通知、沟通、状态推进一体化</span></li>
                 <li><i class="fa-solid fa-circle-check"></i><span>可快速部署上线</span></li>
                 <li><i class="fa-solid fa-circle-check"></i><span>轻量但闭环完整</span></li>
               </ul>
@@ -654,15 +658,15 @@
           <div class="section-kicker">Core Features</div>
           <h2>核心能力</h2>
         </div>
-        <p>匿名、安全、通知、跟进。</p>
+        <p>匿名提交、状态跟进、通知提醒与访问风控。</p>
       </div>
       <div class="features-grid">
-        <div class="feature"><div class="feature-icon">🔒</div><h3>完全匿名</h3><p>无需注册登录。</p></div>
-        <div class="feature"><div class="feature-icon">🛡️</div><h3>端到端加密</h3><p>内容在客户端完成加密。</p></div>
-        <div class="feature"><div class="feature-icon">👁️</div><h3>可审计操作</h3><p>管理操作留痕。</p></div>
-        <div class="feature"><div class="feature-icon">💬</div><h3>双向沟通</h3><p>支持评论与追加说明。</p></div>
+        <div class="feature"><div class="feature-icon">🔒</div><h3>无需实名</h3><p>不用注册登录即可提交线索。</p></div>
+        <div class="feature"><div class="feature-icon">🧭</div><h3>状态跟进</h3><p>待受理、处理中、已办结、暂无法处理四态流转。</p></div>
+        <div class="feature"><div class="feature-icon">💬</div><h3>双向沟通</h3><p>写在同一条记录里的补充说明与回复。</p></div>
         <div class="feature"><div class="feature-icon">🔔</div><h3>通知中心</h3><p>新消息与状态变化及时可见。</p></div>
-        <div class="feature"><div class="feature-icon">📱</div><h3>多端适配</h3><p>桌面与移动端都轻量好用。</p></div>
+        <div class="feature"><div class="feature-icon">🛡️</div><h3>访问风控</h3><p>访问日志、可疑 IP 与限流记录。</p></div>
+        <div class="feature"><div class="feature-icon">📱</div><h3>多端适配</h3><p>桌面与移动端都保持单屏布局。</p></div>
       </div>
     </div>
   </section>
@@ -674,7 +678,7 @@
           <div class="section-kicker">Interface Showcase</div>
           <h2>界面预览</h2>
         </div>
-        <p>管理端重效率，用户端重体验。</p>
+        <p>截图取自线上演示站（2026-09）。</p>
       </div>
 
       <div class="section-title">
@@ -685,20 +689,29 @@
         <div class="screenshot-item">
           <div class="screenshot-top">
             <span class="shot-index">01</span>
-            <span class="shot-type">dashboard</span>
+            <span class="shot-type">sign in</span>
           </div>
-          <img src="./images/admin-homepage.jpg" alt="管理端主页" />
-          <h4>管理端主页</h4>
-          <p>总览、筛选、搜索与导出集中在一屏内。</p>
+          <img src="./images/current-admin-login-desktop.webp" alt="管理端登录" />
+          <h4>管理端登录</h4>
+          <p>演示模式下列出默认密码，并提示正式部署前必须清除。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
             <span class="shot-index">02</span>
+            <span class="shot-type">records</span>
+          </div>
+          <img src="./images/current-admin-records-desktop.webp" alt="管理端线索管理" />
+          <h4>线索管理</h4>
+          <p>状态统计、筛选、搜索与记录列表集中在一屏。</p>
+        </div>
+        <div class="screenshot-item">
+          <div class="screenshot-top">
+            <span class="shot-index">03</span>
             <span class="shot-type">workflow</span>
           </div>
-          <img src="./images/admin-comment-page.jpg" alt="管理端评论页" />
-          <h4>管理端评论页</h4>
-          <p>围绕单条反馈持续跟进与沟通。</p>
+          <img src="./images/current-admin-detail-desktop.webp" alt="管理端提交详情" />
+          <h4>提交处理</h4>
+          <p>状态按钮、处理说明与沟通记录同屏联动。</p>
         </div>
       </div>
 
@@ -709,21 +722,30 @@
       <div class="screenshot-grid">
         <div class="screenshot-item">
           <div class="screenshot-top">
-            <span class="shot-index">03</span>
+            <span class="shot-index">04</span>
             <span class="shot-type">home</span>
           </div>
-          <img src="./images/user-home-with-notifications-desktop.jpg" alt="用户端带通知电脑版主页" />
-          <h4>首页与通知中心</h4>
-          <p>反馈入口与通知面板同屏呈现。</p>
+          <img src="./images/current-user-home-desktop.webp" alt="用户端首页" />
+          <h4>首页</h4>
+          <p>标题、提交入口、处理流程与声明一屏呈现。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
-            <span class="shot-index">04</span>
+            <span class="shot-index">05</span>
             <span class="shot-type">history</span>
           </div>
-          <img src="./images/user-feedbacks-desktop.jpg" alt="用户端我的反馈页电脑版" />
-          <h4>我的反馈</h4>
-          <p>支持分类、状态与关键词筛选。</p>
+          <img src="./images/current-user-submissions-desktop.webp" alt="我的提交" />
+          <h4>我的提交</h4>
+          <p>类型标签与详情页保持一致，支持状态筛选与搜索。</p>
+        </div>
+        <div class="screenshot-item">
+          <div class="screenshot-top">
+            <span class="shot-index">06</span>
+            <span class="shot-type">detail</span>
+          </div>
+          <img src="./images/current-user-detail-desktop.webp" alt="提交详情" />
+          <h4>提交详情</h4>
+          <p>提交材料与沟通记录左右分栏，底部固定补充输入。</p>
         </div>
       </div>
 
@@ -734,30 +756,21 @@
       <div class="screenshot-grid">
         <div class="screenshot-item">
           <div class="screenshot-top">
-            <span class="shot-index">05</span>
+            <span class="shot-index">07</span>
             <span class="shot-type">mobile</span>
           </div>
-          <img src="./images/user-home-mobile.jpg" alt="用户端主页移动版" />
+          <img src="./images/current-user-home-mobile.webp" alt="移动端首页" />
           <h4>移动端首页</h4>
-          <p>在手机上也能快速完成反馈提交与查看。</p>
+          <p>提交入口、处理流程与声明在手机上同样完整可用。</p>
         </div>
         <div class="screenshot-item">
           <div class="screenshot-top">
-            <span class="shot-index">06</span>
-            <span class="shot-type">notice</span>
-          </div>
-          <img src="./images/user-notification-detail-mobile.jpg" alt="用户端通知详情页移动版" />
-          <h4>通知详情</h4>
-          <p>未读、已读与状态变化集中呈现。</p>
-        </div>
-        <div class="screenshot-item">
-          <div class="screenshot-top">
-            <span class="shot-index">07</span>
+            <span class="shot-index">08</span>
             <span class="shot-type">detail</span>
           </div>
-          <img src="./images/user-feedback-detail-mobile.jpg" alt="用户端反馈详情页移动版" />
-          <h4>反馈详情</h4>
-          <p>完整查看反馈内容、处理进展与回复。</p>
+          <img src="./images/current-user-detail-mobile.webp" alt="移动端提交详情" />
+          <h4>移动端提交详情</h4>
+          <p>类型、编号与时间压缩为标签行，内容与沟通记录占主要空间。</p>
         </div>
       </div>
     </div>
@@ -818,8 +831,9 @@
       <div class="cta-card">
         <div class="section-kicker" style="margin-bottom:10px;">Get Started</div>
         <h2>快速部署匿证</h2>
-        <p>开源、轻量、清晰，适合直接部署上线。</p>
+        <p>开源、轻量、清晰，适合直接部署上线。演示环境默认密码仅用于效果展示，正式部署前请务必清除。</p>
         <div class="hero-actions" style="justify-content:center; margin-top: 0;">
+          <a href="https://anonyproof.deline.top/anonyproof" class="btn btn-primary">在线演示</a>
           <a href="https://github.com/HachikoJ/anonyproof#-快速开始" class="btn btn-primary">查看文档</a>
           <a href="https://github.com/HachikoJ/anonyproof/blob/main/docs/DEPLOYMENT.md" class="btn btn-secondary">部署指南</a>
         </div>
@@ -828,7 +842,8 @@
   </section>
 
   <footer>
-    <p>匿证 · 完全独立开发 · Vibe Coding</p>
+    <p>匿证 · 匿名线索提交与跟进平台 · MIT 开源</p>
+    <p>© 2026 匿证 · 粤ICP备2025449309号-2</p>
     <p>Created with ❤️ by <a href="https://github.com/HachikoJ">Wilson</a> · 广东 深圳</p>
   </footer>
 

@@ -1,6 +1,10 @@
 # GitHub Pages 配置
 
-本项目的 GitHub Pages 部署配置。
+本项目的 GitHub Pages 部署配置。Pages 只承载静态介绍页，可交互的演示环境在腾讯云服务器上：
+
+- 项目介绍页（GitHub Pages）：<https://hachikoj.github.io/anonyproof/>
+- 在线演示（用户端）：<https://anonyproof.deline.top/anonyproof>
+- 管理端：<https://anonyproof.deline.top/anonyproof/foorpynona>（演示密码 `demo12345678`，仅用于效果展示）
 
 ## 部署方式
 
