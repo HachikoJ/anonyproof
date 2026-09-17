@@ -8,7 +8,7 @@
     "start": "next start -H ${BIND_HOST:-127.0.0.1} -p ${PORT:-3000}",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "pm2:dev": "pm2 start ecosystem.config.js",
+    "pm2:dev": "pm2 start deploy/pm2/ecosystem.config.js",
     "pm2:prod": "pm2 start ecosystem.prod.config.js",
     "pm2:restart": "pm2 restart all",
     "pm2:stop": "pm2 stop all",

@@ -203,7 +203,7 @@ WORKDIR /app
 EXPOSE 3000 4000
 
 # 启动脚本
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+CMD ["pm2-runtime", "start", "deploy/pm2/ecosystem.config.js"]
 ```
 
 ### 构建和运行

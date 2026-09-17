@@ -193,13 +193,20 @@ DEMO_MODE=1
 
 ```text
 anonyproof/
-├── app/
-├── server/
-├── docs/
-├── public/
+├── app/                        # Next.js 前端页面与组件
+├── server/                     # Express + SQLite 后端
+├── public/                     # 公共静态资源
+├── scripts/                    # 本地启动辅助脚本
+├── deploy/                     # 部署配置（Nginx / PM2 / 历史脚本）
+├── docs/                       # 设计、部署、截图与使用文档
+├── archive/                    # 历史开发报告与代码备份（只读参考）
+├── ecosystem.prod.config.js    # 线上 PM2 生产入口
+├── DEPLOY.md                   # 当前部署说明
 ├── package.json
 └── README.md
 ```
+
+历史进度报告集中在 `archive/`，运行项目不需要该目录中的文件。
 
 ---
 

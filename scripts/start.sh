@@ -2,6 +2,8 @@
 
 # AnonyProof 启动脚本
 
+cd "$(dirname "$0")/.." || exit 1
+
 echo "🚀 启动 AnonyProof..."
 
 # 检查 Node.js
@@ -10,8 +12,8 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 NODE_MAJOR=$(node -p "process.versions.node.split('.')[0]")
-if [ "$NODE_MAJOR" != "20" ]; then
-    echo "❌ AnonyProof 需要 Node.js 20 LTS，当前版本为 $(node -v)"
+if [ "$NODE_MAJOR" -lt 20 ]; then
+    echo "❌ AnonyProof 需要 Node.js 20 或更高版本，当前版本为 $(node -v)"
     exit 1
 fi
 

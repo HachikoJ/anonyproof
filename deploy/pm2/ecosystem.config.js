@@ -1,6 +1,6 @@
 const path = require('path')
 
-const projectRoot = __dirname
+const projectRoot = path.join(__dirname, '..', '..')
 
 module.exports = {
   apps: [
