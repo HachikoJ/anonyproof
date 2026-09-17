@@ -522,9 +522,15 @@ export default function HomePage() {
               <div className="home-disclaimer-inner">
                 <h2 id="home-disclaimer-title">声明</h2>
                 <p>本平台仅用于学习交流，紧急情况请联系对应紧急服务处理。</p>
-                <a className="home-filing" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
-                  粤ICP备2025449309号-2
-                </a>
+                <div className="home-filing">
+                  <span>© 2026 匿证</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MIT 开源</span>
+                  <span aria-hidden="true">·</span>
+                  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
+                    粤ICP备2025449309号-2
+                  </a>
+                </div>
               </div>
             </footer>
           </div>

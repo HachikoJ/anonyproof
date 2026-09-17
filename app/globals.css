@@ -574,14 +574,24 @@ button:disabled {
 }
 
 .home-filing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0 6px;
   justify-self: end;
   color: var(--ink-tertiary);
   font-size: 11px;
+  text-align: right;
+}
+
+.home-filing a {
+  color: inherit;
   text-decoration: none;
   white-space: nowrap;
 }
 
-.home-filing:hover {
+.home-filing a:hover {
   color: var(--brand-cobalt);
   text-decoration: underline;
 }
