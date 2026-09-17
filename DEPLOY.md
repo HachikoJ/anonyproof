@@ -102,4 +102,4 @@ curl -s https://anonyproof.deline.top/anonyproof/api/demo/config
 curl -s --max-time 6 http://106.55.13.245:4000/health   # 应当连接失败
 ```
 
-自动化回归脚本：`output/verify-detail.mjs`（本地布局 94 项）与 `output/verify-prod.mjs`（线上 25 项）。
+线上验收建议：用两个独立浏览器分别打开站点，确认“我的提交”只显示各自记录；再用其中一个浏览器的恢复码在第三个浏览器验证能找回同一批记录；后台登录后应能看到访客新提交，并能更新状态触发对应用户的未读提醒。
