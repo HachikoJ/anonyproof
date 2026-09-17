@@ -587,7 +587,15 @@ export default function HomePage() {
                 <div className="record-list" ref={recordsListRef} onScroll={(event) => { recordsScrollTopRef.current = event.currentTarget.scrollTop }}>
                   {filteredRecords.map((record) => (
                     <button key={record.id} type="button" onClick={() => openRecord(record)}>
-                      <span className="record-main"><span className="record-meta"><b>{categoryName(record.category)}</b><time>{formatDate(record.created_at)}</time><small className="record-id">#{record.id.slice(0, 8).toUpperCase()}</small>{(record.unread_notifications ?? 0) > 0 && <em className="record-unread">{record.unread_notifications} 条新消息</em>}</span><strong>{record.original_content || '未提供可预览内容'}</strong></span>
+                      <span className="record-main">
+                        <span className="record-meta">
+                          <span className={`category-tag category-tag-${record.category}`}>{categoryName(record.category)}</span>
+                          <time>{formatDate(record.created_at)}</time>
+                          <small className="record-id">#{record.id.slice(0, 8).toUpperCase()}</small>
+                          {(record.unread_notifications ?? 0) > 0 && <em className="record-unread">{record.unread_notifications} 条新消息</em>}
+                        </span>
+                        <strong>{record.original_content || '未提供可预览内容'}</strong>
+                      </span>
                       <span className="record-side"><StatusBadge status={record.status} /><i aria-hidden="true">→</i></span>
                     </button>
                   ))}

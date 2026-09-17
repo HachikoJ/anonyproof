@@ -1257,11 +1257,6 @@ button:disabled {
   font-size: 10px;
 }
 
-.record-meta b {
-  color: var(--brand-cobalt);
-  font-weight: 750;
-}
-
 .record-unread, .feedback-unread {
   display: inline-flex;
   align-items: center;
