@@ -1150,3 +1150,10 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 已修正为固定合成选择、模板只读、当前浏览器沙箱、其它浏览器和原始日志拒绝；当前版本只统计固定模板，正式实例需独立库/凭证。去掉会诱导未确认历史数据删除的部署指示，改为T-32逐项确认。保留原文件、环境字段与实际库，不执行删除。
 - 部署资料明确其路径源于历史说明，未当成2026-10-07实时线上证据；当前修复行为已本地验收但未发布，T-02/T-35仍未完成。没有把文档更新当作硬隔离/上线成功，也没有实施待确认角色配置。
 - 实际`rg -n '真实提交|真实线索|全部真实|固定|硬隔离|尚未发布' .env.example DEPLOY.md docs/DEPLOYMENT.md`及doc diff对照当前adminListScope/adminRecordScope/固定输入/公开stats代码与T-01实测证据，输出T-01-docs-reconciliation.txt；错误功能声明已替换，`git diff --check`退出0。纯说明/comment变化，不新增业务测试或重复构建，运行行为沿用T-05全量回归中T-01既有权限矩阵通过的证据。独立T-01补充提交，不改变任务完成数。
+
+### T-03 密钥/恢复指南的交付补验（2026-10-07）
+
+- 补齐docs/DEPLOYMENT中正式配置遗漏的CONTENT_ENCRYPTION_KEY与独立库示例，明确已批准32字节Base64/AES-GCM、服务器可读、缺/错key失败关闭、遗失不可恢复、历史version0未自动迁移及保留兼容reader/停写回滚。
+- 旧活跃备份段仍示范运行中cp主库及七天自动-delete，与计划一致性快照和未定保留策略矛盾。按已批准T-03恢复方案改为SQLite在线backup示范；旧示例完整保留为text历史不支持/禁止执行，未删除脚本/备份或变更真实调度。目标需全新且受限，DB与key分别保存；真实库备份/迁移/销毁依旧单独确认，不把说明更新当T-32完成。
+- 实际新增T-03 backup guide验收：测试服务持续运行且WAL非空时，用文档相同的 `sqlite3 -readonly SOURCE ".backup 'TARGET'"` 对新合成目标（含空格）执行，退出0；快照1反馈/1评论/2通知、integrity_check=ok，文件无合成明文marker/独立key的Base64/hex。从另一目录的独立fixture key启动恢复后端，以另存恢复码找回并精确读回正文/评论。源与目标均临时合成数据，不连接项目data真实库、不覆写旧备份。
+- Node22.23.3：新guide场景1/1退出0；完整 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-03.test.ts`14/14退出0，包含原错误/缺密钥与DB/WAL/backup恢复矩阵；`npm run type-check`0、`git diff --check`0。证据T-03-backup-guide-*与T-03-docs-reconciliation.txt。产品/backend未改，已有已验收构建继续适用；无新依赖/无无关测试框架。独立T-03补充提交，不重标T-02/T-32完成。

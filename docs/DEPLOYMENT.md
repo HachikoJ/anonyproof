@@ -74,6 +74,10 @@ ADMIN_PASSWORD=your_strong_password_here
 # 至少 32 位随机字符
 SESSION_SECRET=your_random_secret_at_least_32_characters
 
+# 正式实例DEMO_MODE=0时必填：独立配置的32字节Base64内容密钥；演示保持空
+# 生成方式：openssl rand -base64 32；不得存入数据库或与数据库同包备份
+CONTENT_ENCRYPTION_KEY=
+
 # API_TOKEN 已弃用：服务端不读取，不提供API鉴权，不必设置
 API_TOKEN=your_api_token_here
 
@@ -100,9 +104,13 @@ TRUST_PROXY=1
 DEMO_MODE=0
 ADMIN_PASSWORD=your_real_strong_password
 SESSION_SECRET=your_real_random_secret_at_least_32_characters
+CONTENT_ENCRYPTION_KEY=<独立安全配置的32字节Base64密钥>
+DATABASE_PATH=/absolute/path/to/formal.db
 ```
 
 正式实例提供真实管理员流程；公开演示密码不会在正式demo/config中发布。固定模板和沙箱的界面过滤不等于数据库硬隔离，须分别部署对应库，T-02启动角色检查方案仍待具体确认。历史库、备份或演示记录均不按本段自动清除；保留/迁移/销毁范围由T-32及相关保留策略单独确认。
+
+正式服务使用已批准的AES-256-GCM静态加密，授权服务/管理员可读取原文。缺失、错误内容密钥必须失败关闭；密钥遗失无法恢复密文。版本0历史内容仍需T-32另行迁移，不因新写入加密便认为旧库/旧备份安全。新密文产生后，回滚需保留兼容reader和同一独立密钥，关闭正式写入；不得退回旧reader或以写明文作为回滚。
 
 ### 4. 构建前端
 
@@ -244,7 +252,17 @@ sudo tail -f /var/log/nginx/error.log
 
 ### 数据备份
 
+SQLite启用WAL。运行中只复制`.db`可能漏掉已提交的WAL数据；批准备份后使用SQLite在线backup或停写的一致性快照。数据库与内容密钥须分别保存，不把`.env.local`、key或明文导出混入数据库备份包；先在隔离环境用备份与独立相同key验证身份恢复和内容读回，错误/缺key应拒绝。密钥恢复与历史副本处置参见根目录DEPLOY及T-03/T-32。
+
+下面仅示范在线快照命令。路径必须替换为已确认的源和**全新**目标（不要覆盖现有备份）；目标目录应受限，示例路径中不要使用单引号或换行。该命令不会删除源库或历史备份，保留期限/销毁尚待Q-04和逐项资产确认：
+
 ```bash
+sqlite3 -readonly /absolute/path/to/formal.db ".backup '/absolute/path/to/separate-backup/formal-YYYYMMDD.db'"
+```
+
+以下保留为**历史不支持示例，禁止直接复制执行**。它的运行中`cp`和自动七天删除未满足当前一致性/保留审批要求，不是现行备份流程，也未由本轮运行或删除任何资产：
+
+```text
 # 创建备份脚本
 cat > backup.sh << 'EOF'
 #!/bin/bash

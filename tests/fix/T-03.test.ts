@@ -423,3 +423,41 @@ test('T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP
   }
   assert.equal((await user.request(`/api/feedback/device/${identity.deviceId}`)).data.feedbacks[0].original_content, 'tamper protected body')
 })
+
+test('T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key', async t => {
+  const { Client, startBackend } = await import('./helpers')
+  const { mkdtempSync, writeFileSync, readFileSync, statSync } = await import('node:fs')
+  const { tmpdir } = await import('node:os')
+  const { randomBytes } = await import('node:crypto')
+  const { spawnSync } = await import('node:child_process')
+  const contentKey = randomBytes(32).toString('base64')
+  const service = await startBackend({ CONTENT_ENCRYPTION_KEY: contentKey }); t.after(service.stop)
+  const user = new Client(service), identity = (await user.identity()).data
+  const body = 'T03_SQLITE_BACKUP_GUIDE_SYNTHETIC_BODY'
+  const comment = 'T03_SQLITE_BACKUP_GUIDE_SYNTHETIC_COMMENT'
+  const submitted = await user.post('/api/feedback', { category: 'report', deviceId: identity.deviceId, originalContent: body, encryptedContent: 'fixture-cipher' })
+  assert.equal(submitted.response.status, 200)
+  assert.equal((await user.post(`/api/feedback/${submitted.data.id}/comments`, { content: comment })).response.status, 200)
+  assert.ok(statSync(service.databasePath + '-wal').size > 0, 'online source has uncheckpointed WAL')
+  const backups = mkdtempSync(path.join(tmpdir(), 'anonyproof-T03 backup-'))
+  const keys = mkdtempSync(path.join(tmpdir(), 'anonyproof-T03 independent-key-'))
+  const backupPath = path.join(backups, 'data snapshot.db'), keyPath = path.join(keys, 'key.fixture')
+  writeFileSync(keyPath, contentKey, { mode: 0o600 })
+  assert.ok(!backupPath.includes("'") && !backupPath.includes('\n'))
+  const snapshot = spawnSync('sqlite3', ['-readonly', service.databasePath, `.backup '${backupPath}'`], { encoding: 'utf8', timeout: 10000 })
+  assert.equal(snapshot.status, 0, snapshot.stderr)
+  const bytes = readFileSync(backupPath)
+  for (const marker of [body, comment, contentKey, Buffer.from(contentKey, 'base64').toString('hex')]) assert.equal(bytes.includes(Buffer.from(marker)), false)
+  const db = new Database(backupPath, { readonly: true })
+  try {
+    assert.equal((db.prepare('SELECT COUNT(*) AS n FROM feedbacks').get() as { n: number }).n, 1)
+    assert.equal((db.prepare('SELECT COUNT(*) AS n FROM feedback_comments').get() as { n: number }).n, 1)
+    assert.equal((db.prepare('SELECT COUNT(*) AS n FROM notifications').get() as { n: number }).n, 2)
+    assert.equal(db.pragma('integrity_check', { simple: true }), 'ok')
+  } finally { db.close() }
+  const restored = await startBackend({ DATABASE_PATH: backupPath, CONTENT_ENCRYPTION_KEY: readFileSync(keyPath, 'utf8') }); t.after(restored.stop)
+  const recovered = new Client(restored)
+  assert.equal((await recovered.post('/api/identity/recover', { recoveryCode: identity.recoveryCode })).response.status, 200)
+  assert.equal((await recovered.request(`/api/feedback/device/${identity.deviceId}`)).data.feedbacks[0].original_content, body)
+  assert.equal((await recovered.request(`/api/feedback/${submitted.data.id}/comments`)).data.comments[0].content, comment)
+})
