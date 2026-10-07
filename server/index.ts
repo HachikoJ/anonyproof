@@ -910,24 +910,26 @@ app.post('/api/feedback', (req, res) => {
     const id = uuidv4()
     const createdAt = Date.now()
 
-    const stmt = db.prepare(
-      'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content, is_demo_clone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-    )
-    stmt.run(id, category, encryptedContent, deviceId, createdAt, 'pending', originalContent || '', demoMode ? 1 : 0)
+    db.transaction(() => {
+      const stmt = db.prepare(
+        'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content, is_demo_clone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+      )
+      stmt.run(id, category, encryptedContent, deviceId, createdAt, 'pending', originalContent || '', demoMode ? 1 : 0)
 
-    updateStats()
+      updateStats()
 
-    // 创建通知 - 通知管理员有新反馈
-    const categoryName = category === 'suggestion' ? '建议' : category === 'complaint' ? '投诉' : '举报'
-    const contentSummary = originalContent ? originalContent.substring(0, 50) + (originalContent.length > 50 ? '...' : '') : '（已加密）'
-    createNotification(
-      'admin',
-      'admin',
-      id,
-      'new_feedback',
-      `收到一条${categoryName}线索`,
-      contentSummary
-    )
+      // 创建通知 - 通知管理员有新反馈
+      const categoryName = category === 'suggestion' ? '建议' : category === 'complaint' ? '投诉' : '举报'
+      const contentSummary = originalContent ? originalContent.substring(0, 50) + (originalContent.length > 50 ? '...' : '') : '（已加密）'
+      createNotification(
+        'admin',
+        'admin',
+        id,
+        'new_feedback',
+        `收到一条${categoryName}线索`,
+        contentSummary
+      )
+    }).immediate()
 
     res.json({
       success: true,
@@ -1055,37 +1057,48 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
     }
     const trimmedSolution = (solution ?? '').trim()
 
-    // 记录操作
-    logAdminAction('update_status', id, ip)
+    const updated = db.transaction(() => {
+      // Compare only after acquiring the write reservation; concurrent requests
+      // must observe the committed status and avoid duplicate notifications.
+      const currentFeedback = db.prepare(`
+        SELECT id, status, solution FROM feedbacks
+        WHERE id = ? AND ${scope.sql}
+      `).get(id, ...scope.params) as { id: string; status: string; solution: string } | undefined
+      if (!currentFeedback) return false
+      // 记录操作
+      logAdminAction('update_status', id, ip)
 
-    const statusChanged = visibleFeedback.status !== status
-    const solutionChanged = Boolean(trimmedSolution && trimmedSolution !== visibleFeedback.solution)
+      const statusChanged = currentFeedback.status !== status
+      const solutionChanged = Boolean(trimmedSolution && trimmedSolution !== currentFeedback.solution)
 
-    // 状态变化与处理说明相互独立：即使“处理中”暂未填写说明，也必须通知提交人。
-    if (trimmedSolution) {
-      db.prepare(
-        'UPDATE feedbacks SET status = ?, solution = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
-      ).run(status, trimmedSolution, Date.now(), ip, id)
-    } else {
-      db.prepare('UPDATE feedbacks SET status = ? WHERE id = ?').run(status, id)
-    }
+      // 状态变化与处理说明相互独立：即使“处理中”暂未填写说明，也必须通知提交人。
+      if (trimmedSolution) {
+        db.prepare(
+          'UPDATE feedbacks SET status = ?, solution = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
+        ).run(status, trimmedSolution, Date.now(), ip, id)
+      } else {
+        db.prepare('UPDATE feedbacks SET status = ? WHERE id = ?').run(status, id)
+      }
 
-    const feedback = db.prepare('SELECT device_id, category FROM feedbacks WHERE id = ?').get(id) as any
-    if (feedback && (statusChanged || solutionChanged)) {
-      const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
-      const statusLabel = status === 'in_progress' ? '处理中' : status === 'resolved' ? '已办结' : '暂无法处理'
-      const solutionSummary = trimmedSolution
-        ? trimmedSolution.substring(0, 50) + (trimmedSolution.length > 50 ? '...' : '')
-        : ''
-      createNotification(
-        'user',
-        feedback.device_id,
-        id,
-        'status_update',
-        statusChanged ? `提交记录状态已更新：${statusLabel}` : `处理说明已更新：${statusLabel}`,
-        `您提交的${categoryName}当前状态为“${statusLabel}”${solutionSummary ? `，处理说明：${solutionSummary}` : ''}`,
-      )
-    }
+      const feedback = db.prepare('SELECT device_id, category FROM feedbacks WHERE id = ?').get(id) as any
+      if (feedback && (statusChanged || solutionChanged)) {
+        const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
+        const statusLabel = status === 'in_progress' ? '处理中' : status === 'resolved' ? '已办结' : '暂无法处理'
+        const solutionSummary = trimmedSolution
+          ? trimmedSolution.substring(0, 50) + (trimmedSolution.length > 50 ? '...' : '')
+          : ''
+        createNotification(
+          'user',
+          feedback.device_id,
+          id,
+          'status_update',
+          statusChanged ? `提交记录状态已更新：${statusLabel}` : `处理说明已更新：${statusLabel}`,
+          `您提交的${categoryName}当前状态为“${statusLabel}”${solutionSummary ? `，处理说明：${solutionSummary}` : ''}`,
+        )
+      }
+      return true
+    }).immediate()
+    if (!updated) return res.status(404).json({ error: '反馈不存在' })
 
     res.json({ success: true })
   } catch (error) {
@@ -1213,37 +1226,48 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     const createdAt = Date.now()
     const adminIp = commenterType === 'admin' ? (req.ip || req.socket.remoteAddress || 'unknown') : null
 
-    const stmt = db.prepare(
-      'INSERT INTO feedback_comments (feedback_id, commenter_type, content, created_at, admin_ip) VALUES (?, ?, ?, ?, ?)'
-    )
-    const result = stmt.run(feedbackId, commenterType, content.trim(), createdAt, adminIp)
+    const result = db.transaction(() => {
+      // Recheck the scoped parent while holding the write reservation.
+      const currentFeedback = db.prepare(`
+        SELECT device_id, category FROM feedbacks
+        WHERE id = ? AND ${scope.sql}
+      `).get(feedbackId, ...scope.params) as { device_id: string; category: string } | undefined
+      if (!currentFeedback) return undefined
+      if (commenterType === 'user' && !canAccessDevice(req, currentFeedback.device_id)) return undefined
+      const stmt = db.prepare(
+        'INSERT INTO feedback_comments (feedback_id, commenter_type, content, created_at, admin_ip) VALUES (?, ?, ?, ?, ?)'
+      )
+      const result = stmt.run(feedbackId, commenterType, content.trim(), createdAt, adminIp)
 
-    // 创建通知
-    if (commenterType === 'admin') {
-      // 管理员评论 -> 通知用户
-      const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
-      const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
-      createNotification(
-        'user',
-        feedback.device_id,
-        feedbackId,
-        'comment',
-        '处理人员回复了您的提交',
-        `您提交的${categoryName}收到一条回复：${summary}`
-      )
-    } else {
-      // 用户评论 -> 通知管理员
-      const categoryName = feedback.category === 'suggestion' ? '建议' : feedback.category === 'complaint' ? '投诉' : '举报'
-      const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
-      createNotification(
-        'admin',
-        'admin',
-        feedbackId,
-        'comment',
-        '提交人补充了说明',
-        `该${categoryName}线索收到一条补充：${summary}`
-      )
-    }
+      // 创建通知
+      if (commenterType === 'admin') {
+        // 管理员评论 -> 通知用户
+        const categoryName = currentFeedback.category === 'suggestion' ? '建议' : currentFeedback.category === 'complaint' ? '投诉' : '举报'
+        const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
+        createNotification(
+          'user',
+          currentFeedback.device_id,
+          feedbackId,
+          'comment',
+          '处理人员回复了您的提交',
+          `您提交的${categoryName}收到一条回复：${summary}`
+        )
+      } else {
+        // 用户评论 -> 通知管理员
+        const categoryName = currentFeedback.category === 'suggestion' ? '建议' : currentFeedback.category === 'complaint' ? '投诉' : '举报'
+        const summary = content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
+        createNotification(
+          'admin',
+          'admin',
+          feedbackId,
+          'comment',
+          '提交人补充了说明',
+          `该${categoryName}线索收到一条补充：${summary}`
+        )
+      }
+      return result
+    }).immediate()
+    if (!result) return res.status(404).json({ error: '反馈不存在' })
 
     res.json({
       success: true,
@@ -1303,17 +1327,14 @@ const createNotification = (
   title: string,
   content: string
 ) => {
-  try {
-    // 演示模板归属内置演示设备，没有真实浏览器能登录该身份，因此不必为它生成用户通知。
-    if (recipientType === 'user' && isDemoDeviceId(recipientId)) return
+  // 演示模板归属内置演示设备，没有真实浏览器能登录该身份，因此不必为它生成用户通知。
+  if (recipientType === 'user' && isDemoDeviceId(recipientId)) return
 
-    const stmt = db.prepare(
-      'INSERT INTO notifications (recipient_type, recipient_id, feedback_id, type, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    )
-    stmt.run(recipientType, recipientId, feedbackId, type, title, content, Date.now())
-  } catch (error) {
-    console.error('创建通知失败:', error)
-  }
+  const stmt = db.prepare(
+    'INSERT INTO notifications (recipient_type, recipient_id, feedback_id, type, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  )
+  // Required notification failures propagate into the caller's transaction.
+  stmt.run(recipientType, recipientId, feedbackId, type, title, content, Date.now())
 }
 
 // API: 获取未读通知数量
