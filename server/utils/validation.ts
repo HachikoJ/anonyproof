@@ -29,6 +29,16 @@ export function validateFeedbackContent(content: unknown): {
   return { valid: true }
 }
 
+export function validateCommentContent(content: unknown): { valid: boolean; error?: string } {
+  if (typeof content !== 'string') return { valid: false, error: '评论内容必须为文本' }
+  const trimmed = content.trim()
+  if (trimmed.length < 2) return { valid: false, error: '评论内容至少需要 2 个字符' }
+  if (trimmed.length > 1000 || Buffer.byteLength(trimmed, 'utf8') > 3000) {
+    return { valid: false, error: '评论内容不能超过 1000 个字符' }
+  }
+  return { valid: true }
+}
+
 /**
  * 验证分类
  */

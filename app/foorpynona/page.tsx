@@ -994,6 +994,7 @@ export default function AdminPage() {
                     <form className="comment-form" onSubmit={addComment}>
                       <input
                         value={comment}
+                        maxLength={1000}
                         onChange={(event) => setComment(event.target.value)}
                         placeholder="输入回复内容"
                         aria-label="回复内容"

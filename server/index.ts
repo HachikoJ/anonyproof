@@ -12,7 +12,7 @@ import {
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { openDatabase, databasePath } from './utils/database'
-import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateDeviceId, validateFeedbackContent } from './utils/validation'
+import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent } from './utils/validation'
 import {
   DEMO_ADMIN_PASSWORD,
   DEMO_DEVICE_ID,
@@ -1167,7 +1167,7 @@ app.get('/api/feedback/:feedbackId/comments', (req, res) => {
 const addFeedbackComment = (req: express.Request, res: express.Response, commenterType: 'user' | 'admin') => {
   try {
     const feedbackId = String(req.params.feedbackId)
-    const { content } = req.body
+    const content = req.body?.content
     const scope = commenterType === 'admin' ? adminRecordScope('feedbacks') : userRecordScope('feedbacks')
     const feedback = db.prepare(`
       SELECT device_id, category, original_content FROM feedbacks
@@ -1180,16 +1180,9 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     if (commenterType === 'user' && !canAccessDevice(req, feedback.device_id)) {
       return res.status(401).json({ error: '无权补充该记录' })
     }
-    if (!content) {
-      return res.status(400).json({ error: '缺少必要参数' })
-    }
-
-    if (content.trim().length < 2) {
-      return res.status(400).json({ error: '评论内容至少需要 2 个字符' })
-    }
-
-    if (content.trim().length > 1000) {
-      return res.status(400).json({ error: '评论内容不能超过 1000 个字符' })
+    const validation = validateCommentContent(content)
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error })
     }
 
     const createdAt = Date.now()
