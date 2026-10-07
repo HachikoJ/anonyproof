@@ -63,7 +63,7 @@ cp .env.example .env.local
 nano .env.local
 ```
 
-**必须修改的配置**:
+**实际鉴权相关配置**（`API_TOKEN`仅保留旧模板兼容占位，不必设置）:
 ```env
 # 演示部署可保持 1，正式上线前必须改为 0
 DEMO_MODE=1
@@ -74,12 +74,14 @@ ADMIN_PASSWORD=your_strong_password_here
 # 至少 32 位随机字符
 SESSION_SECRET=your_random_secret_at_least_32_characters
 
-# API Token（生产环境必须修改）
+# API_TOKEN 已弃用：服务端不读取，不提供API鉴权，不必设置
 API_TOKEN=your_api_token_here
 
 # 经 Nginx 等反向代理部署时启用
 TRUST_PROXY=1
 ```
+
+管理接口依赖管理员HttpOnly Cookie；用户记录、评论和通知依赖用户Cookie及归属校验，或合法管理员的授权范围。健康检查、公开汇总统计和演示配置为公开接口。`API_TOKEN`不参与这些权限判断，也不会限制公开接口；不要将占位值视为已启用的安全措施。
 
 ### 演示部署说明
 

@@ -321,7 +321,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-30 API_TOKEN虚假安全配置
 
-状态：待办；原始严重度：配置安全错觉（上一轮未单独赋P级）；优先级：B；工作量：S；前置依赖：无。
+状态：已完成；原始严重度：配置安全错觉（上一轮未单独赋P级）；优先级：B；工作量：S；前置依赖：无。
 
 **问题**：`.env.example`、README生产清单、`docs/DEPLOYMENT.md`要求修改API_TOKEN，但app/server没有读取它。部署者误以为已启用token鉴权。
 
@@ -1118,3 +1118,8 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 状态：已完成。用户评论POST在当前反馈scope/调用者权限校验之后、原评论校验与T-41事务之前，加入来源60次/60秒和已认证调用者20次/60秒两个窗口；COMMENT_RATE_LIMIT_MAX、COMMENT_IDENTITY_RATE_LIMIT_MAX、COMMENT_RATE_LIMIT_WINDOW_MS显式可配，非法配置失败启动。配额来自验证的Cookie身份；保留已有正式管理员调用用户补充路径的权限，管理员无用户身份Cookie时按管理员session哈希计数，换目标记录不另开配额。专用管理员回复路径行为保持，未增加公开调试接口。
 - 修复前真实三个限额场景失败（200应429），T-07-before.txt。早期单任务命令4/4通过，随后增加formal-admin兼容矩阵；实际 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-01.test.ts tests/fix/T-03.test.ts tests/fix/T-04.test.ts tests/fix/T-06.test.ts tests/fix/T-07.test.ts tests/fix/T-08.test.ts tests/fix/T-13.test.ts tests/fix/T-26.test.ts tests/fix/T-41.test.ts`退出0，46通过、0失败、1明确T-34删除SKIP，其中最新T-07五项均通过。覆盖身份阈值2跨两反馈、另一身份独立成功、跨身份/无身份401、来源3及伪造XFF、默认20/阈值1、窗口后恢复、12非法配置、管理员同用户路径两记录共用限额及注销后401。
 - 429无Set-Cookie，评论/通知逐行快照不变；读取与专用后台回复正常。前端type最后实际退出0、全后端strict tsc退出0。仅后端源改动，沿用已验证生产build；相关T-03/T-04/T-41故障回滚均通过。DEPLOY记录合法归属下无效内容也占限額、last_seen/日志仍可能更新以及T-24真实代理链未验的实际边界。未改线上/实际DB。独立提交可回退限流，恢复旧无界评论风险。
+
+### T-30 实际执行与验收（2026-10-07）
+
+- 状态：已完成，仅准确化文档/模板说明。`.env.example`和docs/DEPLOYMENT保留旧API_TOKEN兼容占位，但明确弃用、未被服务端读取、不必设置且不提供鉴权；README生产清单不再要求修改无效token作为安全措施，明确管理员Cookie、用户Cookie/归属或管理员授权，以及健康/统计/演示配置等公开边界。没有删除配置资产、改用户.env.local或新增API token机制，因此不触发模板删除确认分支。
+- 实际命令 `rg -n 'API_TOKEN' .env.example README.md DEPLOY.md docs/DEPLOYMENT.md`退出0，八处仅准确弃用/兼容说明及相邻标明无效的占位值；`rg -n 'API_TOKEN' app server --glob '!**/node_modules/**'`退出1（无源码读取点，预期），对应输出在T-30-active-docs/runtime-lookup。逐项doc diff已核对，只有该已确认问题所需文本。`git diff --check`通过；纯文档不新建业务测试/无关重构。其他旧部署说明由T-02/T-24等既有任务处理，未顺手改写历史archive。
