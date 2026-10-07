@@ -26,7 +26,9 @@ async function freePort() {
 export async function launchBackend(overrides: Record<string, string> = {}) {
   const dir = mkdtempSync(path.join(tmpdir(), 'anonyproof-fix-'))
   const port = await freePort()
-  const databasePath = path.join(dir, 'fixture.db')
+  const databasePath = overrides.DATABASE_PATH?.trim()
+    ? path.resolve(projectRoot, overrides.DATABASE_PATH.trim())
+    : path.join(dir, 'fixture.db')
   const password = 'fixture-password-' + randomBytes(12).toString('hex')
   const env: NodeJS.ProcessEnv = {
     ...process.env,

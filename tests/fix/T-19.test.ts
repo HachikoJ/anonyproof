@@ -1,7 +1,25 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { setTimeout as delay } from 'node:timers/promises'
+import { randomBytes } from 'node:crypto'
 import { Client, launchBackend, startBackend } from './helpers'
+
+test('T-19: restarting an explicit fixture database returns and opens that same database', async t => {
+  const key = randomBytes(32).toString('base64')
+  const first = await startBackend({ CONTENT_ENCRYPTION_KEY: key })
+  t.after(first.stop)
+  const identity = await new Client(first).identity()
+  assert.equal(identity.response.status, 200)
+  await first.stop()
+  const second = await startBackend({ DATABASE_PATH: first.databasePath, CONTENT_ENCRYPTION_KEY: key })
+  t.after(second.stop)
+  assert.equal(second.databasePath, first.databasePath)
+  const db = second.openDb()
+  try {
+    assert.ok(db.prepare('SELECT 1 FROM client_identities WHERE device_id = ?').get(identity.data.deviceId))
+    assert.equal((db.prepare('SELECT COUNT(*) AS n FROM client_identities').get() as { n: number }).n, 1)
+  } finally { db.close() }
+})
 
 test('T-19: isolated production backend and existing authorized flow run', async (t) => {
   const service = await startBackend()

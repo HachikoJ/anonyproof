@@ -1004,3 +1004,9 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 测试覆盖独立认证向量、2000随机nonce样本、Unicode/空文/最大正文、key/nonce/tag/cipher/context篡改、未知格式、历史前缀碰撞、新说明与旧正文并存、缺/错key及key marker不可被覆盖。Key marker保存fingerprint和认证check，不保存内容密钥。
 - 必要执行顺序调整：T-01完成demo合成数据权限后再接入；先实施并验收T-41反馈/评论/状态事务，再接入T-03新writer，防止cipher或必需通知故障造成部分落库。T-41删除分支仍单独依赖T-34；这一等待不阻塞三类已获授权写事务。T-04仍独立验收客户端降级退役与失败草稿保留。
 - 此准备提交可直接回退且没有持久化变化。reader兼容阶段与writer切换将隔离验证；新version1数据出现后只可回滚到兼容reader并关闭写入，不能回旧明文reader。
+
+### T-19 fixture库复用修正
+
+- 继续复用临时库验证重启时，发现本轮新helper实际传入了DATABASE_PATH覆盖值，但返回databasePath/openDb仍指向新建默认路径；这是本轮fixture自身缺陷，已在T-19范围修正，不增加产品功能或改真实数据库。
+- helper按实际显式覆盖值（相对项目根目录解析）报告和打开同一库。新增重启验收：两进程复用同一隔离库，返回路径一致且openDb读到原身份、总数仍1。预先用同一随机fixture内容key，兼容后续加密marker检查。
+- T-19/T-01实际8/8退出0，证据T-19-fixture-reuse.txt；当前frontend type-check/build和真实backend strict编译也通过，见T-01对应证据。此前T-01重启测试直接使用首进程db验证因此结果仍有效；此前浏览器第二次fixture启动输出的默认新路径不是实际库，核对使用了真正覆盖的6S02W0库，未把错误元数据当证据。
