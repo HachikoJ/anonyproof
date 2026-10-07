@@ -205,7 +205,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-15 Next.js已知漏洞升级
 
-状态：待办；原始严重度：P1（审查第 8 条，advisory为critical）；优先级：A；工作量：M；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 8 条，advisory为critical）；优先级：A；工作量：M；前置依赖：T-19。
 
 **问题**：根 `package.json/package-lock.json` 的 `next@16.3.3` 当时命中 `GHSA-vcvr-r3jv-pc5j`（next/og ImageResponse RCE；审查报告称修复16.3.6以上，建议16.3.8）。当前无已证明可达的next/og入口。
 
@@ -1062,3 +1062,15 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 首次测试代理未初始化、无API请求，因此未计作通过。测试harness补齐Next开发WebSocket转发并以head meta取代body额外DOM后，新fixture重跑上述浏览器验收成功；只修测试代理，没有以产品改动掩盖环境问题。网络JSON只保存方法/无query路径/status，不存payload/Cookie/key/恢复码。截图在原生工具展示；没有虚构本地图片路径。临时tab及进程停止，故障控制恢复为空、临时资产保留。
 - Node22.23.3：T-03/T-04/T-12/T-13/T-14/T-19/T-41实际回归38通过、0失败、1明确T-34删除SKIP；前端type、实际后端全文件strict tsc、production build和`git diff --check`均0。证据`audit/execution-results/T-04-{tests,regressions,frontend-type,backend-type,build,browser-db-assert}.txt`和browser fixture/network JSON，可用两个browser脚本复验。未发布、未改真实库/密钥。
 - 回滚点：本任务独立父版本3592264仍使用服务器加密存储。回滚客户端旧函数会重新生成无意义key包/伪加密编码，服务器仍丢弃它；不得以T-04回滚为理由回滚T-03安全writer或关闭失败传播。
+
+### T-15 实际执行与验收（2026-10-07）
+
+- 状态：已完成。再次核验[官方GHSA-vcvr-r3jv-pc5j](https://github.com/advisories/GHSA-vcvr-r3jv-pc5j)影响>=16.2.0/<16.3.6，最小修复16.3.6；保留没有已证明本站可达next/og ImageResponse的事实。root Next精确16.3.3→16.3.6，lock只改root声明、next、@next/env及8个必须swc平台包；React/react-dom保持18.3.1，sharp未顺手升级，server锁和代理策略不变。
+- 先隔离checkout真实clean root/server安装、编译/构建、28/28旧阶段回归及生产HTTP代理smoke通过，证据为T-15-isolated-*；本次对当前lock机械比较仅上述11个paths变化后，保留主树旧node_modules/.next/两个manifest于`T-15-main-backup.json`中的随机临时目录，主树Node22.23.3真实`npm ci`退出0。`node scripts/check-runtime.cjs`验证两棵树/native ABI退出0；`npm ls next react react-dom --depth=0`明确16.3.6/18.3.1/18.3.1。
+- 当前`npm audit --omit=dev --json`真实退出1，但target next advisory/next条目消失、critical0；剩余esbuild/sharp/source-map-js，low1/high2共3，保留范围外风险，不声称audit全清。server审计真实退出0/全部0。保存原JSON，没有以npm audit fix --force扩大范围。
+- 当前root/frontend type、server既有type script、实际后端全文件strict tsc、生产proxy-target build及最后正常build均0。`tests/fix/T-15.smoke.ts`真实生产build/start：三页面200、10静态资源200，准确批准本地Origin下真实Next rewrite的用户身份及Cookie、反馈/列表/评论、adminCookie/列表、状态、通知及访问统计均通过。服务停止后最后常规build恢复部署环境正常配置，不将结束的fixture端口留作最终API目标。
+- 原生IAB使用`tests/fix/T-15.browser.ts`：首页→举报输入→实际成功→我的记录原文正确→后台密码登录→管理员列表同一记录→通知摘要→定位正确详情→访问统计正常显示本地28请求/1来源和趋势。证据T-15-browser-verification.txt/fixture JSON；仅临时合成库/独立key，无真实材料。截图在原生工具展示，没有虚构本地图片路径；临时tab/进程已关闭。
+- 当前已跟踪全部`tests/fix/*.test.ts`真实退出0：66通过、0失败、1明确T-34删除SKIP，具体实际文件列表在T-15-main-regressions.txt。新增smoke/rollback脚本后最终frontend type再次0；`git diff --check`通过。隔离、本地、审计、build、版本/ABI原始输出均保留T-15-*。
+- 真正回滚演练：`tests/fix/T-15.rollback.ts`从保留快照加载Next16.3.3及SQLite native、旧BUILD_ID，在另一个回环随机端口运行旧生产构建，三页面+实际生成asset200，退出0后停止；主树保持16.3.6，未接业务API/真实DB。回滚恢复同一快照中的package/lock、node_modules、.next及未改变的next.config.js，不能只恢复源码保留新安装树。旧版本仍有已确认依赖风险，因此该演练证明可恢复性，不代表批准重新部署旧漏洞。未push/部署。
+
+- T-15提交前staged whitespace检查首次发现npm/Next console的CR及尾空行（不是代码失败）。原始bytes保存于回滚快照的raw-evidence目录，仅规范化提交txt的行尾空白；命令、断言、退出码未改变。记录见T-15-console-normalization.json，重新staged检查通过后才提交。

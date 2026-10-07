@@ -1,0 +1,1 @@
+Preserved Next16.3.3 tree/native ABI and old production BUILD_ID loaded; three pages and generated static asset returned200 from an isolated rollback server. Main checkout remains Next16.3.6. No API/business DB was connected or rolled back.
