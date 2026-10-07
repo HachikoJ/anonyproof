@@ -1,0 +1,10 @@
+{
+  "rawEvidenceDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T07-raw-zwiudm8j",
+  "files": [
+    "T-07-frontend-type.txt",
+    "T-07-backend-type.txt",
+    "T-07-before.txt",
+    "T-07-frontend-type-final.txt"
+  ],
+  "change": "console line/EOF whitespace only"
+}

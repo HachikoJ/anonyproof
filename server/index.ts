@@ -11,7 +11,7 @@ import {
   unblacklistIP,
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
-import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter } from './middleware/rateLimit'
+import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter, userCommentSourceLimiter, userCommentIdentityLimiter } from './middleware/rateLimit'
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
@@ -1334,7 +1334,24 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
   }
 }
 
-app.post('/api/feedback/:feedbackId/comments', (req, res) => addFeedbackComment(req, res, 'user'))
+app.post('/api/feedback/:feedbackId/comments', (req, res, next) => {
+  try {
+    const scope = userRecordScope('feedbacks')
+    const parent = db.prepare(`SELECT device_id FROM feedbacks WHERE id = ? AND ${scope.sql}`)
+      .get(String(req.params.feedbackId), ...scope.params) as { device_id: string } | undefined
+    if (!parent) return res.status(404).json({ error: '反馈不存在' })
+    if (!canAccessDevice(req, parent.device_id)) return res.status(401).json({ error: '无权补充该记录' })
+    const caller = identityFromCookie(req)
+    // Preserve the existing formal-admin access to this user-comment route.
+    // Quotas follow the authenticated caller, never a caller-selected record.
+    res.locals.commenterQuotaKey = caller ? `user:${caller.device_id}`
+      : `admin:${hashIdentityValue(getCookie(req, cookieName) || '')}`
+    next()
+  } catch (error) {
+    console.error('校验评论身份失败:', error)
+    res.status(500).json({ error: '添加评论失败' })
+  }
+}, userCommentSourceLimiter, userCommentIdentityLimiter, (req, res) => addFeedbackComment(req, res, 'user'))
 app.post('/api/admin/feedback/:feedbackId/comments', (req, res) => addFeedbackComment(req, res, 'admin'))
 
 // API: 获取某设备的所有反馈

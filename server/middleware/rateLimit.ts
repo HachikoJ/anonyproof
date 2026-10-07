@@ -55,6 +55,23 @@ export const feedbackIdentityLimiter = rateLimit({
   legacyHeaders: false,
 })
 
+export const userCommentSourceLimiter = rateLimit({
+  windowMs: positiveIntegerEnv('COMMENT_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+  max: positiveIntegerEnv('COMMENT_RATE_LIMIT_MAX', 60),
+  message: { error: '补充请求过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+export const userCommentIdentityLimiter = rateLimit({
+  windowMs: positiveIntegerEnv('COMMENT_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+  max: positiveIntegerEnv('COMMENT_IDENTITY_RATE_LIMIT_MAX', 20),
+  keyGenerator: (_req, res) => res.locals.commenterQuotaKey,
+  message: { error: '本机补充过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 // 管理员 API 速率限制
 export const adminApiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 分钟
