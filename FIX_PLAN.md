@@ -515,7 +515,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-03 正文与密钥不再同库存储
 
-状态：进行中；原始严重度：P0（审查第 2 条）；优先级：A；工作量：L；前置依赖：T-12、T-19；Q-02方向和具体加密/兼容/恢复方案均已批准。
+状态：已完成；原始严重度：P0（审查第 2 条）；优先级：A；工作量：L；前置依赖：T-12、T-19；Q-02方向和具体加密/兼容/恢复方案均已批准。
 
 **问题**：`app/page.tsx:337–342`发送originalContent；`server/index.ts:880–883`明文落库；`useCrypto.encrypt()`约176–206行把raw key与IV同密文封装。DB读权限足以还原全文。
 
@@ -1044,3 +1044,12 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - `tests/fix/helpers.ts`显式随机fixture密钥，不继承真实部署key；复用测试库必须显式提供同一临时密钥。真实env/真实库未读取或迁移。
 - 实际 `tests/fix/T-03.test.ts` 11/11通过，包括真实授权HTTP的新旧混合内容/旧外国key envelope字面文本不误判、正确密钥独立备份+SQLite在线backup后新服务找回读取、缺/错误密钥启动非0且marker未重写。已跟踪T-01/12/13/14/19/20/41及模块回归37通过、0失败、1明确T-34删除SKIP。前端type、真实后端全文件strict tsc和production build均0，`git diff --check`通过。证据 `audit/execution-results/T-03-reader-*.txt`。
 - 此独立提交只建立reader兼容基线；新writer尚未切换，仍不得声称静态加密任务关闭。继续按已批准方案切新正式写入，T-32历史迁移仍独立待确认。reader-only版本作为新格式读取回滚点时必须关闭正式写入；禁止回退到不识别v1的旧reader或继续写明文。没有部署此阶段。
+
+### T-03 新 writer 与全流程实际验收（2026-10-07）
+
+- 状态：已完成，限于获批的新写入/兼容reader静态加密目标；历史资料/备份清理风险仍T-32未关闭。正式新反馈正文、用户及管理员评论、实际处理说明、通知title/content在T-41事务内使用独立key认证加密，显式版本1；空未填写solution维持版本0空哨兵。旧客户端请求继续按已有验证接收，但其自带key包从新存储丢弃，`encrypted_content`只保存非敏感 `server-encrypted:v1` 标记。修改老记录solution仅更新该字段版本，不暗迁移旧body。demo仍只保存固定合成内容，keyless版本0。
+- 已安装Next的pages/layouts说明读后更新`app/page.tsx`隐私文案，明确服务器/授权处理人可读；README、DEPLOY和env模板说明32字节Base64独立key、单独部署/备份、缺/错误key失败、丢失无法恢复、历史明文风险及reader兼容回滚。无KMS、付费服务、端到端保证、真实key/DB迁移。
+- 实际 `tests/fix/T-03.test.ts` 13/13通过：已验证认证向量、2000随机nonce唯一、Unicode/空/上限、未知格式及篡改失败、key marker不可重写、真实新旧混合读、在线备份+独立key恢复/身份找回、四类内容授权HTTP精确读回及陌生身份拒绝。新writer同时覆盖SQL字段flags、12个真实密文字段nonce互异、客户端旧包丢弃；读取新DB及实际live WAL/SHM、`sqlite3 DB .dump`和process/log文件，没有四类唯一合成明文标记或Base64/hex内容key。测试库中五个敏感字段各修改nonce/tag/ciphertext/存储版本/缺prefix，全部受控HTTP500且无原文fallback，恢复密文后200。版本0旧body+版本1新solution同时正确读取；重复相同状态/说明不因随机密文制造新通知。
+- 原生IAB正式fixture浏览器：提交正文成功→用户补充→后台原文搜索/详情→处理说明及已办结→管理员回复→用户通知原文及正确记录定位→恢复UI→同一记录全文/处理结果/2评论读回。明确此UI找回用已有browser，自动测试另覆盖新服务恢复。独立 `npx --no-install tsx tests/fix/T-03.browser-assert.ts`退出0验证真实browserDB为1反馈/2评论/4通知、敏感字段均v1、逐角色精确解密、DB/liveWAL/SQL无明文或key。可复验harness为`tests/fix/T-03.browser.ts`（3016临时前端；固定密码只为合成fixture），数据库元信息与脱敏步骤见browser证据。临时tab/进程已停止，DB及独立fixture key保留。原生截图展示完整详情，无恢复码；没有虚构本地图片路径。
+- Node22.23.3，当前全部已跟踪`tests/fix/*.test.ts`真实运行退出0：64通过、0失败、1明确T-34删除SKIP，具体命令已写入`T-03-writer-regressions.txt`；T-14测试按新存储语义保留10000字符HTTP精确读回并断言DB版本1/非原文。前端type、实际后端全文件strict tsc、production build及`git diff --check`均0。输出保留`audit/execution-results/T-03-writer-*.txt`及`T-03-browser-*`；T-04伪加密退役/故障草稿、T-37/38/39将来的跨页契约仍独立验收。
+- 隔离提交顺序：模块→兼容reader→本次writer。回滚到reader提交903db49时必须先关闭正式写入；既有v1内容和4个字段版本必须保留。不得回到不识别v1的旧reader、删除元数据或用新key冒充恢复。实际生产启用需一致快照/独立key恢复验收和部署授权，本轮未发布、未改真实env、未迁移历史库。

@@ -43,8 +43,10 @@ test('T-14: approved solution length/type boundary rejects before status/log/not
   assert.equal((await admin.post(route, { status: 'in_progress' }, 'PUT')).response.status, 200)
   assert.equal((await admin.post(route, { status: 'resolved', solution: '文'.repeat(10) }, 'PUT')).response.status, 200)
   assert.equal((await admin.post(route, { status: 'no_solution', solution: '文'.repeat(10000) }, 'PUT')).response.status, 200)
-  const stored = db.prepare('SELECT status, solution FROM feedbacks WHERE id = ?').get(feedback.id) as { status: string; solution: string }
+  const stored = db.prepare('SELECT status, solution, solution_storage_version FROM feedbacks WHERE id = ?').get(feedback.id) as { status: string; solution: string; solution_storage_version: number }
   assert.equal(stored.status, 'no_solution')
-  assert.equal(stored.solution, '文'.repeat(10000))
-  assert.equal((await user.request(`/api/feedback/device/${identity.deviceId}`)).data.feedbacks[0].solution, stored.solution)
+  assert.equal(stored.solution_storage_version, 1)
+  assert.match(stored.solution, /^apc:/)
+  assert.notEqual(stored.solution, '文'.repeat(10000))
+  assert.equal((await user.request(`/api/feedback/device/${identity.deviceId}`)).data.feedbacks[0].solution, '文'.repeat(10000))
 })

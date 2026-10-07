@@ -951,9 +951,11 @@ app.post('/api/feedback', (req, res) => {
 
     db.transaction(() => {
       const stmt = db.prepare(
-        'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content, is_demo_clone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content, is_demo_clone, original_content_storage_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
       )
-      stmt.run(id, category, encryptedContent, deviceId, createdAt, 'pending', originalContent || '', demoMode ? 1 : 0)
+      // Discard the old client package: its embedded key must never accompany new formal data.
+      const storedBody = contentEncryption.encrypt(originalContent, `feedbacks:${id}:original_content`)
+      stmt.run(id, category, demoMode ? encryptedContent : 'server-encrypted:v1', deviceId, createdAt, 'pending', storedBody, demoMode ? 1 : 0, contentEncryption.storageVersion)
 
       updateStats()
 
@@ -1114,8 +1116,8 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
       // 状态变化与处理说明相互独立：即使“处理中”暂未填写说明，也必须通知提交人。
       if (trimmedSolution) {
         db.prepare(
-          'UPDATE feedbacks SET status = ?, solution = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
-        ).run(status, trimmedSolution, Date.now(), ip, id)
+          'UPDATE feedbacks SET status = ?, solution = ?, solution_storage_version = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
+        ).run(status, contentEncryption.encrypt(trimmedSolution, `feedbacks:${id}:solution`), contentEncryption.storageVersion, Date.now(), ip, id)
       } else {
         db.prepare('UPDATE feedbacks SET status = ? WHERE id = ?').run(status, id)
       }
@@ -1275,9 +1277,9 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
       if (!currentFeedback) return undefined
       if (commenterType === 'user' && !canAccessDevice(req, currentFeedback.device_id)) return undefined
       const stmt = db.prepare(
-        'INSERT INTO feedback_comments (feedback_id, commenter_type, content, created_at, admin_ip) VALUES (?, ?, ?, ?, ?)'
+        'INSERT INTO feedback_comments (feedback_id, commenter_type, content, created_at, admin_ip, content_storage_version) VALUES (?, ?, ?, ?, ?, ?)'
       )
-      const result = stmt.run(feedbackId, commenterType, content.trim(), createdAt, adminIp)
+      const result = stmt.run(feedbackId, commenterType, contentEncryption.encrypt(content.trim(), `feedback_comments:${feedbackId}:${commenterType}:content`), createdAt, adminIp, contentEncryption.storageVersion)
 
       // 创建通知
       if (commenterType === 'admin') {
@@ -1371,10 +1373,13 @@ const createNotification = (
   if (recipientType === 'user' && isDemoDeviceId(recipientId)) return
 
   const stmt = db.prepare(
-    'INSERT INTO notifications (recipient_type, recipient_id, feedback_id, type, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    'INSERT INTO notifications (recipient_type, recipient_id, feedback_id, type, title, content, created_at, content_storage_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   )
   // Required notification failures propagate into the caller's transaction.
-  stmt.run(recipientType, recipientId, feedbackId, type, title, content, Date.now())
+  const context = `notifications:${feedbackId}:${recipientType}:${recipientId}:${type}`
+  stmt.run(recipientType, recipientId, feedbackId, type,
+    contentEncryption.encrypt(title, `${context}:title`), contentEncryption.encrypt(content, `${context}:content`),
+    Date.now(), contentEncryption.storageVersion)
 }
 
 // API: 获取未读通知数量

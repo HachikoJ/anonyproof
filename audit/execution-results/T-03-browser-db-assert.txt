@@ -1,0 +1,1 @@
+Browser fixture independent SQLite verification: 1 feedback / 2 comments / 4 notifications; all sensitive fields version1; exact body, solution, role comments and notification decryptions passed; DB/WAL/SQL dump plaintext/key scans passed.

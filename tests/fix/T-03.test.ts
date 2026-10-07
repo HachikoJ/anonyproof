@@ -259,3 +259,167 @@ test('T-03 reader: real HTTP preserves legacy literals and independently sealed 
     }
   } finally { restoredDb.close() }
 })
+
+test('T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs', async (t) => {
+  const { Client, startBackend } = await import('./helpers')
+  const { randomBytes } = await import('node:crypto')
+  const { existsSync, readFileSync, writeFileSync, readdirSync } = await import('node:fs')
+  const { spawnSync } = await import('node:child_process')
+  const contentKey = randomBytes(32).toString('base64')
+  const encryption = loadContentEncryption({ demoMode: false, env: { CONTENT_ENCRYPTION_KEY: contentKey } })
+  const service = await startBackend({ CONTENT_ENCRYPTION_KEY: contentKey })
+  t.after(service.stop)
+  const user = new Client(service)
+  const admin = new Client(service)
+  const stranger = new Client(service)
+  const identity = (await user.identity()).data
+  await stranger.identity()
+  assert.equal((await admin.login()).response.status, 200)
+  const suffix = randomBytes(8).toString('hex')
+  const body = `BODY_${suffix}_synthetic confidential marker`
+  const comment = `COMMENT_${suffix}_synthetic confidential marker`
+  const reply = `REPLY_${suffix}_synthetic confidential marker`
+  const solution = `SOLUTION_${suffix}_synthetic confidential marker`
+  const oldPackage = 'obsolete-client-key-package-' + randomBytes(32).toString('base64')
+  const created = await user.post('/api/feedback', { category: 'report', deviceId: identity.deviceId, originalContent: body, encryptedContent: oldPackage })
+  assert.equal(created.response.status, 200)
+  const id = created.data.id
+  assert.equal((await user.post(`/api/feedback/${id}/comments`, { content: comment })).response.status, 200)
+  assert.equal((await admin.post(`/api/admin/feedback/${id}/comments`, { content: reply })).response.status, 200)
+  assert.equal((await admin.post(`/api/admin/feedback/${id}/status`, { status: 'resolved', solution }, 'PUT')).response.status, 200)
+  const db = service.openDb()
+  t.after(() => db.close())
+  const feedback = db.prepare('SELECT * FROM feedbacks WHERE id = ?').get(id) as any
+  assert.equal(feedback.original_content_storage_version, 1)
+  assert.equal(feedback.solution_storage_version, 1)
+  assert.equal(feedback.encrypted_content, 'server-encrypted:v1')
+  assert.equal(encryption.decrypt(feedback.original_content, `feedbacks:${id}:original_content`, 1), body)
+  assert.equal(encryption.decrypt(feedback.solution, `feedbacks:${id}:solution`, 1), solution)
+  const storedComments = db.prepare('SELECT * FROM feedback_comments').all() as any[]
+  const storedNotices = db.prepare('SELECT * FROM notifications').all() as any[]
+  const sealedValues = [feedback.original_content, feedback.solution]
+  for (const row of storedComments) {
+    assert.equal(row.content_storage_version, 1)
+    assert.equal(encryption.decrypt(row.content, `feedback_comments:${id}:${row.commenter_type}:content`, 1), row.commenter_type === 'user' ? comment : reply)
+    sealedValues.push(row.content)
+  }
+  for (const row of storedNotices) {
+    assert.equal(row.content_storage_version, 1)
+    const ctx = `notifications:${id}:${row.recipient_type}:${row.recipient_id}:${row.type}`
+    assert.ok(encryption.decrypt(row.title, `${ctx}:title`, 1).length > 0)
+    assert.ok(encryption.decrypt(row.content, `${ctx}:content`, 1).length > 0)
+    sealedValues.push(row.title, row.content)
+  }
+  assert.equal(storedComments.length, 2)
+  assert.equal(storedNotices.length, 4)
+  assert.equal(new Set(sealedValues.map(value => envelope(value).nonce)).size, sealedValues.length)
+  const markers = [body.slice(0, 22), comment.slice(0, 25), reply.slice(0, 23), solution.slice(0, 26), oldPackage,
+    contentKey, Buffer.from(contentKey, 'base64').toString('hex')]
+  const noCopies = (bytes: Buffer, label: string) => {
+    for (const marker of markers) assert.equal(bytes.includes(Buffer.from(marker)), false, `${label} contains a protected marker/key`)
+  }
+  assert.ok(existsSync(service.databasePath + '-wal'), 'scan must include a live WAL')
+  for (const file of [service.databasePath, service.databasePath + '-wal', service.databasePath + '-shm']) {
+    if (existsSync(file)) noCopies(readFileSync(file), path.basename(file))
+  }
+  const exported = spawnSync('sqlite3', [service.databasePath, '.dump'], { encoding: 'utf8' })
+  assert.equal(exported.status, 0, exported.stderr)
+  assert.ok(exported.stdout.includes('INSERT INTO feedbacks'))
+  writeFileSync(path.join(service.dir, 'synthetic-sql-export.sql'), exported.stdout)
+  noCopies(Buffer.from(exported.stdout), 'SQL export')
+  noCopies(Buffer.from(service.output()), 'captured process output')
+  const logDir = path.join(service.dir, 'logs')
+  if (existsSync(logDir)) {
+    for (const file of readdirSync(logDir, { recursive: true, withFileTypes: true })) {
+      if (file.isFile()) noCopies(readFileSync(path.join(file.parentPath, file.name)), 'fixture log')
+    }
+  }
+  const list = await user.request(`/api/feedback/device/${identity.deviceId}`)
+  assert.equal(list.data.feedbacks[0].original_content, body)
+  assert.equal(list.data.feedbacks[0].solution, solution)
+  assert.equal((await admin.request('/api/admin/feedbacks')).data.feedbacks[0].original_content, body)
+  assert.equal((await admin.request(`/api/admin/feedback/${id}`)).data.feedback.solution, solution)
+  assert.equal((await stranger.request(`/api/feedback/${id}/comments`)).response.status, 401)
+  assert.equal((await stranger.request(`/api/feedback/device/${identity.deviceId}`)).response.status, 401)
+  assert.deepEqual((await user.request(`/api/feedback/${id}/comments`)).data.comments.map((row: any) => row.content), [comment, reply])
+  const adminNotices = (await admin.request('/api/notifications?recipientType=admin&recipientId=admin')).data.notifications
+  const userNotices = (await user.request(`/api/notifications?recipientType=user&recipientId=${identity.deviceId}`)).data.notifications
+  assert.ok(adminNotices.some((row: any) => row.content.includes(body.slice(0, 22))))
+  assert.ok(adminNotices.some((row: any) => row.content.includes(comment.slice(0, 25))))
+  assert.ok(userNotices.some((row: any) => row.content.includes(reply.slice(0, 23))))
+  assert.ok(userNotices.some((row: any) => row.content.includes(solution.slice(0, 26))))
+  const noticeCount = storedNotices.length
+  assert.equal((await admin.post(`/api/admin/feedback/${id}/status`, { status: 'resolved', solution }, 'PUT')).response.status, 200)
+  assert.equal((db.prepare('SELECT COUNT(*) n FROM notifications').get() as { n: number }).n, noticeCount)
+  // Changing an old record's solution must not silently migrate its old body.
+  const legacyId = 'T03-legacy-' + suffix
+  db.prepare('INSERT INTO feedbacks (id,category,encrypted_content,device_id,created_at,original_content) VALUES (?,?,?,?,?,?)')
+    .run(legacyId, 'report', 'legacy client package', identity.deviceId, Date.now(), 'legacy literal body')
+  assert.equal((await admin.post(`/api/admin/feedback/${legacyId}/status`, { status: 'resolved', solution }, 'PUT')).response.status, 200)
+  const legacy = db.prepare('SELECT * FROM feedbacks WHERE id=?').get(legacyId) as any
+  assert.equal(legacy.original_content_storage_version, 0)
+  assert.equal(legacy.original_content, 'legacy literal body')
+  assert.equal(legacy.solution_storage_version, 1)
+  const backupPath = path.join(service.dir, 'writer-consistent-backup.db')
+  await db.backup(backupPath)
+  await service.stop()
+  const restored = await startBackend({ DATABASE_PATH: backupPath, CONTENT_ENCRYPTION_KEY: contentKey })
+  t.after(restored.stop)
+  const recovered = new Client(restored)
+  assert.equal((await recovered.post('/api/identity/recover', { recoveryCode: identity.recoveryCode })).response.status, 200)
+  const restoredRecords = (await recovered.request(`/api/feedback/device/${identity.deviceId}`)).data.feedbacks
+  assert.equal(restoredRecords.find((row: any) => row.id === id).original_content, body)
+  assert.equal(restoredRecords.find((row: any) => row.id === id).solution, solution)
+  assert.equal((await recovered.request(`/api/feedback/${id}/comments`)).data.comments[1].content, reply)
+  assert.ok((await recovered.request(`/api/notifications?recipientType=user&recipientId=${identity.deviceId}`)).data.notifications.some((row: any) => row.content.includes(solution.slice(0, 26))))
+})
+
+test('T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback', async (t) => {
+  const { Client, startBackend } = await import('./helpers')
+  const service = await startBackend()
+  t.after(service.stop)
+  const user = new Client(service)
+  const admin = new Client(service)
+  const identity = (await user.identity()).data
+  await admin.login()
+  const created = await user.post('/api/feedback', { category: 'report', deviceId: identity.deviceId, originalContent: 'tamper protected body', encryptedContent: 'old-client-package' })
+  const id = created.data.id
+  const comment = await user.post(`/api/feedback/${id}/comments`, { content: 'tamper protected comment' })
+  await admin.post(`/api/admin/feedback/${id}/status`, { status: 'resolved', solution: 'tamper protected solution' }, 'PUT')
+  const db = service.openDb()
+  t.after(() => db.close())
+  const notice = db.prepare("SELECT id FROM notifications WHERE type='status_update'").get() as { id: number }
+  const fields = [
+    ['feedbacks', 'id', id, 'original_content', 'original_content_storage_version', admin, `/api/admin/feedback/${id}`],
+    ['feedbacks', 'id', id, 'solution', 'solution_storage_version', user, `/api/feedback/device/${identity.deviceId}`],
+    ['feedback_comments', 'id', comment.data.comment.id, 'content', 'content_storage_version', user, `/api/feedback/${id}/comments`],
+    ['notifications', 'id', notice.id, 'title', 'content_storage_version', user, `/api/notifications?recipientType=user&recipientId=${identity.deviceId}`],
+    ['notifications', 'id', notice.id, 'content', 'content_storage_version', user, `/api/notifications?recipientType=user&recipientId=${identity.deviceId}`],
+  ] as const
+  for (const [table, keyColumn, rowId, column, version, client, url] of fields) {
+    const original = db.prepare(`SELECT ${column} value, ${version} version FROM ${table} WHERE ${keyColumn}=?`).get(rowId) as { value: string; version: number }
+    const update = db.prepare(`UPDATE ${table} SET ${column}=?, ${version}=? WHERE ${keyColumn}=?`)
+    const assertFailure = async () => {
+      const result = await client.request(url)
+      assert.equal(result.response.status, 500, `${table}.${column}`)
+      assert.equal(typeof result.data.error, 'string')
+      assert.equal(JSON.stringify(result.data).includes('protected'), false)
+      assert.equal(Object.hasOwn(result.data, 'stack'), false)
+    }
+    try {
+      for (const field of ['nonce', 'tag', 'ciphertext']) {
+        const changed = envelope(original.value)
+        const bytes = Buffer.from(changed[field], 'base64'); bytes[0] ^= 1
+        changed[field] = bytes.toString('base64')
+        update.run('apc:' + JSON.stringify(changed), 1, rowId)
+        await assertFailure()
+      }
+      update.run(original.value, 7, rowId)
+      await assertFailure()
+      update.run('unsealed protected plaintext', 1, rowId)
+      await assertFailure()
+    } finally { update.run(original.value, original.version, rowId) }
+    assert.equal((await client.request(url)).response.status, 200)
+  }
+  assert.equal((await user.request(`/api/feedback/device/${identity.deviceId}`)).data.feedbacks[0].original_content, 'tamper protected body')
+})
