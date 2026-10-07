@@ -275,7 +275,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-20 敏感用户API缓存策略
 
-状态：进行中；原始严重度：P1（审查第 5 条修复要求，线上子审计确认）；优先级：B；工作量：S；前置依赖：T-19。中间件准备中，待完整代理/缓存验收；P0已获具体确认后优先处理。
+状态：已完成；原始严重度：P1（审查第 5 条修复要求，线上子审计确认）；优先级：B；工作量：S；前置依赖：T-19。实际后端/Next代理/生产静态资源验收见第10节；未部署线上。
 
 **问题**：`/api/feedback/device/:deviceId`、`/api/feedback/:id/comments`、用户通知列表/计数没有统一no-store；管理员/identity已有局部设置，策略不一致。
 
@@ -982,3 +982,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - Q-03来源范围已确认，T-27和T-26普通写路由可推进。现同源浏览器GET identity通常无Origin，且该GET创建身份/续签/绑定；不能直接按unsafe POST规则保留无来源状态修改。
 - 已展示具体方案待用户确认：先新增同响应POST identity支持，前端切POST，最后GET仅只读现Cookie身份，不更新last_seen、不创建/签发/绑定/轮换；无有效Cookie401。POST和恢复写请求严格允许Origin；旧缓存页面首次初始化需要刷新。回滚保留POST/只读GET，不恢复无来源写入。
 - 依据用户AGENTS.md第2节重大公共接口具体影响确认；只阻塞T-26身份分支，不阻塞其他已批准任务；未先实施该分支。
+
+### T-20 验收记录
+
+- 状态：已完成；2026-10-07。仅为identity/admin/feedback/notifications路由前缀统一设置Cache-Control:no-store，并移除这些请求的If-None-Match/If-Modified-Since，避免Express在已鉴权JSON上返回304；静态资源和公共stats未全局禁缓存。
+- 实际T-20/T-19共7/7退出0；根类型检查、实际全后端strict编译退出0。矩阵覆盖身份/反馈/评论/两类通知/管理详情和日志、匿名和跨身份401/403、参数/JSON400、管理session未登录200。持原ETag再次请求本人记录返回完整200，另一Cookie仍401且不返回304。
+- 启动实际Next dev，用动态API_PROXY_TARGET代理临时后端，再跑相同Cookie/条件头矩阵；no-store保持。另实际Next start读取既有生产build-manifest指定chunk，200且Cache-Control含public,max-age=31536000,immutable，正文非空。CI先build后跑此测试；无build不得skip静态验收。
+- 首次测试把未代理的/health页面缓存误当backend health，实际得到Next页面no-cache，已保留失败输出并改为真正可代理公共/api/stats对照，重跑全矩阵通过；未修改产品缓存来迎合错误测试。证据audit/execution-results/T-20-*。
+- 未部署/未读取线上敏感正文；本地完成不等同公开站已应用。回滚仅还原这一中间件，无库结构/数据更改。

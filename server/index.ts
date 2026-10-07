@@ -48,6 +48,14 @@ if (isProduction && !demoMode && (!configuredAdminPassword || configuredAdminPas
 }
 
 // 中间件
+app.use(['/api/identity', '/api/admin', '/api/feedback', '/api/notifications'], (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store')
+  // Protected JSON must always be re-authorized and returned in full. Express
+  // otherwise treats a matching client ETag as a reason to send a 304.
+  delete req.headers['if-none-match']
+  delete req.headers['if-modified-since']
+  next()
+})
 const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,https://deline.top,https://anonyproof.deline.top')
   .split(',').map(origin => origin.trim()).filter(Boolean)
 app.use(cors({ origin: allowedOrigins, credentials: true }))
