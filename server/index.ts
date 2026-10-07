@@ -12,6 +12,7 @@ import {
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { openDatabase, databasePath } from './utils/database'
+import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateDeviceId, validateFeedbackContent } from './utils/validation'
 import {
   DEMO_ADMIN_PASSWORD,
   DEMO_DEVICE_ID,
@@ -49,7 +50,15 @@ if (isProduction && !demoMode && (!configuredAdminPassword || configuredAdminPas
 const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,https://deline.top,https://anonyproof.deline.top')
   .split(',').map(origin => origin.trim()).filter(Boolean)
 app.use(cors({ origin: allowedOrigins, credentials: true }))
-app.use(express.json())
+// Allows worst-case escaped JSON for the bounded text/envelope, while placing
+// an explicit cap on unrelated or malformed request bodies.
+app.use(express.json({ limit: '384kb' }))
+const jsonErrorHandler: express.ErrorRequestHandler = (error, _req, res, next) => {
+  if (error.type === 'entity.parse.failed') return res.status(400).json({ error: '无效的 JSON 请求' })
+  if (error.type === 'entity.too.large') return res.status(413).json({ error: '请求内容过大' })
+  next(error)
+}
+app.use(jsonErrorHandler)
 if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1)
 app.use(accessStatsMiddleware)
 
@@ -860,17 +869,27 @@ const updateStats = () => {
 // API: 提交反馈
 app.post('/api/feedback', (req, res) => {
   try {
+    if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+      return res.status(400).json({ error: '请求参数必须为对象' })
+    }
     const { category, encryptedContent, deviceId, originalContent } = req.body
     const identity = requireClientIdentity(req, res)
     if (!identity) return
 
-    if (!category || !encryptedContent || !deviceId) {
-      return res.status(400).json({ error: '缺少必要参数' })
+    const contentValidation = validateFeedbackContent(originalContent)
+    if (!contentValidation.valid) {
+      return res.status(400).json({ error: contentValidation.error })
+    }
+    if (!validateDeviceId(deviceId) || typeof encryptedContent !== 'string' || !encryptedContent.trim()) {
+      return res.status(400).json({ error: '无效的身份或加密内容' })
+    }
+    if (Buffer.byteLength(encryptedContent, 'utf8') > MAX_ENCRYPTED_CONTENT_BYTES) {
+      return res.status(413).json({ error: '加密内容过大' })
     }
     if (identity.device_id !== deviceId) {
       return res.status(403).json({ error: '本机身份与提交身份不一致' })
     }
-    if (!['suggestion', 'complaint', 'report'].includes(category)) {
+    if (!validateCategory(category)) {
       return res.status(400).json({ error: '无效的提交类型' })
     }
 

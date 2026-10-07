@@ -1,9 +1,14 @@
 // 后端验证工具
 
+export const MAX_CONTENT_CHARACTERS = 10000
+// UTF-8 uses at most three bytes per UTF-16 code unit. Legacy AES-GCM
+// envelope: 12-byte IV + 32-byte key + 16-byte tag, encoded as base64.
+export const MAX_ENCRYPTED_CONTENT_BYTES = Math.ceil((3 * MAX_CONTENT_CHARACTERS + 60) / 3) * 4
+
 /**
  * 验证反馈内容
  */
-export function validateFeedbackContent(content: string): {
+export function validateFeedbackContent(content: unknown): {
   valid: boolean
   error?: string
 } {
@@ -13,11 +18,11 @@ export function validateFeedbackContent(content: string): {
 
   const trimmed = content.trim()
 
-  if (trimmed.length < 10) {
-    return { valid: false, error: '内容过短（至少 10 个字符）' }
+  if (!trimmed) {
+    return { valid: false, error: '内容不能为空' }
   }
 
-  if (trimmed.length > 10000) {
+  if (content.length > MAX_CONTENT_CHARACTERS) {
     return { valid: false, error: '内容过长（最多 10000 个字符）' }
   }
 
@@ -27,15 +32,15 @@ export function validateFeedbackContent(content: string): {
 /**
  * 验证分类
  */
-export function validateCategory(category: string): boolean {
+export function validateCategory(category: unknown): category is string {
   const validCategories = ['suggestion', 'complaint', 'report']
-  return validCategories.includes(category)
+  return typeof category === 'string' && validCategories.includes(category)
 }
 
 /**
  * 验证设备 ID
  */
-export function validateDeviceId(deviceId: string): boolean {
+export function validateDeviceId(deviceId: unknown): deviceId is string {
   if (!deviceId || typeof deviceId !== 'string') {
     return false
   }

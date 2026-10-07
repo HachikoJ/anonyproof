@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: T-12: feedback input matrix rejects before business writes
+ok 1 - T-12: feedback input matrix rejects before business writes
+  ---
+  duration_ms: 620.376333
+  type: 'test'
+  ...
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 2 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 429.656875
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 3 - T-19: production rejects missing secret
+  ---
+  duration_ms: 350.874041
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short secret
+ok 4 - T-19: production rejects short secret
+  ---
+  duration_ms: 358.404208
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing password
+ok 5 - T-19: production rejects missing password
+  ---
+  duration_ms: 367.191167
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short password
+ok 6 - T-19: production rejects short password
+  ---
+  duration_ms: 358.241708
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2810.74375
