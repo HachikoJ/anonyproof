@@ -531,7 +531,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-04 取消“加密失败则Base64成功提交”
 
-状态：待办；原始严重度：P0（审查第 2 条）；优先级：A；工作量：S；前置依赖：T-03；Q-02方向已确认。
+状态：已完成；原始严重度：P0（审查第 2 条）；优先级：A；工作量：S；前置依赖：T-03；Q-02方向已确认。
 
 **问题**：`app/hooks/useCrypto.ts:166–217 encrypt()`在WebCrypto缺失或异常时把正文Base64后照常提交，用户看到成功而实际无加密。
 
@@ -1053,3 +1053,12 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 原生IAB正式fixture浏览器：提交正文成功→用户补充→后台原文搜索/详情→处理说明及已办结→管理员回复→用户通知原文及正确记录定位→恢复UI→同一记录全文/处理结果/2评论读回。明确此UI找回用已有browser，自动测试另覆盖新服务恢复。独立 `npx --no-install tsx tests/fix/T-03.browser-assert.ts`退出0验证真实browserDB为1反馈/2评论/4通知、敏感字段均v1、逐角色精确解密、DB/liveWAL/SQL无明文或key。可复验harness为`tests/fix/T-03.browser.ts`（3016临时前端；固定密码只为合成fixture），数据库元信息与脱敏步骤见browser证据。临时tab/进程已停止，DB及独立fixture key保留。原生截图展示完整详情，无恢复码；没有虚构本地图片路径。
 - Node22.23.3，当前全部已跟踪`tests/fix/*.test.ts`真实运行退出0：64通过、0失败、1明确T-34删除SKIP，具体命令已写入`T-03-writer-regressions.txt`；T-14测试按新存储语义保留10000字符HTTP精确读回并断言DB版本1/非原文。前端type、实际后端全文件strict tsc、production build及`git diff --check`均0。输出保留`audit/execution-results/T-03-writer-*.txt`及`T-03-browser-*`；T-04伪加密退役/故障草稿、T-37/38/39将来的跨页契约仍独立验收。
 - 隔离提交顺序：模块→兼容reader→本次writer。回滚到reader提交903db49时必须先关闭正式写入；既有v1内容和4个字段版本必须保留。不得回到不识别v1的旧reader、删除元数据或用新key冒充恢复。实际生产启用需一致快照/独立key恢复验收和部署授权，本轮未发布、未改真实env、未迁移历史库。
+
+### T-04 实际执行与验收（2026-10-07）
+
+- 状态：已完成。`app/hooks/useCrypto.ts`现有encrypt函数保留调用签名但只返回非敏感兼容标记，不再生成浏览器key包或Base64降级成功结果；实际存储安全由已验收T-03服务器认证加密/事务提交决定。没有更改既有请求字段/响应或加入浏览器兼容层；旧decrypt助手没有当前调用者，本轮未顺手移除资产。README更新现行语义。页面既有失败处理已经在成功后才清草稿，实测无需改动。
+- `tests/fix/T-04.fixture.ts`仅隔离子进程通过测试preload包裹实际crypto.createCipheriv/update，控制文件在随机临时目录；生产无故障header、endpoint或开关。`tests/fix/T-04.test.ts`实际退出0，2/2通过：真实提交hook在SSR无window/subtle时只有存储标记；加密本体或后续通知title/content故障覆盖反馈/用户评论/管理员回复/状态日志后更新，均HTTP500、五类业务表完整快照不变。解除后各操作200且v1存储，旧Base64请求字段只兼容接收后丢弃，不能变成伪加密保存。
+- 原生IAB中通过`tests/fix/T-04.browser.ts`测试代理在hydration前移除subtle；DOM meta的实际值为true，页面仍正常初始化。反馈草稿→服务器加密故障→HTTP500/错误提示/原文草稿保留，DB所有业务计数0/stat0；解除故障后同一草稿200。评论500保留草稿且comment0/notif1，解除200；状态500保留处理说明，checkbox仍未办结，DBpending/solution空version0/update_status日志0/notif2，解除后200已办结。最终`tests/fix/T-04.browser-assert.ts`实际退出0：每路由网络序列[500,200]，DB反馈1/评论1/通知3/状态日志1，敏感字段为认证v1。缺/错误key启动拒绝已由T-03真实startup/恢复测试覆盖，不能在无服务时以伪加密绕过。
+- 首次测试代理未初始化、无API请求，因此未计作通过。测试harness补齐Next开发WebSocket转发并以head meta取代body额外DOM后，新fixture重跑上述浏览器验收成功；只修测试代理，没有以产品改动掩盖环境问题。网络JSON只保存方法/无query路径/status，不存payload/Cookie/key/恢复码。截图在原生工具展示；没有虚构本地图片路径。临时tab及进程停止，故障控制恢复为空、临时资产保留。
+- Node22.23.3：T-03/T-04/T-12/T-13/T-14/T-19/T-41实际回归38通过、0失败、1明确T-34删除SKIP；前端type、实际后端全文件strict tsc、production build和`git diff --check`均0。证据`audit/execution-results/T-04-{tests,regressions,frontend-type,backend-type,build,browser-db-assert}.txt`和browser fixture/network JSON，可用两个browser脚本复验。未发布、未改真实库/密钥。
+- 回滚点：本任务独立父版本3592264仍使用服务器加密存储。回滚客户端旧函数会重新生成无意义key包/伪加密编码，服务器仍丢弃它；不得以T-04回滚为理由回滚T-03安全writer或关闭失败传播。
