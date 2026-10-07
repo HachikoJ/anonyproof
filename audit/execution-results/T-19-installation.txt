@@ -1,0 +1,35 @@
+v22.23.3
+11.11.1
+anonyproof@0.1.0 /Users/wilson/Documents/Codex/anonyproof
+├── @emnapi/runtime@1.11.3 extraneous
+├── @img/sharp-wasm32@0.35.4 extraneous
+├── @types/better-sqlite3@7.6.13
+├── @types/cors@2.8.19
+├── @types/express@5.0.6
+├── @types/node@20.19.35
+├── @types/react-dom@18.3.7
+├── @types/react@18.3.28
+├── @types/uuid@10.0.0
+├── axios@1.20.0
+├── better-sqlite3@12.11.1
+├── cors@2.8.6
+├── express@5.2.1
+├── next@16.3.3
+├── react-dom@18.3.1
+├── react-dropzone@15.0.0
+├── react@18.3.1
+├── tsx@4.21.0
+├── typescript@5.9.3
+└── uuid@13.0.2
+
+anonyproof-server@1.0.0 /Users/wilson/Documents/Codex/anonyproof/server
+├── @types/better-sqlite3@7.6.13
+├── @types/express@5.0.6
+├── @types/node@20.19.43
+├── better-sqlite3@12.11.1
+├── cors@2.8.6
+├── express-rate-limit@8.6.2
+├── express@5.2.1
+├── typescript@5.9.3
+├── uuid@14.0.2
+└── winston@3.19.0

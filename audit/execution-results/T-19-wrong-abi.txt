@@ -1,0 +1,1 @@
+SQLite native module cannot load in . under Node 25.8.2. Reinstall using that runtime.
