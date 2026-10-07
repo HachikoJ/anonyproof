@@ -1,0 +1,364 @@
+TAP version 13
+# Subtest: T-19: isolated production backend and existing authorized flow run
+not ok 1 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 493.113542
+  location: '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:2:990'
+  failureType: 'testCodeFailure'
+  error: |-
+    Fixture backend exited:
+    > anonyproof-server@1.0.0 start
+    > tsx index.ts
+
+    /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1
+    throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');
+          ^
+
+
+    Error: T18_INTENTIONAL_STARTUP_FAILURE
+        at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)
+        at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)
+        at Module._compile (node:internal/modules/cjs/loader:1521:14)
+        at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+        at Module.load (node:internal/modules/cjs/loader:1266:32)
+        at Module._load (node:internal/modules/cjs/loader:1091:12)
+        at cjsLoader (node:internal/modules/esm/translators:298:15)
+        at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+        at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+        at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+
+    Node.js v20.20.2
+
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)
+    Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)
+    Module._compile (node:internal/modules/cjs/loader:1521:14)
+    Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+    Module.load (node:internal/modules/cjs/loader:1266:32)
+    Module._load (node:internal/modules/cjs/loader:1091:12)
+    cjsLoader (node:internal/modules/esm/translators:298:15)
+    ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+    ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+    async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+    startBackend (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/helpers.ts:74:13)
+    async TestContext.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:7:19)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: T-19: production rejects missing secret
+not ok 2 - T-19: production rejects missing secret
+  ---
+  duration_ms: 440.332209
+  location: '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:2:3320'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /SESSION_SECRET/. Input:
+
+    '\n' +
+      '> anonyproof-server@1.0.0 start\n' +
+      '> tsx index.ts\n' +
+      '\n' +
+      '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1\n' +
+      "throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');\n" +
+      '      ^\n' +
+      '\n' +
+      '\n' +
+      'Error: T18_INTENTIONAL_STARTUP_FAILURE\n' +
+      '    at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)\n' +
+      '    at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)\n' +
+      '    at Module._compile (node:internal/modules/cjs/loader:1521:14)\n' +
+      '    at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)\n' +
+      '    at Module.load (node:internal/modules/cjs/loader:1266:32)\n' +
+      '    at Module._load (node:internal/modules/cjs/loader:1091:12)\n' +
+      '    at cjsLoader (node:internal/modules/esm/translators:298:15)\n' +
+      '    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)\n' +
+      '    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)\n' +
+      '\n' +
+      'Node.js v20.20.2\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+
+    > anonyproof-server@1.0.0 start
+    > tsx index.ts
+
+    /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1
+    throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');
+          ^
+
+
+    Error: T18_INTENTIONAL_STARTUP_FAILURE
+        at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)
+        at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)
+        at Module._compile (node:internal/modules/cjs/loader:1521:14)
+        at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+        at Module.load (node:internal/modules/cjs/loader:1266:32)
+        at Module._load (node:internal/modules/cjs/loader:1091:12)
+        at cjsLoader (node:internal/modules/esm/translators:298:15)
+        at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+        at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+        at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+
+    Node.js v20.20.2
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:48:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: T-19: production rejects short secret
+not ok 3 - T-19: production rejects short secret
+  ---
+  duration_ms: 402.272709
+  location: '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:2:3320'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /SESSION_SECRET/. Input:
+
+    '\n' +
+      '> anonyproof-server@1.0.0 start\n' +
+      '> tsx index.ts\n' +
+      '\n' +
+      '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1\n' +
+      "throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');\n" +
+      '      ^\n' +
+      '\n' +
+      '\n' +
+      'Error: T18_INTENTIONAL_STARTUP_FAILURE\n' +
+      '    at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)\n' +
+      '    at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)\n' +
+      '    at Module._compile (node:internal/modules/cjs/loader:1521:14)\n' +
+      '    at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)\n' +
+      '    at Module.load (node:internal/modules/cjs/loader:1266:32)\n' +
+      '    at Module._load (node:internal/modules/cjs/loader:1091:12)\n' +
+      '    at cjsLoader (node:internal/modules/esm/translators:298:15)\n' +
+      '    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)\n' +
+      '    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)\n' +
+      '\n' +
+      'Node.js v20.20.2\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+
+    > anonyproof-server@1.0.0 start
+    > tsx index.ts
+
+    /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1
+    throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');
+          ^
+
+
+    Error: T18_INTENTIONAL_STARTUP_FAILURE
+        at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)
+        at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)
+        at Module._compile (node:internal/modules/cjs/loader:1521:14)
+        at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+        at Module.load (node:internal/modules/cjs/loader:1266:32)
+        at Module._load (node:internal/modules/cjs/loader:1091:12)
+        at cjsLoader (node:internal/modules/esm/translators:298:15)
+        at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+        at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+        at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+
+    Node.js v20.20.2
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:48:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: T-19: production rejects missing password
+not ok 4 - T-19: production rejects missing password
+  ---
+  duration_ms: 390.929334
+  location: '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:2:3320'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /ADMIN_PASSWORD/. Input:
+
+    '\n' +
+      '> anonyproof-server@1.0.0 start\n' +
+      '> tsx index.ts\n' +
+      '\n' +
+      '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1\n' +
+      "throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');\n" +
+      '      ^\n' +
+      '\n' +
+      '\n' +
+      'Error: T18_INTENTIONAL_STARTUP_FAILURE\n' +
+      '    at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)\n' +
+      '    at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)\n' +
+      '    at Module._compile (node:internal/modules/cjs/loader:1521:14)\n' +
+      '    at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)\n' +
+      '    at Module.load (node:internal/modules/cjs/loader:1266:32)\n' +
+      '    at Module._load (node:internal/modules/cjs/loader:1091:12)\n' +
+      '    at cjsLoader (node:internal/modules/esm/translators:298:15)\n' +
+      '    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)\n' +
+      '    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)\n' +
+      '\n' +
+      'Node.js v20.20.2\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+
+    > anonyproof-server@1.0.0 start
+    > tsx index.ts
+
+    /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1
+    throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');
+          ^
+
+
+    Error: T18_INTENTIONAL_STARTUP_FAILURE
+        at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)
+        at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)
+        at Module._compile (node:internal/modules/cjs/loader:1521:14)
+        at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+        at Module.load (node:internal/modules/cjs/loader:1266:32)
+        at Module._load (node:internal/modules/cjs/loader:1091:12)
+        at cjsLoader (node:internal/modules/esm/translators:298:15)
+        at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+        at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+        at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+
+    Node.js v20.20.2
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:48:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: T-19: production rejects short password
+not ok 5 - T-19: production rejects short password
+  ---
+  duration_ms: 404.026708
+  location: '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:2:3320'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /ADMIN_PASSWORD/. Input:
+
+    '\n' +
+      '> anonyproof-server@1.0.0 start\n' +
+      '> tsx index.ts\n' +
+      '\n' +
+      '/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1\n' +
+      "throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');\n" +
+      '      ^\n' +
+      '\n' +
+      '\n' +
+      'Error: T18_INTENTIONAL_STARTUP_FAILURE\n' +
+      '    at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)\n' +
+      '    at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)\n' +
+      '    at Module._compile (node:internal/modules/cjs/loader:1521:14)\n' +
+      '    at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)\n' +
+      '    at Module.load (node:internal/modules/cjs/loader:1266:32)\n' +
+      '    at Module._load (node:internal/modules/cjs/loader:1091:12)\n' +
+      '    at cjsLoader (node:internal/modules/esm/translators:298:15)\n' +
+      '    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)\n' +
+      '    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)\n' +
+      '    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)\n' +
+      '\n' +
+      'Node.js v20.20.2\n'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+
+    > anonyproof-server@1.0.0 start
+    > tsx index.ts
+
+    /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1
+    throw new Error('T18_INTENTIONAL_STARTUP_FAILURE');
+          ^
+
+
+    Error: T18_INTENTIONAL_STARTUP_FAILURE
+        at uuidv4 (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1:7)
+        at Object.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server/index.ts:1497:2)
+        at Module._compile (node:internal/modules/cjs/loader:1521:14)
+        at Object.transformer (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1104)
+        at Module.load (node:internal/modules/cjs/loader:1266:32)
+        at Module._load (node:internal/modules/cjs/loader:1091:12)
+        at cjsLoader (node:internal/modules/esm/translators:298:15)
+        at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+        at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+        at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+
+    Node.js v20.20.2
+
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/tests/fix/T-19.test.ts:48:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2272.293542
+Only isolated checkout server/index.ts changed; real checkout unchanged.
+Fault: top-level throw before application starts.
+COMMAND: npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts
+EXIT: 1
+Remote GitHub Actions run: NOT PERFORMED (no push authorization).
+TAP version 13
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 1 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 432.33
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 2 - T-19: production rejects missing secret
+  ---
+  duration_ms: 369.906166
+  ...
+# Subtest: T-19: production rejects short secret
+ok 3 - T-19: production rejects short secret
+  ---
+  duration_ms: 365.446833
+  ...
+# Subtest: T-19: production rejects missing password
+ok 4 - T-19: production rejects missing password
+  ---
+  duration_ms: 384.103417
+  ...
+# Subtest: T-19: production rejects short password
+ok 5 - T-19: production rejects short password
+  ---
+  duration_ms: 391.861917
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2062.800708
+
+Restored original fixture server/index.ts; rerunning smoke gate.
+RESTORED EXIT: 0

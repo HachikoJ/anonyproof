@@ -1,0 +1,51 @@
+Additional exact workflow step: Audit production dependencies
+Node20.20.2/npm11.21.0; isolated checkout baseline d08b0a2.
+COMMAND:
+node <<'NODE'
+const { spawnSync } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const reportDir = path.join(process.env.RUNNER_TEMP, 'anonyproof-dependency-audit');
+fs.mkdirSync(reportDir, { recursive: true });
+for (const [name, cwd] of [['root', '.'], ['server', 'server']]) {
+  const result = spawnSync('npm', ['audit', '--omit=dev', '--json'], { cwd, encoding: 'utf8' });
+  fs.writeFileSync(path.join(reportDir, `${name}.json`), result.stdout || '');
+  let report;
+  try { report = JSON.parse(result.stdout); } catch {
+    console.error(`::error::${name}: npm audit did not return valid JSON`);
+    process.exit(1);
+  }
+  const counts = report.metadata?.vulnerabilities;
+  const validCount = (value) => Number.isSafeInteger(value) && value >= 0;
+  const severities = ['info', 'low', 'moderate', 'high', 'critical'];
+  if (result.error || ![0, 1].includes(result.status) || report.error ||
+      !counts || !severities.every((key) => validCount(counts[key])) ||
+      !validCount(counts.total) || !validCount(report.metadata?.dependencies?.total) ||
+      !report.vulnerabilities || typeof report.vulnerabilities !== 'object' ||
+      severities.reduce((sum, key) => sum + counts[key], 0) !== counts.total ||
+      (result.status === 0) !== (counts.total === 0)) {
+    console.error(`::error::${name}: audit execution failed or metadata is invalid`);
+    if (result.stderr) console.error(result.stderr);
+    process.exit(1);
+  }
+  console.log(`${name}: npm audit exit ${result.status}; ${JSON.stringify(counts)}`);
+  if (counts.total > 0) {
+    console.log(`::warning::${name}: ${counts.total} known production dependency advisories; review the audit artifact`);
+  }
+}
+NODE
+root: npm audit exit 1; {"info":0,"low":2,"moderate":1,"high":3,"critical":2,"total":8}
+::warning::root: 8 known production dependency advisories; review the audit artifact
+server: npm audit exit 1; {"info":0,"low":0,"moderate":2,"high":0,"critical":1,"total":3}
+::warning::server: 3 known production dependency advisories; review the audit artifact
+REAL AUDIT STEP EXIT: 0
+root.json metadata: {"vulnerabilities": {"info": 0, "low": 2, "moderate": 1, "high": 3, "critical": 2, "total": 8}, "dependencies": {"prod": 149, "dev": 19, "optional": 64, "peer": 0, "peerOptional": 0, "total": 231}}
+server.json metadata: {"vulnerabilities": {"info": 0, "low": 0, "moderate": 2, "high": 0, "critical": 1, "total": 3}, "dependencies": {"prod": 139, "dev": 13, "optional": 0, "peer": 0, "peerOptional": 0, "total": 151}}
+
+Injected audit result: missing-metadata
+::error::root: audit execution failed or metadata is invalid
+FAULT EXIT: 1
+
+Injected audit result: registry-error
+::error::root: audit execution failed or metadata is invalid
+FAULT EXIT: 1

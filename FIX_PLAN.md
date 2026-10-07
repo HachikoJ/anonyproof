@@ -245,7 +245,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-18 CI覆盖实际后端运行
 
-状态：待办；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。
+状态：已阻塞（代码/本地验收通过，实际GitHub Actions待push授权）；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。未满足远端验收，不标已完成。
 
 **问题**：`.github/workflows/ci.yml` 只安装根依赖、type-check/build；`--ignore-scripts` 不会构建native模块；未安装server依赖/启动服务，所以后端坏了CI仍可能绿。
 
@@ -896,3 +896,12 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - Node22两目录实际干净`npm ci`、指定安装树、ABI预检、3/3漏洞回归和HTTP集成、两type-check、build、diff-check均退出0。JSON错误400、1MiB413、health存活、业务没有额外写入、query数组/重复解析及路由aliases/权限正常。
 - 两`npm audit --omit=dev --json`退出1，但目标body-parser/path-to-regexp/qs相关advisories全部消失。原始audit及命令证据在`audit/execution-results/T-16-*`；其余next/ip-address分别T-15/T-17处理，proxy-addr/sharp/source-map-js/esbuild非本次范围，未声称依赖全安全。
 - 回滚：还原本项lockfile并在Node22重新npm ci；安装前目录保存在`/tmp/anonyproof-T-16-dependency-backup`，无数据迁移。
+
+### T-18 部分验收与阻塞记录
+
+- 状态：已阻塞；2026-10-07。`.github/workflows/ci.yml`已覆盖两安装树、实际native构建/ABI、前后端类型、build和现有修复测试；失败均阻断。Node20 matrix和现有npm11策略保留；失败安装目录保留，未无授权删除资产。
+- 独立`git archive d08b0a2`checkout、局部Node20.20.2/npm11.21.0实际执行workflow run命令：两干净npm ci/npm ls、ABI、两type-check、build及T-19 smoke 5/5全部退出0；没有复制真实.env.local/DB/日志。
+- 故意在隔离server入口注入throw：同一个测试门禁退出1，5项失败；逐字恢复后再执行退出0，5项通过。YAML解析/必要门禁无continue-on-error及diff-check退出0。
+- root/server生产依赖审计实际执行，正常advisory退出1保留报告并告警；无效JSON、缺metadata、注册表失败阻断。真实Node20审计步骤退出0；缺metadata/网络失败模拟均退出1。报告仅依赖元数据，不上传Cookie/内容密钥/数据库。
+- 证据：`audit/execution-results/T-18-*.txt`。实际Ubuntu runner/actions/cache/artifact/GitHub链接仍未验证，用户尚未授权push；不能用本地复现伪称远端CI已通过。
+- 直接阻塞T-37/T-38/T-39/T-42及最终T-36的完整交付；可先准备方案，不能越过未满足的完成依赖。本地其他不依赖T-18的任务继续。解除需要：获授权将具体已审阅差异推送测试分支并运行CI，或用户明确调整远端验收契约；没有擅自降低完成标准。
