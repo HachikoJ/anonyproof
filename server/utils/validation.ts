@@ -39,6 +39,20 @@ export function validateCommentContent(content: unknown): { valid: boolean; erro
   return { valid: true }
 }
 
+export function validateSolutionContent(solution: unknown, status: string): { valid: boolean; error?: string } {
+  if (solution !== undefined && typeof solution !== 'string') {
+    return { valid: false, error: '处理说明必须为文本' }
+  }
+  const content = solution ?? ''
+  if (content.length > MAX_CONTENT_CHARACTERS || Buffer.byteLength(content, 'utf8') > 30000) {
+    return { valid: false, error: '处理说明不能超过 10000 个字符' }
+  }
+  if (status !== 'in_progress' && content.trim().length < 10) {
+    return { valid: false, error: '标记为已办结或暂无法处理时，处理说明必须至少 10 个字符' }
+  }
+  return { valid: true }
+}
+
 /**
  * 验证分类
  */
@@ -65,9 +79,9 @@ export function validateDeviceId(deviceId: unknown): deviceId is string {
 /**
  * 验证状态
  */
-export function validateStatus(status: string): boolean {
-  const validStatuses = ['pending', 'reviewed', 'resolved']
-  return validStatuses.includes(status)
+export function validateStatus(status: unknown): status is string {
+  const validStatuses = ['in_progress', 'resolved', 'no_solution']
+  return typeof status === 'string' && validStatuses.includes(status)
 }
 
 /**

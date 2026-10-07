@@ -1,0 +1,5 @@
+Local browser only: admin solution textarea maxlength 10000.
+Filled 9999 Chinese characters then native-typed two: actual DOM length 10000.
+Clicked resolve; fresh accessibility state shows resolved checkbox value 1; aria-pressed=true.
+SQLite exact assertion: resolved status, 10000 Chinese characters/30000 UTF-8 bytes.
+Backend limit rejection verified separately by T-14 integration against new process; browser fixture startup predated server patch.

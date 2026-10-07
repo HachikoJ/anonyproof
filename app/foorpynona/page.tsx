@@ -917,6 +917,7 @@ export default function AdminPage() {
                       <textarea
                         id="solution"
                         aria-label="处理说明"
+                        maxLength={10000}
                         value={solution}
                         onChange={(event) => setSolution(event.target.value)}
                         placeholder="填写本次核查结论、处理动作或原因"

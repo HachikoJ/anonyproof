@@ -12,7 +12,7 @@ import {
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { openDatabase, databasePath } from './utils/database'
-import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent } from './utils/validation'
+import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
 import {
   DEMO_ADMIN_PASSWORD,
   DEMO_DEVICE_ID,
@@ -1013,7 +1013,8 @@ app.get('/api/admin/feedback/:id', (req, res) => {
 app.put('/api/admin/feedback/:id/status', (req, res) => {
   try {
     const { id } = req.params
-    const { status, solution } = req.body
+    const status = req.body?.status
+    const solution = req.body?.solution
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
     const visibleFeedback = db.prepare(`
       SELECT id, status, solution FROM feedbacks
@@ -1024,16 +1025,15 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
       return res.status(404).json({ error: '反馈不存在' })
     }
 
-    if (!['in_progress', 'resolved', 'no_solution'].includes(status)) {
+    if (!validateStatus(status)) {
       return res.status(400).json({ error: '无效的状态' })
     }
 
-    const trimmedSolution = typeof solution === 'string' ? solution.trim() : ''
-
-    // 验证解决方案
-    if ((status === 'resolved' || status === 'no_solution') && trimmedSolution.length < 10) {
-      return res.status(400).json({ error: '标记为已办结或暂无法处理时，处理说明必须至少 10 个字符' })
+    const validation = validateSolutionContent(solution, status)
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error })
     }
+    const trimmedSolution = (solution ?? '').trim()
 
     // 记录操作
     logAdminAction('update_status', id, ip)
