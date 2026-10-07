@@ -1,0 +1,7 @@
+T-35 proposal-only verification, 2026-10-07
+21/21 old config bytes and SHA256 match recorded Git baseline.
+2/2 old scripts unchanged.
+All 21 archive targets and the active supported target remain absent.
+Only plan/proposal/manifest changed; no application/config/script/lockfile/real data changes.
+Manifest parses and covers the exact tracked config set.
+Nginx runtime/syntax/end-to-end acceptance NOT performed; task remains pending confirmation/environment.

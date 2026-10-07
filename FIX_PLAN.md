@@ -1165,3 +1165,36 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - Node22.23.3实际三项prep测试通过：旧schema无版本列按legacy统计，重复盘点报告相同且源主文件SHA256未变；混合v1/未知flag7/NULL版本、NULL solution及缺表能区分；真实CLI对显式合成源输出可解析JSON，源不可用非0且不创建文件、无参数/多参数退出2。正文/标识等合成私密marker未出报告。所有fixture在新随机临时目录保留，未扫描或打开真实内容库。
 - 最后 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32.test.ts tests/fix/T-03.test.ts`退出0，17/17（最新T-32盘点3项与T-03模块/读写/恢复14项）；根type退出0，`git diff --check`通过。只读operator工具没有应用运行源改动，沿用已验收构建；无新依赖。证据T-32-inventory-*。测试文件头及DEPLOY明确这3项不能替代原T-32旧格式转换、重复迁移、故障恢复、物理残留及实际资产验收。
 - 下一轮认领T-32时：先落实Q-04/Q-07与保留映射/源与备份清单/独立key；获只读盘点实际资产授权后执行 `npx --no-install tsx scripts/content-migration-inventory.ts /absolute/approved-source.db` 保存脱敏报告，报告退出0仅表示盘点成功。之后还需一致性快照恢复验证、版本化新库迁移、逐身份/关联计数核对、认证解密/导出/DB-WAL残留验证及入口切换；旧资产销毁单独批准，不同时失去回滚源。此部分工具可不调用，源未改变，不需通过删除历史记录来回滚。
+
+### T-35 具体资产/模板预览与环境缺口（2026-10-07）
+
+- 状态仍待办（方案准备就绪；资产移动/入口禁用尚未批准），不增加完成任务数。只新增 `audit/execution-results/T-35-proposal.md` 和 `T-35-assets.json`；未创建受支持运行配置、移动旧文件、安装软件、启动/重载Nginx、改Next/PM2/env或访问真实库。Q-03准确Origin决定继续有效，不因这次重复答复扩大合法来源。
+- 建议唯一模板 `deploy/nginx/anonyproof.deline.top.conf`：限定本站，HTTP308保留path/query及请求方法→HTTPS，HTTPS根301→/anonyproof，保留Nginx→Next3000→Express4000与basePath；准确Host/Proto，保持Cookie/Cache-Control，不拦PUT/DELETE、不全站immutable。**直接公网Nginx、无前置CDN/LB**只是草案前提，实际需Q-05证明；入口XFF覆盖socket来源的方案不适用于未经确认的上游链。Express信任值仍留T-24独立证据决定，未擅改生产策略。
+- 建议逐字移动至 `deploy/nginx/legacy/`（原名、hash保留；目标存在/源变化停止）的完整21文件清单：
+- `deploy/nginx/anonyproof-3000.conf` → `deploy/nginx/legacy/anonyproof-3000.conf`
+- `deploy/nginx/deline-top-api-fixed.conf` → `deploy/nginx/legacy/deline-top-api-fixed.conf`
+- `deploy/nginx/deline-top-api.conf` → `deploy/nginx/legacy/deline-top-api.conf`
+- `deploy/nginx/deline-top-clean.conf` → `deploy/nginx/legacy/deline-top-clean.conf`
+- `deploy/nginx/deline-top-correct.conf` → `deploy/nginx/legacy/deline-top-correct.conf`
+- `deploy/nginx/deline-top-deline.com.conf` → `deploy/nginx/legacy/deline-top-deline.com.conf`
+- `deploy/nginx/deline-top-final-fixed.conf` → `deploy/nginx/legacy/deline-top-final-fixed.conf`
+- `deploy/nginx/deline-top-final.conf` → `deploy/nginx/legacy/deline-top-final.conf`
+- `deploy/nginx/deline-top-fixed-final.conf` → `deploy/nginx/legacy/deline-top-fixed-final.conf`
+- `deploy/nginx/deline-top-fixed.conf` → `deploy/nginx/legacy/deline-top-fixed.conf`
+- `deploy/nginx/deline-top-fixed2.conf` → `deploy/nginx/legacy/deline-top-fixed2.conf`
+- `deploy/nginx/deline-top-nested-api.conf` → `deploy/nginx/legacy/deline-top-nested-api.conf`
+- `deploy/nginx/deline-top-precise.conf` → `deploy/nginx/legacy/deline-top-precise.conf`
+- `deploy/nginx/deline-top-priority.conf` → `deploy/nginx/legacy/deline-top-priority.conf`
+- `deploy/nginx/deline-top-simple-direct.conf` → `deploy/nginx/legacy/deline-top-simple-direct.conf`
+- `deploy/nginx/deline-top-simple.conf` → `deploy/nginx/legacy/deline-top-simple.conf`
+- `deploy/nginx/deline-top-updated.conf` → `deploy/nginx/legacy/deline-top-updated.conf`
+- `deploy/nginx/deline-top-with-caret.conf` → `deploy/nginx/legacy/deline-top-with-caret.conf`
+- `deploy/nginx/deline.top-anonyproof.conf` → `deploy/nginx/legacy/deline.top-anonyproof.conf`
+- `deploy/nginx/deline.top.conf` → `deploy/nginx/legacy/deline.top.conf`
+- `deploy/nginx/security-fixed.conf` → `deploy/nginx/legacy/security-fixed.conf`
+
+- 两个旧入口 `deploy/scripts/legacy/fix-nginx.sh`、`final-fix.sh`建议保留原正文、开头加历史说明+非0退出，不运行其写配置/reload/rm/PM2删除动作；其余7脚本无Nginx写入引用，不顺手改。DEPLOY.md/docs/DEPLOYMENT.md/deploy/README.md同步只指向新模板，旧说明明确历史不支持。上述移动及既有脚本禁执行属于用户AGENTS.md第2节明确需具体确认的资产/行为变更，尚未执行。
+- 已实际核对Git跟踪清单21/21、源字节等于HEAD、每个拟目标不存在、两入口源hash一致；manifest仅路径/数量/hash/建议，不含配置正文或凭证。项目start已默认回环，但实际端口关闭仍需证据；不是用默认配置推断线上可达性。
+- 环境实查：`command -v nginx`无输出/非0；Docker context为desktop-linux，`docker image ls`退出0且无镜像。未拉镜像或brew install，不虚构nginx-t结果。官方Nginx文档核对proxy_pass无URI保留路径、return308及TLS语法，来源在proposal；这是文档依据，不能当运行验收。
+- 下一轮先确认上述具体清单/模板及验证环境，再独立fixture高位回环端口/测试证书运行nginx -V/-t/启动、真实Next+合成Express库的页面/静态/API/Cookie/Origin/PUT/DELETE矩阵、hash迁移核对与type/build/diff-check。DELETE一致性依赖T-34批准语义，T-24真实来源另验；线上证书/公网端口/原生效配置需另获发布/探针授权及T-02，不硬绕过这些门禁。草案未启用时不需要回滚；批准后的独立T-35提交和原生效vhost快照是回滚点，不恢复真实材料公开写入。
+- 实际proposal-only验证退出0：JSON覆盖完整21跟踪文件、21目标唯一且未创建、新支持模板未创建、21配置及2脚本字节/hash与记录的Git基线一致；差异仅计划/预览/manifest/其检查证据。`git diff --check`退出0，输出 `T-35-proposal-check.txt`。未修改应用源，未用重复build或静态检查假称Nginx语法/业务验收通过。已向用户展示具体变更请求，等待答复期间不实施移动/禁用。
