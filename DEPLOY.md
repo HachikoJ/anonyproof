@@ -116,3 +116,7 @@ curl -s --max-time 6 http://106.55.13.245:4000/health   # 应当连接失败
 ## Cookie 写请求来源（Q-03 / T-26）
 
 所有API的POST/PUT/PATCH/DELETE在解析正文、鉴权和状态修改前都要求准确匹配`CORS_ORIGINS`的Origin；缺失、null、其它子域、路径伪装或Host/X-Forwarded-Host不能放行。合法客户端仅本站浏览器及显式配置的本地前端，无Origin脚本写请求不再受支持。需要复验的合成fixture必须显式附可信Origin，并单独测试无Origin403。GET identity创建/续接的旧兼容行为仍等待具体POST/readonlyGET迁移确认，不因普通写路由已保护而宣称整个T-26完成。
+
+## 恢复码接口限流（T-08）
+
+`POST /api/identity/recover`默认每个后端识别的来源IP每60秒最多10次请求；成功、无效码和JSON解析失败都计数，超限429并返回`Retry-After`，不签发Cookie或修改身份/安装密钥。来源不受信任的请求由T-26先拒绝，OPTIONS不占写入配额。可显式配置`RECOVERY_RATE_LIMIT_MAX`与`RECOVERY_RATE_LIMIT_WINDOW_MS`（毫秒）；必须为正安全整数，窗口最多2147483647毫秒，非法值启动失败。当前为单进程内存窗口；实际多跳代理IP配置仍须T-24验收，不因本地限流通过宣称线上各访客已正确区分。

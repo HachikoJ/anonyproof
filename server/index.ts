@@ -11,7 +11,7 @@ import {
   unblacklistIP,
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
-import { adminLoginLimiter } from './middleware/rateLimit'
+import { adminLoginLimiter, identityRecoveryLimiter } from './middleware/rateLimit'
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
@@ -69,6 +69,7 @@ app.use('/api', cookieWriteOriginGuard(allowedOrigins))
 // Admit login POSTs before JSON parsing so malformed/oversized bodies consume
 // the same source quota as successful and failed authentication attempts.
 app.post(['/api/admin/auth/login', '/api/admin/login'], adminLoginLimiter)
+app.post('/api/identity/recover', identityRecoveryLimiter)
 // Allows worst-case escaped JSON for the bounded text/envelope, while placing
 // an explicit cap on unrelated or malformed request bodies.
 app.use(express.json({ limit: '384kb' }))

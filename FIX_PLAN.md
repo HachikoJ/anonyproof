@@ -121,7 +121,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-08 恢复码尝试限流
 
-状态：待办；原始严重度：P1（审查第 3 条，安全子审计标 P2）；优先级：A；工作量：S；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 3 条，安全子审计标 P2）；优先级：A；工作量：S；前置依赖：T-19。
 
 **问题**：`server/index.ts:823 POST /api/identity/recover` 可无限在线尝试，成功时会写新一年会话、重新绑定安装密钥。
 
@@ -1094,3 +1094,10 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 可复验：运行 `tests/fix/T-26.browser.ts`，点击其输出allowed/sameSite/crossSite页面的按钮；合法流程运行 `tests/fix/T-26.normal-browser.ts` 后用UI执行上述动作，再运行 `tests/fix/T-26.browser-assert.ts`。证据为`audit/execution-results/T-26-*`；截图工具已展示，不编造本地截图路径。独立提交可回退普通guard，但会重新暴露已确认写来源缺口；GET身份迁移回滚必须维持只读GET安全边界。
 
 - T-26证据存储校正：共用T-15 smoke最初覆盖了两份旧控制台证据，已将这次结果保存在T-26文件，并从HEAD还原T-15原记录；harness新增只影响证据文件命名的FIX_SMOKE_TASK，避免后续任务重复覆盖历史记录。
+
+### T-08 实际执行与验收（2026-10-07）
+
+- 状态：已完成。`server/middleware/rateLimit.ts:identityRecoveryLimiter`默认来源IP10次/60秒；`RECOVERY_RATE_LIMIT_MAX`/`RECOVERY_RATE_LIMIT_WINDOW_MS`正整数配置，非法值明确失败启动。在Origin guard之后、JSON解析之前挂载到恢复POST，成功/无效码/畸形或过大JSON均消耗同一来源配额；OPTIONS/恶意Origin不占恢复写配额。保持恢复码熵、404错误文案及凭证格式，恢复码轮换独立留T-21。
+- 修复前实际复现：三个不同无效码后合法码仍200、默认无限恢复且无RateLimit-Limit、解析失败后仍无429。正确fixture的`T-08-before.txt`3失败；初次harness错误（误把response包装当data、把header传method）单独留`T-08-harness-initial.txt`，不能当产品缺陷证据。
+- Node22.23.3实际 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-08.test.ts`退出0，4/4：阈值3、默认10、JSON/Origin/preflight、11个无效配置启动；429有Retry-After、无Set-Cookie，身份/session/install-key及业务表快照不变，等待实际短窗口后合法恢复同一身份成功。T-03/T-08/T-09/T-26/T-27相关28/28退出0。前端type退出0（初次新测试SQLite unknown类型已修正并保留失败输出）；实际全后端strict tsc退出0。本任务没有前端构建源变更，沿用T-26已验收正常生产build。
+- 文档在DEPLOY明确默认/单位/作用域/单进程限制；来源取值真实代理链仍由T-24处理，不宣称线上IP配置已验。未修改.env.local/真实库或上线；独立提交父版本可回退限流，但会恢复已确认在线无限尝试风险。

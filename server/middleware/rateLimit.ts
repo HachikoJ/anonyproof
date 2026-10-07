@@ -23,6 +23,16 @@ export const adminLoginLimiter = rateLimit({
   legacyHeaders: false,
 })
 
+// Recovery is a public credential endpoint. Successful, invalid and malformed
+// attempts all consume the same source quota, before any credential is issued.
+export const identityRecoveryLimiter = rateLimit({
+  windowMs: positiveIntegerEnv('RECOVERY_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+  max: positiveIntegerEnv('RECOVERY_RATE_LIMIT_MAX', 10),
+  message: { error: '找回请求过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 // 提交反馈速率限制
 export const feedbackSubmitLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 分钟

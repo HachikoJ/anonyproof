@@ -1,0 +1,7 @@
+
+> anonyproof@0.1.0 type-check
+> tsc --noEmit
+
+tests/fix/T-08.test.ts(44,16): error TS2571: Object is of type 'unknown'.
+tests/fix/T-08.test.ts(80,16): error TS2571: Object is of type 'unknown'.
+tests/fix/T-08.test.ts(81,16): error TS2571: Object is of type 'unknown'.
