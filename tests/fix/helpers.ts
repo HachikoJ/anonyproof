@@ -33,7 +33,10 @@ export async function launchBackend(overrides: Record<string, string> = {}) {
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     NODE_ENV: 'production', DEMO_MODE: '0', ADMIN_PASSWORD: password,
-    SESSION_SECRET: randomBytes(32).toString('hex'), DATABASE_PATH: databasePath,
+    SESSION_SECRET: randomBytes(32).toString('hex'),
+    // Never inherit or load a real content key into a fixture. Reused DB tests
+    // must explicitly pass the same temporary key, as production restore does.
+    CONTENT_ENCRYPTION_KEY: randomBytes(32).toString('base64'), DATABASE_PATH: databasePath,
     PORT: String(port), BIND_HOST: '127.0.0.1', TRUST_PROXY: '0',
     CORS_ORIGINS: `http://127.0.0.1:${port}`, LOG_DIR: path.join(dir, 'logs'),
     ...overrides,

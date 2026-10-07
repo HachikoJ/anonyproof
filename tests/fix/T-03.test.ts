@@ -184,3 +184,78 @@ test('T-03 module: database version 1 bad prefix and unknown storage flags fail 
     assert.throws(() => codec().assertDatabaseKey(db), ContentEncryptionError)
   } finally { db.close() }
 })
+
+test('T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore', async (t) => {
+  const { Client, startBackend, launchBackend } = await import('./helpers')
+  const { setTimeout: delay } = await import('node:timers/promises')
+  const { randomBytes } = await import('node:crypto')
+  const { writeFileSync } = await import('node:fs')
+  const encryption = codec()
+  const service = await startBackend({ CONTENT_ENCRYPTION_KEY: key })
+  t.after(service.stop)
+  const user = new Client(service)
+  const admin = new Client(service)
+  const identity = (await user.identity()).data
+  assert.equal((await admin.login()).response.status, 200)
+  const feedback = await user.post('/api/feedback', {
+    category: 'report', originalContent: 'reader initial synthetic body', encryptedContent: 'old-client-package', deviceId: identity.deviceId,
+  })
+  assert.equal(feedback.response.status, 200)
+  const id = feedback.data.id
+  const db = service.openDb()
+  t.after(() => db.close())
+  const literal = loadContentEncryption({ demoMode: false, env: { CONTENT_ENCRYPTION_KEY: otherKey } }).encrypt('legacy envelope-shaped literal', 'foreign')
+  const solution = 'reader sealed synthetic solution'
+  const comment = 'reader sealed synthetic comment'
+  const notification = 'reader sealed synthetic notification'
+  db.prepare('UPDATE feedbacks SET original_content = ?, original_content_storage_version = 0, solution = ?, solution_storage_version = 1 WHERE id = ?')
+    .run(literal, encryption.encrypt(solution, `feedbacks:${id}:solution`), id)
+  const added = await user.post(`/api/feedback/${id}/comments`, { content: 'reader initial synthetic comment' })
+  assert.equal(added.response.status, 200)
+  db.prepare('UPDATE feedback_comments SET content = ?, content_storage_version = 1 WHERE id = ?')
+    .run(encryption.encrypt(comment, `feedback_comments:${id}:user:content`), added.data.comment.id)
+  const ctx = `notifications:${id}:admin:admin:new_feedback`
+  db.prepare("UPDATE notifications SET title = ?, content = ?, content_storage_version = 1 WHERE feedback_id = ? AND type = 'new_feedback'")
+    .run(encryption.encrypt('reader sealed title', `${ctx}:title`), encryption.encrypt(notification, `${ctx}:content`), id)
+  const userRead = await user.request(`/api/feedback/device/${identity.deviceId}`)
+  assert.equal(userRead.response.status, 200)
+  assert.equal(userRead.data.feedbacks[0].original_content, literal)
+  assert.equal(userRead.data.feedbacks[0].solution, solution)
+  assert.equal(Object.hasOwn(userRead.data.feedbacks[0], 'solution_storage_version'), false)
+  const detail = await admin.request(`/api/admin/feedback/${id}`)
+  assert.equal(detail.response.status, 200)
+  assert.equal(detail.data.feedback.original_content, literal)
+  assert.equal(detail.data.feedback.solution, solution)
+  assert.equal((await user.request(`/api/feedback/${id}/comments`)).data.comments[0].content, comment)
+  const notices = (await admin.request('/api/notifications?recipientType=admin&recipientId=admin')).data.notifications
+  assert.equal(notices.find((row: any) => row.type === 'new_feedback').content, notification)
+  assert.equal(notices.find((row: any) => row.type === 'new_feedback').title, 'reader sealed title')
+  const backupPath = path.join(service.dir, 'reader-consistent-backup.db')
+  const keyPath = path.join(service.dir, 'reader-content-key.separate.fixture')
+  writeFileSync(keyPath, key, { mode: 0o600 })
+  await db.backup(backupPath)
+  await service.stop()
+  const restored = await startBackend({ DATABASE_PATH: backupPath, CONTENT_ENCRYPTION_KEY: key })
+  t.after(restored.stop)
+  const restoredUser = new Client(restored)
+  const recovery = await restoredUser.post('/api/identity/recover', { recoveryCode: identity.recoveryCode })
+  assert.equal(recovery.response.status, 200)
+  const reread = await restoredUser.request(`/api/feedback/device/${identity.deviceId}`)
+  assert.equal(reread.response.status, 200)
+  assert.equal(reread.data.feedbacks[0].original_content, literal)
+  assert.equal(reread.data.feedbacks[0].solution, solution)
+  await restored.stop()
+  const restoredDb = restored.openDb()
+  try {
+    const before = restoredDb.prepare('SELECT * FROM content_encryption_metadata').all()
+    for (const configured of ['', randomBytes(32).toString('base64')]) {
+      const denied = await launchBackend({ DATABASE_PATH: backupPath, CONTENT_ENCRYPTION_KEY: configured })
+      t.after(denied.stop)
+      const exit = await Promise.race([denied.exited, delay(5000, 'timeout', { ref: false })])
+      assert.notEqual(exit, 'timeout')
+      assert.notEqual(exit, 0)
+      assert.match(denied.output(), /Content encryption error/)
+      assert.deepEqual(restoredDb.prepare('SELECT * FROM content_encryption_metadata').all(), before)
+    }
+  } finally { restoredDb.close() }
+})

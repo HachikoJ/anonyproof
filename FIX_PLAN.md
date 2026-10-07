@@ -1037,3 +1037,10 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 原生IAB浏览器实际点击 `tests/fix/T-27.browser.ts` 的合成fixture页面：准确批准Origin登录200成功、GET会话200/authenticated=true；同站另一端口Cookie实际发送、后端200/authenticated=true但无ACAO，页面显示 `browser blocked response (TypeError)`；localhost外站源Cookie未发送、后端200/authenticated=false且无ACAO，页面同样读取失败。网络证据只保存Cookie是否存在和会话布尔值，不保存Cookie/密码。证明浏览器读取被阻止；不夸大为所有外站POST都能携带Cookie。fixture使用development仅为本地非Secure Cookie观察；生产配置/响应另由真实production测试覆盖。
 - 可复验：Node22下 `npx --no-install tsx tests/fix/T-27.browser.ts`，访问输出allowed页依次点击Login/Read，再sameSiteDenied和crossSiteDenied页点击Read；页面输出与 `audit/execution-results/T-27-browser-network.json` 对照。进程SIGTERM后服务关闭、临时库保留。证据包括 `T-27-tests.txt`、`T-27-regressions.txt`、两个type输出、browser URLs/network JSON。截图在工具中展示，未虚构本地截图文件；临时tab及进程已停止。`git diff --check`通过。
 - 回滚点：独立T-27提交父版本。实际部署前须按上述配置运行；回滚旧版本会恢复已确认的宽泛默认信任。未改真实环境或发布站。
+
+### T-03 兼容 reader 接入（2026-10-07；任务仍进行中）
+
+- `server/index.ts`在正式模式加载独立32字节Base64内容密钥，在业务迁移/种子前检查既有认证key marker；demo只使用固定合成数据的keyless codec。新增4个默认0字段版本列，旧内容保持原样；授权反馈列表/详情、用户列表、评论和通知读接口按持久字段版本解密并移除内部版本字段，HTTP原文/原有字段保持兼容。状态比较按事务内实际解密值判断，避免下一步cipher随机性制造重复通知。
+- `tests/fix/helpers.ts`显式随机fixture密钥，不继承真实部署key；复用测试库必须显式提供同一临时密钥。真实env/真实库未读取或迁移。
+- 实际 `tests/fix/T-03.test.ts` 11/11通过，包括真实授权HTTP的新旧混合内容/旧外国key envelope字面文本不误判、正确密钥独立备份+SQLite在线backup后新服务找回读取、缺/错误密钥启动非0且marker未重写。已跟踪T-01/12/13/14/19/20/41及模块回归37通过、0失败、1明确T-34删除SKIP。前端type、真实后端全文件strict tsc和production build均0，`git diff --check`通过。证据 `audit/execution-results/T-03-reader-*.txt`。
+- 此独立提交只建立reader兼容基线；新writer尚未切换，仍不得声称静态加密任务关闭。继续按已批准方案切新正式写入，T-32历史迁移仍独立待确认。reader-only版本作为新格式读取回滚点时必须关闭正式写入；禁止回退到不识别v1的旧reader或继续写明文。没有部署此阶段。

@@ -14,6 +14,7 @@ import { accessStatsMiddleware } from './middleware/accessStats'
 import { adminLoginLimiter } from './middleware/rateLimit'
 import { exactCorsOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
+import { loadContentEncryption } from './utils/contentEncryption'
 import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
 import {
   DEMO_ADMIN_PASSWORD,
@@ -33,6 +34,8 @@ const PORT = Number(process.env.PORT || 4000)
 const HOST = process.env.BIND_HOST || '127.0.0.1'
 const isProduction = process.env.NODE_ENV === 'production'
 const demoMode = isDemoMode()
+// Only fixed synthetic demo content may use the keyless codec.
+const contentEncryption = loadContentEncryption({ demoMode, env: demoMode ? {} : process.env })
 const configuredAdminPassword = process.env.ADMIN_PASSWORD?.trim()
 // Demo mode always uses the published password so the login hint cannot drift from the server.
 const adminPassword = demoMode ? DEMO_ADMIN_PASSWORD : configuredAdminPassword
@@ -269,6 +272,8 @@ app.delete('/api/admin/access/blacklist/:ip', (req, res) => {
 
 // 初始化数据库
 const db = openDatabase()
+// Verify an existing marker before business schema or seeds can be changed.
+contentEncryption.assertDatabaseKey(db)
 
 // 创建表
 db.exec(`
@@ -360,6 +365,8 @@ const existingFeedbackColumns = new Set(feedbackColumns.map(column => column.nam
 const feedbackMigrations: Array<[string, string]> = [
   ['original_content', "TEXT NOT NULL DEFAULT ''"],
   ['solution', "TEXT NOT NULL DEFAULT ''"],
+  ['original_content_storage_version', 'INTEGER NOT NULL DEFAULT 0'],
+  ['solution_storage_version', 'INTEGER NOT NULL DEFAULT 0'],
   ['solution_updated_at', 'INTEGER'],
   ['solution_admin_ip', "TEXT NOT NULL DEFAULT ''"],
   ['is_demo_template', 'INTEGER NOT NULL DEFAULT 0'],
@@ -369,6 +376,38 @@ for (const [column, definition] of feedbackMigrations) {
   if (!existingFeedbackColumns.has(column)) db.exec(`ALTER TABLE feedbacks ADD COLUMN ${column} ${definition}`)
 }
 db.exec('CREATE INDEX IF NOT EXISTS idx_feedback_demo_visibility ON feedbacks(is_demo_template, is_demo_clone)')
+for (const table of ['feedback_comments', 'notifications']) {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>
+  if (!columns.some(column => column.name === 'content_storage_version')) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN content_storage_version INTEGER NOT NULL DEFAULT 0`)
+  }
+}
+
+// Storage flags are internal. Authorization is performed by each caller before
+// decrypting; public response shapes continue to return the authorized plaintext.
+function readFeedback(row: any) {
+  const { original_content_storage_version, solution_storage_version, ...record } = row
+  return {
+    ...record,
+    original_content: contentEncryption.decrypt(row.original_content, `feedbacks:${row.id}:original_content`, original_content_storage_version),
+    solution: contentEncryption.decrypt(row.solution, `feedbacks:${row.id}:solution`, solution_storage_version),
+  }
+}
+function readComment(row: any) {
+  const { content_storage_version, ...record } = row
+  return { ...record, content: contentEncryption.decrypt(row.content,
+    `feedback_comments:${row.feedback_id}:${row.commenter_type}:content`, content_storage_version) }
+}
+function readNotification(row: any) {
+  const { content_storage_version, ...record } = row
+  const context = `notifications:${row.feedback_id}:${row.recipient_type}:${row.recipient_id}:${row.type}`
+  return { ...record,
+    title: contentEncryption.decrypt(row.title, `${context}:title`, content_storage_version),
+    content: row.content === null && content_storage_version === 0 ? null
+      : contentEncryption.decrypt(row.content, `${context}:content`, content_storage_version),
+  }
+}
+
 
 const identityColumns = db.prepare('PRAGMA table_info(client_identities)').all() as Array<{ name: string }>
 if (!identityColumns.some(column => column.name === 'install_key_hash')) {
@@ -972,7 +1011,7 @@ app.get('/api/admin/feedbacks', (req, res) => {
     const scope = adminRecordScope(req, 'feedbacks')
     const feedbacks = db.prepare(
       `SELECT id, category, encrypted_content, device_id, created_at, status, original_content, solution, solution_updated_at,
-        is_demo_template, is_demo_clone,
+        is_demo_template, is_demo_clone, original_content_storage_version, solution_storage_version,
         CASE WHEN ${demoMode ? 'feedbacks.is_demo_template = 1' : '0'} THEN 0 ELSE
           (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'admin' AND n.recipient_id = 'admin' AND n.is_read = 0) END AS unread_notifications
        FROM feedbacks
@@ -983,7 +1022,7 @@ app.get('/api/admin/feedbacks', (req, res) => {
     res.json({
       success: true,
       feedbacks: feedbacks.map(f => ({
-        ...f,
+        ...readFeedback(f),
         created_at: new Date(f.created_at).toISOString()
       }))
     })
@@ -1006,7 +1045,7 @@ app.get('/api/admin/feedback/:id', (req, res) => {
     const feedback = db.prepare(`
       SELECT id, category, encrypted_content, device_id, created_at, status,
         original_content, solution, solution_updated_at, solution_admin_ip,
-        is_demo_template, is_demo_clone
+        is_demo_template, is_demo_clone, original_content_storage_version, solution_storage_version
       FROM feedbacks
       WHERE id = ? AND ${scope.sql}
     `).get(id, ...scope.params) as any
@@ -1018,7 +1057,7 @@ app.get('/api/admin/feedback/:id', (req, res) => {
     res.json({
       success: true,
       feedback: {
-        ...feedback,
+        ...readFeedback(feedback),
         created_at: new Date(feedback.created_at).toISOString()
       }
     })
@@ -1038,9 +1077,9 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
     const scope = adminRecordScope(req, 'feedbacks', true)
     const visibleFeedback = db.prepare(`
-      SELECT id, status, solution FROM feedbacks
+      SELECT id, status, solution, solution_storage_version FROM feedbacks
       WHERE id = ? AND ${scope.sql}
-    `).get(id, ...scope.params) as { id: string; status: string; solution: string } | undefined
+    `).get(id, ...scope.params) as { id: string; status: string; solution: string; solution_storage_version: number } | undefined
 
     if (!visibleFeedback) {
       return res.status(404).json({ error: '反馈不存在' })
@@ -1061,15 +1100,16 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
       // Compare only after acquiring the write reservation; concurrent requests
       // must observe the committed status and avoid duplicate notifications.
       const currentFeedback = db.prepare(`
-        SELECT id, status, solution FROM feedbacks
+        SELECT id, status, solution, solution_storage_version FROM feedbacks
         WHERE id = ? AND ${scope.sql}
-      `).get(id, ...scope.params) as { id: string; status: string; solution: string } | undefined
+      `).get(id, ...scope.params) as { id: string; status: string; solution: string; solution_storage_version: number } | undefined
       if (!currentFeedback) return false
       // 记录操作
       logAdminAction('update_status', id, ip)
 
       const statusChanged = currentFeedback.status !== status
-      const solutionChanged = Boolean(trimmedSolution && trimmedSolution !== currentFeedback.solution)
+      const currentSolution = contentEncryption.decrypt(currentFeedback.solution, `feedbacks:${id}:solution`, currentFeedback.solution_storage_version)
+      const solutionChanged = Boolean(trimmedSolution && trimmedSolution !== currentSolution)
 
       // 状态变化与处理说明相互独立：即使“处理中”暂未填写说明，也必须通知提交人。
       if (trimmedSolution) {
@@ -1189,7 +1229,7 @@ app.get('/api/feedback/:feedbackId/comments', (req, res) => {
     res.json({
       success: true,
       comments: comments.map(c => ({
-        ...c,
+        ...readComment(c),
         created_at: new Date(c.created_at).toISOString()
       }))
     })
@@ -1298,7 +1338,7 @@ app.get('/api/feedback/device/:deviceId', (req, res) => {
 
     const scope = userRecordScope('feedbacks')
     const feedbacks = db.prepare(
-      `SELECT id, category, original_content, created_at, status, solution, solution_updated_at,
+      `SELECT id, category, original_content, created_at, status, solution, solution_updated_at, original_content_storage_version, solution_storage_version,
         (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'user' AND n.recipient_id = ? AND n.is_read = 0) AS unread_notifications
        FROM feedbacks
        WHERE device_id = ? AND ${scope.sql}
@@ -1308,7 +1348,7 @@ app.get('/api/feedback/device/:deviceId', (req, res) => {
     res.json({
       success: true,
       feedbacks: feedbacks.map(f => ({
-        ...f,
+        ...readFeedback(f),
         created_at: new Date(f.created_at).toISOString()
       }))
     })
@@ -1414,7 +1454,7 @@ app.get('/api/notifications', (req, res) => {
     res.json({
       success: true,
       notifications: notifications.map(n => ({
-        ...n,
+        ...readNotification(n),
         created_at: new Date(n.created_at).toISOString()
       }))
     })
