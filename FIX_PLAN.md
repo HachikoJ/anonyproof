@@ -231,7 +231,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-17 server的ip-address依赖漏洞修复
 
-状态：待办；原始严重度：P1（审查第 8 条，advisory为moderate）；优先级：B；工作量：S；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 8 条，advisory为moderate）；优先级：B；工作量：S；前置依赖：T-19。验收见第10节。
 
 **问题**：server lockfile中的 `ip-address<=10.7.0` 当时报告IPv6分类/信任边界/长输入DoS问题。现有调用路径未证明可达。
 
@@ -911,3 +911,10 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 状态：已完成；2026-10-07；`addFeedbackComment()`先检查类型，再按现有trim后2..1000字符/最多3000 UTF-8字节规则验证；管理回复输入添加maxLength1000，未改变业务角色权限。
 - 实际T-13/T-12/T-19测试7/7、两type-check和build退出0。用户/管理两入口的null/对象/数组/数字/空白/1字符/1001中文均400且评论/通知不变；2字符和1000中文可读回，跨身份401不写。
 - 真实本地浏览器登录、打开合成反馈：实际输入1001中文，被input限制为1000；提交成功显示“回复已发送”、沟通记录1条；独立SQLite核对正好1000中文/3000字节。只用临时库和fixture凭证。证据`audit/execution-results/T-13-*.txt`。
+
+### T-17 验收记录
+
+- 状态：已完成；2026-10-07；server lockfile只ip-address10.5.0→10.7.1，最小覆盖实际四项advisory。新测试`tests/fix/T-17.test.ts`。
+- 实际Node22 server干净npm ci、树/ABI、两type-check、diff-check退出0；T-17/T-16/T-19共10项全部通过。覆盖IPv4/IPv6地址分类、跨族子网拒绝、畸形/有界长输入、IPv6桶归一化；现有限流模块挂载到隔离loopback测试路由，127.0.0.1与::1分别第11个请求429并有Retry-After，health正常。
+- 生产路由尚未挂载对应limiter，这是T-05..09的任务，不因此称生产限流已修复。server audit目标ip-address消失，但因范围外proxy-addr仍退出1。
+- 证据`audit/execution-results/T-17-*`；安装前server目录保留在`/tmp/anonyproof-T-17-dependency-backup/server-node_modules`；回滚还原lockfile并用匹配runtime干净安装，无DB迁移。
