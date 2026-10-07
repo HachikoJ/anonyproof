@@ -93,7 +93,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-06 反馈提交限流与配额
 
-状态：待办；原始严重度：P1（审查第 3 条）；优先级：A；工作量：M；前置依赖：T-19、T-12。
+状态：已完成；原始严重度：P1（审查第 3 条）；优先级：A；工作量：M；前置依赖：T-19、T-12。
 
 **问题**：`server/index.ts:861 POST /api/feedback` 未挂载 `feedbackSubmitLimiter`。取得合法身份后可无限写反馈、统计和通知。
 
@@ -1101,3 +1101,10 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 修复前实际复现：三个不同无效码后合法码仍200、默认无限恢复且无RateLimit-Limit、解析失败后仍无429。正确fixture的`T-08-before.txt`3失败；初次harness错误（误把response包装当data、把header传method）单独留`T-08-harness-initial.txt`，不能当产品缺陷证据。
 - Node22.23.3实际 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-08.test.ts`退出0，4/4：阈值3、默认10、JSON/Origin/preflight、11个无效配置启动；429有Retry-After、无Set-Cookie，身份/session/install-key及业务表快照不变，等待实际短窗口后合法恢复同一身份成功。T-03/T-08/T-09/T-26/T-27相关28/28退出0。前端type退出0（初次新测试SQLite unknown类型已修正并保留失败输出）；实际全后端strict tsc退出0。本任务没有前端构建源变更，沿用T-26已验收正常生产build。
 - 文档在DEPLOY明确默认/单位/作用域/单进程限制；来源取值真实代理链仍由T-24处理，不宣称线上IP配置已验。未修改.env.local/真实库或上线；独立提交父版本可回退限流，但会恢复已确认在线无限尝试风险。
+
+### T-06 实际执行与验收（2026-10-07）
+
+- 状态：已完成。现有feedbackSubmitLimiter实际接入，保留原默认10次/60秒来源限制，并新增经Cookie验证的身份10次/60秒配额；配置分别FEEDBACK_RATE_LIMIT_MAX、FEEDBACK_IDENTITY_RATE_LIMIT_MAX及共同FEEDBACK_RATE_LIMIT_WINDOW_MS。身份/归属/参数校验保留，之后进入两个limiter，再进行T-41原子业务事务；res.locals仅保存该请求已验证的提交，不能用body.deviceId冒充另一个配额主体。
+- 实际修复前3个边界场景失败（200应429），记录T-06-before.txt。Node22.23.3运行 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-06.test.ts`退出0，4/4：身份上限2与跨身份403、来源上限3与换身份/不可信XFF、默认10/阈值1、12个非法配置启动。429反馈/评论/通知/stats快照不变、无Set-Cookie；无身份仍401；读取/健康接口可用，短窗口结束后恢复提交200。
+- 全量 `npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts`退出0，75通过、0失败、1明确T-34删除SKIP；前端type及真实后端全文件strict tsc退出0。没有前端构建源改动，T-20全量回归仍实际启动现有生产build并检查静态资源。
+- 计数语义：通过校验并尝试事务的失败请求也计数；来源/身份配额独立，来源先判。拒绝时身份last_seen/可选访问审计可能更新，不扩大为所有DB表零写承诺。直连TRUST_PROXY=0的伪造头测试通过；T-24真实代理链及T-23跨实例契约独立待定，未据此宣称线上限流部署完成。DEPLOY记录单位/默认/计数/配置失败与上述边界。独立提交可回退；没有改真实环境/库或发布。

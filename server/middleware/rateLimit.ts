@@ -35,13 +35,24 @@ export const identityRecoveryLimiter = rateLimit({
 
 // 提交反馈速率限制
 export const feedbackSubmitLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 分钟
-  max: 10, // 最多 10 次请求
+  windowMs: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+  max: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_MAX', 10),
   message: {
     error: '提交过于频繁，请稍后再试',
   },
   standardHeaders: true, // 返回标准的速率限制头
   legacyHeaders: false, // 禁用 X-RateLimit-* 头
+})
+
+// The preceding route validator verifies this device ID against the Cookie;
+// caller-supplied IDs cannot select a different identity's allowance.
+export const feedbackIdentityLimiter = rateLimit({
+  windowMs: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+  max: positiveIntegerEnv('FEEDBACK_IDENTITY_RATE_LIMIT_MAX', 10),
+  keyGenerator: (_req, res) => res.locals.feedbackSubmission.deviceId,
+  message: { error: '本机提交过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
 })
 
 // 管理员 API 速率限制

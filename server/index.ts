@@ -11,7 +11,7 @@ import {
   unblacklistIP,
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
-import { adminLoginLimiter, identityRecoveryLimiter } from './middleware/rateLimit'
+import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter } from './middleware/rateLimit'
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
@@ -911,7 +911,7 @@ const updateStats = () => {
 }
 
 // API: 提交反馈
-app.post('/api/feedback', (req, res) => {
+app.post('/api/feedback', (req, res, next) => {
   try {
     if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
       return res.status(400).json({ error: '请求参数必须为对象' })
@@ -942,6 +942,17 @@ app.post('/api/feedback', (req, res) => {
       return res.status(400).json({ error: '无效的提交类型' })
     }
 
+    res.locals.feedbackSubmission = { deviceId, category, originalContent, encryptedContent }
+    next()
+  } catch (error) {
+    console.error('校验反馈失败:', error)
+    res.status(500).json({ error: '提交失败' })
+  }
+}, feedbackSubmitLimiter, feedbackIdentityLimiter, (req, res) => {
+  try {
+    const { deviceId, category, originalContent, encryptedContent } = res.locals.feedbackSubmission as {
+      deviceId: string; category: string; originalContent: string; encryptedContent: string
+    }
     const id = uuidv4()
     const createdAt = Date.now()
 
