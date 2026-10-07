@@ -11,6 +11,7 @@ import {
   unblacklistIP,
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
+import { adminLoginLimiter } from './middleware/rateLimit'
 import { openDatabase, databasePath } from './utils/database'
 import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
 import {
@@ -50,6 +51,9 @@ if (isProduction && !demoMode && (!configuredAdminPassword || configuredAdminPas
 const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,https://deline.top,https://anonyproof.deline.top')
   .split(',').map(origin => origin.trim()).filter(Boolean)
 app.use(cors({ origin: allowedOrigins, credentials: true }))
+// Admit login POSTs before JSON parsing so malformed/oversized bodies consume
+// the same source quota as successful and failed authentication attempts.
+app.post(['/api/admin/auth/login', '/api/admin/login'], adminLoginLimiter)
 // Allows worst-case escaped JSON for the bounded text/envelope, while placing
 // an explicit cap on unrelated or malformed request bodies.
 app.use(express.json({ limit: '384kb' }))
@@ -193,6 +197,7 @@ app.post(['/api/admin/auth/login', '/api/admin/login'], (req, res) => {
   const now = Date.now()
   const attempt = loginAttempts.get(ip)
   if (attempt && attempt.resetAt > now && attempt.count >= loginAttemptLimit) {
+    res.setHeader('Retry-After', Math.ceil((attempt.resetAt - now) / 1000))
     return res.status(429).json({ error: '登录尝试过于频繁，请稍后再试' })
   }
   if (!adminPassword) return res.status(503).json({ error: '管理员认证尚未配置' })
