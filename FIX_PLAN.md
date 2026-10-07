@@ -567,7 +567,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-27 收紧CORS默认信任范围
 
-状态：待办（Q-03已确认）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：S；前置依赖：Q-03、T-19。
+状态：已完成；原始严重度：P2（审查第 9 条）；优先级：A；工作量：S；前置依赖：Q-03、T-19。
 
 **问题**：`server/index.ts:49`缺配置时默认允许主域、子域和localhost，且credentials=true；部署遗漏配置会扩大跨应用读取边界。
 
@@ -1029,3 +1029,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - `tests/fix/T-01.test.ts T-12.test.ts T-13.test.ts T-14.test.ts T-19.test.ts` 同次真实回归11/11通过。Node22.23.3：`npm run type-check`、实际后端全文件严格tsc、`npm run build`、`git diff --check` 均退出0。证据：`audit/execution-results/T-41-{before-tests,feedback-step,after-tests,regressions,frontend-type,backend-type,build}.txt`，设计与边界见 `T-41-design.md`。
 - 删除相关事务/子记录清理完全属于T-34，测试中的删除故障矩阵明确SKIP，未计作删除通过，未修改删除行为，也不因T-41完成而解除T-34的Q-04依赖。T-42幂等尚未实现，事务不代表网络重试去重。未部署或迁移真实数据库。
 - 回滚点：本任务独立提交的父版本。此改动无schema/历史记录迁移，回滚会重新引入已复现的部分落库缺陷；T-03 writer接入后应保留已验收事务，禁止以旧非事务writer替代。
+
+### T-27 实际执行与验收（2026-10-07）
+
+- 状态：已完成。`server/middleware/requestOrigin.ts`规范校验明确配置的HTTP(S)准确Origin，拒绝空配置/通配符/路径/凭证/非规范化值；`server/index.ts`启动时实际加载，CORS只为精确匹配者提供ACAO和credentials。无自动主域或localhost兜底；Host/X-Forwarded-Host不参与CORS信任。`.env.example`生产仅本站，`DEPLOY.md`明确开发单独配置、缺配置启动失败。只改变已批准Q-03范围；T-26现有写路由来源缺口未由此推断修好。
+- Node22.23.3：`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-27.test.ts`退出0，4/4通过，包括真实后端六种无效配置启动非0、两合法Origin/主域/子域/外域/null/缺Origin/尾斜杠的预检和已授权读取；无credentials+通配符组合。`npm run type-check`、实际后端全文件严格tsc均0；T-01/T-19/T-20/T-41实际回归24通过、0失败、1明确T-34删除SKIP。现有生产静态构建正常由T-20生产启动验收使用。
+- 原生IAB浏览器实际点击 `tests/fix/T-27.browser.ts` 的合成fixture页面：准确批准Origin登录200成功、GET会话200/authenticated=true；同站另一端口Cookie实际发送、后端200/authenticated=true但无ACAO，页面显示 `browser blocked response (TypeError)`；localhost外站源Cookie未发送、后端200/authenticated=false且无ACAO，页面同样读取失败。网络证据只保存Cookie是否存在和会话布尔值，不保存Cookie/密码。证明浏览器读取被阻止；不夸大为所有外站POST都能携带Cookie。fixture使用development仅为本地非Secure Cookie观察；生产配置/响应另由真实production测试覆盖。
+- 可复验：Node22下 `npx --no-install tsx tests/fix/T-27.browser.ts`，访问输出allowed页依次点击Login/Read，再sameSiteDenied和crossSiteDenied页点击Read；页面输出与 `audit/execution-results/T-27-browser-network.json` 对照。进程SIGTERM后服务关闭、临时库保留。证据包括 `T-27-tests.txt`、`T-27-regressions.txt`、两个type输出、browser URLs/network JSON。截图在工具中展示，未虚构本地截图文件；临时tab及进程已停止。`git diff --check`通过。
+- 回滚点：独立T-27提交父版本。实际部署前须按上述配置运行；回滚旧版本会恢复已确认的宽泛默认信任。未改真实环境或发布站。

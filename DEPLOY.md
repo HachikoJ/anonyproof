@@ -39,6 +39,7 @@ DEMO_MAX_CLONES=3000
 - `DEMO_MODE=1` 时，管理员密码固定为 `demo12345678`，并在 `/api/demo/config` 暴露给登录页提示；首次连接空库时会写入 7 条示例线索模板。
 - 正式项目必须把 `DEMO_MODE` 置为 `0` 并设置 12 位以上 `ADMIN_PASSWORD`；关闭演示模式后示例数据只是从界面隐藏，仍在库中，可按需再单独清理。
 - `API_PROXY_TARGET` 在 `next build` 时写进产物，改完需要重新构建前端。
+- `CORS_ORIGINS` 必须显式设置；缺失、空值、通配符、路径、凭证或非规范 Origin 会使后端启动失败。生产仅配置本站的准确 Origin（如 `https://anonyproof.deline.top`），不要默认加入主域或 localhost。开发时单独列出实际本地前端 Origin；多个值用逗号分隔。端口属于 Origin，不能以 Host/X-Forwarded-Host 扩展 CORS 读取权限。CORS 不代替接口鉴权或写请求来源防护。
 
 ## 进程管理
 

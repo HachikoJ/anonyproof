@@ -12,6 +12,7 @@ import {
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { adminLoginLimiter } from './middleware/rateLimit'
+import { exactCorsOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
 import {
@@ -58,9 +59,8 @@ app.use(['/api/identity', '/api/admin', '/api/feedback', '/api/notifications'], 
   delete req.headers['if-modified-since']
   next()
 })
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,https://deline.top,https://anonyproof.deline.top')
-  .split(',').map(origin => origin.trim()).filter(Boolean)
-app.use(cors({ origin: allowedOrigins, credentials: true }))
+const allowedOrigins = parseAllowedOrigins(process.env.CORS_ORIGINS)
+app.use(cors({ origin: exactCorsOrigin(allowedOrigins), credentials: true }))
 // Admit login POSTs before JSON parsing so malformed/oversized bodies consume
 // the same source quota as successful and failed authentication attempts.
 app.post(['/api/admin/auth/login', '/api/admin/login'], adminLoginLimiter)

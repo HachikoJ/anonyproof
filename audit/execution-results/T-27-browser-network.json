@@ -1,0 +1,45 @@
+[
+  {
+    "method": "OPTIONS",
+    "path": "/api/admin/auth/login",
+    "origin": "http://127.0.0.1:53395",
+    "cookieSent": false,
+    "status": 204,
+    "allowOrigin": "http://127.0.0.1:53395"
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/login",
+    "origin": "http://127.0.0.1:53395",
+    "cookieSent": true,
+    "status": 200,
+    "allowOrigin": "http://127.0.0.1:53395"
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/auth/session",
+    "origin": "http://127.0.0.1:53395",
+    "cookieSent": true,
+    "status": 200,
+    "allowOrigin": "http://127.0.0.1:53395",
+    "authenticated": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/auth/session",
+    "origin": "http://127.0.0.1:53396",
+    "cookieSent": true,
+    "status": 200,
+    "allowOrigin": null,
+    "authenticated": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/auth/session",
+    "origin": "http://localhost:53396",
+    "cookieSent": false,
+    "status": 200,
+    "allowOrigin": null,
+    "authenticated": false
+  }
+]
