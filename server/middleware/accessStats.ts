@@ -180,43 +180,79 @@ function logRateLimit(ip: string, path: string, reason: string) {
   }
 }
 
-// 更新每日统计
-function updateDailyStats() {
-  const today = new Date().toISOString().split('T')[0]
+// Keep exact cumulative values: multiplying a rounded historical average would
+// lose precision. Legacy logs are rebuilt once during this additive migration,
+// never from the request path. Taking the write lock before inspecting columns
+// also makes two starting processes agree on whether migration is needed.
+db.transaction(() => {
+  db.exec('CREATE INDEX IF NOT EXISTS idx_access_logs_ip_created_at ON access_logs(ip, created_at)')
+  const columns = db.prepare('PRAGMA table_info(access_stats)').all() as { name: string }[]
+  const hasTotal = columns.some(column => column.name === 'response_time_total')
+  const hasCount = columns.some(column => column.name === 'response_time_count')
+  if (!hasTotal) db.exec('ALTER TABLE access_stats ADD COLUMN response_time_total REAL NOT NULL DEFAULT 0')
+  if (!hasCount) db.exec('ALTER TABLE access_stats ADD COLUMN response_time_count INTEGER NOT NULL DEFAULT 0')
+  if (!hasTotal || !hasCount) {
+    db.exec(`
+      INSERT INTO access_stats (date, total_visits, unique_visitors, bot_visits,
+        suspicious_visits, avg_response_time, response_time_total, response_time_count)
+      SELECT DATE(created_at / 1000, 'unixepoch'), COUNT(*), COUNT(DISTINCT ip),
+        SUM(CASE WHEN is_bot = 1 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN is_suspicious = 1 THEN 1 ELSE 0 END),
+        ROUND(COALESCE(AVG(response_time), 0)), COALESCE(SUM(response_time), 0), COUNT(response_time)
+      FROM access_logs GROUP BY DATE(created_at / 1000, 'unixepoch')
+      ON CONFLICT(date) DO UPDATE SET total_visits = excluded.total_visits,
+        unique_visitors = excluded.unique_visitors, bot_visits = excluded.bot_visits,
+        suspicious_visits = excluded.suspicious_visits, avg_response_time = excluded.avg_response_time,
+        response_time_total = excluded.response_time_total, response_time_count = excluded.response_time_count
+    `)
+  }
+}).immediate()
 
-  // 获取今天的统计数据
-  const statsStmt = db.prepare(`
-    SELECT
-      COUNT(*) as total_visits,
-      COUNT(DISTINCT ip) as unique_visitors,
-      SUM(CASE WHEN is_bot = 1 THEN 1 ELSE 0 END) as bot_visits,
-      SUM(CASE WHEN is_suspicious = 1 THEN 1 ELSE 0 END) as suspicious_visits,
-      AVG(response_time) as avg_response_time
-    FROM access_logs
-    WHERE DATE(created_at / 1000, 'unixepoch') = ?
-  `)
-  const stats = statsStmt.get(today) as any
-
-  // 更新或插入统计
-  const upsertStmt = db.prepare(`
-    INSERT INTO access_stats (date, total_visits, unique_visitors, bot_visits, suspicious_visits, avg_response_time)
-    VALUES (?, ?, ?, ?, ?, ?)
-    ON CONFLICT(date) DO UPDATE SET
-      total_visits = excluded.total_visits,
-      unique_visitors = excluded.unique_visitors,
-      bot_visits = excluded.bot_visits,
-      suspicious_visits = excluded.suspicious_visits,
-      avg_response_time = excluded.avg_response_time
-  `)
-  upsertStmt.run(
-    today,
-    stats.total_visits,
-    stats.unique_visitors,
-    stats.bot_visits,
-    stats.suspicious_visits,
-    Math.round(stats.avg_response_time || 0)
-  )
+export interface AccessLogEntry {
+  ip: string
+  userAgent: string
+  path: string
+  method: string
+  statusCode: number
+  responseTime: number
+  isBot: boolean
+  isSuspicious: boolean
+  suspiciousReason: string | null
+  createdAt: number
 }
+
+const hasDailyVisitor = db.prepare(`SELECT 1 FROM access_logs
+  WHERE ip = ? AND created_at >= ? AND created_at < ? LIMIT 1`)
+const insertAccessLog = db.prepare(`INSERT INTO access_logs (
+  ip, user_agent, path, method, status_code, response_time,
+  is_bot, is_suspicious, suspicious_reason, created_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+const incrementDailyStats = db.prepare(`
+  INSERT INTO access_stats (date, total_visits, unique_visitors, bot_visits,
+    suspicious_visits, avg_response_time, response_time_total, response_time_count)
+  VALUES (?, 1, ?, ?, ?, ?, ?, 1)
+  ON CONFLICT(date) DO UPDATE SET
+    total_visits = total_visits + 1,
+    unique_visitors = unique_visitors + excluded.unique_visitors,
+    bot_visits = bot_visits + excluded.bot_visits,
+    suspicious_visits = suspicious_visits + excluded.suspicious_visits,
+    response_time_total = response_time_total + excluded.response_time_total,
+    response_time_count = response_time_count + 1,
+    avg_response_time = ROUND((response_time_total + excluded.response_time_total) / (response_time_count + 1))
+`)
+
+// The same transaction commits the source log and its increment exactly once.
+// A crash or statistics failure cannot leave a logged request awaiting replay.
+export const recordAccess = db.transaction((entry: AccessLogEntry) => {
+  const date = new Date(entry.createdAt).toISOString().slice(0, 10)
+  const dayStart = Date.parse(date + 'T00:00:00Z')
+  const unique = hasDailyVisitor.get(entry.ip, dayStart, dayStart + 86400000) ? 0 : 1
+  insertAccessLog.run(entry.ip, entry.userAgent, entry.path, entry.method,
+    entry.statusCode, entry.responseTime, entry.isBot ? 1 : 0,
+    entry.isSuspicious ? 1 : 0, entry.suspiciousReason, entry.createdAt)
+  incrementDailyStats.run(date, unique, entry.isBot ? 1 : 0,
+    entry.isSuspicious ? 1 : 0, Math.round(entry.responseTime), entry.responseTime)
+})
 
 // 访问统计中间件
 export function accessStatsMiddleware(req: any, res: any, next: any) {
@@ -242,28 +278,11 @@ export function accessStatsMiddleware(req: any, res: any, next: any) {
     const responseTime = Date.now() - startTime
 
     try {
-      // 记录访问日志
-      const stmt = db.prepare(`
-        INSERT INTO access_logs (
-          ip, user_agent, path, method, status_code, response_time,
-          is_bot, is_suspicious, suspicious_reason, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `)
-      stmt.run(
-        ip,
-        userAgent,
-        path,
-        req.method,
-        res.statusCode,
-        responseTime,
-        isBot ? 1 : 0,
-        isSuspicious ? 1 : 0,
-        reason || null,
-        Date.now()
-      )
-
-      // 更新每日统计
-      updateDailyStats()
+      recordAccess.immediate({
+        ip, userAgent, path, method: req.method, statusCode: res.statusCode,
+        responseTime, isBot, isSuspicious, suspiciousReason: reason || null,
+        createdAt: Date.now(),
+      })
 
       // 记录可疑访问
       if (isSuspicious) {

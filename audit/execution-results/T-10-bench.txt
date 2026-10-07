@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-07T05:40:53.883Z",
+  "node": "v22.23.3",
+  "machine": {
+    "platform": "darwin",
+    "release": "25.6.0",
+    "cpu": "Apple M2 Pro"
+  },
+  "concurrency": 1,
+  "methodology": "Separate loopback backend processes, same-day legacy logs, startup migration before readiness, 20 warmups then 500 sequential /api/stats requests. Server histogram reset on first measured request.",
+  "small": {
+    "historyRows": 10000,
+    "measuredRequests": 500,
+    "warmupRequests": 20,
+    "startupIncludingMigrationMs": 440.94045900000003,
+    "p95Ms": 0.5388749999999618,
+    "p50Ms": 0.33074999999996635,
+    "eventLoop": {
+      "meanMs": 1.0102555480225988,
+      "p95Ms": 1.307647,
+      "maxMs": 2.842623
+    },
+    "totalLogs": 10521,
+    "fixture": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T-10-bench-nHlUyp"
+  },
+  "large": {
+    "historyRows": 100000,
+    "measuredRequests": 500,
+    "warmupRequests": 20,
+    "startupIncludingMigrationMs": 522.9721250000001,
+    "p95Ms": 0.4070839999999407,
+    "p50Ms": 0.28504099999986465,
+    "eventLoop": {
+      "meanMs": 1.063429019607843,
+      "p95Ms": 1.262591,
+      "maxMs": 9.142271
+    },
+    "totalLogs": 100521,
+    "fixture": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T-10-bench-sKpNAz"
+  },
+  "p95Ratio": 0.7554330781720614
+}

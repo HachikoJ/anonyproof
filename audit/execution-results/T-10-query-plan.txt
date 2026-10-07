@@ -1,0 +1,8 @@
+[
+  {
+    "id": 3,
+    "parent": 0,
+    "notused": 46,
+    "detail": "SEARCH access_logs USING COVERING INDEX idx_access_logs_ip_created_at (ip=? AND created_at>? AND created_at<?)"
+  }
+]

@@ -9,7 +9,8 @@ export function getAccessStatsOverview() {
   
   // 今日统计
   const todayStats = db.prepare(
-    'SELECT * FROM access_stats WHERE date = ?'
+    `SELECT date, total_visits, unique_visitors, bot_visits,
+      suspicious_visits, avg_response_time FROM access_stats WHERE date = ?`
   ).get(today) as any || {
     total_visits: 0,
     unique_visitors: 0,

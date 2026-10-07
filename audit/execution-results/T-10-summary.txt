@@ -1,0 +1,62 @@
+{
+  "task": "T-10",
+  "date": "2026-10-07T05:47:39.228Z",
+  "node": "v22.23.3",
+  "changes": [
+    "server/middleware/accessStats.ts: atomic additive migration with (ip,created_at) composite index and exact response_time_total/count; existing logs grouped once only if cumulative columns missing",
+    "recordAccess.immediate: same transaction inserts one source log and increments matching UTC day, bounded indexed visitor existence query, no request-path COUNT/AVG aggregate",
+    "server/utils/accessStats.ts: excludes internal accumulation columns from public today-stat projection",
+    "Blacklist query behavior is unchanged; only finish-handler log/statistics failures are caught. Removed an initially added fail-open blacklist catch after review as an unauthorized security-policy change."
+  ],
+  "verification": {
+    "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-10.test.ts tests/fix/T-19.test.ts": {
+      "exit": 0,
+      "tests": "8/8, no skips"
+    },
+    "npm --prefix server run type-check": 0,
+    "npm run type-check": 0,
+    "npm run build": 0,
+    "npx --no-install tsx tests/fix/T-10.bench.ts": 0,
+    "git diff --check": 0,
+    "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts": 0
+  },
+  "covered": [
+    "UTC boundaries under Honolulu process timezone including duplicate timestamps",
+    "legacy null response times excluded from average denominator",
+    "unique visits, bot/suspicious counts and rounded average match independent SQL",
+    "two restarts do not rebuild/increment already migrated records",
+    "migration fault rolls back new index and columns with original logs intact; retry succeeds",
+    "runtime statistics trigger fault returns health200 with log and stats transaction both rolled back; following request recovers",
+    "actual Googlebot/curl classification recorded correctly",
+    "legacy log data populated before backend startup; 500 sequential requests per10k/100k dataset all return200 and logs/stat counts match"
+  ],
+  "benchmark": {
+    "smallP95Ms": 0.5388749999999618,
+    "largeP95Ms": 0.4070839999999407,
+    "ratio": 0.7554330781720614,
+    "smallEventLoop": {
+      "meanMs": 1.0102555480225988,
+      "p95Ms": 1.307647,
+      "maxMs": 2.842623
+    },
+    "largeEventLoop": {
+      "meanMs": 1.063429019607843,
+      "p95Ms": 1.262591,
+      "maxMs": 9.142271
+    },
+    "startupIncludingMigrationMs": [
+      440.94045900000003,
+      522.9721250000001
+    ]
+  },
+  "limitsAndRollback": [
+    "First old-library startup holds SQLite write lock while creating index/adding columns/backfilling existing log dates; measured100k startup including application startup/readiness was523ms on this machine. Do not execute migration against a production database without the plan’s consistent SQLite snapshot/maintenance boundary. No real database was touched.",
+    "Additive columns keep old code runnable, but old code does not maintain new cumulative columns. For rollback use migration-before consistent snapshot; returning to new code after old-version writes requires rebuilding cumulative statistics from retained logs before restart, not simply swapping binary.",
+    "Dates with preexisting aggregate rows but no retained logs are preserved; T-11 retention policy must coordinate current-day raw-log deletion with unique-visitor counters.",
+    "Only response-finish log/statistics failure is caught; blacklist read failures retain original Express error handling; a failed telemetry transaction drops that single log consistently rather than persisting a partial log/stat update.",
+    "Benchmark is local loopback sequential behavior on recorded machine/runtime, not a production concurrency guarantee.",
+    "First expanded runtime test encountered a fixture read-before-finish race; response bodies are now consumed and persistence awaited with a bounded loop. Full verification was rerun afterward.",
+    "The existing npm --prefix server run type-check discovers root tsconfig and excludes server; its exit0 alone is not backend compilation evidence. Direct strict backend compilation is required and will be recorded separately."
+  ],
+  "postReview": "Restored original blacklist error handling; reran T-10/T-19 (8/8), direct strict backend compilation, diff-check successfully. Performance algorithm and SQL are unchanged; earlier recorded benchmark still applies."
+}

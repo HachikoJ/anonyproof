@@ -53,6 +53,8 @@ npx --no-install tsx --test --test-concurrency=1 tests/fix/T-XX.test.ts
 npx --no-install tsx --test --test-concurrency=1 tests/fix/T-05.test.ts tests/fix/T-06.test.ts
 npm run type-check
 npm --prefix server run type-check
+# Existing server script inherits the frontend config; check actual backend files too.
+npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts
 npm run build
 git diff --check
 ```
@@ -147,7 +149,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-10 访问统计从逐请求全表聚合改为有界聚合
 
-状态：进行中；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：T-19。隔离迁移/性能验收见第10节，未执行真实库迁移或发布。
 
 **问题**：`server/middleware/accessStats.ts:183 updateDailyStats()` 在每个响应 `finish` 后做 `COUNT/DISTINCT/AVG`，日期表达式使 created_at 索引难以用于限定范围；同步写和扫描占用 Node 主线程。
 
@@ -504,7 +506,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 状态：方向已确认（2026-10-07）。用户原话：“服务器可读：密钥与数据库分离的静态加密”。正式服务及授权管理员可解密，数据库/数据库备份单独泄露不能还原内容；不声称端到端加密或抵抗已控制服务器的攻击者。密钥由服务部署配置单独提供，禁止存入业务数据库、代码仓库、数据库导出或普通日志；本计划不增加云KMS/付费服务。传输层仍依赖HTTPS。
 
-解除：T-03/T-04的保密方向阻塞，以及T-32新旧格式迁移准备的方向阻塞。仍待：T-03具体格式/请求兼容差异、密钥提供/恢复和失败回滚方案的确认；T-32真实历史数据迁移/备份处置还受Q-04/Q-07及资产确认阻塞；T-33仍受Q-04/Q-07阻塞。T-12当前格式/类型校验、T-20缓存等正常推进。
+解除：T-03/T-04的保密方向及具体格式/兼容/恢复方案阻塞，用户已批准下方具体差异；T-32新旧格式迁移准备可推进。T-32真实历史数据迁移/备份处置仍受Q-04/Q-07及资产确认阻塞；T-33仍受Q-04/Q-07阻塞。T-12当前格式/类型校验、T-20缓存等正常推进。
 
 #### 已批准的具体实施差异（2026-10-07，历史资产操作不含在内）
 
@@ -958,3 +960,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - T-09/T-19/T-40共12/12真实测试、两type-check、diff-check退出0。阈值3时成功/失败/成功耗满，两alias交替均无法绕过；无Cookie且测试专属Map probe断言session新增计数不变；注销不释放配额、窗口后恢复。默认10和demo阈值也实测。原5次失败后正确密码仍429约900秒，独立请求窗口恢复不取消锁；没有等待15分钟后伪造记录。
 - 畸形JSON400/过大413也耗共享配额，超额在parser前429且session不增加；OPTIONS204不计数。13项非法配置实际拒启。只记录计数，不暴露token/调试接口。新增最小正整数env工具沿用旧limiter模块，后续限流可复用。
 - 证据`audit/execution-results/T-09-*.txt`。原backend类型命令的覆盖缺口N-03已揭示；补充真实server文件编译实际退出0，见随后T-18补验记录。
+
+### T-10 验收记录
+
+- 状态：已完成；2026-10-07；只修改accessStats中间件和today统计投影。新增内部response_time_total/count和(ip,created_at)索引，在同一启动事务一次性回填旧日志；每个finish将源日志+UTC当日统计原子增量提交，访客查找用覆盖索引、不做COUNT/AVG全表扫描。内部累计字段不进入现有API。
+- T-10/T-19 8/8、两既有type命令、真实显式全后端strict编译、build、diff-check及基准均退出0。独立SQL比对访客/bot/可疑/平均、null denominator、UTC跨日/重复timestamp、多次重启、迁移故障回滚全部列/索引并重试、runtime统计失败响应200且日志/统计一同回滚均通过。
+- 固定Node22/机器，1万和10万历史日志各500请求全200：p95=0.538875/0.407084ms，比值0.755（≤2）；服务事件循环p95=1.307647/1.262591ms，无锁错/5xx。首启含回填440.94/522.97ms，查询计划实际使用covering idx_access_logs_ip_created_at。证据`audit/execution-results/T-10-*`；这是本地顺序请求基准，不承诺生产并发吞吐。
+- 审阅剔除过一次范围外的“黑名单读取失败则放行”catch，恢复原安全控制后重跑相关测试和真实编译；性能SQL未变，基准不重复刷数。
+- 风险/回滚：首启迁移取得写锁，真实库实施前须一致性快照/维护边界。旧代码虽能读加列库，但不能维护累计列；回滚后旧版本再写入，重新升级须恢复对应一致快照或从保留源日志重新回填，不能只换代码。旧历史统计无源日志日期保留而非虚构还原；T-11不得提前删除当日原始访客判定数据，要按批准保留策略协调。
