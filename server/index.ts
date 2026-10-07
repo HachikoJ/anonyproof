@@ -11,7 +11,7 @@ import {
   unblacklistIP,
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
-import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter, userCommentSourceLimiter, userCommentIdentityLimiter } from './middleware/rateLimit'
+import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter, identityInitializationLimiter, positiveIntegerEnv, userCommentSourceLimiter, userCommentIdentityLimiter } from './middleware/rateLimit'
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
@@ -44,6 +44,8 @@ const sessionTtlMs = 8 * 60 * 60 * 1000
 const loginAttemptLimit = demoMode ? 50 : 5
 const sessions = new Map<string, number>()
 const loginAttempts = new Map<string, { count: number; resetAt: number }>()
+const maxIdentityRecords = positiveIntegerEnv('IDENTITY_MAX_RECORDS', 100000)
+class IdentityCapacityError extends Error {}
 
 if (isProduction && (!sessionSecret || sessionSecret.length < 32)) {
   throw new Error('生产环境必须设置 SESSION_SECRET（至少 32 位）')
@@ -611,6 +613,8 @@ function issueClientIdentity(
   const recoveryCode = createRecoveryCode()
 
   db.transaction(() => {
+    const current = db.prepare('SELECT COUNT(*) AS count FROM client_identities').get() as { count: number }
+    if (current.count >= maxIdentityRecords) throw new IdentityCapacityError('身份容量已达上限，请联系维护人员')
     db.prepare(`
       INSERT INTO client_identities (
         device_id, token_hash, recovery_hash, install_key_hash, created_at, last_seen_at, demo_initialized
@@ -631,7 +635,7 @@ function issueClientIdentity(
         ) VALUES (?, ?, ?, ?)
       `).run(installKeyHash, deviceId, now, now)
     }
-  })()
+  }).immediate()
 
   rememberRecoveryCode(deviceId, recoveryCode)
   if (demoMode) cloneDemoDataForDevice(db, deviceId)
@@ -860,7 +864,7 @@ function notificationRecordVisible(req: express.Request, recipientType: string, 
     .get(feedbackId, ...(recipientType === 'user' ? [recipientId] : []), ...scope.params))
 }
 
-app.get('/api/identity', (req, res) => {
+app.get('/api/identity', identityInitializationLimiter, (req, res) => {
   res.setHeader('Cache-Control', 'no-store')
   const identity = resolveClientIdentity(req, res)
   res.json({
@@ -1623,6 +1627,17 @@ app.put('/api/notifications/read-all', (req, res) => {
     res.status(500).json({ error: '标记失败' })
   }
 })
+
+// Capacity is checked before any new identity/session/demo clone is written,
+// including implicit identity issuance during a demo administrator login.
+const identityCapacityErrorHandler: express.ErrorRequestHandler = (error, _req, res, next) => {
+  if (error instanceof IdentityCapacityError && !res.headersSent) {
+    res.status(503).json({ error: error.message })
+    return
+  }
+  next(error)
+}
+app.use(identityCapacityErrorHandler)
 
 // 启动服务器
 app.listen(PORT, HOST, () => {

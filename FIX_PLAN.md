@@ -79,7 +79,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-05 身份签发限流和资源上限
 
-状态：待办；原始严重度：P1（审查第 3 条）；优先级：A；工作量：M；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 3 条）；优先级：A；工作量：M；前置依赖：T-19。
 
 **问题**：`server/index.ts` 的 `/api/identity`、`issueClientIdentity()`、`issueIdentitySession()`（约 500、536、810 行）没有请求限流；`server/demo.ts:520 cloneDemoDataForDevice()` 的 3000 上限只限制副本，身份表仍可无限增长。无 Cookie 请求反复签发身份会持续写库。
 
@@ -1123,3 +1123,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 
 - 状态：已完成，仅准确化文档/模板说明。`.env.example`和docs/DEPLOYMENT保留旧API_TOKEN兼容占位，但明确弃用、未被服务端读取、不必设置且不提供鉴权；README生产清单不再要求修改无效token作为安全措施，明确管理员Cookie、用户Cookie/归属或管理员授权，以及健康/统计/演示配置等公开边界。没有删除配置资产、改用户.env.local或新增API token机制，因此不触发模板删除确认分支。
 - 实际命令 `rg -n 'API_TOKEN' .env.example README.md DEPLOY.md docs/DEPLOYMENT.md`退出0，八处仅准确弃用/兼容说明及相邻标明无效的占位值；`rg -n 'API_TOKEN' app server --glob '!**/node_modules/**'`退出1（无源码读取点，预期），对应输出在T-30-active-docs/runtime-lookup。逐项doc diff已核对，只有该已确认问题所需文本。`git diff --check`通过；纯文档不新建业务测试/无关重构。其他旧部署说明由T-02/T-24等既有任务处理，未顺手改写历史archive。
+
+### T-05 实际执行与验收（2026-10-07）
+
+- 状态：已完成。现有身份GET加入签发前来源10次/60秒窗口（IDENTITY_RATE_LIMIT_MAX/WINDOW_MS）；IDENTITY_MAX_RECORDS默认100000条/库，创建事务在IMMEDIATE写锁内检查，达到容量以受控503拒绝所有新issuer，包括演示管理员登录的隐式身份创建。拒绝不签发Cookie/写新身份/session/安装密钥/副本；不删历史记录，已有Cookie/安装密钥续接及恢复仍可用，但初始化也计入请求窗口。旧GET的状态变化依然由T-26具体迁移解决，未因限流推断CSRF身份分支完成。
+- DEMO_MAX_CLONES默认3000、允许0禁用完整副本、非法/NaN/负数/非整数失败启动，避免旧Math.max+NaN导致无界；复制事务取得IMMEDIATE写锁后再查容量。副本满仍签发身份至身份总量限制，不以副本空缺报500。资源生命周期清理不在此任务实施，T-25仍等待Q-04；容量调大/降低由显式配置决定，低于现有量仅停止新建。
+- 修复前真实3个配额/容量场景200应429/503而失败，记录T-05-before。早期单项5/5通过；增加同库重启容量矩阵后实际全量 `npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts`退出0，86通过、0失败、1明确T-34删除SKIP，其中最新T-05六项通过。覆盖来源2与实际短窗口恢复、同安装密钥不同Cookie复用一个身份/两session/一套七副本、正式/demo容量2、满库新issuer503、满库已有身份/恢复仍200、default10/可配1、clone0、13个非法配置启动、同库跨进程重启容量不复位。
+- SQLite六表逐行快照验证拒绝零新增/修改，429有Retry-After、无Set-Cookie，副本不重复；满库demo login无Cookie也503/无新凭证，既有身份demo login成功。重启恢复测试显式使用另存的正确码，不能作为T-21缺码/缓存失效场景的验收。前端type与实际全后端strict tsc退出0，T-20全量回归实际启动生产build检查static。本任务无前端构建源修改，未改真实.env/库或发布。DEPLOY完整记录默认/单位/容量错误与代理边界。
+- 回滚：独立提交父版本恢复此前行为，但将移除已确认的签发/容量保护；已有业务数据未重写，不能以删除身份作为回滚。仅修改问题所需路由/issuer/副本上限，没有新增验证码、持久化服务或其它产品决策。

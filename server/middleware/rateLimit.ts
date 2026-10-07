@@ -33,6 +33,14 @@ export const identityRecoveryLimiter = rateLimit({
   legacyHeaders: false,
 })
 
+export const identityInitializationLimiter = rateLimit({
+  windowMs: positiveIntegerEnv('IDENTITY_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+  max: positiveIntegerEnv('IDENTITY_RATE_LIMIT_MAX', 10),
+  message: { error: '身份初始化过于频繁，请稍后再试' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 // 提交反馈速率限制
 export const feedbackSubmitLimiter = rateLimit({
   windowMs: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),

@@ -539,7 +539,12 @@ type DemoNotificationRow = {
 
 // 演示副本按浏览器各存一份。正常访客量下开销可以忽略，但爬虫反复创建身份会持续放大数据库，
 // 因此达到上限后只签发身份、不再复制演示数据。
-const maxDemoClones = Math.max(0, Number(process.env.DEMO_MAX_CLONES || 3000))
+const configuredMaxDemoClones = process.env.DEMO_MAX_CLONES
+const maxDemoClones = configuredMaxDemoClones === undefined ? 3000
+  : /^\d+$/.test(configuredMaxDemoClones) ? Number(configuredMaxDemoClones) : NaN
+if (!Number.isSafeInteger(maxDemoClones) || maxDemoClones < 0) {
+  throw new Error('DEMO_MAX_CLONES 必须是非负安全整数')
+}
 
 // 每个浏览器首次获得身份时，复制一份独立的演示记录。
 // 这样示例内容仍然完整，但任何浏览器的已读状态、补充回复和后台处理都不会影响其他访客。
@@ -587,6 +592,11 @@ export function cloneDemoDataForDevice(db: Database.Database, deviceId: string) 
   `)
 
   const clone = db.transaction(() => {
+    // Recheck while holding the write reservation; concurrent issuers cannot
+    // both consume the last available clone allowance.
+    const current = db.prepare('SELECT COUNT(*) AS count FROM client_identities WHERE demo_initialized = 1')
+      .get() as { count: number }
+    if (current.count >= maxDemoClones) return 0
     for (const template of templates) {
       const feedbackId = `demo-${crypto.randomUUID()}`
       insertFeedback.run(
@@ -646,5 +656,5 @@ export function cloneDemoDataForDevice(db: Database.Database, deviceId: string) 
     return templates.length
   })
 
-  return clone()
+  return clone.immediate()
 }
