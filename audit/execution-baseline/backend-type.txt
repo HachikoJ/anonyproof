@@ -1,0 +1,4 @@
+exit_code=0
+
+> anonyproof-server@1.0.0 type-check
+> tsc --noEmit

@@ -1,0 +1,4 @@
+exit_code=0
+
+> anonyproof@0.1.0 type-check
+> tsc --noEmit
