@@ -692,7 +692,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-32 历史明文/可解密密文及备份处置
 
-状态：待办（待Q-04/Q-07及具体历史资产操作确认）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
+状态：进行中（只读盘点准备通过；真实迁移/处置待Q-04/Q-07及具体资产确认）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
 
 **问题**：即便改新写入，feedbacks.original_content、旧key+cipher字段、comments/notifications以及备份仍含敏感内容；单改代码不消除旧数据风险。
 
@@ -1157,3 +1157,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 旧活跃备份段仍示范运行中cp主库及七天自动-delete，与计划一致性快照和未定保留策略矛盾。按已批准T-03恢复方案改为SQLite在线backup示范；旧示例完整保留为text历史不支持/禁止执行，未删除脚本/备份或变更真实调度。目标需全新且受限，DB与key分别保存；真实库备份/迁移/销毁依旧单独确认，不把说明更新当T-32完成。
 - 实际新增T-03 backup guide验收：测试服务持续运行且WAL非空时，用文档相同的 `sqlite3 -readonly SOURCE ".backup 'TARGET'"` 对新合成目标（含空格）执行，退出0；快照1反馈/1评论/2通知、integrity_check=ok，文件无合成明文marker/独立key的Base64/hex。从另一目录的独立fixture key启动恢复后端，以另存恢复码找回并精确读回正文/评论。源与目标均临时合成数据，不连接项目data真实库、不覆写旧备份。
 - Node22.23.3：新guide场景1/1退出0；完整 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-03.test.ts`14/14退出0，包含原错误/缺密钥与DB/WAL/backup恢复矩阵；`npm run type-check`0、`git diff --check`0。证据T-03-backup-guide-*与T-03-docs-reconciliation.txt。产品/backend未改，已有已验收构建继续适用；无新依赖/无无关测试框架。独立T-03补充提交，不重标T-02/T-32完成。
+
+### T-32 只读盘点准备与部分验收（2026-10-07）
+
+- 状态：进行中，未完成迁移/历史风险消除。按Q-02已批准的准备范围新增`scripts/content-migration-inventory.ts`，只有显式路径入口，无默认数据库/环境文件/key读取；源必须已存在，readonly+query_only+单一读事务，关闭时回滚只读事务。不创建迁移目标、不转换字段、不删除记录/备份，不调用业务服务或真实项目data库。
+- 报告为六类业务/身份表总量、四类敏感字段version0/标记version1/未知版本/NULL数量、固定demo行标记分类、评论/通知孤儿及无目标数量、缺表/字段。标记version1不证明认证解密成功，行demo标记不证明实例归属/硬隔离；缺关系字段返回无法判断而非虚构0。只输出固定字段名/计数，不输出正文/ID/设备标识/恢复码/密钥或旧key+cipher包。缺表列表已去重，NULL评论目标单列以防漏报，不擅自判定这些历史行应删除。
+- Node22.23.3实际三项prep测试通过：旧schema无版本列按legacy统计，重复盘点报告相同且源主文件SHA256未变；混合v1/未知flag7/NULL版本、NULL solution及缺表能区分；真实CLI对显式合成源输出可解析JSON，源不可用非0且不创建文件、无参数/多参数退出2。正文/标识等合成私密marker未出报告。所有fixture在新随机临时目录保留，未扫描或打开真实内容库。
+- 最后 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32.test.ts tests/fix/T-03.test.ts`退出0，17/17（最新T-32盘点3项与T-03模块/读写/恢复14项）；根type退出0，`git diff --check`通过。只读operator工具没有应用运行源改动，沿用已验收构建；无新依赖。证据T-32-inventory-*。测试文件头及DEPLOY明确这3项不能替代原T-32旧格式转换、重复迁移、故障恢复、物理残留及实际资产验收。
+- 下一轮认领T-32时：先落实Q-04/Q-07与保留映射/源与备份清单/独立key；获只读盘点实际资产授权后执行 `npx --no-install tsx scripts/content-migration-inventory.ts /absolute/approved-source.db` 保存脱敏报告，报告退出0仅表示盘点成功。之后还需一致性快照恢复验证、版本化新库迁移、逐身份/关联计数核对、认证解密/导出/DB-WAL残留验证及入口切换；旧资产销毁单独批准，不同时失去回滚源。此部分工具可不调用，源未改变，不需通过删除历史记录来回滚。
