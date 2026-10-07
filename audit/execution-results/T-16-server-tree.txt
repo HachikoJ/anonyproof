@@ -1,0 +1,9 @@
+anonyproof-server@1.0.0 /Users/wilson/Documents/Codex/anonyproof/server
+├─┬ express-rate-limit@8.6.2
+│ └── express@5.2.1 deduped
+└─┬ express@5.2.1
+  ├─┬ body-parser@2.3.0
+  │ └── qs@6.16.0 deduped
+  ├── qs@6.16.0
+  └─┬ router@2.2.0
+    └── path-to-regexp@8.4.2

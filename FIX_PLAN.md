@@ -217,7 +217,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-16 HTTP解析/路由依赖漏洞修复
 
-状态：待办；原始严重度：P1（审查第 8 条，含high/moderate/low）；优先级：A；工作量：M；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 8 条，含high/moderate/low）；优先级：A；工作量：M；前置依赖：T-19。验收见第10节。
 
 **问题**：两个依赖树中的 `path-to-regexp`、`qs`、`body-parser` 当时报告漏洞。根树示例：path-to-regexp8.3.0、qs6.15.0、body-parser2.2.2。两个lockfile不能只更新一个。
 
@@ -889,3 +889,10 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 非对象body、类别/身份/正文明文/密文类型错误先拒绝；正文原始长度最多10000 UTF-16 code units，保留一字符可用性、不用trim绕过上限。旧AES-GCM包上限为`ceil((10000*3+12+32+16)/3)*4=40080` UTF-8字节；现有新格式调整由T-03另验。JSON总量384KiB，畸形400、过大413，均JSON响应且无stack。
 - 实际`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-12.test.ts tests/fix/T-19.test.ts`退出0（6/6）；两type-check退出0。拒绝矩阵逐项断言feedbacks/notifications/comments/stats不变；10000中文、40080字节cipher、一字符和Unicode escape最大长度通过，身份不匹配403。
 - 证据`audit/execution-results/T-12-*.txt`；T-19原业务smoke仍通过。最终认证密文格式和静态保密性没有因此宣称完成。
+
+### T-16 验收记录
+
+- 状态：已完成；2026-10-07；修改两个lockfile及`tests/fix/T-16.test.ts`。root body-parser2.2.2→2.3.0、path-to-regexp8.3.0→8.4.0、qs6.15.0→6.16.0；server只qs6.15.3→6.16.0，已修复的body-parser2.3.0/path8.4.2未降级。root仅同步这些包必需的type-is/content-type/side-channel子依赖，没有框架/API契约变化。
+- Node22两目录实际干净`npm ci`、指定安装树、ABI预检、3/3漏洞回归和HTTP集成、两type-check、build、diff-check均退出0。JSON错误400、1MiB413、health存活、业务没有额外写入、query数组/重复解析及路由aliases/权限正常。
+- 两`npm audit --omit=dev --json`退出1，但目标body-parser/path-to-regexp/qs相关advisories全部消失。原始audit及命令证据在`audit/execution-results/T-16-*`；其余next/ip-address分别T-15/T-17处理，proxy-addr/sharp/source-map-js/esbuild非本次范围，未声称依赖全安全。
+- 回滚：还原本项lockfile并在Node22重新npm ci；安装前目录保存在`/tmp/anonyproof-T-16-dependency-backup`，无数据迁移。
