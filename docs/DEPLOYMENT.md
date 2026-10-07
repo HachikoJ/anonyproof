@@ -387,3 +387,7 @@ location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
 - GitHub Issues: [https://github.com/HachikoJ/anonyproof/issues](https://github.com/HachikoJ/anonyproof/issues)
 - 文档: [README.md](../README.md)
 - 贡献指南: [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+### 限流配置的实际边界（T-31）
+
+`RATE_LIMIT_MAX`已弃用且不生效，不能按旧注释理解为“每15分钟总上限”；启动时有明确警告。当前实际启用的是登录、身份初始化、恢复码、反馈提交和用户补充各自的次数/窗口配置，默认值、单位、来源/身份作用域及失败规则以根目录 [DEPLOY.md 的有效限流配置索引](../DEPLOY.md#有效限流配置索引t-31) 为准，`.env.example`已列出真实字段。所有窗口单位为毫秒；已有单进程限流不等于多跳代理或多实例限流已经验收。

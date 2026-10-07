@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: T-31: each supported request maximum independently enforces configured boundaries one and three
+    # Subtest: LOGIN_RATE_LIMIT_MAX=1
+    ok 1 - LOGIN_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 587.47975
+      type: 'test'
+      ...
+    # Subtest: LOGIN_RATE_LIMIT_MAX=3
+    ok 2 - LOGIN_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 399.263125
+      type: 'test'
+      ...
+    # Subtest: IDENTITY_RATE_LIMIT_MAX=1
+    ok 3 - IDENTITY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 388.407708
+      type: 'test'
+      ...
+    # Subtest: IDENTITY_RATE_LIMIT_MAX=3
+    ok 4 - IDENTITY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 390.612417
+      type: 'test'
+      ...
+    # Subtest: RECOVERY_RATE_LIMIT_MAX=1
+    ok 5 - RECOVERY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 395.248083
+      type: 'test'
+      ...
+    # Subtest: RECOVERY_RATE_LIMIT_MAX=3
+    ok 6 - RECOVERY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 399.430666
+      type: 'test'
+      ...
+    # Subtest: FEEDBACK_RATE_LIMIT_MAX=1
+    ok 7 - FEEDBACK_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 392.866375
+      type: 'test'
+      ...
+    # Subtest: FEEDBACK_RATE_LIMIT_MAX=3
+    ok 8 - FEEDBACK_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 396.782458
+      type: 'test'
+      ...
+    # Subtest: FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1
+    ok 9 - FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 393.265792
+      type: 'test'
+      ...
+    # Subtest: FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3
+    ok 10 - FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 396.443334
+      type: 'test'
+      ...
+    # Subtest: COMMENT_RATE_LIMIT_MAX=1
+    ok 11 - COMMENT_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 400.472167
+      type: 'test'
+      ...
+    # Subtest: COMMENT_RATE_LIMIT_MAX=3
+    ok 12 - COMMENT_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 397.655042
+      type: 'test'
+      ...
+    # Subtest: COMMENT_IDENTITY_RATE_LIMIT_MAX=1
+    ok 13 - COMMENT_IDENTITY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 450.171833
+      type: 'test'
+      ...
+    # Subtest: COMMENT_IDENTITY_RATE_LIMIT_MAX=3
+    ok 14 - COMMENT_IDENTITY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 454.237791
+      type: 'test'
+      ...
+    1..14
+ok 1 - T-31: each supported request maximum independently enforces configured boundaries one and three
+  ---
+  duration_ms: 5844.077208
+  type: 'test'
+  ...
+# Subtest: T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection
+ok 2 - T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection
+  ---
+  duration_ms: 459.992208
+  type: 'test'
+  ...
+1..2
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6444.189291

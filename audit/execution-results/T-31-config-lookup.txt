@@ -1,0 +1,38 @@
+.env.example:51:# 旧 RATE_LIMIT_MAX 已弃用且不生效，保留兼容占位；设置它不提供限流保护
+.env.example:52:RATE_LIMIT_MAX=100
+.env.example:55:LOGIN_RATE_LIMIT_MAX=10
+.env.example:56:LOGIN_RATE_LIMIT_WINDOW_MS=60000
+.env.example:57:IDENTITY_RATE_LIMIT_MAX=10
+.env.example:58:IDENTITY_RATE_LIMIT_WINDOW_MS=60000
+.env.example:60:RECOVERY_RATE_LIMIT_MAX=10
+.env.example:61:RECOVERY_RATE_LIMIT_WINDOW_MS=60000
+.env.example:62:FEEDBACK_RATE_LIMIT_MAX=10
+.env.example:63:FEEDBACK_IDENTITY_RATE_LIMIT_MAX=10
+.env.example:64:FEEDBACK_RATE_LIMIT_WINDOW_MS=60000
+.env.example:65:COMMENT_RATE_LIMIT_MAX=60
+.env.example:66:COMMENT_IDENTITY_RATE_LIMIT_MAX=20
+.env.example:67:COMMENT_RATE_LIMIT_WINDOW_MS=60000
+docs/DEPLOYMENT.md:391:### 限流配置的实际边界（T-31）
+docs/DEPLOYMENT.md:393:`RATE_LIMIT_MAX`已弃用且不生效，不能按旧注释理解为“每15分钟总上限”；启动时有明确警告。当前实际启用的是登录、身份初始化、恢复码、反馈提交和用户补充各自的次数/窗口配置，默认值、单位、来源/身份作用域及失败规则以根目录 [DEPLOY.md 的有效限流配置索引](../DEPLOY.md#有效限流配置索引t-31) 为准，`.env.example`已列出真实字段。所有窗口单位为毫秒；已有单进程限流不等于多跳代理或多实例限流已经验收。
+README.md:134:express-rate-limit - 接口限流
+README.md:169:- **管理鉴权**：管理员需密码登录，会话保存在 `HttpOnly` Cookie 中；登录接口有限流，异常访问会写入访问日志并进入可疑 IP 列表
+README.md:171:- **限流配置**：登录、身份初始化、恢复码、提交和用户补充采用独立来源/身份窗口，详见 [有效配置索引](./DEPLOY.md#有效限流配置索引t-31)。旧 `RATE_LIMIT_MAX` 已弃用且不生效；次数/窗口调整须使用实际字段，单进程验证不替代真实代理链验收。
+README.md:263:│   └── middleware/ utils/      # 鉴权、限流与日志工具
+README.md:291:4. 反向代理后设置 `TRUST_PROXY=1`，让限流与访问日志拿到真实 IP
+server/middleware/rateLimit.ts:4:if (process.env.RATE_LIMIT_MAX !== undefined) {
+server/middleware/rateLimit.ts:5:  console.warn('RATE_LIMIT_MAX 已弃用且不生效；请配置各接口的真实次数和窗口，不要将旧字段视为限流保护')
+server/middleware/rateLimit.ts:8:// 配置错误必须在启动时暴露，不能悄悄关闭限流或产生无效窗口。
+server/middleware/rateLimit.ts:21:  windowMs: positiveIntegerEnv('LOGIN_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:22:  max: positiveIntegerEnv('LOGIN_RATE_LIMIT_MAX', 10),
+server/middleware/rateLimit.ts:33:  windowMs: positiveIntegerEnv('RECOVERY_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:34:  max: positiveIntegerEnv('RECOVERY_RATE_LIMIT_MAX', 10),
+server/middleware/rateLimit.ts:41:  windowMs: positiveIntegerEnv('IDENTITY_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:42:  max: positiveIntegerEnv('IDENTITY_RATE_LIMIT_MAX', 10),
+server/middleware/rateLimit.ts:50:  windowMs: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:51:  max: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_MAX', 10),
+server/middleware/rateLimit.ts:62:  windowMs: positiveIntegerEnv('FEEDBACK_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:63:  max: positiveIntegerEnv('FEEDBACK_IDENTITY_RATE_LIMIT_MAX', 10),
+server/middleware/rateLimit.ts:71:  windowMs: positiveIntegerEnv('COMMENT_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:72:  max: positiveIntegerEnv('COMMENT_RATE_LIMIT_MAX', 60),
+server/middleware/rateLimit.ts:79:  windowMs: positiveIntegerEnv('COMMENT_RATE_LIMIT_WINDOW_MS', 60 * 1000, 2147483647),
+server/middleware/rateLimit.ts:80:  max: positiveIntegerEnv('COMMENT_IDENTITY_RATE_LIMIT_MAX', 20),

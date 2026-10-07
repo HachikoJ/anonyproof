@@ -1,6 +1,10 @@
 // 速率限制配置
 import rateLimit from 'express-rate-limit'
 
+if (process.env.RATE_LIMIT_MAX !== undefined) {
+  console.warn('RATE_LIMIT_MAX 已弃用且不生效；请配置各接口的真实次数和窗口，不要将旧字段视为限流保护')
+}
+
 // 配置错误必须在启动时暴露，不能悄悄关闭限流或产生无效窗口。
 export function positiveIntegerEnv(name: string, fallback: number, maximum = Number.MAX_SAFE_INTEGER) {
   const configured = process.env[name]
