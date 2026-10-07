@@ -990,3 +990,9 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 启动实际Next dev，用动态API_PROXY_TARGET代理临时后端，再跑相同Cookie/条件头矩阵；no-store保持。另实际Next start读取既有生产build-manifest指定chunk，200且Cache-Control含public,max-age=31536000,immutable，正文非空。CI先build后跑此测试；无build不得skip静态验收。
 - 首次测试把未代理的/health页面缓存误当backend health，实际得到Next页面no-cache，已保留失败输出并改为真正可代理公共/api/stats对照，重跑全矩阵通过；未修改产品缓存来迎合错误测试。证据audit/execution-results/T-20-*。
 - 未部署/未读取线上敏感正文；本地完成不等同公开站已应用。回滚仅还原这一中间件，无库结构/数据更改。
+
+### T-18 真实后端编译补验（N-03覆盖缺口）
+
+- 状态仍为已阻塞（实际远端CI未获push授权）。CI Backend type check在保留原命令外追加显式server/*.ts、server/middleware/*.ts、server/utils/*.ts的strict编译，避免继承root exclude server后虚假通过。未扩范围改原server npm script或新增tsconfig。
+- 实际Node20.20.2执行本地TypeScript bin同一参数，退出0，证据T-18-backend-glob-node20.txt；当前Node22全后端编译也通过，见T-20-backend-type.txt。原root类型命令不再作为全后端覆盖证明。
+- 这是T-18必要门禁补全；未声称Ubuntu runner/Actions链接已验证，后续依赖T-18的完整交付继续保留阻塞。

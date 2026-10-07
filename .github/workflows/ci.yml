@@ -73,7 +73,9 @@ jobs:
       run: npm run type-check
 
     - name: Backend type check
-      run: npm --prefix server run type-check
+      run: |
+        npm --prefix server run type-check
+        npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts
 
     - name: Build
       run: npm run build
