@@ -996,3 +996,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 状态仍为已阻塞（实际远端CI未获push授权）。CI Backend type check在保留原命令外追加显式server/*.ts、server/middleware/*.ts、server/utils/*.ts的strict编译，避免继承root exclude server后虚假通过。未扩范围改原server npm script或新增tsconfig。
 - 实际Node20.20.2执行本地TypeScript bin同一参数，退出0，证据T-18-backend-glob-node20.txt；当前Node22全后端编译也通过，见T-20-backend-type.txt。原root类型命令不再作为全后端覆盖证明。
 - 这是T-18必要门禁补全；未声称Ubuntu runner/Actions链接已验证，后续依赖T-18的完整交付继续保留阻塞。
+
+### T-03 模块准备（尚未完成业务接入）
+
+- 状态保持进行中，不能标已完成。仅新增未被业务调用的contentEncryption工具与10项测试，按已批准AES-256-GCM/独立32字节Base64密钥方案；现有HTTP/DB业务读写尚未切换。父代理实际再次运行模块测试10/10退出0，真实全后端strict编译已覆盖该模块退出0。证据T-03-module-*、T-03-parent-module-tests.txt。
+- 兼容模型明确以持久化版本标记区分旧原文与新密文，不能猜apc:前缀：原文允许本身是完整密文样式。正文与说明需独立version列；通知title/content同写可共享版本；具体最小加列/上下文/回滚点见T-03-module-design.md。未执行真实库迁移。
+- 测试覆盖独立认证向量、2000随机nonce样本、Unicode/空文/最大正文、key/nonce/tag/cipher/context篡改、未知格式、历史前缀碰撞、新说明与旧正文并存、缺/错key及key marker不可被覆盖。Key marker保存fingerprint和认证check，不保存内容密钥。
+- 必要执行顺序调整：T-01完成demo合成数据权限后再接入；先实施并验收T-41反馈/评论/状态事务，再接入T-03新writer，防止cipher或必需通知故障造成部分落库。T-41删除分支仍单独依赖T-34；这一等待不阻塞三类已获授权写事务。T-04仍独立验收客户端降级退役与失败草稿保留。
+- 此准备提交可直接回退且没有持久化变化。reader兼容阶段与writer切换将隔离验证；新version1数据出现后只可回滚到兼容reader并关闭写入，不能回旧明文reader。
