@@ -13,12 +13,14 @@ async function port() {
   return value
 }
 async function main() {
+  const evidenceTask = process.env.FIX_SMOKE_TASK || 'T-15'
+  assert.match(evidenceTask, /^T-\d{2}$/)
   const frontendPort = await port()
   const origin = `http://127.0.0.1:${frontendPort}`
   const backend = await startBackend({ CORS_ORIGINS: origin })
   const env = { ...process.env, API_PROXY_TARGET: backend.baseUrl, PORT: String(frontendPort), BIND_HOST: '127.0.0.1', NODE_ENV: 'production' as const }
   const build = spawnSync('npm', ['run', 'build'], { env, encoding: 'utf8', timeout: 120000 })
-  writeFileSync('audit/execution-results/T-15-main-proxy-build.txt', (build.stdout || '') + (build.stderr || ''))
+  writeFileSync(`audit/execution-results/${evidenceTask}-main-proxy-build.txt`, (build.stdout || '') + (build.stderr || ''))
   if (build.status !== 0) { await backend.stop(); throw new Error('isolated proxy-target build failed') }
   const frontend = spawn('npm', ['run', 'start'], { env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] })
   let output = ''
@@ -72,7 +74,7 @@ async function main() {
       await Promise.race([exit, delay(2000, undefined, { ref: false })])
       if (frontend.exitCode === null) { try { process.kill(-frontend.pid, 'SIGKILL') } catch {}; await exit }
     }
-    writeFileSync('audit/execution-results/T-15-main-frontend-start.txt', output)
+    writeFileSync(`audit/execution-results/${evidenceTask}-main-frontend-start.txt`, output)
     await backend.stop()
   }
 }

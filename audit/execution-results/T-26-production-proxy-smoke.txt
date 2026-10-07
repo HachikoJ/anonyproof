@@ -1,0 +1,5 @@
+page /: 200
+page /foorpynona: 200
+page /access-stats: 200
+static assets: 10 returned 200
+API rewrite, user/admin cookies, submission/list/comment/status/notification/access stats: passed

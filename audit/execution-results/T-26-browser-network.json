@@ -1,0 +1,58 @@
+[
+  {
+    "method": "OPTIONS",
+    "path": "/api/admin/auth/login",
+    "origin": "http://app.fixture.localhost:58310",
+    "cookieSent": false,
+    "status": 204,
+    "allowOrigin": "http://app.fixture.localhost:58310",
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/login",
+    "origin": "http://app.fixture.localhost:58310",
+    "cookieSent": false,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:58310",
+    "setsCookie": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/auth/session",
+    "origin": "http://app.fixture.localhost:58310",
+    "cookieSent": true,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:58310",
+    "authenticated": true,
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/logout",
+    "origin": "http://evil.fixture.localhost:58311",
+    "cookieSent": true,
+    "status": 403,
+    "allowOrigin": null,
+    "setsCookie": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/auth/session",
+    "origin": "http://app.fixture.localhost:58310",
+    "cookieSent": true,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:58310",
+    "authenticated": true,
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/logout",
+    "origin": "http://outside.other.localhost:58311",
+    "cookieSent": false,
+    "status": 403,
+    "allowOrigin": null,
+    "setsCookie": false
+  }
+]

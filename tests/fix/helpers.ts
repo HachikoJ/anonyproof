@@ -90,15 +90,24 @@ export async function startBackend(overrides: Record<string, string> = {}) {
 
 export type TestService = Awaited<ReturnType<typeof startBackend>>
 
+export type FixtureRequestInit = RequestInit & { omitOrigin?: boolean }
+
 export class Client {
   private cookies = new Map<string, string>()
   constructor(public service: TestService) {}
-  async request(url: string, init: RequestInit = {}) {
-    const headers = new Headers(init.headers)
+  async request(url: string, init: FixtureRequestInit = {}) {
+    const { omitOrigin, ...request } = init
+    const headers = new Headers(request.headers)
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method?.toUpperCase() || '') &&
+        !omitOrigin && !headers.has('Origin')) {
+      // This fixture acts as an explicitly configured trusted browser client;
+      // negative cases must opt out so missing-Origin coverage stays real.
+      headers.set('Origin', new URL(this.service.baseUrl).origin)
+    }
     if (this.cookies.size) headers.set('Cookie', Array.from(this.cookies, ([k, v]) => `${k}=${v}`).join('; '))
     headers.set('User-Agent', 'AnonyProof-isolated-fixture')
     const response = await fetch(this.service.baseUrl + url, {
-      ...init, headers, signal: AbortSignal.timeout(5000),
+      ...request, headers, signal: AbortSignal.timeout(5000),
     })
     for (const value of response.headers.getSetCookie()) {
       const entry = value.split(';', 1)[0]

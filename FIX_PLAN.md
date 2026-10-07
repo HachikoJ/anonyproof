@@ -502,6 +502,15 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 风险/回滚：高风险部署/数据隔离。先新建隔离实例验证，再切入口；不覆盖旧库。保留可启动旧发布，回滚只接对应隔离库，不能混用数据。
 
+#### T-02 本地实施方案待确认（不含真实资产或发布操作）
+
+- 目标：启动前要求显式 `INSTANCE_ROLE=demo|formal`、`DEMO_MODE=1|0` 与其一致；两种角色均要求显式绝对 `DATABASE_PATH`。缺配置或角色/开关矛盾失败退出，不按域名或NODE_ENV猜角色。
+- 数据隔离：SQLite记录永久实例角色，角色不匹配时拒绝启动；正式内容key标记库不能用demo运行；已有未标角色的非空库不自动认领/混用，保留原库，移交T-32的受控迁移。新空库由明确角色初始化。测试使用各自独立库。不得声称仅不同路径即可完成生产基础设施隔离。
+- 密钥/口令：demo禁止配置正式内容密钥；formal要求独立内容密钥，禁止公开演示密码及文档占位口令。部署文档要求分别配置session密钥/管理员凭证，两个独立checkout、Next构建、进程名、前后端端口及环境文件，避免共享`.next`和环境。两角色Cookie/恢复码的交叉使用须实际拒绝。不会增加共享密钥注册中心来检测任意其它主机的配置。
+- 修改范围：仅启动配置检查/数据库角色标记、fixture、现有PM2生产配置和部署模板/说明；不新增产品能力，不修改真实环境文件、在线服务或历史库。
+- 可观察影响：旧启动命令需补角色及绝对DB路径；非空未标库保持关闭，不能靠改DEMO_MODE切角色。需先升级配置再启动；实际旧库迁移、正式域名、线上发布仍单独确认。
+- 回滚：保存旧代码/构建/配置及一致性库快照；回滚只接已隔离的对应库，公开入口保持合成沙箱或关闭写入；不得恢复公开读取历史真实数据。新角色标记不删除，停机后可恢复对应已验证快照。未获上述具体差异确认前不实施代码。
+
 ### Q-02 内容保密模型选择
 
 状态：方向已确认（2026-10-07）。用户原话：“服务器可读：密钥与数据库分离的静态加密”。正式服务及授权管理员可解密，数据库/数据库备份单独泄露不能还原内容；不声称端到端加密或抵抗已控制服务器的攻击者。密钥由服务部署配置单独提供，禁止存入业务数据库、代码仓库、数据库导出或普通日志；本计划不增加云KMS/付费服务。传输层仍依赖HTTPS。
@@ -551,7 +560,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-26 Cookie写接口统一来源/CSRF防护
 
-状态：待办（Q-03已确认；身份接口具体兼容方案待确认）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。
+状态：进行中（普通unsafe方法已验收；身份接口具体兼容方案待确认）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。
 
 **问题**：`requireSameOrigin()`只用于部分写路由，反馈/用户评论/通知更新缺少一致检查，无Origin默认放行；identity GET还会创建/修改身份。外站Lax POST是否带Cookie不能想当然。
 
@@ -1074,3 +1083,14 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 真正回滚演练：`tests/fix/T-15.rollback.ts`从保留快照加载Next16.3.3及SQLite native、旧BUILD_ID，在另一个回环随机端口运行旧生产构建，三页面+实际生成asset200，退出0后停止；主树保持16.3.6，未接业务API/真实DB。回滚恢复同一快照中的package/lock、node_modules、.next及未改变的next.config.js，不能只恢复源码保留新安装树。旧版本仍有已确认依赖风险，因此该演练证明可恢复性，不代表批准重新部署旧漏洞。未push/部署。
 
 - T-15提交前staged whitespace检查首次发现npm/Next console的CR及尾空行（不是代码失败）。原始bytes保存于回滚快照的raw-evidence目录，仅规范化提交txt的行尾空白；命令、断言、退出码未改变。记录见T-15-console-normalization.json，重新staged检查通过后才提交。
+
+### T-26 普通写路由部分实现与实际验收（2026-10-07）
+
+- 状态：进行中，不能关闭整项。`server/middleware/requestOrigin.ts`的统一guard在JSON解析/鉴权/业务状态修改之前保护全部`/api`的POST/PUT/PATCH/DELETE；准确匹配显式CORS_ORIGINS，否则403。`requireSameOrigin`同步移除缺Origin及Host/X-Forwarded-Host自动信任。身份GET旧创建/续签/绑定行为尚未修改，仍按此前具体接口方案等待确认。
+- 实际Node22.23.3：T-26/T-27路由/配置测试5/5通过；T-26涵盖14条已有写路由/alias ×7缺失/恶意/畸形来源及两个Host伪装，403、无Set-Cookie、九张业务/身份表不变、管理员session创建计数不变；合法评论/状态/通知/黑名单取消/注销/另alias登录/恢复200。拒绝请求可被审计记录，不承诺原始访问日志不变化。`tests/fix/helpers.ts`明确给合成合法写请求附可信Origin，负例用omitOrigin；未为脚本无Origin放宽生产行为。
+- 全量现有回归命令 `npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts`退出0，67通过、0失败、1明确属于T-34的删除SKIP。前端type、实际后端全文件strict tsc、构建均0。`FIX_SMOKE_TASK=T-26 npx --no-install tsx tests/fix/T-15.smoke.ts`真实生产build/start/rewrite下准确Origin的身份/Cookie、反馈/评论/管理员状态/通知等流程通过；结束后再正常构建恢复部署API目标，未留下结束的fixture端口。
+- 原生IAB受控攻击页：app.fixture.localhost合法登录/会话读取成功；evil.fixture.localhost同站子域以简单text/plain POST注销，管理员Strict Cookie实际发送，后端403/noACAO/noSetCookie，返回合法页会话仍有效。outside.other.localhost外站Cookie实际未发送，亦403、浏览器无法读响应。证据只保存Cookie存在布尔值，不保存凭证。测试仅loopback监听127.0.0.1和::1，无hosts/系统网络修改。development用于非Secure Cookie观测，production拒绝由路由矩阵另验。
+- 正常IAB完整UI：合成举报提交→用户补充→后台登录→管理员回复→非空说明并已办结→用户通知点击定位同一记录；`tests/fix/T-26.browser-assert.ts`对独立库精确解密验证1反馈/2评论/4通知全部版本1，DB/WAL/dump无合成明文marker/内容key。临时tab关闭、两个fixture进程SIGTERM退出0，临时资产保留；未访问真实库/发布站。
+- 可复验：运行 `tests/fix/T-26.browser.ts`，点击其输出allowed/sameSite/crossSite页面的按钮；合法流程运行 `tests/fix/T-26.normal-browser.ts` 后用UI执行上述动作，再运行 `tests/fix/T-26.browser-assert.ts`。证据为`audit/execution-results/T-26-*`；截图工具已展示，不编造本地截图路径。独立提交可回退普通guard，但会重新暴露已确认写来源缺口；GET身份迁移回滚必须维持只读GET安全边界。
+
+- T-26证据存储校正：共用T-15 smoke最初覆盖了两份旧控制台证据，已将这次结果保存在T-26文件，并从HEAD还原T-15原记录；harness新增只影响证据文件命名的FIX_SMOKE_TASK，避免后续任务重复覆盖历史记录。

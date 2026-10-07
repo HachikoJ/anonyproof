@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 1 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 760.316958
+  type: 'test'
+  ...
+# Subtest: T-27: only explicit canonical origin configuration is accepted
+ok 2 - T-27: only explicit canonical origin configuration is accepted
+  ---
+  duration_ms: 1.135416
+  type: 'test'
+  ...
+# Subtest: T-27: actual CORS preflight/read responses expose only approved exact origins
+ok 3 - T-27: actual CORS preflight/read responses expose only approved exact origins
+  ---
+  duration_ms: 40.797041
+  type: 'test'
+  ...
+# Subtest: T-27: actual production backend rejects missing or invalid origin configuration
+ok 4 - T-27: actual production backend rejects missing or invalid origin configuration
+  ---
+  duration_ms: 2259.536
+  type: 'test'
+  ...
+# Subtest: T-27: product backend preflight and authenticated reads use the exact configured origins
+ok 5 - T-27: product backend preflight and authenticated reads use the exact configured origins
+  ---
+  duration_ms: 460.99225
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3928.513083

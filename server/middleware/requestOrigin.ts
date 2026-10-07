@@ -1,3 +1,4 @@
+import type { RequestHandler } from 'express'
 import type { CorsOptions } from 'cors'
 
 function canonicalHttpOrigin(value: string) {
@@ -30,3 +31,16 @@ export function exactCorsOrigin(allowedOrigins: readonly string[]): CorsOptions[
   return (origin, callback) => callback(null, isTrustedRequestOrigin(origin, allowedOrigins))
 }
 
+// All cookie-authorized unsafe API methods share this early source guard. GET
+// identity compatibility is a separately approved migration, not an exception
+// that silently relaxes the POST/PUT/PATCH/DELETE policy.
+export function cookieWriteOriginGuard(allowedOrigins: readonly string[]): RequestHandler {
+  return (req, res, next) => {
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
+        !isTrustedRequestOrigin(req.get('origin'), allowedOrigins)) {
+      res.status(403).json({ error: '请求来源不受信任' })
+      return
+    }
+    next()
+  }
+}

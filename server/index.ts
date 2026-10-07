@@ -12,7 +12,7 @@ import {
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { adminLoginLimiter } from './middleware/rateLimit'
-import { exactCorsOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
+import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
 import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
@@ -64,6 +64,8 @@ app.use(['/api/identity', '/api/admin', '/api/feedback', '/api/notifications'], 
 })
 const allowedOrigins = parseAllowedOrigins(process.env.CORS_ORIGINS)
 app.use(cors({ origin: exactCorsOrigin(allowedOrigins), credentials: true }))
+// Reject before parsing/authentication can change sessions or business state.
+app.use('/api', cookieWriteOriginGuard(allowedOrigins))
 // Admit login POSTs before JSON parsing so malformed/oversized bodies consume
 // the same source quota as successful and failed authentication attempts.
 app.post(['/api/admin/auth/login', '/api/admin/login'], adminLoginLimiter)
@@ -186,16 +188,9 @@ function safePasswordEqual(input: string, expected: string) {
 }
 
 function requireSameOrigin(req: express.Request, res: express.Response) {
-  const origin = req.get('origin')
-  if (!origin) return true
-  try {
-    const parsed = new URL(origin)
-    const requestHost = req.get('x-forwarded-host') || req.get('host')
-    return allowedOrigins.includes(parsed.origin) || (Boolean(requestHost) && parsed.host === requestHost)
-  } catch {
-    res.status(403).json({ error: '请求来源不受信任' })
-    return false
-  }
+  if (isTrustedRequestOrigin(req.get('origin'), allowedOrigins)) return true
+  res.status(403).json({ error: '请求来源不受信任' })
+  return false
 }
 
 function requireAdmin(req: express.Request, res: express.Response, next: express.NextFunction) {

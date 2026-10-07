@@ -1,0 +1,6 @@
+2026-10-07 native IAB, exact local subdomains resolving only loopback; no hosts/DNS/system/network preference changes.
+Approved app.fixture.localhost -> login200 then read200 authenticated=true, admin Cookie actually emitted to api.fixture.localhost.
+Same-site evil.fixture.localhost -> simple text/plain POST logout (no preflight); request actually carried admin Cookie; backend403, no ACAO, no Set-Cookie; browser reports TypeError. Back on approved source, read200 authenticated=true verifies the session was not deleted.
+Cross-site outside.other.localhost -> same simple POST; no admin Cookie actually sent; backend403, no ACAO/Set-Cookie and browser response unreadable. Do not claim all outside POSTs carry Lax/Strict cookies.
+Evidence T-26-browser-network.json contains Origin/method/path/status and Cookie presence booleans only; no cookies/password/token values. Screenshot displayed through native API; no local screenshot path invented. Temporary tab closed and harness SIGTERM stops all IPv4/IPv6 loopback listeners/fixture backend.
+This proves existing unsafe API method protection; GET identity migration is still pending approval and T-26 remains incomplete.

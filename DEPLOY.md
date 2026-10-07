@@ -112,3 +112,7 @@ curl -s --max-time 6 http://106.55.13.245:4000/health   # 应当连接失败
 首次启用/升级前保存一致数据库快照（SQLite在线backup或停写备份），内容key另存并验证恢复。用测试环境恢复数据库，再独立提供相同key，验证身份找回、列表、评论、处理说明、通知读回；错误/缺key必须拒绝启动。四个新增字段版本列默认0，不会自动改写旧内容；历史迁移/旧资产处置属于T-32，需另行批准。
 
 新writer写入版本1后，回滚必须保留已验收的兼容reader；先停写正式服务，只运行兼容reader读取已保存数据。不得恢复到旧reader，或以继续写明文作为回滚。demo keyless模式只能处理已批准固定合成材料；不可拿正式密文库作为demo库运行。
+
+## Cookie 写请求来源（Q-03 / T-26）
+
+所有API的POST/PUT/PATCH/DELETE在解析正文、鉴权和状态修改前都要求准确匹配`CORS_ORIGINS`的Origin；缺失、null、其它子域、路径伪装或Host/X-Forwarded-Host不能放行。合法客户端仅本站浏览器及显式配置的本地前端，无Origin脚本写请求不再受支持。需要复验的合成fixture必须显式附可信Origin，并单独测试无Origin403。GET identity创建/续接的旧兼容行为仍等待具体POST/readonlyGET迁移确认，不因普通写路由已保护而宣称整个T-26完成。
