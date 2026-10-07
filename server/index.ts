@@ -1351,12 +1351,18 @@ app.get('/api/notifications', (req, res) => {
       }
     }
 
+    const notificationLimit = typeof limit === 'string' && /^\d+$/.test(limit) ? Number(limit) : NaN
+    if (!Number.isSafeInteger(notificationLimit) || notificationLimit < 1 || notificationLimit > 100 ||
+        Object.keys(req.query).some((key) => key.startsWith('limit['))) {
+      return res.status(400).json({ error: 'limit 必须是 1 到 100 的整数' })
+    }
+
     const visibility = notificationVisibilitySql(String(recipientType))
     const notifications = db.prepare(
       `SELECT * FROM notifications
        WHERE recipient_type = ? AND recipient_id = ? ${visibility}
        ORDER BY created_at DESC LIMIT ?`
-    ).all(recipientType, recipientId, Number(limit)) as any[]
+    ).all(recipientType, recipientId, notificationLimit) as any[]
 
     res.json({
       success: true,

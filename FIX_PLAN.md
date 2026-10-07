@@ -395,7 +395,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-40 通知limit参数严格有界
 
-状态：待办；原始严重度：P1（审查第 5 条）；优先级：A；工作量：S；前置依赖：T-19。
+状态：已完成；原始严重度：P1（审查第 5 条）；优先级：A；工作量：S；前置依赖：T-19。验收见第10节。
 
 **问题**：`GET /api/notifications`约1343–1347行`Number(limit)`直接SQL绑定；负数返回全量，abc引发500。
 
@@ -882,6 +882,7 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 ### 新发现问题（非本次范围）
 
 - N-01：已有`lint`脚本不兼容Next16。baseline已实际失败，未修；现有type-check/build可用，不能称lint通过。需另行确认是否修脚本/选择lint工具。
+- N-02：当前两份实际npm audit确认proxy-addr2.0.7命中critical `GHSA-jqcg-44mw-7w3h`（IPv4映射IPv6信任子网导致IP伪造），修复>=2.0.8。证据`T-16-root-audit.json`/`T-17-server-audit.json`；目前未证明本站trust proxy=1真实链可被该特定子网缺陷利用，不扩写为已证实绕过。原42项没有此独立依赖问题，未混进T-16/T-17，待用户批准新增最小依赖任务。sharp/source-map-js/esbuild其他audit残留也未顺手改。
 
 ### T-12 验收记录
 
@@ -918,3 +919,9 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 实际Node22 server干净npm ci、树/ABI、两type-check、diff-check退出0；T-17/T-16/T-19共10项全部通过。覆盖IPv4/IPv6地址分类、跨族子网拒绝、畸形/有界长输入、IPv6桶归一化；现有限流模块挂载到隔离loopback测试路由，127.0.0.1与::1分别第11个请求429并有Retry-After，health正常。
 - 生产路由尚未挂载对应limiter，这是T-05..09的任务，不因此称生产限流已修复。server audit目标ip-address消失，但因范围外proxy-addr仍退出1。
 - 证据`audit/execution-results/T-17-*`；安装前server目录保留在`/tmp/anonyproof-T-17-dependency-backup/server-node_modules`；回滚还原lockfile并用匹配runtime干净安装，无DB迁移。
+
+### T-40 验收记录
+
+- 状态：已完成；2026-10-07；只修改通知GET参数解析和SQL绑定，新增`tests/fix/T-40.test.ts`。缺省20，只接受十进制字符串所代表的1..100安全整数；重复/数组/括号key、负数/小数/非数值/空白/超限均400；权限规则不变。
+- 实际T-19+T-40 6/6、两type-check、diff-check均退出0。用户/管理各150可见通知，缺参数20及1/20/30/99/100边界精确返回最新序列，未读150；每角色26种非法输入共52次均400；隐藏跨身份通知未暴露；匿名401、跨用户403、用户访问admin401，health200且无SQL500日志。
+- 证据`audit/execution-results/T-40-*.txt`。未部署线上，2026-10-03公开站负limit现象不能因此宣称已在线关闭。
