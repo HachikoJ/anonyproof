@@ -1,0 +1,33 @@
+Primary advisory: https://github.com/advisories/GHSA-jqcg-44mw-7w3h
+Affected>=1.1.0,<2.0.8; patched2.0.8; only specific trust subnet exploit conditions, no claim of live-site exploitability.
+COMMAND: npm view proxy-addr@2.0.8 version dist dependencies engines --json
+{
+  "version": "2.0.8",
+  "dist": {
+    "shasum": "624e760fd8ab06b1b8320c2f8506d4422cf8e932",
+    "tarball": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.8.tgz",
+    "integrity": "sha512-5nnx0yGyVUcY6t9RnWcARWtwT9F1D8O9rt08htPvnd49W1IgZtmLkhu9WfMzQj1cFxjHIO6connUNVW5k7AVyQ==",
+    "fileCount": 5,
+    "unpackedSize": 16326,
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/proxy-addr@2.0.8",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "signatures": [
+      {
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+        "sig": "MEQCIHfDElOGXemn8m2D5JLKDtJLbmq875S2kM8l+XiiUm/KAiA+TbRsKHlW54iyWr1/je6gfrgDU2EkUEhlW8gt22De4g=="
+      }
+    ]
+  },
+  "dependencies": {
+    "forwarded": "0.2.0",
+    "ipaddr.js": "1.9.1"
+  },
+  "engines": {
+    "node": ">= 0.10"
+  }
+}
+EXIT: 0

@@ -1,0 +1,4 @@
+COMMAND: npm --prefix server ci --no-audit --no-fund
+
+added 151 packages in 844ms
+EXIT: 0

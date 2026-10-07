@@ -1,0 +1,2 @@
+Parent confirmed test installation window. Main checkout previous root/server node_modules retained at: /tmp/anonyproof-T43-main-dependency-backup-qan9vv_z
+Only dependency install directories moved; no DB, logs, environment, system runtime or online data modified.

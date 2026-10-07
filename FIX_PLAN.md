@@ -446,7 +446,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-43 proxy-addr已知IP信任漏洞的最小依赖修复
 
-状态：待办；原始严重度：新增审计critical/CVSS9.1（N-02，非原42项）；优先级：A；工作量：M；前置依赖：T-19。用户2026-10-07明确批准新增最小任务。
+状态：已完成；原始严重度：新增审计critical/CVSS9.1（N-02，非原42项）；优先级：A；工作量：M；前置依赖：T-19。用户2026-10-07明确批准新增最小任务。
 
 **问题**：root/server锁文件的proxy-addr2.0.7命中`GHSA-jqcg-44mw-7w3h`，范围>=1.1.0<2.0.8，IPv4映射IPv6信任子网判断可能导致IP伪造；当前本站trust proxy=1真实链的特定可利用性未证明。证据两份实际npm audit `T-16-root-audit.json`、`T-17-server-audit.json`。
 
@@ -551,7 +551,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-26 Cookie写接口统一来源/CSRF防护
 
-状态：待办（待Q-03）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。
+状态：待办（Q-03已确认；身份接口具体兼容方案待确认）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。
 
 **问题**：`requireSameOrigin()`只用于部分写路由，反馈/用户评论/通知更新缺少一致检查，无Origin默认放行；identity GET还会创建/修改身份。外站Lax POST是否带Cookie不能想当然。
 
@@ -567,7 +567,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-27 收紧CORS默认信任范围
 
-状态：待办（待Q-03）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：S；前置依赖：Q-03、T-19。
+状态：待办（Q-03已确认）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：S；前置依赖：Q-03、T-19。
 
 **问题**：`server/index.ts:49`缺配置时默认允许主域、子域和localhost，且credentials=true；部署遗漏配置会扩大跨应用读取边界。
 
@@ -968,3 +968,17 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 固定Node22/机器，1万和10万历史日志各500请求全200：p95=0.538875/0.407084ms，比值0.755（≤2）；服务事件循环p95=1.307647/1.262591ms，无锁错/5xx。首启含回填440.94/522.97ms，查询计划实际使用covering idx_access_logs_ip_created_at。证据`audit/execution-results/T-10-*`；这是本地顺序请求基准，不承诺生产并发吞吐。
 - 审阅剔除过一次范围外的“黑名单读取失败则放行”catch，恢复原安全控制后重跑相关测试和真实编译；性能SQL未变，基准不重复刷数。
 - 风险/回滚：首启迁移取得写锁，真实库实施前须一致性快照/维护边界。旧代码虽能读加列库，但不能维护累计列；回滚后旧版本再写入，重新升级须恢复对应一致快照或从保留源日志重新回填，不能只换代码。旧历史统计无源日志日期保留而非虚构还原；T-11不得提前删除当日原始访客判定数据，要按批准保留策略协调。
+
+### T-43 验收记录
+
+- 状态：已完成；2026-10-07。root/server两lock各只替换proxy-addr的version/resolved/integrity三行，2.0.7→2.0.8；manifest、代理策略和业务源没有混入此任务。用户已批准独立N-02最小修复。
+- 独立HEAD b6c1ad0 checkout两实际clean npm ci、两安装树/ABI、T-43/T-09/T-17/T-19共18/18、两原type命令及实际全后端strict编译全部退出0。主工作区两旧node_modules保留后重新npm ci/ls/ABI通过；父代理在当前集成状态再次跑同一18项全部通过，未跳过。
+- 五项T-43覆盖root/server IPv4、IPv6、映射IPv6正反例，两实际Express各12个trust/socket/伪造头组合、实际backend跨身份拒绝。保留旧2.0.7与2.0.8负对照八组：旧库错误信任、新库全部拒绝；不代表已证明本站线上trust proxy=1可利用。初次负对照因改名备份失去node_modules解析失败，仅child NODE_PATH修正后重跑通过，失败记录保留。
+- 主目录和独立目录audit目标GHSA均消失；server audit退出0无advisory，root退出1仍有4包（low1/high2/critical1，esbuild/next/sharp/source-map-js），未扩范围或称全安全。证据audit/execution-results/T-43-*，主集成命令/退出码在T-43-parent-integration.txt。
+- 回滚：原锁保存在T-43-lock-scope.txt所记路径；旧实际安装树在/tmp/anonyproof-T43-main-dependency-backup-qan9vv_z。还原旧锁并用匹配Node重新ci，或先保留新安装树再恢复备份。无DB迁移、上线或trust配置变化。
+
+### T-26 身份兼容待确认（Q-03具体接口分支）
+
+- Q-03来源范围已确认，T-27和T-26普通写路由可推进。现同源浏览器GET identity通常无Origin，且该GET创建身份/续签/绑定；不能直接按unsafe POST规则保留无来源状态修改。
+- 已展示具体方案待用户确认：先新增同响应POST identity支持，前端切POST，最后GET仅只读现Cookie身份，不更新last_seen、不创建/签发/绑定/轮换；无有效Cookie401。POST和恢复写请求严格允许Origin；旧缓存页面首次初始化需要刷新。回滚保留POST/只读GET，不恢复无来源写入。
+- 依据用户AGENTS.md第2节重大公共接口具体影响确认；只阻塞T-26身份分支，不阻塞其他已批准任务；未先实施该分支。

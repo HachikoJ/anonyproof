@@ -1,0 +1,4 @@
+CHECKOUT: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+COMMAND: node scripts/check-runtime.cjs
+Runtime and dependency trees verified (Node 22.23.3).
+EXIT: 0

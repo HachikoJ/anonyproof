@@ -1,0 +1,3 @@
+CHECKOUT: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+COMMAND: npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/index.ts server/env.ts server/demo.ts server/middleware/accessStats.ts server/middleware/rateLimit.ts server/middleware/rateLimitEnhanced.ts server/utils/database.ts server/utils/accessStats.ts server/utils/validation.ts
+EXIT: 0

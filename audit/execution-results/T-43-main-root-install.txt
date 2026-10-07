@@ -1,0 +1,4 @@
+COMMAND: npm ci --no-audit --no-fund
+
+added 178 packages in 5s
+EXIT: 0
