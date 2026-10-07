@@ -18,6 +18,8 @@ import {
   DEMO_ADMIN_PASSWORD,
   DEMO_DEVICE_ID,
   DEMO_NOTICE,
+  DEMO_TEMPLATE_IDS, DEMO_USER_COMMENTS, DEMO_ADMIN_COMMENTS, DEMO_SOLUTIONS,
+  getDemoExamples, getDemoExample,
   DEMO_SECONDARY_DEVICE_ID,
   cloneDemoDataForDevice,
   isDemoMode,
@@ -120,6 +122,8 @@ app.get('/api/demo/config', (_req, res) => {
     demoMode: true,
     adminPassword: DEMO_ADMIN_PASSWORD,
     notice: DEMO_NOTICE,
+    examples: getDemoExamples(), userComments: DEMO_USER_COMMENTS,
+    adminComments: DEMO_ADMIN_COMMENTS, solutions: DEMO_SOLUTIONS,
   })
 })
 
@@ -165,11 +169,11 @@ function validSession(value?: string) {
 
 function setSessionCookie(res: express.Response, value: string) {
   const secure = isProduction ? '; Secure' : ''
-  res.setHeader('Set-Cookie', `${cookieName}=${encodeURIComponent(value)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${sessionTtlMs / 1000}${secure}`)
+  res.append('Set-Cookie', `${cookieName}=${encodeURIComponent(value)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${sessionTtlMs / 1000}${secure}`)
 }
 
 function clearSessionCookie(res: express.Response) {
-  res.setHeader('Set-Cookie', `${cookieName}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`)
+  res.append('Set-Cookie', `${cookieName}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`)
 }
 
 function safePasswordEqual(input: string, expected: string) {
@@ -217,8 +221,9 @@ app.post(['/api/admin/auth/login', '/api/admin/login'], (req, res) => {
     return res.status(401).json({ error: '密码错误' })
   }
   loginAttempts.delete(ip)
+  const demoIdentity = demoMode ? ensureDemoIdentity(req, res) : undefined
   setSessionCookie(res, createSession())
-  res.json({ success: true })
+  res.json({ success: true, ...(demoIdentity ? { deviceId: demoIdentity.deviceId, recoveryCode: demoIdentity.recoveryCode } : {}) })
 })
 
 app.get(['/api/admin/auth/session', '/api/admin/session'], (req, res) => {
@@ -235,6 +240,12 @@ app.post(['/api/admin/auth/logout', '/api/admin/logout'], (req, res) => {
 })
 
 app.use('/api/admin', requireAdmin)
+
+// Public demo credentials never authorize raw access telemetry or blacklist changes.
+app.use('/api/admin/access', (_req, res, next) => {
+  if (demoMode) return res.status(403).json({ error: '公开演示不开放原始访问统计和日志' })
+  next()
+})
 
 // 访问统计管理接口
 app.get('/api/admin/access/stats', (_req, res) => {
@@ -768,65 +779,50 @@ function isAdminAuthenticated(req: express.Request) {
   return validSession(getCookie(req, cookieName))
 }
 
+const demoRequestIdentities = new WeakMap<express.Request, string>()
+function ensureDemoIdentity(req: express.Request, res: express.Response): ResolvedIdentity {
+  const existing = identityFromCookie(req)
+  const identity = existing ? { deviceId: existing.device_id, created: false } : issueClientIdentity(res)
+  if (existing) cloneDemoDataForDevice(db, existing.device_id)
+  // This helper intentionally does not call resolveClientIdentity(): a passive
+  // administrator request must never rotate an existing user's recovery code.
+  demoRequestIdentities.set(req, identity.deviceId)
+  return identity
+}
+function demoRequestDevice(req: express.Request) {
+  return demoRequestIdentities.get(req) || identityFromCookie(req)?.device_id || ''
+}
 function canAccessDevice(req: express.Request, deviceId: string) {
+  if (demoMode) return demoRequestDevice(req) === deviceId
   return isAdminAuthenticated(req) || identityFromCookie(req)?.device_id === deviceId
 }
 
-// 管理端记录范围：正式模式只包含真实提交；演示模式额外包含公开展示用的演示模板和游客演示副本，
-// 这样管理员既能演示处理流程，也能看到访客在该浏览器内产生的补充与状态。
-function adminRecordScope(alias: string) {
-  return demoMode ? '1 = 1' : `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`
+type RecordScope = { sql: string; params: string[] }
+function adminRecordScope(req: express.Request, alias: string, writable = false): RecordScope {
+  if (!demoMode) return { sql: `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`, params: [] }
+  const markers = DEMO_TEMPLATE_IDS.map(id => `demo-encrypted:${id}`)
+  const own = `(${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 1 AND ${alias}.device_id = ? AND ${alias}.encrypted_content IN (${markers.map(() => '?').join(',')}))`
+  if (writable) return { sql: own, params: [demoRequestDevice(req), ...markers] }
+  return { sql: `(${own} OR (${alias}.is_demo_template = 1 AND ${alias}.id IN (${DEMO_TEMPLATE_IDS.map(() => '?').join(',')})))`,
+    params: [demoRequestDevice(req), ...markers, ...DEMO_TEMPLATE_IDS] }
 }
-
-// 管理端列表范围：演示副本每个浏览器一份，全部堆在列表里会迅速淹没真实提交，
-// 因此列表只展示演示模板与真实提交，副本仍可通过通知链接直接打开处理。
-function adminListScope(alias: string) {
-  return demoMode
-    ? `(${alias}.is_demo_template = 1 OR ${alias}.is_demo_clone = 0)`
-    : `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`
+function userRecordScope(alias: string): RecordScope {
+  if (!demoMode) return { sql: `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`, params: [] }
+  const markers = DEMO_TEMPLATE_IDS.map(id => `demo-encrypted:${id}`)
+  return { sql: `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 1 AND ${alias}.encrypted_content IN (${markers.map(() => '?').join(',')})`, params: markers }
 }
-
-// 用户端记录范围：只在本机身份名下的记录中可见。演示模式关闭后，之前生成的演示副本自动隐藏，
-// 真实提交不受影响。
-function userRecordScope(alias: string) {
-  return `${alias}.is_demo_template = 0 AND (${alias}.is_demo_clone = 0 OR ${demoMode ? 1 : 0} = 1)`
+function notificationVisibilitySql(req: express.Request, recipientType: string, writable = false): RecordScope {
+  // Shared read-only templates have no per-browser notification read state.
+  const scope = recipientType === 'admin' ? adminRecordScope(req, 'f', writable || demoMode) : userRecordScope('f')
+  return { sql: `AND EXISTS (SELECT 1 FROM feedbacks f WHERE f.id = notifications.feedback_id
+    ${recipientType === 'user' ? 'AND f.device_id = notifications.recipient_id' : ''} AND ${scope.sql})`, params: scope.params }
 }
-
-// 管理端通知只展示指向“管理员有权查看的记录”的条目；用户端通知按接收者身份隔离，无需联表过滤。
-function notificationVisibilitySql(recipientType: string) {
-  if (recipientType === 'admin') {
-    return `AND EXISTS (
-      SELECT 1 FROM feedbacks f
-      WHERE f.id = notifications.feedback_id AND ${adminRecordScope('f')}
-    )`
-  }
-
-  return `AND EXISTS (
-    SELECT 1 FROM feedbacks f
-    WHERE f.id = notifications.feedback_id
-      AND f.device_id = notifications.recipient_id
-      AND ${userRecordScope('f')}
-  )`
-}
-
-function notificationRecordVisible(
-  recipientType: string,
-  recipientId: string,
-  feedbackId: string | null,
-) {
+function notificationRecordVisible(req: express.Request, recipientType: string, recipientId: string, feedbackId: string | null) {
   if (!feedbackId) return false
-
-  if (recipientType === 'admin') {
-    return Boolean(db.prepare(`
-      SELECT 1 FROM feedbacks
-      WHERE id = ? AND ${adminRecordScope('feedbacks')}
-    `).get(feedbackId))
-  }
-
-  return Boolean(db.prepare(`
-    SELECT 1 FROM feedbacks
-    WHERE id = ? AND device_id = ? AND ${userRecordScope('feedbacks')}
-  `).get(feedbackId, recipientId))
+  const scope = recipientType === 'admin' ? adminRecordScope(req, 'feedbacks', true) : userRecordScope('feedbacks')
+  return Boolean(db.prepare(`SELECT 1 FROM feedbacks WHERE id = ?
+    ${recipientType === 'user' ? 'AND device_id = ?' : ''} AND ${scope.sql}`)
+    .get(feedbackId, ...(recipientType === 'user' ? [recipientId] : []), ...scope.params))
 }
 
 app.get('/api/identity', (req, res) => {
@@ -873,8 +869,8 @@ const logAdminAction = (action: string, targetId: string, ip: string) => {
 const updateStats = () => {
   const feedbacks = db.prepare(`
     SELECT COUNT(*) AS count FROM feedbacks
-    WHERE is_demo_clone = 0 AND (${demoMode ? '1 = 1' : 'is_demo_template = 0'})
-  `).get() as { count: number }
+    WHERE is_demo_clone = 0 AND is_demo_template = ${demoMode ? 1 : 0}${demoMode ? ` AND id IN (${DEMO_TEMPLATE_IDS.map(() => '?').join(',')})` : ''}
+  `).get(...(demoMode ? DEMO_TEMPLATE_IDS : [])) as { count: number }
   const stats = db.prepare('UPDATE stats SET total_feedbacks = ?, encrypted_count = ? WHERE id = 1')
   stats.run(feedbacks.count, feedbacks.count)
 }
@@ -885,7 +881,12 @@ app.post('/api/feedback', (req, res) => {
     if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
       return res.status(400).json({ error: '请求参数必须为对象' })
     }
-    const { category, encryptedContent, deviceId, originalContent } = req.body
+    const example = demoMode ? getDemoExample(req.body.demoExampleId) : undefined
+    if (demoMode && !example) return res.status(400).json({ error: '公开演示只接受固定合成案例' })
+    const deviceId = req.body.deviceId
+    const category = demoMode ? example!.category : req.body.category
+    const originalContent = demoMode ? example!.originalContent : req.body.originalContent
+    const encryptedContent = demoMode ? `demo-encrypted:${example!.id}` : req.body.encryptedContent
     const identity = requireClientIdentity(req, res)
     if (!identity) return
 
@@ -910,9 +911,9 @@ app.post('/api/feedback', (req, res) => {
     const createdAt = Date.now()
 
     const stmt = db.prepare(
-      'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content, is_demo_clone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     )
-    stmt.run(id, category, encryptedContent, deviceId, createdAt, 'pending', originalContent || '')
+    stmt.run(id, category, encryptedContent, deviceId, createdAt, 'pending', originalContent || '', demoMode ? 1 : 0)
 
     updateStats()
 
@@ -945,8 +946,8 @@ app.get('/api/stats', (req, res) => {
     const stats = db.prepare(`
       SELECT COUNT(*) AS total
       FROM feedbacks
-      WHERE is_demo_clone = 0 AND (${demoMode ? '1 = 1' : 'is_demo_template = 0'})
-    `).get() as { total: number }
+      WHERE is_demo_clone = 0 AND is_demo_template = ${demoMode ? 1 : 0}${demoMode ? ` AND id IN (${DEMO_TEMPLATE_IDS.map(() => '?').join(',')})` : ''}
+    `).get(...(demoMode ? DEMO_TEMPLATE_IDS : [])) as { total: number }
     res.json({
       total: stats.total,
       encrypted: stats.total,
@@ -966,14 +967,16 @@ app.get('/api/admin/feedbacks', (req, res) => {
     // 记录查看操作
     logAdminAction('view_all', 'all', ip)
 
+    const scope = adminRecordScope(req, 'feedbacks')
     const feedbacks = db.prepare(
       `SELECT id, category, encrypted_content, device_id, created_at, status, original_content, solution, solution_updated_at,
         is_demo_template, is_demo_clone,
-        (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'admin' AND n.recipient_id = 'admin' AND n.is_read = 0) AS unread_notifications
+        CASE WHEN ${demoMode ? 'feedbacks.is_demo_template = 1' : '0'} THEN 0 ELSE
+          (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'admin' AND n.recipient_id = 'admin' AND n.is_read = 0) END AS unread_notifications
        FROM feedbacks
-       WHERE ${adminListScope('feedbacks')}
+       WHERE ${scope.sql}
        ORDER BY created_at DESC`
-    ).all() as any[]
+    ).all(...scope.params) as any[]
 
     res.json({
       success: true,
@@ -997,13 +1000,14 @@ app.get('/api/admin/feedback/:id', (req, res) => {
     // 记录查看操作
     logAdminAction('view_detail', id, ip)
 
+    const scope = adminRecordScope(req, 'feedbacks')
     const feedback = db.prepare(`
       SELECT id, category, encrypted_content, device_id, created_at, status,
         original_content, solution, solution_updated_at, solution_admin_ip,
         is_demo_template, is_demo_clone
       FROM feedbacks
-      WHERE id = ? AND ${adminRecordScope('feedbacks')}
-    `).get(id) as any
+      WHERE id = ? AND ${scope.sql}
+    `).get(id, ...scope.params) as any
 
     if (!feedback) {
       return res.status(404).json({ error: '反馈不存在' })
@@ -1027,17 +1031,20 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
   try {
     const { id } = req.params
     const status = req.body?.status
-    const solution = req.body?.solution
+    const fixedSolution = demoMode ? DEMO_SOLUTIONS.find(item => item.id === req.body?.demoSolutionId && item.id === status) : undefined
+    const solution = demoMode ? fixedSolution?.content : req.body?.solution
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
+    const scope = adminRecordScope(req, 'feedbacks', true)
     const visibleFeedback = db.prepare(`
       SELECT id, status, solution FROM feedbacks
-      WHERE id = ? AND ${adminRecordScope('feedbacks')}
-    `).get(id) as { id: string; status: string; solution: string } | undefined
+      WHERE id = ? AND ${scope.sql}
+    `).get(id, ...scope.params) as { id: string; status: string; solution: string } | undefined
 
     if (!visibleFeedback) {
       return res.status(404).json({ error: '反馈不存在' })
     }
 
+    if (demoMode && !fixedSolution) return res.status(400).json({ error: '请选择固定演示处理说明' })
     if (!validateStatus(status)) {
       return res.status(400).json({ error: '无效的状态' })
     }
@@ -1093,10 +1100,11 @@ app.delete('/api/admin/feedback/:id', (req, res) => {
     const { id } = req.params
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
     // 演示模板由服务端种子维护，重启后会重新写入，因此不允许删除；其余可访问记录允许删除。
+    const scope = adminRecordScope(req, 'feedbacks', true)
     const visibleFeedback = db.prepare(`
       SELECT id FROM feedbacks
-      WHERE id = ? AND feedbacks.is_demo_template = 0 AND ${adminRecordScope('feedbacks')}
-    `).get(id)
+      WHERE id = ? AND feedbacks.is_demo_template = 0 AND ${scope.sql}
+    `).get(id, ...scope.params)
 
     if (!visibleFeedback) {
       return res.status(404).json({ error: '反馈不存在' })
@@ -1119,6 +1127,7 @@ app.delete('/api/admin/feedback/:id', (req, res) => {
 
 // API: 获取操作日志（管理员）
 app.get('/api/admin/logs', (req, res) => {
+  if (demoMode) return res.status(403).json({ error: '公开演示不开放原始操作日志' })
   try {
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
 
@@ -1146,16 +1155,17 @@ app.get('/api/admin/logs', (req, res) => {
 app.get('/api/feedback/:feedbackId/comments', (req, res) => {
   try {
     const feedbackId = String(req.params.feedbackId)
-    const scope = isAdminAuthenticated(req) ? adminRecordScope('feedbacks') : userRecordScope('feedbacks')
+    const admin = isAdminAuthenticated(req)
+    const scope = admin ? adminRecordScope(req, 'feedbacks') : userRecordScope('feedbacks')
     const feedback = db.prepare(`
       SELECT device_id FROM feedbacks
-      WHERE id = ? AND ${scope}
-    `).get(feedbackId) as { device_id: string } | undefined
+      WHERE id = ? AND ${scope.sql}
+    `).get(feedbackId, ...scope.params) as { device_id: string } | undefined
 
     if (!feedback) {
       return res.status(404).json({ error: '反馈不存在' })
     }
-    if (!canAccessDevice(req, feedback.device_id)) {
+    if (!admin && !canAccessDevice(req, feedback.device_id)) {
       return res.status(401).json({ error: '无权查看该记录的沟通内容' })
     }
 
@@ -1180,12 +1190,13 @@ app.get('/api/feedback/:feedbackId/comments', (req, res) => {
 const addFeedbackComment = (req: express.Request, res: express.Response, commenterType: 'user' | 'admin') => {
   try {
     const feedbackId = String(req.params.feedbackId)
-    const content = req.body?.content
-    const scope = commenterType === 'admin' ? adminRecordScope('feedbacks') : userRecordScope('feedbacks')
+    const fixedComment = demoMode ? (commenterType === 'admin' ? DEMO_ADMIN_COMMENTS : DEMO_USER_COMMENTS).find(item => item.id === req.body?.demoCommentId) : undefined
+    const content = demoMode ? fixedComment?.content : req.body?.content
+    const scope = commenterType === 'admin' ? adminRecordScope(req, 'feedbacks', true) : userRecordScope('feedbacks')
     const feedback = db.prepare(`
       SELECT device_id, category, original_content FROM feedbacks
-      WHERE id = ? AND ${scope}
-    `).get(feedbackId) as { device_id: string; category: string; original_content: string } | undefined
+      WHERE id = ? AND ${scope.sql}
+    `).get(feedbackId, ...scope.params) as { device_id: string; category: string; original_content: string } | undefined
 
     if (!feedback) {
       return res.status(404).json({ error: '反馈不存在' })
@@ -1193,6 +1204,7 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     if (commenterType === 'user' && !canAccessDevice(req, feedback.device_id)) {
       return res.status(401).json({ error: '无权补充该记录' })
     }
+    if (demoMode && !fixedComment) return res.status(400).json({ error: '请选择固定演示回复' })
     const validation = validateCommentContent(content)
     if (!validation.valid) {
       return res.status(400).json({ error: validation.error })
@@ -1260,13 +1272,14 @@ app.get('/api/feedback/device/:deviceId', (req, res) => {
       return res.status(401).json({ error: '无权查看该浏览器的提交记录' })
     }
 
+    const scope = userRecordScope('feedbacks')
     const feedbacks = db.prepare(
       `SELECT id, category, original_content, created_at, status, solution, solution_updated_at,
         (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'user' AND n.recipient_id = ? AND n.is_read = 0) AS unread_notifications
        FROM feedbacks
-       WHERE device_id = ? AND ${userRecordScope('feedbacks')}
+       WHERE device_id = ? AND ${scope.sql}
        ORDER BY created_at DESC`
-    ).all(deviceId, deviceId) as any[]
+    ).all(deviceId, deviceId, ...scope.params) as any[]
 
     res.json({
       success: true,
@@ -1325,12 +1338,12 @@ app.get('/api/notifications/unread-count', (req, res) => {
       }
     }
 
-    const visibility = notificationVisibilitySql(String(recipientType))
+    const visibility = notificationVisibilitySql(req, String(recipientType))
     const count = db.prepare(
       `SELECT COUNT(*) as count
        FROM notifications
-       WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0 ${visibility}`
-    ).get(recipientType, recipientId) as { count: number }
+       WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0 ${visibility.sql}`
+    ).get(recipientType, recipientId, ...visibility.params) as { count: number }
 
     res.json({
       success: true,
@@ -1370,12 +1383,12 @@ app.get('/api/notifications', (req, res) => {
       return res.status(400).json({ error: 'limit 必须是 1 到 100 的整数' })
     }
 
-    const visibility = notificationVisibilitySql(String(recipientType))
+    const visibility = notificationVisibilitySql(req, String(recipientType))
     const notifications = db.prepare(
       `SELECT * FROM notifications
-       WHERE recipient_type = ? AND recipient_id = ? ${visibility}
+       WHERE recipient_type = ? AND recipient_id = ? ${visibility.sql}
        ORDER BY created_at DESC LIMIT ?`
-    ).all(recipientType, recipientId, notificationLimit) as any[]
+    ).all(recipientType, recipientId, ...visibility.params, notificationLimit) as any[]
 
     res.json({
       success: true,
@@ -1411,6 +1424,7 @@ app.put('/api/notifications/:id/read', (req, res) => {
       }
     }
     if (!notificationRecordVisible(
+      req,
       notification.recipient_type,
       notification.recipient_id,
       notification.feedback_id,
@@ -1453,6 +1467,7 @@ app.put('/api/notifications/:id/unread', (req, res) => {
       }
     }
     if (!notificationRecordVisible(
+      req,
       notification.recipient_type,
       notification.recipient_id,
       notification.feedback_id,
@@ -1496,15 +1511,18 @@ app.put('/api/notifications/read-all', (req, res) => {
       }
     }
 
-    const visibility = notificationVisibilitySql(String(recipientType))
+    if (feedbackId && (typeof feedbackId !== 'string' || !notificationRecordVisible(req, String(recipientType), String(recipientId), feedbackId))) {
+      return res.status(404).json({ error: '通知对应的记录不可修改' })
+    }
+    const visibility = notificationVisibilitySql(req, String(recipientType), true)
     const stmt = feedbackId
       ? db.prepare(`UPDATE notifications
           SET is_read = 1
-          WHERE recipient_type = ? AND recipient_id = ? AND feedback_id = ? AND is_read = 0 ${visibility}`)
+          WHERE recipient_type = ? AND recipient_id = ? AND feedback_id = ? AND is_read = 0 ${visibility.sql}`)
       : db.prepare(`UPDATE notifications
           SET is_read = 1
-          WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0 ${visibility}`)
-    const result = feedbackId ? stmt.run(recipientType, recipientId, feedbackId) : stmt.run(recipientType, recipientId)
+          WHERE recipient_type = ? AND recipient_id = ? AND is_read = 0 ${visibility.sql}`)
+    const result = feedbackId ? stmt.run(recipientType, recipientId, feedbackId, ...visibility.params) : stmt.run(recipientType, recipientId, ...visibility.params)
 
     res.json({
       success: true,

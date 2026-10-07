@@ -4,7 +4,7 @@ import crypto from 'crypto'
 export const DEMO_ADMIN_PASSWORD = 'demo12345678'
 export const DEMO_DEVICE_ID = 'demo-device-anonyproof-2026'
 export const DEMO_SECONDARY_DEVICE_ID = 'demo-device-affiliate-2026'
-export const DEMO_NOTICE = '仅用于效果演示，正式部署前必须清除预设管理员密码。'
+export const DEMO_NOTICE = '公开演示仅使用固定合成案例；每个浏览器有独立沙箱，不接收真实敏感材料。公开模板只读。'
 
 function isEnabledValue(value: string | undefined) {
   if (!value) return false
@@ -241,6 +241,31 @@ const feedbacks: DemoFeedback[] = [
   },
 ]
 
+// Earlier public demo versions allowed editing template text. Keep those rows
+// untouched, but never treat their stored content as a trusted synthetic source.
+const currentFeedbacks = feedbacks.map(feedback => ({ ...feedback, id: `demo-v2-${feedback.id}` }))
+export const DEMO_TEMPLATE_IDS = currentFeedbacks.map(feedback => feedback.id)
+export const DEMO_USER_COMMENTS = [
+  { id: 'supplement', label: '补充合成线索', content: '合成示例补充：演示地点的指引仍需完善，请继续跟进。' },
+  { id: 'thanks', label: '确认演示结果', content: '合成示例反馈：已看到演示整改结果，感谢跟进。' },
+]
+export const DEMO_ADMIN_COMMENTS = [
+  { id: 'reply', label: '回复已记录', content: '合成示例回复：已记录补充说明，演示核查将继续跟进。' },
+  { id: 'followup', label: '回复已跟进', content: '合成示例回复：演示核查已完成，后续结果将在本记录同步。' },
+]
+export const DEMO_SOLUTIONS = [
+  { id: 'in_progress', label: '处理中', content: '合成示例处理说明：已受理演示案例，正在核查合成线索。' },
+  { id: 'resolved', label: '已办结', content: '合成示例处理说明：演示核查已完成，模拟整改结果已确认。' },
+  { id: 'no_solution', label: '暂无法处理', content: '合成示例处理说明：模拟条件暂不满足，将在演示记录内继续跟进。' },
+]
+export function getDemoExamples() {
+  return currentFeedbacks.map(feedback => ({ id: feedback.id, category: feedback.category,
+    label: `${categoryNames[feedback.category]}案例：${feedback.originalContent.slice(0, 20)}…`, content: feedback.originalContent }))
+}
+export function getDemoExample(id: unknown) {
+  return typeof id === 'string' ? currentFeedbacks.find(feedback => feedback.id === id) : undefined
+}
+
 function addCommentIfMissing(
   db: Database.Database,
   feedbackId: string,
@@ -385,7 +410,7 @@ export function seedDemoData(db: Database.Database) {
     content.length > 50 ? `${content.slice(0, 50)}...` : content
   )
 
-  for (const feedback of feedbacks) {
+  for (const feedback of currentFeedbacks) {
     const deviceId = feedback.deviceId ?? DEMO_DEVICE_ID
     const solutionUpdatedAt = feedback.solutionUpdatedAt
       ?? (feedback.solution ? feedback.createdAt + 45 * 60 * 1000 : null)
@@ -472,14 +497,15 @@ export function seedDemoData(db: Database.Database) {
 
   // 旧版本的示例数据没有模板标记；按固定 ID 回填，不能把用户真实提交误标为演示数据。
   const markTemplate = db.prepare('UPDATE feedbacks SET is_demo_template = 1, is_demo_clone = 0 WHERE id = ?')
-  for (const feedback of feedbacks) markTemplate.run(feedback.id)
+  for (const feedback of currentFeedbacks) markTemplate.run(feedback.id)
 
   // 演示模板代表公开示例总量；逐浏览器副本只用于隔离交互状态，不能反复抬高首页统计。
-  const total = db.prepare('SELECT COUNT(*) AS count FROM feedbacks WHERE is_demo_clone = 0').get() as { count: number }
+  const total = currentFeedbacks.length
   db.prepare('UPDATE stats SET total_feedbacks = ?, encrypted_count = ? WHERE id = 1')
-    .run(total.count, total.count)
+    .run(total, total)
 
-  seedAccessDemoData(db)
+  // Raw access telemetry stays private. Do not mix synthetic counters into the
+  // real telemetry tables; public demo access endpoints are unavailable.
 }
 
 type DemoFeedbackRow = {
@@ -522,7 +548,12 @@ export function cloneDemoDataForDevice(db: Database.Database, deviceId: string) 
     'SELECT demo_initialized FROM client_identities WHERE device_id = ?',
   ).get(deviceId) as { demo_initialized: number } | undefined
 
-  if (!state || state.demo_initialized) return 0
+  if (!state) return 0
+  const currentClone = db.prepare(`SELECT 1 FROM feedbacks WHERE device_id = ?
+    AND is_demo_template = 0 AND is_demo_clone = 1
+    AND encrypted_content IN (${DEMO_TEMPLATE_IDS.map(() => '?').join(',')}) LIMIT 1`)
+    .get(deviceId, ...DEMO_TEMPLATE_IDS.map(id => `demo-encrypted:${id}`))
+  if (state.demo_initialized && currentClone) return 0
 
   const initialized = db.prepare(
     'SELECT COUNT(*) AS count FROM client_identities WHERE demo_initialized = 1',
@@ -533,9 +564,9 @@ export function cloneDemoDataForDevice(db: Database.Database, deviceId: string) 
     SELECT id, category, encrypted_content, created_at, status, original_content,
       solution, solution_updated_at, solution_admin_ip
     FROM feedbacks
-    WHERE is_demo_template = 1
+    WHERE is_demo_template = 1 AND id IN (${DEMO_TEMPLATE_IDS.map(() => '?').join(',')})
     ORDER BY created_at ASC
-  `).all() as DemoFeedbackRow[]
+  `).all(...DEMO_TEMPLATE_IDS) as DemoFeedbackRow[]
 
   const insertFeedback = db.prepare(`
     INSERT INTO feedbacks (

@@ -91,7 +91,11 @@ function syncFeedbackQuery(id: string | null) {
 }
 
 export default function AdminPage() {
-  const { config: demoConfig } = useDemoConfig();
+  const { config: demoConfig, loading: demoLoading, error: demoError } = useDemoConfig();
+  const demoMode = demoConfig?.demoMode === true;
+  const modeReady = !!demoConfig && !demoLoading;
+  const [demoCommentId, setDemoCommentId] = useState("");
+  const [demoSolutionId, setDemoSolutionId] = useState("in_progress");
   const notificationPanelRef = useRef<HTMLDivElement>(null);
   const feedbackListRef = useRef<HTMLDivElement>(null);
   const feedbackListScrollTopRef = useRef(0);
@@ -104,6 +108,7 @@ export default function AdminPage() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [selected, setSelected] = useState<Feedback | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const readOnly = !modeReady || (demoMode && !!selected?.is_demo_template);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [solution, setSolution] = useState("");
@@ -356,10 +361,12 @@ export default function AdminPage() {
       feedbackListRef.current?.scrollTop ?? feedbackListScrollTopRef.current;
     syncFeedbackQuery(item.id);
     setSelected(item);
+    setDemoCommentId("");
+    setDemoSolutionId(item.status === "pending" ? "in_progress" : item.status);
     setSolution("");
     setMessage("");
     fetchComments(item.id);
-    if (forceReadNotifications || (item.unread_notifications ?? 0) > 0) {
+    if (!(demoMode && item.is_demo_template) && (forceReadNotifications || (item.unread_notifications ?? 0) > 0)) {
       try {
         const response = await fetch(
           `/anonyproof/api/notifications/read-all?recipientType=admin&recipientId=admin&feedbackId=${encodeURIComponent(item.id)}`,
@@ -381,13 +388,13 @@ export default function AdminPage() {
   };
 
   const updateStatus = async (nextStatus: Feedback["status"]) => {
-    if (!selected) return;
+    if (!selected || readOnly) return;
     if (selected.status === nextStatus) {
       setMessage("");
       return;
     }
     if (
-      (nextStatus === "resolved" || nextStatus === "no_solution") &&
+      !demoMode && (nextStatus === "resolved" || nextStatus === "no_solution") &&
       solution.trim().length < 10
     ) {
       setMessage("办结或暂无法处理时，请填写至少 10 个字的处理说明");
@@ -402,7 +409,7 @@ export default function AdminPage() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
-          body: JSON.stringify({ status: nextStatus, solution }),
+          body: JSON.stringify(demoMode ? { status: nextStatus, demoSolutionId } : { status: nextStatus, solution }),
         },
       );
       await readApiJson(response);
@@ -410,7 +417,7 @@ export default function AdminPage() {
       setMessageTone("info");
       setSolution("");
       setSelected((current) =>
-        current ? { ...current, status: nextStatus, solution } : current,
+        current ? { ...current, status: nextStatus, solution: demoMode ? demoConfig?.solutions?.find(item => item.id === demoSolutionId)?.content : solution } : current,
       );
       await fetchData();
       fetchNotifications();
@@ -423,7 +430,7 @@ export default function AdminPage() {
 
   const addComment = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!selected || comment.trim().length < 2) return;
+    if (!selected || readOnly || (demoMode ? !demoCommentId : comment.trim().length < 2)) return;
     setActionLoading("comment");
     try {
       const response = await fetch(
@@ -432,11 +439,12 @@ export default function AdminPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
-          body: JSON.stringify({ content: comment.trim() }),
+          body: JSON.stringify(demoMode ? { demoCommentId } : { content: comment.trim() }),
         },
       );
       await readApiJson(response);
       setComment("");
+      setDemoCommentId("");
       await fetchComments(selected.id);
       setMessage("回复已发送");
       setMessageTone("success");
@@ -635,7 +643,7 @@ export default function AdminPage() {
             <a className="is-active" href="/anonyproof/foorpynona">
               线索管理
             </a>
-            <a href="/anonyproof/access-stats">访问与风控</a>
+            {!demoMode && modeReady && <a href="/anonyproof/access-stats">访问与风控</a>}
           </nav>
           <div className="admin-tools">
             <ExternalLinks linkClassName="admin-external-link" />
@@ -914,6 +922,13 @@ export default function AdminPage() {
                     </div>
                     <div className="detail-section">
                       <h3>处理说明</h3>
+                      {!modeReady ? <p role="status">{demoError || "正在确认站点模式…"}</p> : demoMode && selected.is_demo_template ? <p>公开合成模板只读。请选择本浏览器沙箱副本体验处理流程。</p> : demoMode ? <>
+                        <label htmlFor="demo-solution">固定演示处理说明</label>
+                        <select id="demo-solution" value={demoSolutionId} onChange={event => setDemoSolutionId(event.target.value)}>
+                          {demoConfig?.solutions?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
+                        </select>
+                        <p>{demoConfig?.solutions?.find(item => item.id === demoSolutionId)?.content}</p>
+                      </> : <>
                       <textarea
                         id="solution"
                         aria-label="处理说明"
@@ -923,11 +938,12 @@ export default function AdminPage() {
                         placeholder="填写本次核查结论、处理动作或原因"
                         rows={3}
                       />
+                      </>}
                       <div className="status-actions">
                         <button
                           className={`process-action ${selected.status === "in_progress" ? "is-active" : ""}`}
                           aria-pressed={selected.status === "in_progress"}
-                          disabled={Boolean(actionLoading)}
+                          disabled={Boolean(actionLoading) || readOnly || (demoMode && demoSolutionId !== "in_progress")}
                           onClick={() => updateStatus("in_progress")}
                         >
                           {actionLoading === "in_progress"
@@ -937,7 +953,7 @@ export default function AdminPage() {
                         <button
                           className={`success-action ${selected.status === "resolved" ? "is-active" : ""}`}
                           aria-pressed={selected.status === "resolved"}
-                          disabled={Boolean(actionLoading)}
+                          disabled={Boolean(actionLoading) || readOnly || (demoMode && demoSolutionId !== "resolved")}
                           onClick={() => updateStatus("resolved")}
                         >
                           {actionLoading === "resolved"
@@ -947,7 +963,7 @@ export default function AdminPage() {
                         <button
                           className={`muted-action ${selected.status === "no_solution" ? "is-active" : ""}`}
                           aria-pressed={selected.status === "no_solution"}
-                          disabled={Boolean(actionLoading)}
+                          disabled={Boolean(actionLoading) || readOnly || (demoMode && demoSolutionId !== "no_solution")}
                           onClick={() => updateStatus("no_solution")}
                         >
                           {actionLoading === "no_solution"
@@ -993,6 +1009,7 @@ export default function AdminPage() {
                       )}
                     </div>
                     <form className="comment-form" onSubmit={addComment}>
+                      {readOnly ? <p>{demoMode ? "公开模板只读" : demoError || "正在确认站点模式…"}</p> : demoMode ? <select aria-label="固定演示回复" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示回复</option>{demoConfig?.adminComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <>
                       <input
                         value={comment}
                         maxLength={1000}
@@ -1000,11 +1017,12 @@ export default function AdminPage() {
                         placeholder="输入回复内容"
                         aria-label="回复内容"
                       />
+                      </>}
                       <button
                         type="submit"
                         disabled={
-                          actionLoading === "comment" ||
-                          comment.trim().length < 2
+                          actionLoading === "comment" || readOnly ||
+                          (demoMode ? !demoCommentId : comment.trim().length < 2)
                         }
                       >
                         {actionLoading === "comment" ? "正在发送…" : "发送"}

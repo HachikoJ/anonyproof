@@ -1,0 +1,3 @@
+Real browser created one synthetic feedback; resolved solution matches the server preset; exactly two comments match admin/user fixed presets. No recovery code, token or key printed.
+
+EXIT: 0

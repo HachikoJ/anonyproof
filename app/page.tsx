@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useDemoConfig } from './hooks/useDemoConfig'
 import { useCrypto } from './hooks/useCrypto'
 import ExternalLinks from './components/ExternalLinks'
 import { recordCode } from './utils/recordCode'
@@ -109,6 +110,11 @@ function BackIcon() {
 }
 
 export default function HomePage() {
+  const { config: demoConfig, loading: demoLoading, error: demoError } = useDemoConfig()
+  const demoMode = demoConfig?.demoMode === true
+  const modeReady = !!demoConfig && !demoLoading
+  const [demoExampleId, setDemoExampleId] = useState('')
+  const [demoCommentId, setDemoCommentId] = useState('')
   const notificationPanelRef = useRef<HTMLDivElement>(null)
   const recordsListRef = useRef<HTMLDivElement>(null)
   const recordsScrollTopRef = useRef(0)
@@ -323,7 +329,8 @@ export default function HomePage() {
   }
 
   const handleSubmit = async () => {
-    if (!content.trim()) {
+    if (!modeReady) { setSubmitResult({ success: false, message: demoError || '正在确认站点模式，请稍后再试。' }); return }
+    if (demoMode ? !demoExampleId : !content.trim()) {
       setSubmitResult({ success: false, message: '请填写事实或线索。' })
       return
     }
@@ -334,17 +341,17 @@ export default function HomePage() {
     setIsSubmitting(true)
     setSubmitResult(null)
     try {
-      const encryptedContent = await encrypt(content.trim())
+      const encryptedContent = demoMode ? '' : await encrypt(content.trim())
       const response = await fetch('/anonyproof/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, encryptedContent, deviceId, originalContent: content.trim() }),
+        body: JSON.stringify(demoMode ? { demoExampleId, deviceId } : { category, encryptedContent, deviceId, originalContent: content.trim() }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '提交未完成，请稍后重试。')
       setContent('')
       setSubmitResult({ success: true, message: '已生成记录编号，可在“我的提交”中查看处理进度。', id: data.id })
-      setStats((current) => ({ total: (current?.total ?? 0) + 1 }))
+      if (!demoMode) setStats((current) => ({ total: (current?.total ?? 0) + 1 }))
     } catch (error) {
       setSubmitResult({
         success: false,
@@ -356,18 +363,19 @@ export default function HomePage() {
   }
 
   const handleAddComment = async () => {
-    if (!selectedFeedback || newComment.trim().length < 2) return
+    if (!modeReady || !selectedFeedback || (demoMode ? !demoCommentId : newComment.trim().length < 2)) return
     setCommentSending(true)
     setCommentError('')
     try {
       const response = await fetch(`/anonyproof/api/feedback/${selectedFeedback.id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newComment.trim(), commenterType: 'user' }),
+        body: JSON.stringify(demoMode ? { demoCommentId } : { content: newComment.trim(), commenterType: 'user' }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '补充说明未发送')
       setNewComment('')
+      setDemoCommentId('')
       fetchComments(selectedFeedback.id)
     } catch (error) {
       setCommentError(getErrorMessage(error, '补充说明未发送，请检查网络后重试。'))
@@ -490,10 +498,10 @@ export default function HomePage() {
             <section className="hero-band">
               <div className="hero-copy">
                 <h1>让重要线索<br />被认真看见。</h1>
-                <p className="hero-lead">提交建议、投诉与违规线索，处理进度随时可查。</p>
+                <p className="hero-lead">{!modeReady ? demoError || '正在确认站点模式…' : demoMode ? demoConfig?.notice : '提交建议、投诉与违规线索，处理进度随时可查。'}</p>
                 <div className="hero-actions">
-                  <button className="button button-primary" type="button" onClick={() => { setCategory(''); setSubmitResult(null); setView('category') }}>
-                    提交线索 <span aria-hidden="true">→</span>
+                  <button className="button button-primary" type="button" disabled={!modeReady} onClick={() => { setCategory(''); setSubmitResult(null); setView('category') }}>
+                    {demoMode ? '体验合成案例' : '提交线索'} <span aria-hidden="true">→</span>
                   </button>
                   <button className="button button-secondary" type="button" onClick={openRecords}>查看我的提交</button>
                 </div>
@@ -508,13 +516,13 @@ export default function HomePage() {
                   <span className="live-dot"><i />持续可查</span>
                 </div>
                 <ol>
-                  <li><span>01</span><div><strong>描述事实</strong></div></li>
+                  <li><span>01</span><div><strong>{demoMode ? '选择合成案例' : '描述事实'}</strong></div></li>
                   <li><span>02</span><div><strong>提交受理</strong></div></li>
                   <li><span>03</span><div><strong>查看进度</strong></div></li>
                 </ol>
                 <div className="flow-proof">
                   <span>{stats ? stats.total : '—'}</span>
-                  <div><strong>已收到的提交</strong><small>公开统计仅展示总量</small></div>
+                  <div><strong>{demoMode ? '固定合成案例' : '已收到的提交'}</strong><small>{demoMode ? '访客沙箱不会改变此总量' : '公开统计仅展示总量'}</small></div>
                 </div>
               </aside>
             </section>
@@ -545,11 +553,12 @@ export default function HomePage() {
             <div className="task-heading">
               <p className="eyebrow">第 1 步，共 2 步</p>
               <h1>选择提交类型</h1>
-              <p>选择最接近的类型，进入下一步填写具体内容。</p>
+              <p>{demoMode ? '选择固定合成案例的类型，体验本浏览器的隔离沙箱。' : '选择最接近的类型，进入下一步填写具体内容。'}</p>
+              {!modeReady && <p role="status">{demoError || '正在确认站点模式…'}</p>}
             </div>
             <div className="category-list">
               {categories.map((item) => (
-                <button key={item.id} type="button" onClick={() => { setCategory(item.id); setView('compose') }}>
+                <button key={item.id} type="button" disabled={!modeReady} onClick={() => { setCategory(item.id); setDemoExampleId(demoConfig?.examples?.find(example => example.category === item.id)?.id || ''); setView('compose') }}>
                   <span className="category-index">{item.index}</span>
                   <span><strong>{item.name}</strong><small>{item.description}</small></span>
                   <i aria-hidden="true">→</i>
@@ -567,11 +576,22 @@ export default function HomePage() {
             </button>
             <div className="task-heading">
               <p className="eyebrow">第 2 步，共 2 步 · {categoryName(category)}</p>
-              <h1>描述事实与线索</h1>
-              <p>优先写清可核实的信息，不必使用正式措辞。</p>
+              <h1>{demoMode ? '选择合成演示案例' : '描述事实与线索'}</h1>
+              <p>{demoMode ? demoConfig?.notice : '优先写清可核实的信息，不必使用正式措辞。'}</p>
             </div>
             <div className="compose-layout">
               <div className="compose-main">
+                {!modeReady ? <p role="status">{demoError || '正在确认站点模式…'}</p> : demoMode ? (
+                  <>
+                    <label htmlFor="demo-example">固定合成案例</label>
+                    <select id="demo-example" value={demoExampleId} onChange={event => setDemoExampleId(event.target.value)}>
+                      <option value="">请选择案例</option>
+                      {demoConfig?.examples?.filter(example => example.category === category).map(example => <option key={example.id} value={example.id}>{example.label}</option>)}
+                    </select>
+                    <p>{demoConfig?.examples?.find(example => example.id === demoExampleId)?.content}</p>
+                    <p className="field-meta">示例正文不可编辑。仅保存选定的合成案例，不接收真实材料。</p>
+                  </>
+                ) : <>
                 <label htmlFor="evidence-content">提交内容</label>
                 <textarea
                   id="evidence-content"
@@ -582,22 +602,23 @@ export default function HomePage() {
                   autoFocus
                 />
                 <div className="field-meta"><span>提交失败不会清空已输入内容</span><span>{content.length} / 10000</span></div>
+                </>}
                 {submitResult && !submitResult.success && <p className="form-message form-error" role="alert">{submitResult.message}</p>}
                 <div className="submit-bar">
                   <button className="button button-secondary" type="button" onClick={() => setView('category')}>上一步</button>
-                  <button className="button button-primary" type="button" onClick={handleSubmit} disabled={isSubmitting || !content.trim()}>
-                    {isSubmitting ? '正在提交…' : '提交线索'}
+                  <button className="button button-primary" type="button" onClick={handleSubmit} disabled={isSubmitting || !modeReady || (demoMode ? !demoExampleId : !content.trim())}>
+                    {isSubmitting ? '正在提交…' : demoMode ? '创建沙箱记录' : '提交线索'}
                   </button>
                 </div>
               </div>
               <aside className="privacy-panel">
-                <h2>提交前检查</h2>
-                <ul>
+                <h2>{demoMode ? '演示范围' : '提交前检查'}</h2>
+                {demoMode ? <p>每个浏览器拥有独立沙箱；只能选择固定合成内容。公开模板只读，其他访客记录和原始日志不可访问。</p> : <><ul>
                   <li><span />删去姓名、电话、住址等身份信息</li>
                   <li><span />区分亲历事实与转述内容</li>
                   <li><span />保留时间、地点和可核实细节</li>
                 </ul>
-                <p>平台会保存提交原文、本机识别码、访问 IP 与浏览器信息；这些信息仍可能间接识别提交环境，因此不等于完全匿名。</p>
+                <p>平台会保存提交原文、本机识别码、访问 IP 与浏览器信息；这些信息仍可能间接识别提交环境，因此不等于完全匿名。</p></>}
               </aside>
             </div>
           </section>
@@ -731,10 +752,10 @@ export default function HomePage() {
                 <div className="comment-composer">
                   <div className="comment-input">
                     <label className="visually-hidden" htmlFor="comment">补充说明</label>
-                    <textarea id="comment" value={newComment} onChange={(event) => setNewComment(event.target.value)} placeholder="补充事实、线索或问题；最多 1000 字" maxLength={1000} />
+                    {!modeReady ? <p role="status">{demoError || '正在确认站点模式…'}</p> : demoMode ? <select id="comment" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示补充</option>{demoConfig?.userComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <textarea id="comment" value={newComment} onChange={(event) => setNewComment(event.target.value)} placeholder="补充事实、线索或问题；最多 1000 字" maxLength={1000} />}
                     {newComment.length >= 800 && <span className="comment-count" aria-live="polite">{newComment.length} / 1000</span>}
                   </div>
-                  <button className="button button-primary" type="button" disabled={commentSending || newComment.trim().length < 2} onClick={handleAddComment}>{commentSending ? '正在发送…' : '发送补充'}</button>
+                  <button className="button button-primary" type="button" disabled={commentSending || !modeReady || (demoMode ? !demoCommentId : newComment.trim().length < 2)} onClick={handleAddComment}>{commentSending ? '正在发送…' : '发送补充'}</button>
                 </div>
               </aside>
             </div>

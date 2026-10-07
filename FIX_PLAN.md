@@ -472,7 +472,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-01 公开演示后台与访客数据权限隔离
 
-状态：进行中；原始严重度：P0（审查第 1 条）；优先级：A；工作量：L；前置依赖：T-19；Q-01方向和具体交互/权限方案均已批准。
+状态：已完成；原始严重度：P0（审查第 1 条）；优先级：A；工作量：L；前置依赖：T-19；已批准范围的本地权限/交互验收见第10节；未部署，T-02真实硬隔离仍待处理。
 
 **问题**：`server/demo.ts:4`公开演示密码，`server/index.ts:92`返回密码，登录接口接受它；`adminRecordScope()/adminListScope()`在演示模式仍让公开管理员读取实际访客正文及访问日志。2026-10-03线上登录和读取成功。
 
@@ -1010,3 +1010,14 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 继续复用临时库验证重启时，发现本轮新helper实际传入了DATABASE_PATH覆盖值，但返回databasePath/openDb仍指向新建默认路径；这是本轮fixture自身缺陷，已在T-19范围修正，不增加产品功能或改真实数据库。
 - helper按实际显式覆盖值（相对项目根目录解析）报告和打开同一库。新增重启验收：两进程复用同一隔离库，返回路径一致且openDb读到原身份、总数仍1。预先用同一随机fixture内容key，兼容后续加密marker检查。
 - T-19/T-01实际8/8退出0，证据T-19-fixture-reuse.txt；当前frontend type-check/build和真实backend strict编译也通过，见T-01对应证据。此前T-01重启测试直接使用首进程db验证因此结果仍有效；此前浏览器第二次fixture启动输出的默认新路径不是实际库，核对使用了真正覆盖的6S02W0库，未把错误元数据当证据。
+
+### T-01 验收记录
+
+- 状态：已完成（本地实现/验收）；2026-10-07；server/index.ts、server/demo.ts、useDemoConfig、用户首页/管理台/访问统计页面和T-01测试。Q-01方向与具体交互/权限差异已批准；未部署、未迁移/删除真实资产。
+- demo管理员读仅当前固定模板+本浏览器当前安全副本，写仅自己副本；用户device/comments/notices保持归属。全范围参数绑定，不再1=1。新模板使用版本化ID和allowlist，旧模板及曾被自由编辑的旧clone原样保留但从公开读取/克隆源中排除；当前clone还需server固定marker。旧已初始化身份可复制新安全模板，不能认领旧真实内容。
+- 三类自由内容均改固定示例ID选择，server取固定正文/评论/说明，传入任意originalContent/encryptedContent/content/solution不进入新数据。新demo反馈标clone。templates所有status/comment/delete/notification-read写拒绝；管理通知仅自己clone，模板badge为0，避免不可修改的全站共享未读状态。
+- 公开demo所有原始访问统计/日志/黑名单及操作日志入口403，导航隐藏；首页只数固定7模板。未知/失败mode配置输入和提交关闭。成功login POST缺identity签独立身份并append两Cookie，已有cookie复用不被动rotate；admin GET不签发身份，无identity旧session只能读模板。formal原有任意业务流程保留。
+- 父代理T-01/T-19/T-20实际9/9退出0（随后T-19新增库复用后T-01/T-19为8/8）；root type-check、真实全后端strict compile和production build全部0。矩阵含A/B/无identity管理session、同一owner旧real/旧clone sentinel、template全部读写/通知/日志/stats、两login alias、重启不rotate与新安全副本、formal正常flow/演示凭证不可用；旧sentinel库内容未删除。
+- 真实浏览器：公开合成声明→固定案例创建成功；模板三状态及发送disabled；自己记录固定办结/管理回复成功；用户固定补充后沟通记录2条。SQLite独立核对正文/说明/两角色评论全部精确匹配server示例（0），没有仅以可见toast代替落库验证。证据audit/execution-results/T-01-*。
+- 已保留手动dev与集成test锁冲突失败证据，停止fixture后重跑全套通过；浏览器旧tab内建data错误URL被工具阻止，没有绕过策略，使用新tab恢复并完成验收。原错误是测试进程协调问题。
+- 部署风险/回滚：旧真实记录和旧演示版本数据仍存在，只有API本地范围收紧，不等同T-02库/密钥硬隔离或T-32历史迁移。上线前另获配置/发布授权。回滚只能保留隔离范围并关闭公开写入，不能恢复旧1=1权限；旧输入bundle的自由内容会被新demo API拒绝，需与当前frontend同步发布。
