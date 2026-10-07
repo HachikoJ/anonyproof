@@ -692,7 +692,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-32 历史明文/可解密密文及备份处置
 
-状态：进行中（只读盘点准备通过；真实迁移/处置待Q-04/Q-07及具体资产确认）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
+状态：进行中（只读盘点及合成候选转换准备通过；真实迁移/处置待Q-04/Q-07及具体资产确认）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
 
 **问题**：即便改新写入，feedbacks.original_content、旧key+cipher字段、comments/notifications以及备份仍含敏感内容；单改代码不消除旧数据风险。
 
@@ -1198,3 +1198,14 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 环境实查：`command -v nginx`无输出/非0；Docker context为desktop-linux，`docker image ls`退出0且无镜像。未拉镜像或brew install，不虚构nginx-t结果。官方Nginx文档核对proxy_pass无URI保留路径、return308及TLS语法，来源在proposal；这是文档依据，不能当运行验收。
 - 下一轮先确认上述具体清单/模板及验证环境，再独立fixture高位回环端口/测试证书运行nginx -V/-t/启动、真实Next+合成Express库的页面/静态/API/Cookie/Origin/PUT/DELETE矩阵、hash迁移核对与type/build/diff-check。DELETE一致性依赖T-34批准语义，T-24真实来源另验；线上证书/公网端口/原生效配置需另获发布/探针授权及T-02，不硬绕过这些门禁。草案未启用时不需要回滚；批准后的独立T-35提交和原生效vhost快照是回滚点，不恢复真实材料公开写入。
 - 实际proposal-only验证退出0：JSON覆盖完整21跟踪文件、21目标唯一且未创建、新支持模板未创建、21配置及2脚本字节/hash与记录的Git基线一致；差异仅计划/预览/manifest/其检查证据。`git diff --check`退出0，输出 `T-35-proposal-check.txt`。未修改应用源，未用重复build或静态检查假称Nginx语法/业务验收通过。已向用户展示具体变更请求，等待答复期间不实施移动/禁用。
+
+### T-32 合成候选转换准备与部分验收（2026-10-07）
+
+- 状态保持进行中，完成任务数不增加。依据Q-02明确允许的新旧格式准备，新增尚未接入业务/CLI的`scripts/content-migration-candidate.ts`；只在全新合成源运行，无真实库/备份/env/key读取、迁移、清理或入口切换。它不是绕过Q-04/Q-07实施保留映射的生产命令。
+- 显式绝对源/全新.db目标及独立key；源readonly+query_only→SQLite backup私人0700/0600快照→同步IMMEDIATE事务转换四类字段、验证新旧格式→VACUUM INTO新候选→fsync/不覆盖hard link发布。原库不加列/不更新，未知/混合demo、主键/schema、触发器、非integer版本、NULL内容、旧空正文仍有非标准包拒绝。原文为空可能是旧升级默认值，不能清掉其唯一恢复包；这是保持T-32“不丢用户记录”目标的实现边界，不自创空串映射。现有v1逐条认证但不再密封，所有旧表数量及身份/状态/时间/审计原样保留，仅key marker可新增。新复制的旧key包字段改非敏感marker，原源及私有工作快照保留，不授权旧资产处置。
+- 按id128行读完再写，避开活动iterate游标写限制与全量内存内容数组。私有stage使用磁盘DELETE回滚日志，避免大库将全部回滚页留内存；secure_delete/FULL、temp_store MEMORY，候选重建页。工作快照/回滚页可能含旧原文/key，纳入以后资产确认，不能忽略；目标与working candidate同inode不是独立备份。失败不发布目标/不改旧源；已存在或竞态目标不得覆盖；异常不含内容/凭证。模块可不调用，源和现有业务是回滚基线，未为展示成功改真实迁移策略。
+- 实际首次新增测试7通过/4失败，全部来自本轮fixture错误（不存在的admin评论读取GET路径、两处双引号SQL字面量）；已保留T-32-candidate-first-tests.txt并改为现有共享comments读取路由/正确SQL，不改变产品API来迎合测试。后续12/12与30/30相关结果保留，最终增加短标记物理扫描、REAL版本与空正文边界。
+- 最终Node22.23.3：`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32-candidate.test.ts tests/fix/T-32.test.ts tests/fix/T-03.test.ts`退出0，34/34、0失败/跳过（candidate17、inventory3、T-03已验收14）；此前31/31结果保留，最后再补真实schema/主键拒绝和旧body/新solution等混合字段验收。涵盖三反馈/两身份/四评论/四通知精确ownership/非内容字段、Unicode/大正文/空说明/合法apc字面原文、旧body/key原库短扫描正→候选/字段导出负、权限与无候选WAL/journal、独立复制恢复后真实HTTP两恢复码/列表/正文/说明/评论/通知读回、重复零新密封/零重复、错key/篡改失败、晚期NULL整笔DDL/marker/业务回滚与合成修正再试、活source writer非空已提交WAL快照且源DB/WAL hash不变、257增量跨128批界三表逐条认证、scope/trigger/schema/主键/version/key/path拒绝、混合v0/v1只密封旧字段且正确v1密文逐字不变、目标竞态不覆盖。
+- `npm run type-check`及实际scripts+全后端strict tsc退出0，`git diff --check`通过。最后证据`T-32-candidate-complete-prep-tests.txt`、`T-32-candidate-complete-prep-type.txt`、`T-32-candidate-backend-and-scripts-type.txt`；设计/源码/命令与剩余门禁见`T-32-candidate-design.md`及DEPLOY。未改app/server业务源，无新增依赖；使用现有已验收构建测试真实backend恢复，不为operator模块重复前端build。
+- 新控制台证据加入Git后，cached diff-check发现NPM尾空行及首次失败TAP空行带空白；仅规范展示空白，原始字节保存在独立临时目录，其路径/SHA256和最终命令/退出码见`T-32-candidate-verification.json`。再次cached diff-check退出0；保留首次失败和各轮通过结果，不改写测试结论。
+- 未满足的整项验收：Q-04/Q-07与实际保留/备份清单、NULL/空正文/混合demo等实际数据映射、T-02角色adoption、实际大库资源/故障演练与全量身份/关联核对、停写最终快照及切换、旧源/working/备份逐项处置和必要线上补验。在线候选不会自动包含备份后新写入；不能直接替代继续写的源，更不能把candidatePrepared或本次31通过当历史风险消除。下一轮先处理确认及实际资产快照，仍不得默认删除源/备份。

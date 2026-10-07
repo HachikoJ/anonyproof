@@ -1,0 +1,54 @@
+{
+  "task": "T-32",
+  "scope": "synthetic preparation only; real migration not performed",
+  "nodeVersion": "v22.23.3",
+  "tests": {
+    "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32-candidate.test.ts tests/fix/T-32.test.ts tests/fix/T-03.test.ts",
+    "exitCode": 0,
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "skip": 0,
+    "evidence": "T-32-candidate-complete-prep-tests.txt"
+  },
+  "frontendType": {
+    "command": "npm run type-check",
+    "exitCode": 0,
+    "evidence": "T-32-candidate-complete-prep-type.txt"
+  },
+  "backendAndScriptsType": {
+    "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict scripts/content-migration-candidate.ts scripts/content-migration-inventory.ts server/*.ts server/middleware/*.ts server/utils/*.ts",
+    "exitCode": 0,
+    "evidence": "T-32-candidate-backend-and-scripts-type.txt"
+  },
+  "evidenceNormalization": [
+    {
+      "file": "audit/execution-results/T-32-candidate-complete-prep-type.txt",
+      "rawCopy": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T32-candidate-raw-75rur9j4/T-32-candidate-complete-prep-type.txt",
+      "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+      "normalizedSha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63",
+      "change": "console trailing whitespace and final blank lines only; raw bytes retained"
+    },
+    {
+      "file": "audit/execution-results/T-32-candidate-final-type.txt",
+      "rawCopy": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T32-candidate-raw-75rur9j4/T-32-candidate-final-type.txt",
+      "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+      "normalizedSha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63",
+      "change": "console trailing whitespace and final blank lines only; raw bytes retained"
+    },
+    {
+      "file": "audit/execution-results/T-32-candidate-first-tests.txt",
+      "rawCopy": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T32-candidate-raw-75rur9j4/T-32-candidate-first-tests.txt",
+      "rawSha256": "ed59a06ac4743a4841847244bee27ae437fd788b80d935e84ef7c9d3215b850f",
+      "normalizedSha256": "dc80e920af3d0435d7fb0755da66c2854dfb88edd7e366011d1e38db26cd92d2",
+      "change": "console trailing whitespace and final blank lines only; raw bytes retained"
+    },
+    {
+      "file": "audit/execution-results/T-32-candidate-first-type.txt",
+      "rawCopy": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T32-candidate-raw-75rur9j4/T-32-candidate-first-type.txt",
+      "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+      "normalizedSha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63",
+      "change": "console trailing whitespace and final blank lines only; raw bytes retained"
+    }
+  ]
+}

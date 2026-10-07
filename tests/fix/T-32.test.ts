@@ -1,5 +1,6 @@
 // Partial T-32 acceptance: read-only inventory preparation only. Historical
-// conversion, ciphertext authentication and asset disposal remain unimplemented.
+// candidate conversion/authentication is covered separately in T-32-candidate;
+// real retention mapping, activation and old-asset disposal remain pending.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import path from 'node:path'
