@@ -744,7 +744,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-28 未接入第三方图床实现防误启用
 
-状态：进行中（A已批准清单且已逐字归档；待完整验收）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
+状态：已完成；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
 
 **问题**：`app/components/FileUpload.tsx`和`app/utils/imageUpload.ts`直接把文件发ImgBB/Imgur，NEXT_PUBLIC密钥客户端可见；当前未接入，不能称线上泄露。
 
@@ -1290,3 +1290,11 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 回滚点：此任务提交前版本；安全回滚应保留不被动撤销 R1 的后端分支，不能用再次轮换补足前端展示。T-22 可开始整合容量。
 
 - T-21 日志提交仅规范化终端 CR/行尾空白；原始失败与成功输出逐字备份位置和 SHA256 见 `T-21-log-formatting.json`，未改变错误、断言或退出结果。源补丁保留本地未提交，实际实现以 Git diff 为准。
+
+### T-28 执行与验收（2026-10-08）
+
+- 已完成。按 A 精确清单将未接入的 FileUpload.tsx/imageUpload.ts 逐字归档为 `.txt`；两文件 SHA256 与批准前相同，归档 README 标注禁止启用和原位置，活跃 README 继续说明附件未实现。未新增上传功能或删依赖。
+- `rg -n 'api\.imgbb|api\.imgur|NEXT_PUBLIC_IMGBB|NEXT_PUBLIC_IMGUR|uploadToImageHost|uploadToImgur|uploadImage' app .env.example` 无命中（退出 1）；归档源码无活跃 import。总 FileUpload 词命中仍有 T-29 独立待处理的 LocalFileUpload 声明，不能误算此项失败或提前关闭 T-29。hash/命令见 `T-28-archive-static-result.json`。
+- Node22 实际 `npm run type-check` / `npm run build` 均退出 0，复用同一工作树的 `T-21-final-type.txt` / `T-21-final-build.txt`。首次 T-28 类型检查退出 2 是 T-21 夹具 helper 参数尚未适配；原失败日志保留，修正后重新验证通过。
+- 真实浏览器使用合成库的 production build/start：文本提交、详情、补充、管理员登录/状态/回复均成功；用户刷新能读到处理中状态和双方评论。各阶段 pageAssets 的 resource 观察无外域/ImgBB/Imgur/upload-local，文件输入数 0；见 `T-28-browser-result.json` 和 `T-21-browser-request-paths.json`。未向第三方实际上传文件；此验收只证明现有流程。
+- 回滚点：本项提交前版本及逐字归档文本；仅在原位置无冲突时复制恢复，不覆盖用户资产，保留未支持说明。独立归档提交的 rename 检查保留原始空白，`git diff --cached --check` 须退出 0。

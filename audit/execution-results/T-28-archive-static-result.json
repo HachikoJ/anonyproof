@@ -1,0 +1,112 @@
+{
+  "task": "T-28",
+  "date": "2026-10-08",
+  "authorization": "User A approved in current conversation; exact archival scope from approved proposal",
+  "baselineCommit": "16610021190f8dd272c7b781aaf19a681dda65e8",
+  "assets": [
+    {
+      "task": "T-28",
+      "source": "app/components/FileUpload.tsx",
+      "proposedTarget": "archive/unsupported-uploads/FileUpload.tsx.txt",
+      "sha256": "0eb8e346efd86cc5809672fb8892cf8d67cc4fc797e75d95e8c3cef18e87d484",
+      "bytes": 3009,
+      "gitMode": "100644",
+      "callers": [],
+      "reachableFromRouteEntry": false,
+      "sourceUnchanged": true,
+      "proposedTargetExists": false,
+      "targetSha256": "0eb8e346efd86cc5809672fb8892cf8d67cc4fc797e75d95e8c3cef18e87d484",
+      "targetBytes": 3009,
+      "sourceExists": false,
+      "exactBytesPreserved": true
+    },
+    {
+      "task": "T-28",
+      "source": "app/utils/imageUpload.ts",
+      "proposedTarget": "archive/unsupported-uploads/imageUpload.ts.txt",
+      "sha256": "8d1a3f2249c6f3ead0eed1f9195fd8b626610549d3d2282e8ac026a47ea68189",
+      "bytes": 1857,
+      "gitMode": "100644",
+      "callers": [],
+      "reachableFromRouteEntry": false,
+      "sourceUnchanged": true,
+      "proposedTargetExists": false,
+      "targetSha256": "8d1a3f2249c6f3ead0eed1f9195fd8b626610549d3d2282e8ac026a47ea68189",
+      "targetBytes": 1857,
+      "sourceExists": false,
+      "exactBytesPreserved": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "third-party-and-upload-symbols",
+      "argv": [
+        "rg",
+        "-n",
+        "api\\.imgbb|api\\.imgur|NEXT_PUBLIC_IMGBB|NEXT_PUBLIC_IMGUR|FileUpload|uploadToImageHost|uploadToImgur|uploadImage",
+        "app",
+        ".env.example"
+      ],
+      "exitCode": 0,
+      "stdout": "app/components/LocalFileUpload.tsx:6:interface LocalFileUploadProps {\napp/components/LocalFileUpload.tsx:12:export default function LocalFileUpload({ \napp/components/LocalFileUpload.tsx:19:}: LocalFileUploadProps) {\n",
+      "stderr": ""
+    },
+    {
+      "name": "third-party-active-calls-and-credentials",
+      "argv": [
+        "rg",
+        "-n",
+        "api\\.imgbb|api\\.imgur|NEXT_PUBLIC_IMGBB|NEXT_PUBLIC_IMGUR|uploadToImageHost|uploadToImgur|uploadImage",
+        "app",
+        ".env.example"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "archived-upload-imports",
+      "argv": [
+        "rg",
+        "-n",
+        "(import|from|require).*(FileUpload|imageUpload)",
+        "app",
+        "server",
+        "--glob",
+        "!**/node_modules/**"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "dependenciesChanged": false,
+  "remainingAcceptance": [],
+  "status": "completed",
+  "integration": {
+    "typeCheck": {
+      "argv": [
+        "npm",
+        "run",
+        "type-check"
+      ],
+      "exitCode": 0,
+      "log": "T-21-final-type.txt"
+    },
+    "build": {
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "log": "T-21-final-build.txt"
+    },
+    "browser": "T-28-browser-result.json",
+    "initialTypeFailure": {
+      "exitCode": 2,
+      "log": "T-28-type.txt",
+      "cause": "T-21 new tests called fixture Client.identity with optional request arguments before helper adaptation; fixed and final type check passed"
+    }
+  }
+}
