@@ -147,7 +147,8 @@ PM2                - 前后端进程守护
 
 | 方法 | 路径 | 用途 |
 | --- | --- | --- |
-| `GET` | `/api/identity` | 签发 / 读取本机身份，返回恢复码 |
+| `POST` | `/api/identity` | 在准确 Origin 下签发、绑定或续接本机身份 |
+| `GET/HEAD` | `/api/identity` | 只读取有效 Cookie 身份；失效401，需刷新旧页面 |
 | `POST` | `/api/identity/recover` | 用恢复码找回原有身份 |
 | `POST` | `/api/feedback` | 提交线索 |
 | `GET` | `/api/feedback/device/:deviceId` | 读取本机线索列表 |

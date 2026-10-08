@@ -1,0 +1,202 @@
+TAP version 13
+# Subtest: T-02 invalid role/mode/path/password/key fails before DB creation
+ok 1 - T-02 invalid role/mode/path/password/key fails before DB creation
+  ---
+  duration_ms: 4849.733708
+  type: 'test'
+  ...
+# Subtest: T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+ok 2 - T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+  ---
+  duration_ms: 735.850291
+  type: 'test'
+  ...
+# Subtest: T-02 persisted role cannot be flipped and a formal key cannot be replaced
+ok 3 - T-02 persisted role cannot be flipped and a formal key cannot be replaced
+  ---
+  duration_ms: 2046.843375
+  type: 'test'
+  ...
+# Subtest: T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+ok 4 - T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+  ---
+  duration_ms: 911.130833
+  type: 'test'
+  ...
+# Subtest: T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+ok 5 - T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+  ---
+  duration_ms: 147.448833
+  type: 'test'
+  ...
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 6 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2593.039208
+  type: 'test'
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 7 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 965.499292
+  type: 'test'
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 8 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 888.063458
+  type: 'test'
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 9 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 435.09175
+  type: 'test'
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 10 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 5083.091084
+  type: 'test'
+  ...
+# Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+ok 11 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+  ---
+  duration_ms: 941.123958
+  type: 'test'
+  ...
+# Subtest: T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota
+ok 12 - T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota
+  ---
+  duration_ms: 2670.448
+  type: 'test'
+  ...
+# Subtest: T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers
+ok 13 - T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers
+  ---
+  duration_ms: 2624.4385
+  type: 'test'
+  ...
+# Subtest: T-06: default quota admits ten and blocks eleventh, boundary one is configurable
+ok 14 - T-06: default quota admits ten and blocks eleventh, boundary one is configurable
+  ---
+  duration_ms: 1149.417875
+  type: 'test'
+  ...
+# Subtest: T-06: invalid source/identity/window configuration fails startup explicitly
+ok 15 - T-06: invalid source/identity/window configuration fails startup explicitly
+  ---
+  duration_ms: 12995.193042
+  type: 'test'
+  ...
+# Subtest: T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+ok 16 - T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+  ---
+  duration_ms: 3179.934541
+  type: 'test'
+  ...
+# Subtest: T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+ok 17 - T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+  ---
+  duration_ms: 537.032125
+  type: 'test'
+  ...
+# Subtest: T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+ok 18 - T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+  ---
+  duration_ms: 610.288458
+  type: 'test'
+  ...
+# Subtest: T-08: invalid recovery limiter values reject startup by the offending configuration name
+ok 19 - T-08: invalid recovery limiter values reject startup by the offending configuration name
+  ---
+  duration_ms: 6396.074625
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and missing code preserves R1 and its records
+ok 20 - T-21: restart with valid Cookie and missing code preserves R1 and its records
+  ---
+  duration_ms: 1314.592334
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+ok 21 - T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 1234.073375
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and missing code preserves R1 and its records
+ok 22 - T-21: restart with valid installation key and missing code preserves R1 and its records
+  ---
+  duration_ms: 1314.916792
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and mismatching code preserves R1 and its records
+ok 23 - T-21: restart with valid installation key and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 1166.306083
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid Cookie never revokes R1
+ok 24 - T-21: expired display cache with valid Cookie never revokes R1
+  ---
+  duration_ms: 504.981625
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid installation key never revokes R1
+ok 25 - T-21: expired display cache with valid installation key never revokes R1
+  ---
+  duration_ms: 508.831208
+  type: 'test'
+  ...
+# Subtest: T-21: two initializing tabs share one identity and matching codes remain valid
+ok 26 - T-21: two initializing tabs share one identity and matching codes remain valid
+  ---
+  duration_ms: 490.336833
+  type: 'test'
+  ...
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 27 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 608.798208
+  type: 'test'
+  ...
+# Subtest: T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+ok 28 - T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+  ---
+  duration_ms: 959.31875
+  type: 'test'
+  ...
+# Subtest: T-27: only explicit canonical origin configuration is accepted
+ok 29 - T-27: only explicit canonical origin configuration is accepted
+  ---
+  duration_ms: 1.161708
+  type: 'test'
+  ...
+# Subtest: T-27: actual CORS preflight/read responses expose only approved exact origins
+ok 30 - T-27: actual CORS preflight/read responses expose only approved exact origins
+  ---
+  duration_ms: 44.316833
+  type: 'test'
+  ...
+# Subtest: T-27: actual production backend rejects missing or invalid origin configuration
+ok 31 - T-27: actual production backend rejects missing or invalid origin configuration
+  ---
+  duration_ms: 2621.515084
+  type: 'test'
+  ...
+# Subtest: T-27: product backend preflight and authenticated reads use the exact configured origins
+ok 32 - T-27: product backend preflight and authenticated reads use the exact configured origins
+  ---
+  duration_ms: 462.242959
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62508.349292

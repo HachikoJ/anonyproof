@@ -28,9 +28,10 @@ test('T-26: every existing cookie write route and login/logout alias rejects unt
     const set = Map.prototype.set;
     Map.prototype.set = function(key, value) {
       const result = Reflect.apply(set, this, [key, value]);
+      const candidate = value?.value ?? value;
       if (typeof key === 'string' && /^[a-f0-9]{64}\\.[a-f0-9]{64}$/.test(key)
-          && Number.isSafeInteger(value) && value > Date.now() + 7 * 60 * 60 * 1000
-          && value <= Date.now() + 8 * 60 * 60 * 1000) {
+          && Number.isSafeInteger(candidate) && candidate > Date.now() + 7 * 60 * 60 * 1000
+          && candidate <= Date.now() + 8 * 60 * 60 * 1000) {
         fs.writeFileSync(counter, String(Number(fs.readFileSync(counter, 'utf8')) + 1));
       }
       return result;
@@ -40,7 +41,7 @@ test('T-26: every existing cookie write route and login/logout alias rejects unt
   t.after(service.stop)
   const user = new Client(service)
   const admin = new Client(service)
-  const identity = await user.request('/api/identity', { headers: { Origin: service.baseUrl } })
+  const identity = await user.identity({ headers: { Origin: service.baseUrl } })
   assert.equal(identity.response.status, 200)
   const deviceId = identity.data.deviceId
   const trusted = (route: WriteRoute) => write(route, service.baseUrl)
@@ -70,6 +71,8 @@ test('T-26: every existing cookie write route and login/logout alias rejects unt
     { client: user, method: 'PUT', url: `/api/notifications/${notification.id}/read`, body: {} },
     { client: user, method: 'PUT', url: `/api/notifications/${notification.id}/unread`, body: {} },
     { client: user, method: 'PUT', url: `/api/notifications/read-all?recipientType=user&recipientId=${deviceId}`, body: {} },
+    { client: user, method: 'POST', url: '/api/identity', body: {} },
+    { client: new Client(service), method: 'POST', url: '/api/identity', body: {} },
   ]
   const businessTables = ['feedbacks', 'feedback_comments', 'notifications', 'stats', 'admin_logs',
     'client_identities', 'client_identity_sessions', 'client_identity_install_keys', 'ip_blacklist']
@@ -108,4 +111,56 @@ test('T-26: every existing cookie write route and login/logout alias rejects unt
   assert.equal((await user.request('/health')).response.status, 200)
   // Request/access audit logging may record denials. These assertions cover
   // business/authentication state, not an incorrect promise of zero audit writes.
+})
+
+test('T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone', async t => {
+  for (const demoMode of ['0', '1']) {
+    const service = await startBackend({ DEMO_MODE: demoMode, IDENTITY_RATE_LIMIT_MAX: '100' })
+    t.after(service.stop)
+    const db = service.openDb(); t.after(() => db.close())
+    const tables = ['client_identities', 'client_identity_sessions', 'client_identity_install_keys',
+      'feedbacks', 'feedback_comments', 'notifications', 'stats', 'admin_logs']
+    const snapshot = () => Object.fromEntries(tables.map(table => [table, db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()]))
+    const headers = { 'X-AnonyProof-Install-Key': 'T26-GET-key-'.padEnd(48, 'a'),
+      'X-AnonyProof-Recovery-Code': 'A'.repeat(20), 'X-AnonyProof-Device-Id': 'device-legacy-T26' }
+    const fresh = new Client(service), initial = snapshot()
+    for (const method of ['GET', 'HEAD']) {
+      const r = await fresh.request('/api/identity', { method, headers })
+      assert.equal(r.response.status, 401)
+      assert.deepEqual(r.response.headers.getSetCookie(), [])
+      assert.deepEqual(snapshot(), initial)
+    }
+    for (const origin of [undefined, 'null', 'https://outside.invalid']) {
+      const r = await fresh.request('/api/identity', { method: 'POST', headers: origin ? { ...headers, Origin: origin } : headers, omitOrigin: !origin })
+      assert.equal(r.response.status, 403)
+      assert.deepEqual(r.response.headers.getSetCookie(), [])
+      assert.deepEqual(snapshot(), initial)
+    }
+    const owner = new Client(service), issued = await owner.identity({ headers })
+    assert.equal(issued.response.status, 200)
+    const validState = snapshot()
+    for (const method of ['GET', 'HEAD']) {
+      const r = await owner.request('/api/identity', { method,
+        headers: { ...headers, 'X-AnonyProof-Install-Key': 'T26-unbound-'.padEnd(48, 'b'), 'X-AnonyProof-Recovery-Code': issued.data.recoveryCode } })
+      assert.equal(r.response.status, 200)
+      assert.deepEqual(r.response.headers.getSetCookie(), [])
+      if (method === 'GET') {
+        assert.equal(r.data.deviceId, issued.data.deviceId)
+        assert.equal(r.data.created, false)
+        assert.equal(r.data.recoveryCode, issued.data.recoveryCode)
+      }
+      assert.deepEqual(snapshot(), validState)
+    }
+    const malformed = await new Client(service).request('/api/identity', { headers: { Cookie: 'anonyproof_device_session=%E0%A4%A' } })
+    assert.equal(malformed.response.status, 401)
+    assert.deepEqual(snapshot(), validState)
+    // Fault is confined to this synthetic DB: simulate expiry without months of waiting.
+    db.prepare('UPDATE client_identity_sessions SET expires_at=?').run(Date.now() - 1)
+    const expiredState = snapshot()
+    assert.equal((await owner.request('/api/identity', { headers })).response.status, 401)
+    assert.deepEqual(snapshot(), expiredState)
+    const resumed = await owner.identity({ headers })
+    assert.equal(resumed.response.status, 200)
+    assert.equal(resumed.data.deviceId, issued.data.deviceId)
+  }
 })

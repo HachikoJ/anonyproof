@@ -75,6 +75,7 @@ async function fetchIdentity(): Promise<IdentityResponse> {
   if (storedRecoveryCode) headers['X-AnonyProof-Recovery-Code'] = storedRecoveryCode
 
   const response = await fetch('/anonyproof/api/identity', {
+    method: 'POST',
     cache: 'no-store',
     headers,
   })

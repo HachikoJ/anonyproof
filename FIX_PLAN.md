@@ -564,7 +564,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-26 Cookie写接口统一来源/CSRF防护
 
-状态：进行中（普通unsafe方法已验收；A已批准身份POST/只读GET兼容方案，待实施验收）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。
+状态：已完成（普通unsafe方法及身份POST/只读GET兼容方案均通过本地验收）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。
 
 **问题**：`requireSameOrigin()`只用于部分写路由，反馈/用户评论/通知更新缺少一致检查，无Origin默认放行；identity GET还会创建/修改身份。外站Lax POST是否带Cookie不能想当然。
 
@@ -1326,3 +1326,11 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 已完成。Draft PR #1 的固定候选 25e1c6a、真实 pull_request run 37751003017 / build (20.x) conclusion=success，所有必需安装、native ABI、前后端类型、Next build、修复回归、依赖审计及上传步骤均成功；仅 failure-only debug log 步骤正常跳过。记录 `T-18-actual-ci-run.json` / `T-18-actual-ci-log.txt`。此结果只适用于该候选，不把尚未推送的后续提交称为远端通过。
 - 实际制品包含 dependency-audit-20.x 与 build-20.x，均非过期且大小非零；审计报告已下载并解析，server 无告警，root 仍有 next/sharp/source-map-js high 和 esbuild low 共 4 项（critical 0）。保留原计划外告警，不伪称整个依赖树无漏洞；详见 `T-18-actual-ci-artifacts.json` / `T-18-actual-ci-audit-summary.json`。
 - T-37/T-38/T-39/T-42 的 T-18 前置解除，按已有边界本地实施。Cloudflare 是独立既有集成，失败不冒充 GitHub CI 成功也不混入 T-18 验收；不因此声称整个 PR 所有检查通过。用户已明确授权检查并排除测试分支自动生产部署，当前控制页面跳转 Cloudflare 登录，仍缺可用账号会话；凭证不足前不擅用 GitHub token 去其它服务。后续 push 等分支自动部署风险排除。
+
+### T-26 身份状态写入兼容完成（2026-10-08，A 已批准）
+
+- 状态：已完成，本地产品代码与验收通过，未部署线上。初始化/安装密钥绑定/续期/沙箱创建由准确 Origin 防护的 POST `/api/identity` 执行；前端及合成 fixture 已切 POST。兼容 GET/HEAD 只接受有效身份 Cookie，缺失/畸形/过期 401，既不签 Cookie，也不更新 last_seen、绑定安装密钥或创建副本；旧 UI 失效须刷新。
+- `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-26.test.ts` 最新退出0、2主测试通过：保留原全写路由/alias矩阵，新增 formal/demo GET/HEAD 与 POST 拒绝、有效 Cookie、畸形 Cookie、到期及安装密钥续接矩阵。拒绝/只读路径比较六张身份/业务表完整快照。T-22 存储探针同时兼容旧数值及封装值，仍核实实际管理员session写入。两类型检查退出0；独立生产构建退出0。
+- 原生浏览器实际同站恶意子域携带管理员/身份 Cookie：身份POST及logout均403、无新Cookie/身份变更；异站同动作Cookie未发送，仍403。恶意来源GET返回只读结果但CORS阻断读取，DB不变；回到合法页admin authenticated=true、identity GET200。`T-26-identity-browser-network.json`记录实际发送布尔值，未采集凭证。
+- 新生产Next start+合成正式backend完整提交入口实际初始化POST200、feedback POST200、同身份记录GET200，UI显示同一合成提交。证据 `T-26-identity-normal-network.json` 去除query，`T-26-identity-acceptance.json` 与独立type/build/regression日志；截图只在工具中观察，没有编造本地图片路径。两个测试harness均已SIGTERM退出0，库/密钥留在独立临时目录，未触真实材料。
+- 可复验：运行 `tests/fix/T-26.browser.ts` 点击输出三个本地域名的身份/注销按钮；运行 `tests/fix/T-26.identity-normal-browser.ts` 在输出URL执行合成线索提交/我的提交，检查网络JSON身份请求是POST。回滚必须保留GET只读边界与来源防护，不能恢复状态写GET。

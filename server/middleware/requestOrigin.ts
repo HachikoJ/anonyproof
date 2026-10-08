@@ -31,9 +31,8 @@ export function exactCorsOrigin(allowedOrigins: readonly string[]): CorsOptions[
   return (origin, callback) => callback(null, isTrustedRequestOrigin(origin, allowedOrigins))
 }
 
-// All cookie-authorized unsafe API methods share this early source guard. GET
-// identity compatibility is a separately approved migration, not an exception
-// that silently relaxes the POST/PUT/PATCH/DELETE policy.
+// All cookie-authorized unsafe API methods (including identity initialization)
+// share this early guard. The compatibility identity GET is read-only.
 export function cookieWriteOriginGuard(allowedOrigins: readonly string[]): RequestHandler {
   return (req, res, next) => {
     if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&

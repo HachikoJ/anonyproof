@@ -131,7 +131,7 @@ curl -s --max-time 6 http://106.55.13.245:4000/health   # 应当连接失败
 
 ## Cookie 写请求来源（Q-03 / T-26）
 
-所有API的POST/PUT/PATCH/DELETE在解析正文、鉴权和状态修改前都要求准确匹配`CORS_ORIGINS`的Origin；缺失、null、其它子域、路径伪装或Host/X-Forwarded-Host不能放行。合法客户端仅本站浏览器及显式配置的本地前端，无Origin脚本写请求不再受支持。需要复验的合成fixture必须显式附可信Origin，并单独测试无Origin403。GET identity创建/续接的旧兼容行为仍等待具体POST/readonlyGET迁移确认，不因普通写路由已保护而宣称整个T-26完成。
+所有API的POST/PUT/PATCH/DELETE在解析正文、鉴权和状态修改前都要求准确匹配`CORS_ORIGINS`的Origin；缺失、null、其它子域、路径伪装或Host/X-Forwarded-Host不能放行。合法客户端仅本站浏览器及显式配置的本地前端，无Origin脚本写请求不再受支持。需要复验的合成fixture必须显式附可信Origin，并单独测试无Origin403。身份初始化、安装密钥绑定、续期和沙箱创建使用同样防护的 POST `/api/identity`。兼容 GET/HEAD 只读取有效身份 Cookie，不签发 Cookie、不更新活动时间；缺失或失效 Cookie 返回401，旧页面需刷新。
 
 ## 恢复码接口限流（T-08）
 
@@ -151,7 +151,7 @@ curl -s --max-time 6 http://106.55.13.245:4000/health   # 应当连接失败
 
 ## 身份初始化与容量（T-05）
 
-当前`GET /api/identity`默认每个来源10次/60秒，限流在解析/签发身份前执行；超过返回429与`Retry-After`，不写身份/session/安装密钥/演示副本。正常身份初始化和续接都计数，OPTIONS不计数；其只读GET/POST迁移仍待T-26具体确认。可配置正整数`IDENTITY_RATE_LIMIT_MAX`、`IDENTITY_RATE_LIMIT_WINDOW_MS`（毫秒，最多2147483647）。
+当前`POST /api/identity`默认每个来源10次/60秒，限流在解析/签发身份前执行；超过返回429与`Retry-After`，不写身份/session/安装密钥/演示副本。正常身份初始化和续接都计数，OPTIONS不计数；兼容 GET/HEAD 为只读，不签发或续接身份。可配置正整数`IDENTITY_RATE_LIMIT_MAX`、`IDENTITY_RATE_LIMIT_WINDOW_MS`（毫秒，最多2147483647）。
 
 每库身份记录总容量`IDENTITY_MAX_RECORDS`默认100000，必须为正安全整数；在创建事务取得写锁后判定，达到上限新身份初始化及演示登录中的隐式新身份签发均503，无新Cookie或记录。不清除已有身份；已有Cookie/安装密钥续接与有效恢复码仍可用（也受各请求窗口约束）。要提高容量须评估存储后显式改配置；降低到现有数量以下也不删数据，只停止新签发。长期保留/清理仍由T-25按确认策略实施。
 

@@ -132,6 +132,6 @@ export class Client {
   post(url: string, body: unknown, method = 'POST') {
     return this.request(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
   }
-  identity(init: FixtureRequestInit = {}) { return this.request('/api/identity', init) }
+  identity(init: FixtureRequestInit = {}) { return this.request('/api/identity', { method: 'POST', ...init }) }
   login() { return this.post('/api/admin/auth/login', { password: this.service.password }) }
 }

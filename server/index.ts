@@ -530,7 +530,7 @@ function setIdentityCookie(res: express.Response, deviceId: string, token: strin
   )
 }
 
-function identityFromCookie(req: express.Request) {
+function identityFromCookie(req: express.Request, touch = true) {
   const value = getCookie(req, identityCookieName)
   if (!value) return null
 
@@ -552,10 +552,12 @@ function identityFromCookie(req: express.Request) {
 
   if (!identity) return null
 
-  db.prepare('UPDATE client_identity_sessions SET last_seen_at = ? WHERE token_hash = ?')
-    .run(now, hashIdentityValue(token))
-  db.prepare('UPDATE client_identities SET last_seen_at = ? WHERE device_id = ?')
-    .run(now, deviceId)
+  if (touch) {
+    db.prepare('UPDATE client_identity_sessions SET last_seen_at = ? WHERE token_hash = ?')
+      .run(now, hashIdentityValue(token))
+    db.prepare('UPDATE client_identities SET last_seen_at = ? WHERE device_id = ?')
+      .run(now, deviceId)
+  }
   return identity
 }
 
@@ -858,7 +860,19 @@ function notificationRecordVisible(req: express.Request, recipientType: string, 
     .get(feedbackId, ...(recipientType === 'user' ? [recipientId] : []), ...scope.params))
 }
 
-app.get('/api/identity', identityInitializationLimiter, (req, res) => {
+// Compatibility read: never create, bind, renew, clone or update last_seen.
+// An installation key alone authorizes only the Origin-guarded POST path.
+app.get('/api/identity', (req, res) => {
+  const identity = identityFromCookie(req, false)
+  if (!identity) return res.status(401).json({ error: '本机身份已失效，请刷新页面后重试' })
+  const requestedCode = normalizeRecoveryCode(req.get('x-anonyproof-recovery-code') || '')
+  const recoveryCode = isValidRecoveryCode(requestedCode) && safeIdentityHashEqual(requestedCode, identity.recovery_hash)
+    ? formatRecoveryCode(requestedCode) : getRecentRecoveryCode(identity.device_id) || undefined
+  res.json({ success: true, deviceId: identity.device_id, recoveryCode,
+    created: false, adoptedLegacyDevice: false, demoMode })
+})
+
+app.post('/api/identity', identityInitializationLimiter, (req, res) => {
   res.setHeader('Cache-Control', 'no-store')
   const identity = resolveClientIdentity(req, res)
   res.json({
