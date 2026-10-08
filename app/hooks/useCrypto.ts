@@ -125,7 +125,9 @@ export function useCrypto() {
       .then((data) => {
         if (!active || !data.deviceId) return
         setDeviceId(data.deviceId)
-        setRecoveryCode(data.recoveryCode || readStored(RECOVERY_CODE_KEY))
+        // Only show a recovery code confirmed by this identity response. A local
+        // value may belong to another identity or fail the server hash check.
+        setRecoveryCode(data.recoveryCode || '')
         setIdentityError('')
       })
       .catch((error: unknown) => {

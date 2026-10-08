@@ -25,7 +25,7 @@ async function freePort() {
 
 export async function launchBackend(overrides: Record<string, string> = {}) {
   const dir = mkdtempSync(path.join(tmpdir(), 'anonyproof-fix-'))
-  const port = await freePort()
+  const port = overrides.PORT ? Number(overrides.PORT) : await freePort()
   const databasePath = overrides.DATABASE_PATH?.trim()
     ? path.resolve(projectRoot, overrides.DATABASE_PATH.trim())
     : path.join(dir, 'fixture.db')
@@ -121,6 +121,6 @@ export class Client {
   post(url: string, body: unknown, method = 'POST') {
     return this.request(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
   }
-  identity() { return this.request('/api/identity') }
+  identity(init: FixtureRequestInit = {}) { return this.request('/api/identity', init) }
   login() { return this.post('/api/admin/auth/login', { password: this.service.password }) }
 }

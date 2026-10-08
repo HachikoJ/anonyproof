@@ -1,0 +1,62 @@
+[
+  {
+    "file": "audit/execution-results/T-21-final-type.txt",
+    "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-final-type.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-browser-build.txt",
+    "rawSha256": "0a58461583c99928914438c3200397d3d5c9a50c90233c77c201dbda44d577cd",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-browser-build.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-after.txt",
+    "rawSha256": "572c1a72c238d56f571a70d40a5ad5d77d197dd85ef5bd3f94f28b371e8a6555",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-after.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-before.txt",
+    "rawSha256": "d8fb5abd173bad08f0d08793e297438c0568874f1d420eb520b4f3e4807af0b5",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-before.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-build.txt",
+    "rawSha256": "c445a02b6b10ad250a1c7edcb6090f408e105ae55e5515dff6963cac1837934a",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-build.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-frontend-type.txt",
+    "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-frontend-type.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-final-regression.txt",
+    "rawSha256": "c8a5f06dbf1619acb8d5a4964387d2b8ed11b7a1fe7861a7194c027ad89f0494",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-final-regression.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-backend-type.txt",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-backend-type.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-browser-build-before.txt",
+    "rawSha256": "7c5c8c0a20f4607491c4d8740038f52b8a0d3bed2ed5025245441c6d548e4914",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-browser-build-before.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  },
+  {
+    "file": "audit/execution-results/T-21-final-build.txt",
+    "rawSha256": "85b12c3d038905d61e465fa4bd97b01665d3c823ac7412a99bfa63016f9a404c",
+    "rawBackup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T21-raw-tb_2su4u/T-21-final-build.txt",
+    "formatting": "strip carriage-return and trailing whitespace only; empty output retained"
+  }
+]

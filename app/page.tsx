@@ -637,7 +637,7 @@ export default function HomePage() {
             <div className="identity-bar">
               <div className="identity-bar-code">
                 <span>本机恢复码</span>
-                <code>{recoveryCode || '正在生成…'}</code>
+                <code>{recoveryCode || (identityLoading ? '正在获取…' : identityError ? '身份加载失败，请刷新重试' : '本机未保存恢复码，可使用另存的旧码找回')}</code>
               </div>
               <div className="identity-bar-actions">
                 <button type="button" onClick={copyRecoveryCode} disabled={!recoveryCode}>{codeCopied ? '已复制' : '复制'}</button>

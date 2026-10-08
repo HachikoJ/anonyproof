@@ -521,14 +521,6 @@ function getRecentRecoveryCode(deviceId: string) {
   return entry.code
 }
 
-function rotateRecoveryCode(deviceId: string) {
-  const recoveryCode = createRecoveryCode()
-  db.prepare('UPDATE client_identities SET recovery_hash = ? WHERE device_id = ?')
-    .run(hashIdentityValue(normalizeRecoveryCode(recoveryCode)), deviceId)
-  rememberRecoveryCode(deviceId, recoveryCode)
-  return recoveryCode
-}
-
 function setIdentityCookie(res: express.Response, deviceId: string, token: string) {
   const secure = isProduction ? '; Secure' : ''
   const value = encodeURIComponent(`${deviceId}.${token}`)
@@ -708,12 +700,14 @@ function resolveClientIdentity(req: express.Request, res: express.Response): Res
       : ''
   )
 
+  // A cache miss cannot reproduce a persisted one-way recovery hash. Preserve
+  // the saved credential and omit its display value instead of revoking it.
   const existing = identityFromCookie(req)
   if (existing) {
     bindInstallKey(existing.device_id, installKeyHash)
     const recoveryCode = matchingRequestedCode(existing)
       || getRecentRecoveryCode(existing.device_id)
-      || rotateRecoveryCode(existing.device_id)
+      || undefined
     return { deviceId: existing.device_id, recoveryCode, created: false }
   }
 
@@ -745,7 +739,7 @@ function resolveClientIdentity(req: express.Request, res: express.Response): Res
       issueIdentitySession(res, identity.device_id)
       const recoveryCode = matchingRequestedCode(identity)
         || getRecentRecoveryCode(identity.device_id)
-        || rotateRecoveryCode(identity.device_id)
+        || undefined
       return {
         deviceId: identity.device_id,
         recoveryCode,

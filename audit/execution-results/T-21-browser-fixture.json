@@ -1,0 +1,9 @@
+{
+  "url": "http://127.0.0.1:3026/anonyproof",
+  "controlsUrl": "http://127.0.0.1:3026/__fixture/t21",
+  "databasePath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-I7yduR/fixture.db",
+  "contentKeyPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-I7yduR/content-key.fixture",
+  "fixturePid": 64541,
+  "backendPort": "55107",
+  "fixtureOnly": true
+}
