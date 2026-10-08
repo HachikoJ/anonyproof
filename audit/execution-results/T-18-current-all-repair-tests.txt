@@ -1,0 +1,635 @@
+TAP version 13
+# Subtest: T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+ok 1 - T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+  ---
+  duration_ms: 631.228292
+  ...
+# Subtest: T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+ok 2 - T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+  ---
+  duration_ms: 1328.551375
+  ...
+# Subtest: T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+ok 3 - T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+  ---
+  duration_ms: 0.764084
+  ...
+# Subtest: T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+ok 4 - T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+  ---
+  duration_ms: 32.487833
+  ...
+# Subtest: T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+ok 5 - T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+  ---
+  duration_ms: 0.522834
+  ...
+# Subtest: T-03 module: explicit old-format reader compatibility and demo keylessness
+ok 6 - T-03 module: explicit old-format reader compatibility and demo keylessness
+  ---
+  duration_ms: 0.281583
+  ...
+# Subtest: T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+ok 7 - T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+  ---
+  duration_ms: 0.144709
+  ...
+# Subtest: T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+ok 8 - T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+  ---
+  duration_ms: 0.090167
+  ...
+# Subtest: T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+ok 9 - T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+  ---
+  duration_ms: 4.308041
+  ...
+# Subtest: T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+ok 10 - T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+  ---
+  duration_ms: 0.399916
+  ...
+# Subtest: T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+ok 11 - T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+  ---
+  duration_ms: 0.436083
+  ...
+# Subtest: T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+ok 12 - T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+  ---
+  duration_ms: 0.5955
+  ...
+# Subtest: T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+ok 13 - T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+  ---
+  duration_ms: 1568.168875
+  ...
+# Subtest: T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+ok 14 - T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+  ---
+  duration_ms: 820.846125
+  ...
+# Subtest: T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+ok 15 - T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+  ---
+  duration_ms: 426.8805
+  ...
+# Subtest: T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+ok 16 - T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+  ---
+  duration_ms: 838.997083
+  ...
+# Subtest: T-04: actual submit hook returns only the compatibility marker with no browser WebCrypto
+ok 17 - T-04: actual submit hook returns only the compatibility marker with no browser WebCrypto
+  ---
+  duration_ms: 1.385375
+  ...
+# Subtest: T-04: real cipher failures roll back feedback/comment/status and later required notifications
+ok 18 - T-04: real cipher failures roll back feedback/comment/status and later required notifications
+  ---
+  duration_ms: 449.919458
+  ...
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 19 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2537.36975
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 20 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 909.207875
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 21 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 888.015
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 22 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 439.361208
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 23 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 4866.659667
+  ...
+# Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+ok 24 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+  ---
+  duration_ms: 825.722292
+  ...
+# Subtest: T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota
+ok 25 - T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota
+  ---
+  duration_ms: 2550.29475
+  ...
+# Subtest: T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers
+ok 26 - T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers
+  ---
+  duration_ms: 2580.975
+  ...
+# Subtest: T-06: default quota admits ten and blocks eleventh, boundary one is configurable
+ok 27 - T-06: default quota admits ten and blocks eleventh, boundary one is configurable
+  ---
+  duration_ms: 909.098333
+  ...
+# Subtest: T-06: invalid source/identity/window configuration fails startup explicitly
+ok 28 - T-06: invalid source/identity/window configuration fails startup explicitly
+  ---
+  duration_ms: 4471.437875
+  ...
+# Subtest: T-07: user quota spans feedback IDs, unauthorized identities stay rejected and no comments/notices appear on 429
+ok 29 - T-07: user quota spans feedback IDs, unauthorized identities stay rejected and no comments/notices appear on 429
+  ---
+  duration_ms: 2546.9845
+  ...
+# Subtest: T-07: source quota spans identities and changing untrusted XFF cannot reset it
+ok 30 - T-07: source quota spans identities and changing untrusted XFF cannot reset it
+  ---
+  duration_ms: 2574.684792
+  ...
+# Subtest: T-07: default identity quota is twenty; threshold one can be configured
+ok 31 - T-07: default identity quota is twenty; threshold one can be configured
+  ---
+  duration_ms: 867.108375
+  ...
+# Subtest: T-07: existing formal-admin access to the user-comment route is preserved and spans target IDs
+ok 32 - T-07: existing formal-admin access to the user-comment route is preserved and spans target IDs
+  ---
+  duration_ms: 450.347459
+  ...
+# Subtest: T-07: invalid limiter configuration fails startup by its name
+ok 33 - T-07: invalid limiter configuration fails startup by its name
+  ---
+  duration_ms: 4482.645584
+  ...
+# Subtest: T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+ok 34 - T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+  ---
+  duration_ms: 2547.965042
+  ...
+# Subtest: T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+ok 35 - T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+  ---
+  duration_ms: 535.2205
+  ...
+# Subtest: T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+ok 36 - T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+  ---
+  duration_ms: 447.243
+  ...
+# Subtest: T-08: invalid recovery limiter values reject startup by the offending configuration name
+ok 37 - T-08: invalid recovery limiter values reject startup by the offending configuration name
+  ---
+  duration_ms: 4163.699166
+  ...
+# Subtest: T-09: both login aliases share successful and failed request quota
+ok 38 - T-09: both login aliases share successful and failed request quota
+  ---
+  duration_ms: 2547.392417
+  ...
+# Subtest: T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+ok 39 - T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+  ---
+  duration_ms: 457.867125
+  ...
+# Subtest: T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+ok 40 - T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+  ---
+  duration_ms: 447.164
+  ...
+# Subtest: T-09: five wrong passwords retain the separate fifteen-minute production lock
+ok 41 - T-09: five wrong passwords retain the separate fifteen-minute production lock
+  ---
+  duration_ms: 1571.036708
+  ...
+# Subtest: T-09: the published demo password is also limited across aliases
+ok 42 - T-09: the published demo password is also limited across aliases
+  ---
+  duration_ms: 447.758625
+  ...
+# Subtest: T-09: invalid login limiter configuration rejects startup explicitly
+ok 43 - T-09: invalid login limiter configuration rejects startup explicitly
+  ---
+  duration_ms: 4813.85075
+  ...
+# Subtest: T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+ok 44 - T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+  ---
+  duration_ms: 590.19175
+  ...
+# Subtest: T-10: failed legacy migration rolls back added columns and remains retryable
+ok 45 - T-10: failed legacy migration rolls back added columns and remains retryable
+  ---
+  duration_ms: 291.248417
+  ...
+# Subtest: T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+ok 46 - T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+  ---
+  duration_ms: 424.0565
+  ...
+# Subtest: T-12: feedback input matrix rejects before business writes
+ok 47 - T-12: feedback input matrix rejects before business writes
+  ---
+  duration_ms: 453.058667
+  ...
+# Subtest: T-13: both comment routes validate types and preserve bounded UTF-8 text
+ok 48 - T-13: both comment routes validate types and preserve bounded UTF-8 text
+  ---
+  duration_ms: 449.616584
+  ...
+# Subtest: T-14: approved solution length/type boundary rejects before status/log/notification writes
+ok 49 - T-14: approved solution length/type boundary rejects before status/log/notification writes
+  ---
+  duration_ms: 463.53475
+  ...
+# Subtest: T-16: root HTTP parser dependencies reject known malformed shapes
+ok 50 - T-16: root HTTP parser dependencies reject known malformed shapes
+  ---
+  duration_ms: 46.201542
+  ...
+# Subtest: T-16: server HTTP parser dependencies reject known malformed shapes
+ok 51 - T-16: server HTTP parser dependencies reject known malformed shapes
+  ---
+  duration_ms: 23.77875
+  ...
+# Subtest: T-16: actual backend routes and bounded HTTP parser failures preserve availability
+ok 52 - T-16: actual backend routes and bounded HTTP parser failures preserve availability
+  ---
+  duration_ms: 437.708875
+  ...
+# Subtest: T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+ok 53 - T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+  ---
+  duration_ms: 4.896083
+  ...
+# Subtest: T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+ok 54 - T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+  ---
+  duration_ms: 45.958917
+  ...
+# Subtest: T-19: restarting an explicit fixture database returns and opens that same database
+ok 55 - T-19: restarting an explicit fixture database returns and opens that same database
+  ---
+  duration_ms: 841.145208
+  ...
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 56 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 465.187791
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 57 - T-19: production rejects missing secret
+  ---
+  duration_ms: 381.156042
+  ...
+# Subtest: T-19: production rejects short secret
+ok 58 - T-19: production rejects short secret
+  ---
+  duration_ms: 379.250167
+  ...
+# Subtest: T-19: production rejects missing password
+ok 59 - T-19: production rejects missing password
+  ---
+  duration_ms: 481.960334
+  ...
+# Subtest: T-19: production rejects short password
+ok 60 - T-19: production rejects short password
+  ---
+  duration_ms: 409.407917
+  ...
+# Subtest: T-20: private responses and authorization errors never reuse a conditional cached body
+ok 61 - T-20: private responses and authorization errors never reuse a conditional cached body
+  ---
+  duration_ms: 435.2185
+  ...
+# Subtest: T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+ok 62 - T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+  ---
+  duration_ms: 1534.581208
+  ...
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 63 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 518.89175
+  ...
+# Subtest: T-27: only explicit canonical origin configuration is accepted
+ok 64 - T-27: only explicit canonical origin configuration is accepted
+  ---
+  duration_ms: 1.035958
+  ...
+# Subtest: T-27: actual CORS preflight/read responses expose only approved exact origins
+ok 65 - T-27: actual CORS preflight/read responses expose only approved exact origins
+  ---
+  duration_ms: 35.895458
+  ...
+# Subtest: T-27: actual production backend rejects missing or invalid origin configuration
+ok 66 - T-27: actual production backend rejects missing or invalid origin configuration
+  ---
+  duration_ms: 2249.070125
+  ...
+# Subtest: T-27: product backend preflight and authenticated reads use the exact configured origins
+ok 67 - T-27: product backend preflight and authenticated reads use the exact configured origins
+  ---
+  duration_ms: 458.931667
+  ...
+# Subtest: T-31: each supported request maximum independently enforces configured boundaries one and three
+    # Subtest: LOGIN_RATE_LIMIT_MAX=1
+    ok 1 - LOGIN_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 417.250792
+      ...
+    # Subtest: LOGIN_RATE_LIMIT_MAX=3
+    ok 2 - LOGIN_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 445.507708
+      ...
+    # Subtest: IDENTITY_RATE_LIMIT_MAX=1
+    ok 3 - IDENTITY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 440.1215
+      ...
+    # Subtest: IDENTITY_RATE_LIMIT_MAX=3
+    ok 4 - IDENTITY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 443.032083
+      ...
+    # Subtest: RECOVERY_RATE_LIMIT_MAX=1
+    ok 5 - RECOVERY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 447.715959
+      ...
+    # Subtest: RECOVERY_RATE_LIMIT_MAX=3
+    ok 6 - RECOVERY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 445.126792
+      ...
+    # Subtest: FEEDBACK_RATE_LIMIT_MAX=1
+    ok 7 - FEEDBACK_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 391.863125
+      ...
+    # Subtest: FEEDBACK_RATE_LIMIT_MAX=3
+    ok 8 - FEEDBACK_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 449.46125
+      ...
+    # Subtest: FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1
+    ok 9 - FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 444.707667
+      ...
+    # Subtest: FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3
+    ok 10 - FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 449.694333
+      ...
+    # Subtest: COMMENT_RATE_LIMIT_MAX=1
+    ok 11 - COMMENT_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 466.268416
+      ...
+    # Subtest: COMMENT_RATE_LIMIT_MAX=3
+    ok 12 - COMMENT_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 451.557083
+      ...
+    # Subtest: COMMENT_IDENTITY_RATE_LIMIT_MAX=1
+    ok 13 - COMMENT_IDENTITY_RATE_LIMIT_MAX=1
+      ---
+      duration_ms: 445.224375
+      ...
+    # Subtest: COMMENT_IDENTITY_RATE_LIMIT_MAX=3
+    ok 14 - COMMENT_IDENTITY_RATE_LIMIT_MAX=3
+      ---
+      duration_ms: 449.308834
+      ...
+    1..14
+ok 68 - T-31: each supported request maximum independently enforces configured boundaries one and three
+  ---
+  duration_ms: 6188.490917
+  ...
+# Subtest: T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection
+ok 69 - T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection
+  ---
+  duration_ms: 451.432542
+  ...
+# Subtest: T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+ok 70 - T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+  ---
+  duration_ms: 505.481458
+  ...
+# Subtest: T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+ok 71 - T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+  ---
+  duration_ms: 24.239625
+  ...
+# Subtest: T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+ok 72 - T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+  ---
+  duration_ms: 16.480583
+  ...
+# Subtest: T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+ok 73 - T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+  ---
+  duration_ms: 17.8295
+  ...
+# Subtest: T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+ok 74 - T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+  ---
+  duration_ms: 16.232875
+  ...
+# Subtest: T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+    # Subtest: demo
+    ok 1 - demo
+      ---
+      duration_ms: 5.865958
+      ...
+    # Subtest: clone
+    ok 2 - clone
+      ---
+      duration_ms: 5.771208
+      ...
+    # Subtest: trigger
+    ok 3 - trigger
+      ---
+      duration_ms: 5.861291
+      ...
+    # Subtest: version
+    ok 4 - version
+      ---
+      duration_ms: 5.63675
+      ...
+    # Subtest: realVersion
+    ok 5 - realVersion
+      ---
+      duration_ms: 5.52325
+      ...
+    # Subtest: nullSolution
+    ok 6 - nullSolution
+      ---
+      duration_ms: 8.013041
+      ...
+    # Subtest: ambiguousBody
+    ok 7 - ambiguousBody
+      ---
+      duration_ms: 7.492416
+      ...
+    # Subtest: schema
+    ok 8 - schema
+      ---
+      duration_ms: 5.925667
+      ...
+    # Subtest: primary
+    ok 9 - primary
+      ---
+      duration_ms: 5.821042
+      ...
+    1..9
+ok 75 - T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+  ---
+  duration_ms: 71.303417
+  ...
+# Subtest: T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+ok 76 - T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+  ---
+  duration_ms: 45.56525
+  ...
+# Subtest: T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+ok 77 - T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+  ---
+  duration_ms: 18.149709
+  ...
+# Subtest: T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+ok 78 - T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+  ---
+  duration_ms: 8.831083
+  ...
+# Subtest: T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+ok 79 - T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+  ---
+  duration_ms: 5.476417
+  ...
+# Subtest: T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+ok 80 - T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+  ---
+  duration_ms: 1485.702375
+  ...
+# Subtest: T-40: notification limit stays bounded for users and admins without weakening access
+ok 81 - T-40: notification limit stays bounded for users and admins without weakening access
+  ---
+  duration_ms: 468.177542
+  ...
+# Subtest: T-41: feedback statistics and required notification faults roll back the entire business write
+    # Subtest: feedbacks INSERT failure
+    ok 1 - feedbacks INSERT failure
+      ---
+      duration_ms: 6.938625
+      ...
+    # Subtest: stats UPDATE failure
+    ok 2 - stats UPDATE failure
+      ---
+      duration_ms: 2.429792
+      ...
+    # Subtest: notifications INSERT failure
+    ok 3 - notifications INSERT failure
+      ---
+      duration_ms: 2.371042
+      ...
+    1..3
+ok 82 - T-41: feedback statistics and required notification faults roll back the entire business write
+  ---
+  duration_ms: 427.368
+  ...
+# Subtest: T-41: user and admin comment notification faults cannot persist orphaned comments
+    # Subtest: user: feedback_comments INSERT failure
+    ok 1 - user: feedback_comments INSERT failure
+      ---
+      duration_ms: 6.31575
+      ...
+    # Subtest: user: notifications INSERT failure
+    ok 2 - user: notifications INSERT failure
+      ---
+      duration_ms: 2.582125
+      ...
+    # Subtest: admin: feedback_comments INSERT failure
+    ok 3 - admin: feedback_comments INSERT failure
+      ---
+      duration_ms: 2.194291
+      ...
+    # Subtest: admin: notifications INSERT failure
+    ok 4 - admin: notifications INSERT failure
+      ---
+      duration_ms: 1.992584
+      ...
+    1..4
+ok 83 - T-41: user and admin comment notification faults cannot persist orphaned comments
+  ---
+  duration_ms: 412.07675
+  ...
+# Subtest: T-41: status audit/update/notification failures preserve all fields and related records
+    # Subtest: admin_logs INSERT failure
+    ok 1 - admin_logs INSERT failure
+      ---
+      duration_ms: 5.8105
+      ...
+    # Subtest: feedbacks UPDATE failure
+    ok 2 - feedbacks UPDATE failure
+      ---
+      duration_ms: 2.025625
+      ...
+    # Subtest: notifications INSERT failure
+    ok 3 - notifications INSERT failure
+      ---
+      duration_ms: 1.705583
+      ...
+    1..3
+ok 84 - T-41: status audit/update/notification failures preserve all fields and related records
+  ---
+  duration_ms: 460.667833
+  ...
+# Subtest: T-41: optional access logging faults leave core feedback/comment/status operations successful
+ok 85 - T-41: optional access logging faults leave core feedback/comment/status operations successful
+  ---
+  duration_ms: 454.227042
+  ...
+# Subtest: T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults
+ok 86 - T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults # SKIP T-34 deletion semantics/transaction confirmation and implementation are pending
+  ---
+  duration_ms: 0.178458
+  ...
+# Subtest: T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+ok 87 - T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+  ---
+  duration_ms: 5.115333
+  ...
+# Subtest: T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+ok 88 - T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+  ---
+  duration_ms: 120.456959
+  ...
+# Subtest: T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+ok 89 - T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+  ---
+  duration_ms: 2.94625
+  ...
+# Subtest: T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+ok 90 - T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+  ---
+  duration_ms: 67.254666
+  ...
+# Subtest: T-43: patched backend still binds feedback access to the authenticated identity
+ok 91 - T-43: patched backend still binds feedback access to the authenticated identity
+  ---
+  duration_ms: 450.325667
+  ...
+1..91
+# tests 124
+# suites 0
+# pass 123
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 83263.732083

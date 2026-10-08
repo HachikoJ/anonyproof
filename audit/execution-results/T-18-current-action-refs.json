@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-08",
+  "scope": "read-only tag existence, not Actions execution or security validation",
+  "actions": [
+    {
+      "action": "checkout",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/checkout.git",
+        "refs/tags/v7"
+      ],
+      "exitCode": 0,
+      "stdout": "3d3c42e5aac5ba805825da76410c181273ba90b1\trefs/tags/v7",
+      "stderr": ""
+    },
+    {
+      "action": "setup-node",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/setup-node.git",
+        "refs/tags/v7"
+      ],
+      "exitCode": 0,
+      "stdout": "820762786026740c76f36085b0efc47a31fe5020\trefs/tags/v7",
+      "stderr": ""
+    },
+    {
+      "action": "upload-artifact",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/upload-artifact.git",
+        "refs/tags/v7"
+      ],
+      "exitCode": 0,
+      "stdout": "cf430e030ddbb5b0abf93d22962f4752f3646cd9\trefs/tags/v7",
+      "stderr": ""
+    }
+  ]
+}

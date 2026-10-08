@@ -883,6 +883,25 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 完整灾备/监控告警平台、法律合规认证、证书自动化更新、GitHub首次发布质量建设；本计划只要求相关任务能恢复的快照和必要探针。
 - 上一轮遗漏的其他功能/边界问题不得悄悄塞进T-XX；记录证据和影响到这里，等待新增范围授权。
 
+### N-04 新注册表告警：Next.js 16.3.6（2026-10-08，非本次范围）
+
+T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbuild/sharp/source-map-js三包，本次四包low1/high3。不是重新全项目审查，也不把新advisory追记成原T-15已解决；原验收保留时间，新风险独立记录，未进入执行队列/未增加任务数。
+
+证据：`audit/execution-results/T-18-current-root-audit.json`。以下六条分别保留，不遗漏、不宣称可利用性相同：
+
+|编号|原注册表严重度|新advisory/触发前提|已核实/尚未核实|
+|---|---|---|---|
+|N-04a|moderate|GHSA-3w37-wq28-93x7，use cache未完成填充将Draft Mode内容泄露到常规响应/持久页|本站可利用性未验证|
+|N-04b|moderate|GHSA-4jqv-mc3x-m676，自托管Pages Router SSG/ISR跨路由缓存污染|官方条件含Pages Router；当前代码采用App Router，未做在线攻击或宣称受影响|
+|N-04c|low|GHSA-39w2-rjm5-chcv，开发服务器MCP端点信息泄露|开发可达性/实际请求未验证|
+|N-04d|moderate|GHSA-f87g-xv8r-7p7x，App Router metadata image动态参数绕过信息泄露|本站可利用性未验证|
+|N-04e|moderate|GHSA-mcj8-r9mp-w47p，SSG/ISR缓存污染及持续拒绝服务|本站可利用性未验证|
+|N-04f|high|GHSA-cjq9-62q9-8jv4，允许的远程图片URL/DNS导致Image Optimization SSRF|当前next.config.js无images.remotePatterns；按官方公告当前该触发条件不满足，不把包命中等同本站SSRF成功|
+
+官方来源分别为上述GHSA的 `https://github.com/advisories/GHSA-…` 页面，完整直接URL在audit JSON。已实际核对[SSRF公告](https://github.com/advisories/GHSA-cjq9-62q9-8jv4)、[Pages Router缓存公告](https://github.com/advisories/GHSA-4jqv-mc3x-m676)、[Draft Mode公告](https://github.com/advisories/GHSA-3w37-wq28-93x7)；前两项条件按源码作有限判断，其他未补做漏洞利用审查。实际 `npm view next@16.3.8 version engines dist.integrity --json`退出0，版本存在、Node>=20.9.0；记录 `N-04-next-patch-registry.json`。六条报告16.3.x受影响范围均止于16.3.8，npm自动建议16.4.0不等于本项目必须升minor。
+
+后续若用户授权新增范围：六问题分别任务化/逐条记录advisory消失验收，可共用一次最小16.3.6→16.3.8依赖原子提交并列全部任务编号；仅root package/lock及必需Next内部依赖、不改server lock/React/接口/DB/产品流程，按T-15既有干净安装、实际build/start、三页面/basePath/API/Cookie/no-store/用户及管理员流程回归，保存六条审计结果。失败回退完整匹配旧package/lock/构建（恢复旧告警风险），不接旧数据格式或重新开放演示真实写入。尚未修改依赖/安装该候选补丁/发布；新问题不阻塞当前已授权的独立任务，不降低已有门禁。
+
 ## 9. 完成定义
 
 本计划完成的定义是：T-01..T-42全部有独立去向、验收和状态；每项已完成都有代码/文档差异及客观验证证据；所有选定重大改动的必要线上/迁移补验完成；待确认/已搁置任务及其残留风险明确，不以构建成功、文档更新或一次命令退出替代业务安全。
@@ -1217,3 +1236,12 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - 实际三源与Git基线a391c00字节一致、目标不存在，源码/hash/Git mode/caller记录完整。rg活跃源码/模板/说明匹配仅三源的声明/内部调用，服务器upload-local字面搜索无匹配。已安装TS解析实际16份app TS/TSX、四个Next入口，三源直接caller0且入口不可达；本地代码导入未解析0/计算式导入0。初次图检查因两现存layout CSS无法作TS代码解析而停止，核对分类为非代码资产后通过；不是忽略未知代码缺口。只读准备不能代替浏览器无上传请求证明。
 - 批准后按T-28两文件、T-29一文件分别移动/验收/提交；各自hash相等、活跃rg不再有相应危险调用、type/build/diff-check，以及隔离fixture实际浏览器提交/查看/处理与请求URL采集（无ImgBB/Imgur/upload-local），不真正上传文件。回滚复制历史原文到无冲突原路径再type/build，保留历史文本/不支持说明；不得覆盖用户新资产或称附件已安全实现。详细步骤及字段见预览，不将两项合成一个完成状态。
 - T-35工具环境补查：当前PATH、Homebrew登记和七个常规Nginx路径均未发现可用nginx，Docker已知无现成镜像；brew只读库存查询刷新了API元数据，没有安装nginx、启动容器、改系统服务或部署。实际nginx-t/链路验收仍缺环境，既有T-35具体方案确认请求保留。
+
+### T-18 最新源码Node20干净安装/全回归补验（2026-10-08）
+
+- 状态仍已阻塞；完成数仍23/43。旧本地CI仅d08b0a2/T-19五项，现新增修复不可借旧结果推断Node20支持。本次git archive dac38ce新checkout、局部Node20.20.2/npm11.21.0，未复制真实.env.local/DB/日志/node_modules，主工作区原生模块未变。
+- 冷缓存安装因多个包十多分钟慢速持续下载而明确中断，实际-15，完整保留，不计代码失败/通过；新的独立checkout/private cache仅复制两锁所需SHA512校验匹配207 tarball，55未命中允许正常下载/native构建，不复用安装树、不改共享缓存。不是重复运行未验证成功的命令或隐藏失败。
+- 实际11步骤全0：root/server干净npm ci及npm ls、SQLite ABI加载/查询、root类型、原server类型及另加真实全部backend strict tsc、build、24文件全修复测试、workflow实际audit run block。全测试124项含嵌套：123通过/0失败/0取消/1明确T-34删除SKIP；T-32候选/盘点准备通过不代表历史迁移完成。
+- audit真实root退出1且low1/high3/critical0/total4，server退出0/all0，现有gate正常告警退出0；root新增Next六条advisory分别记录N-04非本次范围，不任意升级/称漏洞全清。原T-15已完成针对当时旧advisory，不把新报告覆盖旧证据。
+- 三个官方Action v7标签实际只读查得；标签存在不证明runner执行。没有实际Ubuntu Actions/setup/cache/upload、没有global npm安装/安装重试清缓存分支，没有push/部署，也没有本次重复失败注入或新浏览器验收；保留原T-18失败必须阻断与原各编号浏览器证据。不能用本地成功解除T-37/T-38/T-39/T-42/T-36远端前置。
+- 证据/下一轮命令与缺口：`audit/execution-results/T-18-current-node20.md`、`T-18-current-checkout.json`含逐命令/实际退出码/原始路径/SHA256、所有T-18-current日志与两audit JSON；控制台只规范展示空白，原始字节保留。T-18需具体push授权和一次真实CI链接/验收，未改验收契约。本轮只有证据/计划，不修改产品源/私密资产；独立T-18补验提交。
