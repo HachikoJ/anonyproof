@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-08",
+  "sourceHead": "4da076f6a319c5e19bfea3d8ad8afa44020751b9",
+  "verification": "actual local Python task-status and source-byte checks",
+  "exitCode": 0,
+  "taskCount": 43,
+  "statusCounts": {
+    "已完成": 23,
+    "已阻塞": 5,
+    "待办": 13,
+    "进行中": 2
+  },
+  "allTaskStatesUnchanged": true,
+  "sourceSha256": {
+    "server/index.ts": "ca8f90ccf10f7fda820d765e642030b9e15e9e251db0471279bf204624dc0251",
+    "server/utils/contentEncryption.ts": "a856c796674bb9c2f369a0861a49d58502b54164c29c0f8b1a16b5e36541e663",
+    "app/page.tsx": "c68d7ed01bcd6a06920749121b6783ea9f7bc873a3bff25d6e52cc6b1f1e7bfd",
+    "app/foorpynona/page.tsx": "e48c022ee46371ff4674e606c8cd74b11fc4c47e6f5cd8cec5ec80cfc1dcf314"
+  },
+  "proposalSha256": "34dc789bfc08772d70b9a97b30210b3e3c56a56c6582b6ce1d89283f34ed531c",
+  "proposalSubmitted": true,
+  "approvalReceived": false,
+  "implementationChanged": false,
+  "newDatabaseTableCreated": false,
+  "cleanupExecuted": false,
+  "productTestsRepeated": false,
+  "testCriteriaInProposal": "planned, not passed",
+  "pushCandidateUnchanged": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb"
+}
