@@ -1245,3 +1245,12 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - audit真实root退出1且low1/high3/critical0/total4，server退出0/all0，现有gate正常告警退出0；root新增Next六条advisory分别记录N-04非本次范围，不任意升级/称漏洞全清。原T-15已完成针对当时旧advisory，不把新报告覆盖旧证据。
 - 三个官方Action v7标签实际只读查得；标签存在不证明runner执行。没有实际Ubuntu Actions/setup/cache/upload、没有global npm安装/安装重试清缓存分支，没有push/部署，也没有本次重复失败注入或新浏览器验收；保留原T-18失败必须阻断与原各编号浏览器证据。不能用本地成功解除T-37/T-38/T-39/T-42/T-36远端前置。
 - 证据/下一轮命令与缺口：`audit/execution-results/T-18-current-node20.md`、`T-18-current-checkout.json`含逐命令/实际退出码/原始路径/SHA256、所有T-18-current日志与两audit JSON；控制台只规范展示空白，原始字节保留。T-18需具体push授权和一次真实CI链接/验收，未改验收契约。本轮只有证据/计划，不修改产品源/私密资产；独立T-18补验提交。
+
+### T-18验证支撑的逐任务执行审计与下一轮入口（2026-10-08）
+
+- 对全部T-01..43原问题/原验收逐项建立执行证据和剩余门禁映射：`audit/execution-results/task-closure-audit.md`（43项独立结果）、`task-closure-audit.json`（完整原问题/严重度/验收/计划命令/实际结果/证据SHA256/原依赖与明确阶段顺序）。当前完成23、进行中2、已阻塞5、待办13，不改变任何任务状态、不把部分通过改为完成。
+- 本轮起始工作树干净，核对fb978d5的app/server/scripts/tests/依赖/Next config/CI文件与实际Node20全测试snapshot dac38ce没有差异；root/server目标依赖实际`npm ls ... --json`均0，记录`task-closure-dependencies.json`。引用上次实际123通过/0失败/1删除SKIP、原生浏览器、基准和回滚证据，并对照测试断言；没有用一次聚合0替代43项独立验收，没有虚构本轮再跑浏览器/基准。
+- 重要边界：T-01本地公开权限已收紧但T-02硬隔离未实施；T-03新写加密不替代T-32历史资产退役；T-15原advisory已清除但新N-04未修；T-41三类事务不替代T-34删除与T-42幂等；T-26普通unsafe guard通过但GET identity仍修改状态。这些均在逐任务审计中明确保留。
+- 按原任务依赖、明确阶段顺序和具体确认门禁核对，当前无可直接实施的未完成任务。T-02/T-21/T-26/Q-08/T-35具体请求继续等待答复，方向答复不再重复询问；Q-04/Q-07、Q-05/Q-06、Q-09及T-42有效期仍保留各自缺口。T-18需push具体授权与真实Actions，后续分页/幂等不能越过；只读/合成准备结果不是迁移/发布授权。
+- 新鲜环境查询：PATH和7常规路径均无Nginx；`docker image ls --format ...`实际退出1，Docker socket不存在/API不可连接，记录`task-closure-nginx-environment.json`。之前可连接/镜像为空是历史记录，不作本轮运行证明；未启动Docker、拉镜像、安装软件或改变21配置/两旧脚本。T-35同时保留环境与具体资产确认门禁。
+- 目标未完成；新审计用于交接和逐项复核，不缩小目标/增加任务/顺手重构，也不以文档存在替代修复。下一轮答案或外部条件变化后，按相应编号插入最早合法阶段并实际验收；无变化时不重复测试刷“进展”。本轮只有计划/证据更新，T-18审计提交，不推送/部署/接真实库。

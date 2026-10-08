@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-08",
+  "reviewedCommit": "fb978d5cdf311559991aa635fe9190b88d7a494d",
+  "testedSourceCommit": "dac38cea30fdbac0c2d23ec6a879bd76cd1c51bf",
+  "productFilesChangedSinceTest": [],
+  "evidenceScope": "Actual successful Node20 installation tree; current tracked product/test/workflow source equal to tested source. No real environment/database/credential read.",
+  "trees": [
+    {
+      "tree": "root",
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "command": [
+        "npm",
+        "ls",
+        "next",
+        "express",
+        "body-parser",
+        "path-to-regexp",
+        "qs",
+        "proxy-addr",
+        "better-sqlite3",
+        "ip-address",
+        "express-rate-limit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "dependencies": {
+        "version": "0.1.0",
+        "name": "anonyproof",
+        "dependencies": {
+          "better-sqlite3": {
+            "version": "12.11.1",
+            "resolved": "https://registry.npmjs.org/better-sqlite3/-/better-sqlite3-12.11.1.tgz",
+            "overridden": false
+          },
+          "express": {
+            "version": "5.2.1",
+            "resolved": "https://registry.npmjs.org/express/-/express-5.2.1.tgz",
+            "overridden": false,
+            "dependencies": {
+              "body-parser": {
+                "version": "2.3.0",
+                "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-2.3.0.tgz",
+                "overridden": false,
+                "dependencies": {
+                  "qs": {
+                    "version": "6.16.0"
+                  }
+                }
+              },
+              "proxy-addr": {
+                "version": "2.0.8",
+                "resolved": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.8.tgz",
+                "overridden": false
+              },
+              "qs": {
+                "version": "6.16.0",
+                "resolved": "https://registry.npmjs.org/qs/-/qs-6.16.0.tgz",
+                "overridden": false
+              },
+              "router": {
+                "version": "2.2.0",
+                "resolved": "https://registry.npmjs.org/router/-/router-2.2.0.tgz",
+                "overridden": false,
+                "dependencies": {
+                  "path-to-regexp": {
+                    "version": "8.4.0",
+                    "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-8.4.0.tgz",
+                    "overridden": false
+                  }
+                }
+              }
+            }
+          },
+          "next": {
+            "version": "16.3.6",
+            "resolved": "https://registry.npmjs.org/next/-/next-16.3.6.tgz",
+            "overridden": false
+          }
+        }
+      },
+      "stderr": ""
+    },
+    {
+      "tree": "server",
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source/server",
+      "command": [
+        "npm",
+        "ls",
+        "next",
+        "express",
+        "body-parser",
+        "path-to-regexp",
+        "qs",
+        "proxy-addr",
+        "better-sqlite3",
+        "ip-address",
+        "express-rate-limit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "dependencies": {
+        "version": "1.0.0",
+        "name": "anonyproof-server",
+        "dependencies": {
+          "better-sqlite3": {
+            "version": "12.11.1",
+            "resolved": "https://registry.npmjs.org/better-sqlite3/-/better-sqlite3-12.11.1.tgz",
+            "overridden": false
+          },
+          "express-rate-limit": {
+            "version": "8.6.2",
+            "resolved": "https://registry.npmjs.org/express-rate-limit/-/express-rate-limit-8.6.2.tgz",
+            "overridden": false,
+            "dependencies": {
+              "express": {
+                "version": "5.2.1"
+              },
+              "ip-address": {
+                "version": "10.7.1",
+                "resolved": "https://registry.npmjs.org/ip-address/-/ip-address-10.7.1.tgz",
+                "overridden": false
+              }
+            }
+          },
+          "express": {
+            "version": "5.2.1",
+            "resolved": "https://registry.npmjs.org/express/-/express-5.2.1.tgz",
+            "overridden": false,
+            "dependencies": {
+              "body-parser": {
+                "version": "2.3.0",
+                "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-2.3.0.tgz",
+                "overridden": false,
+                "dependencies": {
+                  "qs": {
+                    "version": "6.16.0"
+                  }
+                }
+              },
+              "proxy-addr": {
+                "version": "2.0.8",
+                "resolved": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.8.tgz",
+                "overridden": false
+              },
+              "qs": {
+                "version": "6.16.0",
+                "resolved": "https://registry.npmjs.org/qs/-/qs-6.16.0.tgz",
+                "overridden": false
+              },
+              "router": {
+                "version": "2.2.0",
+                "resolved": "https://registry.npmjs.org/router/-/router-2.2.0.tgz",
+                "overridden": false,
+                "dependencies": {
+                  "path-to-regexp": {
+                    "version": "8.4.2",
+                    "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-8.4.2.tgz",
+                    "overridden": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "stderr": ""
+    }
+  ]
+}
