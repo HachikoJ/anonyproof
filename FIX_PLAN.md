@@ -247,7 +247,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-18 CI覆盖实际后端运行
 
-状态：已阻塞（B已批准测试分支/Draft PR及范围内后续推送；待既有HachikoJ认证恢复及实际Actions验收）；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。未满足远端验收，不标已完成。
+状态：已完成（固定候选 25e1c6a 的真实 GitHub Actions 验收通过）；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。远端证据见 T-18-actual-ci-run.json；后续提交仍需各自 CI。
 
 **问题**：`.github/workflows/ci.yml` 只安装根依赖、type-check/build；`--ignore-scripts` 不会构建native模块；未安装server依赖/启动服务，所以后端坏了CI仍可能绿。
 
@@ -353,7 +353,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-37 管理反馈列表分页
 
-状态：已阻塞（T-18实际远端CI未验收）；原始严重度：P1（审查第 5 条）；优先级：A；工作量：M；前置依赖：T-19、T-18。
+状态：待办（T-18 前置已通过）；原始严重度：P1（审查第 5 条）；优先级：A；工作量：M；前置依赖：T-19、T-18。
 
 **问题**：`GET /api/admin/feedbacks`约929行全量返回正文及不使用的encrypted_content，前端全部内存筛选/搜索。大库请求和DOM都会增长。
 
@@ -369,7 +369,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-38 用户反馈列表分页
 
-状态：已阻塞（T-18实际远端CI未验收）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18。
+状态：待办（T-18 前置已通过）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18。
 
 **问题**：`GET /api/feedback/device/:deviceId`约1231行全量记录和全文，用户端`records`全量筛选。
 
@@ -385,7 +385,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-39 沟通记录分页
 
-状态：已阻塞（T-18实际远端CI未验收）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18。
+状态：待办（T-18 前置已通过）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18。
 
 **问题**：`GET /api/feedback/:feedbackId/comments`约1130行全量comments；长线程会增加同步读取和DOM。
 
@@ -431,7 +431,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-42 网络重试导致重复写入
 
-状态：已阻塞（T-18实际远端验收；A已批准7天有效期及新增元数据清理）；原始严重度：P1（审查第 7 条重试重复场景）；优先级：B；工作量：M；前置依赖：T-41、T-18；请求边界已批准，有效期/清理具体预览见 `audit/execution-results/T-42-lifecycle-proposal.md`，A 已批准，待 T-18 后实施。
+状态：待办（T-18 前置已通过；A已批准7天有效期及新增元数据清理）；原始严重度：P1（审查第 7 条重试重复场景）；优先级：B；工作量：M；前置依赖：T-41、T-18；请求边界已批准，有效期/清理具体预览见 `audit/execution-results/T-42-lifecycle-proposal.md`，A 已批准，待 T-18 后实施。
 
 **问题**：客户端超时/丢响应时保留输入供重试，反馈/评论POST每次生成新记录；第一次已成功但响应丢失时会重复提交。事务只解决部分落库，不解决此场景。
 
@@ -1320,3 +1320,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 用户另提供凭证明确要求直接登录；CLI 认证已核验 HachikoJ，凭证未写入仓库、本文或命令日志。按 B 推送固定候选 25e1c6a 到 codex/fix-plan-ci-20261008，并创建 Draft PR https://github.com/HachikoJ/anonyproof/pull/1（base main），已附加本任务。未合并、force 或推 main。
 - 实际 CI run 37751003017 已运行，两个依赖树安装/native ABI、前后端类型和构建成功；业务回归及最终审计/制品尚在执行，T-18 仍未关闭。
 - 仓库已有 Cloudflare Workers Builds 检查自动被推送触发，details URL 包含 production/builds，尚不能确定仅构建还是生产部署；已向用户请求核对/排除测试分支自动部署，暂缓后续 push。服务器未部署；不能把 GitHub 授权扩张为直接部署授权。范围内本地实施不受影响。
+
+### T-18 真实远端验收通过（2026-10-08）
+
+- 已完成。Draft PR #1 的固定候选 25e1c6a、真实 pull_request run 37751003017 / build (20.x) conclusion=success，所有必需安装、native ABI、前后端类型、Next build、修复回归、依赖审计及上传步骤均成功；仅 failure-only debug log 步骤正常跳过。记录 `T-18-actual-ci-run.json` / `T-18-actual-ci-log.txt`。此结果只适用于该候选，不把尚未推送的后续提交称为远端通过。
+- 实际制品包含 dependency-audit-20.x 与 build-20.x，均非过期且大小非零；审计报告已下载并解析，server 无告警，root 仍有 next/sharp/source-map-js high 和 esbuild low 共 4 项（critical 0）。保留原计划外告警，不伪称整个依赖树无漏洞；详见 `T-18-actual-ci-artifacts.json` / `T-18-actual-ci-audit-summary.json`。
+- T-37/T-38/T-39/T-42 的 T-18 前置解除，按已有边界本地实施。Cloudflare 是独立既有集成，失败不冒充 GitHub CI 成功也不混入 T-18 验收；不因此声称整个 PR 所有检查通过。用户已明确授权检查并排除测试分支自动生产部署，当前控制页面跳转 Cloudflare 登录，仍缺可用账号会话；凭证不足前不擅用 GitHub token 去其它服务。后续 push 等分支自动部署风险排除。
