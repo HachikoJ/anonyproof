@@ -744,7 +744,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-28 未接入第三方图床实现防误启用
 
-状态：待办（待Q-08）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
+状态：待办（具体三文件归档清单已展示；待Q-08）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
 
 **问题**：`app/components/FileUpload.tsx`和`app/utils/imageUpload.ts`直接把文件发ImgBB/Imgur，NEXT_PUBLIC密钥客户端可见；当前未接入，不能称线上泄露。
 
@@ -758,7 +758,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-29 未实现本地上传接口的死组件
 
-状态：待办（待Q-08）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
+状态：待办（具体三文件归档清单已展示；待Q-08）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
 
 **问题**：`app/components/LocalFileUpload.tsx:50`调用不存在的`/api/upload-local`；组件未接入，复用即404。
 
@@ -1209,3 +1209,11 @@ Q-08后T-28/T-29；Q-09后T-36。只处理已列死组件、保护注册和最�
 - `npm run type-check`及实际scripts+全后端strict tsc退出0，`git diff --check`通过。最后证据`T-32-candidate-complete-prep-tests.txt`、`T-32-candidate-complete-prep-type.txt`、`T-32-candidate-backend-and-scripts-type.txt`；设计/源码/命令与剩余门禁见`T-32-candidate-design.md`及DEPLOY。未改app/server业务源，无新增依赖；使用现有已验收构建测试真实backend恢复，不为operator模块重复前端build。
 - 新控制台证据加入Git后，cached diff-check发现NPM尾空行及首次失败TAP空行带空白；仅规范展示空白，原始字节保存在独立临时目录，其路径/SHA256和最终命令/退出码见`T-32-candidate-verification.json`。再次cached diff-check退出0；保留首次失败和各轮通过结果，不改写测试结论。
 - 未满足的整项验收：Q-04/Q-07与实际保留/备份清单、NULL/空正文/混合demo等实际数据映射、T-02角色adoption、实际大库资源/故障演练与全量身份/关联核对、停写最终快照及切换、旧源/working/备份逐项处置和必要线上补验。在线候选不会自动包含备份后新写入；不能直接替代继续写的源，更不能把candidatePrepared或本次34通过当历史风险消除。下一轮先处理确认及实际资产快照，仍不得默认删除源/备份。
+
+### Q-08 / T-28 / T-29 具体资产清单与只读准备（2026-10-08）
+
+- 状态仍待办，等待具体去留，不增加完成任务数。新预览为`audit/execution-results/T-28-T-29-disposition-proposal.md`，manifest为`T-28-T-29-asset-proposal.json`，不改三份源码/依赖/活跃功能，不创建归档目标，不实现附件、不向第三方上传。
+- 建议T-28：`app/components/FileUpload.tsx`→`archive/unsupported-uploads/FileUpload.tsx.txt`、`app/utils/imageUpload.ts`→`archive/unsupported-uploads/imageUpload.ts.txt`；T-29：`app/components/LocalFileUpload.tsx`→`archive/unsupported-uploads/LocalFileUpload.tsx.txt`。三份逐字保存成历史文本（不参与TS/Next编译），归档README记原路径/hash/禁止启用，活跃README继续附件未实现；不顺手移除react-dropzone、改key模板或实现upload-local。原位置移走须Q-08具体批准，不以当前未接入推导移动授权。
+- 实际三源与Git基线a391c00字节一致、目标不存在，源码/hash/Git mode/caller记录完整。rg活跃源码/模板/说明匹配仅三源的声明/内部调用，服务器upload-local字面搜索无匹配。已安装TS解析实际16份app TS/TSX、四个Next入口，三源直接caller0且入口不可达；本地代码导入未解析0/计算式导入0。初次图检查因两现存layout CSS无法作TS代码解析而停止，核对分类为非代码资产后通过；不是忽略未知代码缺口。只读准备不能代替浏览器无上传请求证明。
+- 批准后按T-28两文件、T-29一文件分别移动/验收/提交；各自hash相等、活跃rg不再有相应危险调用、type/build/diff-check，以及隔离fixture实际浏览器提交/查看/处理与请求URL采集（无ImgBB/Imgur/upload-local），不真正上传文件。回滚复制历史原文到无冲突原路径再type/build，保留历史文本/不支持说明；不得覆盖用户新资产或称附件已安全实现。详细步骤及字段见预览，不将两项合成一个完成状态。
+- T-35工具环境补查：当前PATH、Homebrew登记和七个常规Nginx路径均未发现可用nginx，Docker已知无现成镜像；brew只读库存查询刷新了API元数据，没有安装nginx、启动容器、改系统服务或部署。实际nginx-t/链路验收仍缺环境，既有T-35具体方案确认请求保留。
