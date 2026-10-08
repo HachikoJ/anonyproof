@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-08",
+  "versionCommand": [
+    "gh",
+    "--version"
+  ],
+  "versionExitCode": 0,
+  "version": "gh version 2.97.0 (2026-07-31)",
+  "authCommand": [
+    "gh",
+    "auth",
+    "status",
+    "--hostname",
+    "github.com"
+  ],
+  "authExitCode": 1,
+  "sanitizedStatus": [
+    "github.com",
+    "  X Failed to log in to github.com account HachikoJ (keyring)",
+    "  - Active account: true",
+    "  - To re-authenticate, run: gh auth login -h github.com",
+    "  - To forget about this account, run: gh auth logout -h github.com -u HachikoJ"
+  ],
+  "tokenRequested": false,
+  "accountChanged": false,
+  "scope": "read-only existing authentication status; no push/PR or token output",
+  "diagnosticRecheck": {
+    "command": [
+      "gh",
+      "auth",
+      "status",
+      "--hostname",
+      "github.com"
+    ],
+    "exitCode": 1,
+    "invalidTokenReported": true,
+    "rateLimitReported": false,
+    "networkFailureReported": false,
+    "rawTokenOutput": false,
+    "reason": "First diagnostic was fully omitted with token lines; classify validity/limit/network without revealing any values. No write retry."
+  }
+}

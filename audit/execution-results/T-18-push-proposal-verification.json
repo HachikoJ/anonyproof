@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-08",
+  "verification": "actual python3 manifest/candidate/source/diagnostics check",
+  "exitCode": 0,
+  "candidateCommit": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb",
+  "commitCount": 39,
+  "changedFileCount": 360,
+  "allCandidateBytesAndHashesMatch": true,
+  "historyBlobCount": 393,
+  "historyPrivacyUnresolvedFindings": 0,
+  "approvalReceived": false,
+  "ghAuthenticationValid": false,
+  "productFilesChangedThisTurn": false,
+  "pushExecuted": false,
+  "prCreated": false
+}

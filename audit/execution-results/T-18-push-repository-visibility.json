@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-08",
+  "url": "https://api.github.com/repos/HachikoJ/anonyproof",
+  "authentication": "none",
+  "httpStatus": 403,
+  "result": "anonymous API rate limit exceeded",
+  "repositoryVisibility": "not confirmed by this API call",
+  "mutations": [],
+  "publicPageVerification": {
+    "url": "https://github.com/HachikoJ/anonyproof",
+    "observedDate": "2026-10-08",
+    "repositoryName": "HachikoJ/anonyproof",
+    "visibilityLabel": "Public",
+    "source": "actual official GitHub page opened without authentication; API failure retained separately"
+  }
+}

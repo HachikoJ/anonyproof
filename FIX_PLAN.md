@@ -247,7 +247,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-18 CI覆盖实际后端运行
 
-状态：已阻塞（代码/本地验收通过，实际GitHub Actions待push授权）；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。未满足远端验收，不标已完成。
+状态：已阻塞（代码/本地验收通过，实际GitHub Actions待push授权及既有HachikoJ认证恢复）；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。未满足远端验收，不标已完成。
 
 **问题**：`.github/workflows/ci.yml` 只安装根依赖、type-check/build；`--ignore-scripts` 不会构建native模块；未安装server依赖/启动服务，所以后端坏了CI仍可能绿。
 
@@ -1254,3 +1254,13 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 按原任务依赖、明确阶段顺序和具体确认门禁核对，当前无可直接实施的未完成任务。T-02/T-21/T-26/Q-08/T-35具体请求继续等待答复，方向答复不再重复询问；Q-04/Q-07、Q-05/Q-06、Q-09及T-42有效期仍保留各自缺口。T-18需push具体授权与真实Actions，后续分页/幂等不能越过；只读/合成准备结果不是迁移/发布授权。
 - 新鲜环境查询：PATH和7常规路径均无Nginx；`docker image ls --format ...`实际退出1，Docker socket不存在/API不可连接，记录`task-closure-nginx-environment.json`。之前可连接/镜像为空是历史记录，不作本轮运行证明；未启动Docker、拉镜像、安装软件或改变21配置/两旧脚本。T-35同时保留环境与具体资产确认门禁。
 - 目标未完成；新审计用于交接和逐项复核，不缩小目标/增加任务/顺手重构，也不以文档存在替代修复。下一轮答案或外部条件变化后，按相应编号插入最早合法阶段并实际验收；无变化时不重复测试刷“进展”。本轮只有计划/证据更新，T-18审计提交，不推送/部署/接真实库。
+
+### T-18 具体远端验收候选与发布门禁（2026-10-08）
+
+- 已完成具体预览，等待一次push+Draft PR授权：`audit/execution-results/T-18-push-proposal.md`。精确候选25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb，基线67a344a；39本地提交/360变更路径/529跟踪路径，新分支codex/fix-plan-ci-20261008，base main的草稿PR触发既有pull_request CI。只push此候选及获批范围内必要CI修正，不合并、不部署、不处理真实资产；未实际创建分支/PR/运行远端CI。
+- 远端只读查询实际0，main/HEAD仍基线、建议分支未出现；push前必须再核对，不force覆盖。仓库官方网页实际显示Public（https://github.com/HachikoJ/anonyproof），代码/合成证据/本机路径会公开；匿名API403限流保留，不伪称API成功。当前仓库只有CI workflow、无部署步骤/生产secret引用，新codex分支单独push不会匹配push白名单，需Draft PR才运行此门禁。
+- 隐私/范围检查保存为T-18-push-scope/privacy-precheck/history-privacy/repository-visibility JSON：候选最终树及39提交的393新blob均无真实env/DB/私钥/安装或build资产路径；audit JSON敏感字符串0/格式化恢复码0，有限凭证模式历史命中13均文档占位（最终3处），不打印raw值。完整逐文件/提交hash可审阅；这不是所有秘密格式的无条件证明。原有23/2/5/13状态不因准备发布而变化；N-04新告警仍范围外。
+- 确认来自用户提供AGENTS.md第7节：commit授权不包括push/PR/公开数据。具体接收仓库、SHA、文件清单、公开影响、失败保留/恢复边界已经展示后再请求，不先发布求追认。收到答复后按具体SHA/分支执行并附PR，再实际核对CI；T-18只有实际远端门禁通过才标完成，后续任务不能先越过。
+
+- T-18认证实际补查：使用gh-cli技能（`/Users/wilson/.agents/skills/gh-cli/SKILL.md`）做只读检查，gh2.97.0存在但当前HachikoJ keyring认证失败、exit1；安全诊断明确stored token invalid，非rate limit/network failure。没有导出token/换账号/logout/login。`T-18-push-auth-status.json`保留实际脱敏状态；公共remote读取成功不证明写入权限。push+Draft PR具体问题已通过async工具提交、尚未收到批准；取得批准后还需用户本机恢复同一账户认证，不请求用户提供令牌/密码。只更新T-18阻塞说明，不标完成/不执行外部写入。
+- 公开影响补充：候选还包含FIX_PLAN.md已修/未修问题及确认账本；原线上站未部署这批修复，公开Draft PR不是发布/风险消除。后续如需CI修正从获批候选/测试分支隔离处理，不把本地后来增加的未获批预览/认证记录等提交顺手推送；候选SHA仍精确25e1c6a。

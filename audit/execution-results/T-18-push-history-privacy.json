@@ -1,0 +1,155 @@
+{
+  "date": "2026-10-08",
+  "baseCommit": "67a344af597bbeb3ec5f8ee3e6dbb7fcb2d697ba",
+  "candidateCommit": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb",
+  "newBlobCount": 393,
+  "forbiddenHistoryPaths": [],
+  "structuredSensitiveStringFindings": [],
+  "textFindings": [
+    {
+      "sha": "dab702d79acd934901af850a2942da6d9528975d",
+      "path": ".env.example",
+      "line": 14,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "a0962febf95569d10f88049eebd982ffaa6e8ac5558345c996009ed37056c517",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "replace"
+      ]
+    },
+    {
+      "sha": "ccb274e47d96db943dd4f52e247a0fd08a72426e",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 75,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "6cc35992f3989f161e369c401fcc4ecc125d689f309ed70bce791f42e950b0d1",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "ccb274e47d96db943dd4f52e247a0fd08a72426e",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 106,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "30733e14010babdc6b8dc608abe4a973e7f88ec62b92026a6ae3d5ae8d6c6547",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "7e018eb6ab85aa76b7ccd8ac8859d473738380a0",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 75,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "6cc35992f3989f161e369c401fcc4ecc125d689f309ed70bce791f42e950b0d1",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "7e018eb6ab85aa76b7ccd8ac8859d473738380a0",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 102,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "30733e14010babdc6b8dc608abe4a973e7f88ec62b92026a6ae3d5ae8d6c6547",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "53fc1b08ee58d3ac6fcee6551ac9814f215e71e0",
+      "path": ".env.example",
+      "line": 13,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "a0962febf95569d10f88049eebd982ffaa6e8ac5558345c996009ed37056c517",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "replace"
+      ]
+    },
+    {
+      "sha": "f15fa0a08dddda0dab6eba3322747675fa00d604",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 75,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "6cc35992f3989f161e369c401fcc4ecc125d689f309ed70bce791f42e950b0d1",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "f15fa0a08dddda0dab6eba3322747675fa00d604",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 102,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "30733e14010babdc6b8dc608abe4a973e7f88ec62b92026a6ae3d5ae8d6c6547",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "b9a8e8b2b9ed57d2e22b002ce8c3927be69c1d4a",
+      "path": ".env.example",
+      "line": 13,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "a0962febf95569d10f88049eebd982ffaa6e8ac5558345c996009ed37056c517",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "replace"
+      ]
+    },
+    {
+      "sha": "c73360728fc8901d8eae0b8990028a04fea9fdd9",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 75,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "6cc35992f3989f161e369c401fcc4ecc125d689f309ed70bce791f42e950b0d1",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "c73360728fc8901d8eae0b8990028a04fea9fdd9",
+      "path": "docs/DEPLOYMENT.md",
+      "line": 102,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "30733e14010babdc6b8dc608abe4a973e7f88ec62b92026a6ae3d5ae8d6c6547",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "your"
+      ]
+    },
+    {
+      "sha": "82848770f7664c4eabcf99f8857ee8e3a29c18e0",
+      "path": ".env.example",
+      "line": 13,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "a0962febf95569d10f88049eebd982ffaa6e8ac5558345c996009ed37056c517",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "replace"
+      ]
+    },
+    {
+      "sha": "e3e9ca3220ce2d9e08cbe5421d212da077d2d006",
+      "path": ".env.example",
+      "line": 13,
+      "kind": "raw_sensitive_env_assignment",
+      "matchSha256": "a0962febf95569d10f88049eebd982ffaa6e8ac5558345c996009ed37056c517",
+      "classification": "documented placeholder",
+      "placeholderIndicators": [
+        "replace"
+      ]
+    }
+  ],
+  "unresolvedFindings": 0,
+  "scope": "All new blob versions in 39 proposed commits, not only final tree; limited pattern/privacy checks, no publish authorization, no raw matched values printed"
+}
