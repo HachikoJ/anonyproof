@@ -758,7 +758,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-29 未实现本地上传接口的死组件
 
-状态：待办（A已批准具体归档清单；分别实施验收）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
+状态：已完成；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。
 
 **问题**：`app/components/LocalFileUpload.tsx:50`调用不存在的`/api/upload-local`；组件未接入，复用即404。
 
@@ -1298,3 +1298,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - Node22 实际 `npm run type-check` / `npm run build` 均退出 0，复用同一工作树的 `T-21-final-type.txt` / `T-21-final-build.txt`。首次 T-28 类型检查退出 2 是 T-21 夹具 helper 参数尚未适配；原失败日志保留，修正后重新验证通过。
 - 真实浏览器使用合成库的 production build/start：文本提交、详情、补充、管理员登录/状态/回复均成功；用户刷新能读到处理中状态和双方评论。各阶段 pageAssets 的 resource 观察无外域/ImgBB/Imgur/upload-local，文件输入数 0；见 `T-28-browser-result.json` 和 `T-21-browser-request-paths.json`。未向第三方实际上传文件；此验收只证明现有流程。
 - 回滚点：本项提交前版本及逐字归档文本；仅在原位置无冲突时复制恢复，不覆盖用户资产，保留未支持说明。独立归档提交的 rename 检查保留原始空白，`git diff --cached --check` 须退出 0。
+
+### T-29 执行与验收（2026-10-08）
+
+- 已完成，独立于 T-28。按 A 精确清单将 LocalFileUpload.tsx 的 3423 字节移为历史 `.txt`；SHA256 `3e0a902757ff4d0ddc770cce70ab656214a630e72c2785981d7897e1177e4f21` 一致，未覆盖目标。归档说明明确 `/api/upload-local` 不存在，附件未实现，不新增接口或改依赖。
+- `rg -n 'upload-local|LocalFileUpload' app server --glob '!**/node_modules/**'` 无命中（退出 1）；Node22 `npm run type-check`、`npm run build` 均退出 0，详见 `T-29-checks.json` 和各命令日志。
+- 新合成库、生产 Next build/start 的实际浏览器表单没有 file input，文本提交成功且记录可见；resource inventory 观察提交阶段 13 项资源，外域和 upload-local 均为 0。证据 `T-29-archive-result.json`、`T-29-browser-fixture.json`。未上传真实文件；夹具停止后核对原会话与端口。
+- 回滚用归档原文在无冲突原路径复制恢复，保留“不支持”说明；与 T-28 保留各自任务/验收/提交。
