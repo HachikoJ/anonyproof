@@ -1,0 +1,69 @@
+[
+  {
+    "name": "T-02-final-regression",
+    "argv": [
+      "npx",
+      "--no-install",
+      "tsx",
+      "--test",
+      "--test-concurrency=1",
+      "tests/fix/T-02.test.ts",
+      "tests/fix/T-01.test.ts",
+      "tests/fix/T-03.test.ts",
+      "tests/fix/T-10.test.ts",
+      "tests/fix/T-21.test.ts",
+      "tests/fix/T-32-candidate.test.ts"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "T-02-frontend-type",
+    "argv": [
+      "npm",
+      "run",
+      "type-check"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "T-02-backend-type",
+    "argv": [
+      "npx",
+      "--no-install",
+      "tsc",
+      "--noEmit",
+      "--target",
+      "ES2017",
+      "--module",
+      "commonjs",
+      "--esModuleInterop",
+      "--skipLibCheck",
+      "--strict",
+      "server/demo.ts",
+      "server/index.ts",
+      "server/env.ts",
+      "server/middleware/rateLimitEnhanced.ts",
+      "server/middleware/rateLimit.ts",
+      "server/middleware/accessStats.ts",
+      "server/middleware/requestOrigin.ts",
+      "server/utils/validation.ts",
+      "server/utils/comments.ts",
+      "server/utils/expiringMap.ts",
+      "server/utils/logger.ts",
+      "server/utils/database.ts",
+      "server/utils/accessStats.ts",
+      "server/utils/contentEncryption.ts",
+      "server/utils/instanceIsolation.ts"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "T-02-build",
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0
+  }
+]

@@ -9,7 +9,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { prepareContentMigrationCandidate, ContentMigrationPreparationError } from '../../scripts/content-migration-candidate'
 import { loadContentEncryption } from '../../server/utils/contentEncryption'
-import { startBackend, Client } from './helpers'
+import { startBackend, Client, labelSyntheticDatabase } from './helpers'
 
 const Database = createRequire(path.resolve(__dirname, '../../server/package.json'))('better-sqlite3')
 const directory = () => mkdtempSync(path.join(tmpdir(), 'anonyproof-T32-candidate-'))
@@ -107,6 +107,11 @@ test('T-32 candidate: preserve exact rows/ownership, seal four content classes, 
   for (const suffix of ['-wal', '-journal']) assert.equal(existsSync(destinationPath + suffix), false)
   const restorePath = path.join(folder, 'independent-restore.db')
   writeFileSync(restorePath, bytes, { flag: 'wx', mode: 0o600 })
+  // T-02 refuses automatic adoption. This synthetic restore explicitly models
+  // the separately approved role-mapping step; real candidates stay unlabelled.
+  const restoreDb = new Database(restorePath)
+  labelSyntheticDatabase(restoreDb, 'formal')
+  restoreDb.close()
   const restored = await startBackend({ DATABASE_PATH: restorePath, CONTENT_ENCRYPTION_KEY: contentKey }); t.after(restored.stop)
   for (const [i, recoveryCode] of fixture.recoveryCodes.entries()) {
     const user = new Client(restored), recovered = await user.post('/api/identity/recover', { recoveryCode })

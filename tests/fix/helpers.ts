@@ -12,6 +12,16 @@ export const projectRoot = path.resolve(__dirname, '../..')
 const requireServer = createRequire(path.join(projectRoot, 'server/package.json'))
 const Database = requireServer('better-sqlite3') as typeof DatabaseType
 
+// Explicit fixture-only role assignment for hand-built historical schemas.
+// Never called by launchBackend: unlabelled real/negative-test DBs must fail.
+export function labelSyntheticDatabase(db: DatabaseType.Database, role: 'demo' | 'formal') {
+  db.exec(`CREATE TABLE instance_metadata (
+    id INTEGER PRIMARY KEY CHECK(id=1), role TEXT NOT NULL CHECK(role IN ('demo','formal')),
+    version INTEGER NOT NULL CHECK(version=1)
+  )`)
+  db.prepare('INSERT INTO instance_metadata(id,role,version) VALUES(1,?,1)').run(role)
+}
+
 async function freePort() {
   const server = net.createServer()
   await new Promise<void>((resolve, reject) => {
@@ -32,11 +42,12 @@ export async function launchBackend(overrides: Record<string, string> = {}) {
   const password = 'fixture-password-' + randomBytes(12).toString('hex')
   const env: NodeJS.ProcessEnv = {
     ...process.env,
-    NODE_ENV: 'production', DEMO_MODE: '0', ADMIN_PASSWORD: password,
+    NODE_ENV: 'production', INSTANCE_ROLE: overrides.DEMO_MODE === '1' ? 'demo' : 'formal',
+    DEMO_MODE: '0', ADMIN_PASSWORD: password,
     SESSION_SECRET: randomBytes(32).toString('hex'),
     // Never inherit or load a real content key into a fixture. Reused DB tests
     // must explicitly pass the same temporary key, as production restore does.
-    CONTENT_ENCRYPTION_KEY: randomBytes(32).toString('base64'), DATABASE_PATH: databasePath,
+    CONTENT_ENCRYPTION_KEY: overrides.DEMO_MODE === '1' ? '' : randomBytes(32).toString('base64'), DATABASE_PATH: databasePath,
     PORT: String(port), BIND_HOST: '127.0.0.1', TRUST_PROXY: '0',
     CORS_ORIGINS: `http://127.0.0.1:${port}`, LOG_DIR: path.join(dir, 'logs'),
     ...overrides,

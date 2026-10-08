@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: T-02 invalid role/mode/path/password/key fails before DB creation
+ok 1 - T-02 invalid role/mode/path/password/key fails before DB creation
+  ---
+  duration_ms: 5519.675541
+  type: 'test'
+  ...
+# Subtest: T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+ok 2 - T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+  ---
+  duration_ms: 864.845792
+  type: 'test'
+  ...
+# Subtest: T-02 persisted role cannot be flipped and a formal key cannot be replaced
+ok 3 - T-02 persisted role cannot be flipped and a formal key cannot be replaced
+  ---
+  duration_ms: 2226.132708
+  type: 'test'
+  ...
+# Subtest: T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+ok 4 - T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+  ---
+  duration_ms: 1007.23725
+  type: 'test'
+  ...
+# Subtest: T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+ok 5 - T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+  ---
+  duration_ms: 156.775458
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10064.114291

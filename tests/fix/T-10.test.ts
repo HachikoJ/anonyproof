@@ -6,7 +6,7 @@ import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { setTimeout as delay } from 'node:timers/promises'
-import { projectRoot, startBackend } from './helpers'
+import { projectRoot, startBackend, labelSyntheticDatabase } from './helpers'
 
 const Database = createRequire(path.join(projectRoot, 'server/package.json'))('better-sqlite3') as typeof import('better-sqlite3')
 
@@ -14,6 +14,7 @@ function legacyFixture() {
   const directory = mkdtempSync(path.join(tmpdir(), 'anonyproof-T-10-'))
   const file = path.join(directory, 'legacy.db')
   const db = new Database(file)
+  labelSyntheticDatabase(db, 'demo')
   db.exec(`CREATE TABLE access_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT NOT NULL,
     user_agent TEXT, path TEXT NOT NULL, method TEXT NOT NULL, status_code INTEGER,
     response_time INTEGER, is_bot BOOLEAN DEFAULT 0, is_suspicious BOOLEAN DEFAULT 0,
@@ -35,7 +36,7 @@ function runWriter(file: string, entries: unknown[] = []) {
     for(const entry of JSON.parse(process.env.T10_ENTRIES)) recordAccess.immediate(entry);`
   const result = spawnSync(process.execPath, ['--import', 'tsx', '--eval', source], {
     cwd: projectRoot, encoding: 'utf8', timeout: 10000,
-    env: { ...process.env, NODE_ENV: 'production', DATABASE_PATH: file, LOG_DIR: path.join(path.dirname(file), 'logs'), TZ: 'Pacific/Honolulu', T10_ENTRIES: JSON.stringify(entries) },
+    env: { ...process.env, NODE_ENV: 'production', INSTANCE_ROLE: 'demo', DEMO_MODE: '1', CONTENT_ENCRYPTION_KEY: '', DATABASE_PATH: file, LOG_DIR: path.join(path.dirname(file), 'logs'), TZ: 'Pacific/Honolulu', T10_ENTRIES: JSON.stringify(entries) },
   })
   assert.equal(result.status, 0, result.stdout + result.stderr)
 }
@@ -82,7 +83,7 @@ test('T-10: failed legacy migration rolls back added columns and remains retryab
   db.exec(`CREATE TRIGGER reject_legacy_stats BEFORE INSERT ON access_stats BEGIN SELECT RAISE(ABORT,'fixture migration failure'); END`)
   const result = spawnSync(process.execPath, ['--import', 'tsx', '--eval', "require('./server/middleware/accessStats.ts')"], {
     cwd: projectRoot, encoding: 'utf8', timeout: 10000,
-    env: { ...process.env, NODE_ENV: 'production', DATABASE_PATH: file, LOG_DIR: path.join(path.dirname(file), 'logs') },
+    env: { ...process.env, NODE_ENV: 'production', INSTANCE_ROLE: 'demo', DEMO_MODE: '1', CONTENT_ENCRYPTION_KEY: '', DATABASE_PATH: file, LOG_DIR: path.join(path.dirname(file), 'logs') },
   })
   assert.notEqual(result.status, 0)
   assert.match(result.stderr, /fixture migration failure/)

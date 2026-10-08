@@ -492,7 +492,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-02 正式/演示部署硬隔离和失败关闭
 
-状态：进行中（A已批准本地角色/库隔离；真实资产与发布另批）；原始严重度：P0（审查第 1 条）；优先级：A；工作量：L；前置依赖：T-01、T-19；Q-01方向已确认，线上实施另需具体配置/发布授权。
+状态：进行中（本地角色/库/密钥隔离验收通过；真实资产与发布仍另批）；原始严重度：P0（审查第 1 条）；优先级：A；工作量：L；前置依赖：T-01、T-19；Q-01方向已确认，线上实施另需具体配置/发布授权。
 
 **问题**：`.env.example`默认demo=1、DEPLOY线上配置demo=1；同一套业务与DB可切换，demo开关决定公开密码及数据范围。误配置可把真实库交给公开演示管理员。
 
@@ -1305,3 +1305,18 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - `rg -n 'upload-local|LocalFileUpload' app server --glob '!**/node_modules/**'` 无命中（退出 1）；Node22 `npm run type-check`、`npm run build` 均退出 0，详见 `T-29-checks.json` 和各命令日志。
 - 新合成库、生产 Next build/start 的实际浏览器表单没有 file input，文本提交成功且记录可见；resource inventory 观察提交阶段 13 项资源，外域和 upload-local 均为 0。证据 `T-29-archive-result.json`、`T-29-browser-fixture.json`。未上传真实文件；夹具停止后核对原会话与端口。
 - 回滚用归档原文在无冲突原路径复制恢复，保留“不支持”说明；与 T-28 保留各自任务/验收/提交。
+
+### T-02 本地执行与验收（2026-10-08，独立高风险提交）
+
+- 本地部分通过，整项仍进行中。database.ts 的所有打开路径在访问/业务建表前验证明确 INSTANCE_ROLE、严格 DEMO_MODE、绝对 DATABASE_PATH；formal 禁止演示/占位管理员密码，必须有效内容密钥；demo 拒绝配置内容密钥。永久 instance_metadata 角色与 key marker 在事务内初始化，拒绝角色翻转/错误密钥，未标角色的非空历史库只读拒绝，不自动认领。
+- 配置矩阵和隔离凭证测试 `tests/fix/T-02.test.ts` 实际 5 项通过（含 13 个错误配置、旧非空库文件 SHA 不变、运行中同库换角色/错 key 被拒、双方 Cookie/恢复码不通用、正式 config 不返回密码、PM2 角色/名称/端口矩阵）。PM2 生产入口要求命令中 INSTANCE_ROLE，按角色独立进程名/默认端口；.env.example 绝对 DB 路径留空要求填写，DEPLOY 标明独立 checkout/build/env/key 与旧原位流程不可执行。
+- T-02/T-01/T-03/T-10/T-21/T-32-candidate 相关回归实际 47 项通过，0 失败/跳过；前端类型、Next build 退出 0；全后端 strict tsc 首次退出 2（返回对象 role 推断为 string），补显式返回类型后实际退出 0，失败与修正日志都保留。见 `T-02-checks.json`、`T-02-final-regression.txt`、`T-02-pm2-and-matrix.txt` 和各 type/build 日志。
+- 初始跨角色 Cookie 测试的一次失败来自 Client 自动携带原 demo Cookie 覆盖手动 Header；改为独立无 Cookie Client 后重跑真实跨实例验证，未放宽服务端拒绝。首轮日志及原始空白备份见 `T-02-first-regression.txt` / `T-02-log-formatting.json`。
+- 手造 T-10 旧日志 schema 现在明确标记合成角色；launchBackend 不自动标任意旧 DB。T-32-candidate 产物仍未标角色，不能直接恢复启动；合成恢复测试单独明确赋 formal 角色以模拟受控归属步骤，真实归属/认领仍待具体资产确认，不改迁移工具或真实库。这是 T-02 失败关闭规则带来的必要验收兼容调整，旧转换证据不代表已获真实归属批准。
+- 线上旧 env/进程/DB/备份仅只读核验，未部署、改权限、迁移、清理或重启。整项剩余：生产资产归属及一致性快照/恢复确认、隔离切换与发布后库计数/配置/凭证验收。回滚只接各自角色正确的对应库，保留标记，公开入口不得恢复旧真实材料读取。
+
+### T-18 已授权远端候选执行（2026-10-08）
+
+- 用户另提供凭证明确要求直接登录；CLI 认证已核验 HachikoJ，凭证未写入仓库、本文或命令日志。按 B 推送固定候选 25e1c6a 到 codex/fix-plan-ci-20261008，并创建 Draft PR https://github.com/HachikoJ/anonyproof/pull/1（base main），已附加本任务。未合并、force 或推 main。
+- 实际 CI run 37751003017 已运行，两个依赖树安装/native ABI、前后端类型和构建成功；业务回归及最终审计/制品尚在执行，T-18 仍未关闭。
+- 仓库已有 Cloudflare Workers Builds 检查自动被推送触发，details URL 包含 production/builds，尚不能确定仅构建还是生产部署；已向用户请求核对/排除测试分支自动部署，暂缓后续 push。服务器未部署；不能把 GitHub 授权扩张为直接部署授权。范围内本地实施不受影响。

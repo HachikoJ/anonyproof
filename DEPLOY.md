@@ -27,10 +27,12 @@
 ## 环境变量（.env.local）
 
 ```
+INSTANCE_ROLE=demo
 DEMO_MODE=1
+CONTENT_ENCRYPTION_KEY=
 ADMIN_PASSWORD=demo12345678
 SESSION_SECRET=<openssl rand -hex 32 生成>
-DATABASE_PATH=./data/anonyproof-demo.db
+DATABASE_PATH=/home/ubuntu/anonyproof-demo/data/demo.db
 CORS_ORIGINS=https://anonyproof.deline.top
 TRUST_PROXY=1
 ADMIN_UI_URL=https://anonyproof.deline.top/anonyproof/foorpynona
@@ -43,7 +45,17 @@ DEMO_MAX_CLONES=3000
 - `API_PROXY_TARGET` 在 `next build` 时写进产物，改完需要重新构建前端。
 - `CORS_ORIGINS` 必须显式设置；缺失、空值、通配符、路径、凭证或非规范 Origin 会使后端启动失败。生产仅配置本站的准确 Origin（如 `https://anonyproof.deline.top`），不要默认加入主域或 localhost。开发时单独列出实际本地前端 Origin；多个值用逗号分隔。端口属于 Origin，不能以 Host/X-Forwarded-Host 扩展 CORS 读取权限。CORS 不代替接口鉴权或写请求来源防护。
 
-## 进程管理
+## T-02 隔离部署契约（本地代码已实现，未切生产）
+
+现在线上旧进程目录仍是 `/home/ubuntu/anonyproof`；本节是待批准切换目标，不能把路径表当作已经部署的证据。演示与正式各用独立 checkout、`.env.local`、`.next`、DB、管理员/SESSION_SECRET/内容密钥备份和 PM2 进程。演示建议目录 `/home/ubuntu/anonyproof-demo`（3000/4000），正式另用 `/home/ubuntu/anonyproof-formal`（3100/4100）；正式域名和真实历史资产映射仍待具体确认，不用当前演示域名默认接正式库。
+
+启动必须配置 `INSTANCE_ROLE=demo|formal`、严格相符的 `DEMO_MODE=1|0` 及显式绝对 `DATABASE_PATH`，不按 NODE_ENV 或域名猜测。demo 不得配置内容密钥；formal 必须配置 32 字节 Base64 内容密钥及至少 12 字符私有管理员口令，公开演示密码和文档占位口令会拒绝。每次打开 DB 在访问/业务建表之前检查永久 `instance_metadata` 角色及内容密钥；角色冲突或未标角色的非空旧库保持关闭。不能靠切开关或复制旧库自动认领，迁移前须另行审批对应资产和归属。
+
+分别在对应 checkout 执行已授权发布步骤，前端 build 时明确设置本角色 `API_PROXY_TARGET`。PM2 配置读取启动命令中的角色，进程名为 `anonyproof-demo-frontend/backend` 或 `anonyproof-formal-frontend/backend`；默认端口按角色区分，可用显式 FRONTEND_PORT/BACKEND_PORT 覆盖，但不允许同端口。示例启动命令 `INSTANCE_ROLE=demo pm2 start ecosystem.prod.config.js`，正式在另一个 checkout 使用 `INSTANCE_ROLE=formal`。不要在原线上目录直接执行这些命令或自动停旧进程；实际切换需先备份/恢复演练、核对监听与代理目标，然后取得发布批准。开发启动也必须显式角色/开关/绝对测试 DB；本地 Origin 单独配置。
+
+这些检查不能发现任意其它机器重复使用同一个签名/内容密钥；部署时必须独立生成并用配置清单验证，禁止密钥注册中心或仓库中保存真实值。回滚保留各角色对应的旧发布、配置、库快照，不能删角色标记或把正式库接公开演示；公开旧材料未处置时不能重开公开读取。
+
+## 旧实例进程管理（历史操作参考）
 
 ```bash
 export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22
@@ -55,7 +67,9 @@ pm2 reload anonyproof-frontend anonyproof-backend
 pm2 save                  # 同步开机自启快照（systemd 单元 pm2-ubuntu 已启用）
 ```
 
-## 更新发布流程
+## 旧原位更新流程（历史参考，禁止用于本轮隔离切换）
+
+下述旧流程直接覆盖原 checkout，缺少 T-02 的隔离和资产恢复门禁；保留作历史参考，本轮不执行。新角色按前文在独立目录准备，待资产/发布方案获批后再切入口。
 
 ```bash
 # 1. 本地打包（排除依赖、构建产物、环境变量与本地数据库）

@@ -5,7 +5,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { performance } from 'node:perf_hooks'
 import { setTimeout as delay } from 'node:timers/promises'
-import { projectRoot, startBackend } from './helpers'
+import { projectRoot, startBackend, labelSyntheticDatabase } from './helpers'
 
 const Database = createRequire(path.join(projectRoot, 'server/package.json'))('better-sqlite3') as typeof import('better-sqlite3')
 
@@ -15,6 +15,7 @@ async function benchmark(historyRows: number) {
   const loopFile = path.join(directory, 'event-loop.json')
   const hookFile = path.join(directory, 'measurement.cjs')
   const db = new Database(file)
+  labelSyntheticDatabase(db, 'formal')
   db.exec(`CREATE TABLE access_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT NOT NULL,
     user_agent TEXT, path TEXT NOT NULL, method TEXT NOT NULL, status_code INTEGER,
     response_time INTEGER, is_bot BOOLEAN DEFAULT 0, is_suspicious BOOLEAN DEFAULT 0,

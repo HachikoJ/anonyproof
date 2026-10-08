@@ -6,18 +6,9 @@ export const DEMO_DEVICE_ID = 'demo-device-anonyproof-2026'
 export const DEMO_SECONDARY_DEVICE_ID = 'demo-device-affiliate-2026'
 export const DEMO_NOTICE = '公开演示仅使用固定合成案例；每个浏览器有独立沙箱，不接收真实敏感材料。公开模板只读。'
 
-function isEnabledValue(value: string | undefined) {
-  if (!value) return false
-  return ['1', 'true', 'yes', 'on'].includes(value.trim().toLowerCase())
-}
-
 export function isDemoMode() {
-  const configured = process.env.DEMO_MODE
-  if (configured !== undefined && configured.trim() !== '') {
-    return isEnabledValue(configured)
-  }
-
-  return process.env.NODE_ENV !== 'production'
+  // database.ts rejects any missing/inconsistent role before schemas or seeds.
+  return process.env.INSTANCE_ROLE === 'demo' && process.env.DEMO_MODE === '1'
 }
 
 type DemoCategory = 'suggestion' | 'complaint' | 'report'
