@@ -50,6 +50,10 @@ function eachContentRow(db: DatabaseType.Database, table: 'feedbacks' | 'feedbac
 }
 
 function checkSchema(db: DatabaseType.Database) {
+  // T-42 snapshots bind identity/action/key in AAD. This historical migration
+  // must not silently copy or convert a nonempty new metadata table.
+  if (db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='request_idempotency'").get() &&
+      db.prepare('SELECT 1 FROM request_idempotency LIMIT 1').get()) fail('UNREVIEWED_IDEMPOTENCY_METADATA')
   for (const spec of specs) {
     const schema = db.prepare(`PRAGMA table_info(${spec.table})`).all() as { name: string; pk: number }[]
     const columns = new Set(schema.map(row => row.name))

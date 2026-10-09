@@ -1,6 +1,3 @@
-import { CommentPaginationError, getCommentPage, parseCommentPagination } from './utils/commentPagination'
-import { getUserFeedbackPage } from './utils/userFeedbackPagination'
-import { FeedbackPaginationError, getAdminFeedbackPage, parseFeedbackPagination } from './utils/adminFeedbackPagination'
 import './env'
 import express from 'express'
 import cors from 'cors'
@@ -17,8 +14,12 @@ import {
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter, identityInitializationLimiter, positiveIntegerEnv, userCommentSourceLimiter, userCommentIdentityLimiter } from './middleware/rateLimit'
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
+import { CommentPaginationError, getCommentPage, parseCommentPagination } from './utils/commentPagination'
+import { getUserFeedbackPage } from './utils/userFeedbackPagination'
+import { executeIdempotent, IdempotencyError, initializeIdempotency, startIdempotencyCleanup } from './utils/requestIdempotency'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
+import { FeedbackPaginationError, getAdminFeedbackPage, parseFeedbackPagination } from './utils/adminFeedbackPagination'
 import { ExpiringMap, ExpiringMapCapacityError } from './utils/expiringMap'
 import { startIdentityRetention } from './utils/identityRetention'
 import { logger } from './utils/logger'
@@ -411,6 +412,8 @@ for (const table of ['feedback_comments', 'notifications']) {
 
 // Storage flags are internal. Authorization is performed by each caller before
 // decrypting; public response shapes continue to return the authorized plaintext.
+initializeIdempotency(db, contentEncryption)
+
 function readFeedback(row: any) {
   const { original_content_storage_version, solution_storage_version, solution_admin_ip, ...record } = row
   return {
@@ -863,6 +866,25 @@ function canAccessDevice(req: express.Request, deviceId: string) {
   return isAdminAuthenticated(req) || identityFromCookie(req)?.device_id === deviceId
 }
 
+function mutationScope(req: express.Request, commenterType?: 'user' | 'admin') {
+  const identity = commenterType === 'admin' ? null : identityFromCookie(req)
+  if (identity) return `user:${identity.device_id}`
+  if (isAdminAuthenticated(req)) return `admin:${hashIdentityValue(getCookie(req, cookieName) || '')}${demoMode ? `:sandbox:${demoRequestDevice(req)}` : ''}`
+  throw new IdempotencyError(400, 'IDEMPOTENCY_IDENTITY_REQUIRED', '请先验证身份。')
+}
+function idempotencyHeader(req: express.Request) {
+  // rawHeaders prevents repeated header lines being silently coalesced.
+  if (req.rawHeaders.filter((value, index) => index % 2 === 0 && value.toLowerCase() === 'idempotency-key').length > 1) {
+    throw new IdempotencyError(400, 'IDEMPOTENCY_KEY_INVALID', '请求动作编号不能重复。')
+  }
+  return req.get('Idempotency-Key')
+}
+function sendIdempotencyError(error: unknown, res: express.Response) {
+  if (!(error instanceof IdempotencyError)) return false
+  res.status(error.status).json({ success: false, error: error.message, code: error.code })
+  return true
+}
+
 type RecordScope = { sql: string; params: string[] }
 function adminRecordScope(req: express.Request, alias: string, writable = false): RecordScope {
   if (!demoMode) return { sql: `${alias}.is_demo_template = 0 AND ${alias}.is_demo_clone = 0`, params: [] }
@@ -999,7 +1021,9 @@ app.post('/api/feedback', (req, res, next) => {
     const id = uuidv4()
     const createdAt = Date.now()
 
-    db.transaction(() => {
+    const response = executeIdempotent(db, contentEncryption, mutationScope(req), 'feedback', idempotencyHeader(req),
+      { category, originalContent, ...(demoMode ? { demoExampleId: req.body.demoExampleId } : {}) }, () => {
+      db.transaction(() => {
       const stmt = db.prepare(
         'INSERT INTO feedbacks (id, category, encrypted_content, device_id, created_at, status, original_content, is_demo_clone, original_content_storage_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
       )
@@ -1020,14 +1044,12 @@ app.post('/api/feedback', (req, res, next) => {
         `收到一条${categoryName}线索`,
         contentSummary
       )
-    }).immediate()
-
-    res.json({
-      success: true,
-      id,
-      timestamp: createdAt
+      }).immediate()
+      return { result: { success: true, id, timestamp: createdAt }, targetType: 'feedback', targetId: id }
     })
+    res.json(response)
   } catch (error) {
+    if (sendIdempotencyError(error, res)) return
     console.error('提交反馈失败:', error)
     res.status(500).json({ error: '提交失败' })
   }
@@ -1319,17 +1341,6 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     const fixedComment = demoMode ? (commenterType === 'admin' ? DEMO_ADMIN_COMMENTS : DEMO_USER_COMMENTS).find(item => item.id === req.body?.demoCommentId) : undefined
     const content = demoMode ? fixedComment?.content : req.body?.content
     const scope = commenterType === 'admin' ? adminRecordScope(req, 'feedbacks', true) : userRecordScope('feedbacks')
-    const feedback = db.prepare(`
-      SELECT device_id, category, original_content FROM feedbacks
-      WHERE id = ? AND ${scope.sql}
-    `).get(feedbackId, ...scope.params) as { device_id: string; category: string; original_content: string } | undefined
-
-    if (!feedback) {
-      return res.status(404).json({ error: '反馈不存在' })
-    }
-    if (commenterType === 'user' && !canAccessDevice(req, feedback.device_id)) {
-      return res.status(401).json({ error: '无权补充该记录' })
-    }
     if (demoMode && !fixedComment) return res.status(400).json({ error: '请选择固定演示回复' })
     const validation = validateCommentContent(content)
     if (!validation.valid) {
@@ -1339,6 +1350,20 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     const createdAt = Date.now()
     const adminIp = null
 
+    const response = executeIdempotent(db, contentEncryption, mutationScope(req, commenterType),
+      commenterType === 'admin' ? 'admin_comment' : 'user_comment', idempotencyHeader(req),
+      { feedbackId, commenterType, content: content.trim(), ...(demoMode ? { demoCommentId: req.body.demoCommentId } : {}) }, () => {
+    const feedback = db.prepare(`
+      SELECT device_id, category, original_content FROM feedbacks
+      WHERE id = ? AND ${scope.sql}
+    `).get(feedbackId, ...scope.params) as { device_id: string; category: string; original_content: string } | undefined
+
+    if (!feedback) {
+      throw new IdempotencyError(404, 'FEEDBACK_NOT_FOUND', '反馈不存在。')
+    }
+    if (commenterType === 'user' && !canAccessDevice(req, feedback.device_id)) {
+      throw new IdempotencyError(401, 'FEEDBACK_UNAUTHORIZED', '无权补充该记录')
+    }
     const result = db.transaction(() => {
       // Recheck the scoped parent while holding the write reservation.
       const currentFeedback = db.prepare(`
@@ -1380,19 +1405,13 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
       }
       return result
     }).immediate()
-    if (!result) return res.status(404).json({ error: '反馈不存在' })
-
-    res.json({
-      success: true,
-      comment: {
-        id: result.lastInsertRowid,
-        feedback_id: feedbackId,
-        commenter_type: commenterType,
-        content: content.trim(),
-        created_at: new Date(createdAt).toISOString()
-      }
+    if (!result) throw new IdempotencyError(404, 'FEEDBACK_NOT_FOUND', '反馈不存在。')
+    return { result: { id: Number(result.lastInsertRowid), feedback_id: feedbackId, commenter_type: commenterType,
+      created_at: new Date(createdAt).toISOString() }, targetType: 'comment', targetId: String(result.lastInsertRowid) }
     })
+    res.json({ success: true, comment: { ...response, content: content.trim() } })
   } catch (error) {
+    if (sendIdempotencyError(error, res)) return
     console.error('添加评论失败:', error)
     res.status(500).json({ error: '添加评论失败' })
   }
@@ -1403,8 +1422,8 @@ app.post('/api/feedback/:feedbackId/comments', (req, res, next) => {
     const scope = userRecordScope('feedbacks')
     const parent = db.prepare(`SELECT device_id FROM feedbacks WHERE id = ? AND ${scope.sql}`)
       .get(String(req.params.feedbackId), ...scope.params) as { device_id: string } | undefined
-    if (!parent) return res.status(404).json({ error: '反馈不存在' })
-    if (!canAccessDevice(req, parent.device_id)) return res.status(401).json({ error: '无权补充该记录' })
+    if (!parent && !(req.get('Idempotency-Key') && (isAdminAuthenticated(req) || identityFromCookie(req)))) return res.status(404).json({ error: '反馈不存在' })
+    if (parent && !canAccessDevice(req, parent.device_id)) return res.status(401).json({ error: '无权补充该记录' })
     const caller = identityFromCookie(req)
     // Preserve the existing formal-admin access to this user-comment route.
     // Quotas follow the authenticated caller, never a caller-selected record.
@@ -1737,6 +1756,8 @@ app.use(identityCapacityErrorHandler)
 
 // 启动服务器
 const apiServer = app.listen(PORT, HOST, () => {
+  const idempotencyCleanup = startIdempotencyCleanup(db)
+  apiServer.once('close', () => idempotencyCleanup.close())
   const logRetention = startLogRetention()
   apiServer.once('close', () => logRetention.close())
   const identityRetention = startIdentityRetention(db, demoMode ? 'demo' : 'formal', logger)

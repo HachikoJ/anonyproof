@@ -26,6 +26,7 @@ export function inventoryContentMigration(sourcePath: string) {
       { table: 'feedback_comments', fields: ['content'], version: 'content_storage_version' },
       { table: 'notifications', fields: ['title', 'content'], version: 'content_storage_version' },
     ]
+    if (tables.has('request_idempotency')) specs.push({ table: 'request_idempotency', fields: ['snapshot'], version: 'snapshot_storage_version' })
     const storage: StorageCount[] = [], schemaGaps: string[] = []
     for (const spec of specs) {
       if (!tables.has(spec.table)) { if (!schemaGaps.includes(spec.table)) schemaGaps.push(spec.table); continue }
@@ -44,7 +45,7 @@ export function inventoryContentMigration(sourcePath: string) {
     }
     const count = (table: string, where = '') => (db.prepare(`SELECT COUNT(*) AS n FROM ${table} ${where}`).get() as { n: number }).n
     const recordCounts: Record<string, number> = {}
-    for (const table of ['feedbacks', 'feedback_comments', 'notifications', 'client_identities', 'client_identity_sessions', 'client_identity_install_keys']) {
+    for (const table of ['feedbacks', 'feedback_comments', 'notifications', 'client_identities', 'client_identity_sessions', 'client_identity_install_keys', 'request_idempotency']) {
       if (tables.has(table)) recordCounts[table] = count(table)
     }
     const feedbackFlags = tables.has('feedbacks') ? columns('feedbacks') : new Set<string>()

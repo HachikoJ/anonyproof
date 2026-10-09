@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+ok 1 - T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+  ---
+  duration_ms: 831.0415
+  type: 'test'
+  ...
+# Subtest: T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+ok 2 - T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+  ---
+  duration_ms: 477.504458
+  type: 'test'
+  ...
+# Subtest: T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+ok 3 - T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+  ---
+  duration_ms: 516.838
+  type: 'test'
+  ...
+# Subtest: T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+ok 4 - T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+  ---
+  duration_ms: 513.989584
+  type: 'test'
+  ...
+# Subtest: T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+ok 5 - T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+  ---
+  duration_ms: 890.08
+  type: 'test'
+  ...
+# Subtest: T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+ok 6 - T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+  ---
+  duration_ms: 0.584958
+  type: 'test'
+  ...
+# Subtest: T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+ok 7 - T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+  ---
+  duration_ms: 576.599041
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4063.998

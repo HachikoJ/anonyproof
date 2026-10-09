@@ -130,6 +130,7 @@ export function loadContentEncryption(options: { demoMode: boolean; env?: { CONT
       ['feedbacks', [['original_content', 'original_content_storage_version'], ['solution', 'solution_storage_version']]],
       ['feedback_comments', [['content', 'content_storage_version']]],
       ['notifications', [['title', 'content_storage_version'], ['content', 'content_storage_version']]],
+      ['request_idempotency', [['snapshot', 'snapshot_storage_version']]],
     ] as const) {
       const tableExists = db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(table)
       if (!tableExists) continue
@@ -140,7 +141,10 @@ export function loadContentEncryption(options: { demoMode: boolean; env?: { CONT
         if (db.prepare(`SELECT 1 FROM ${table} WHERE ${versionColumn} NOT IN (0, 1) OR ${versionColumn} IS NULL LIMIT 1`).get()) {
           throw new ContentEncryptionError('UNSUPPORTED_STORAGE_VERSION')
         }
-        if (hasVerifiedMarker) continue
+        if (table === 'request_idempotency' && db.prepare(`SELECT 1 FROM ${table} WHERE ${versionColumn} != ? LIMIT 1`).get(keyId ? 1 : 0)) {
+          throw new ContentEncryptionError('UNSUPPORTED_STORAGE_VERSION')
+        }
+        if (hasVerifiedMarker && table !== 'request_idempotency') continue
         // Markerless databases must not adopt version 1 ciphertext under a
         // different key. Iterate rather than materialize all sensitive rows.
         for (const row of db.prepare(`SELECT ${column} AS value FROM ${table} WHERE ${versionColumn} = 1`)
