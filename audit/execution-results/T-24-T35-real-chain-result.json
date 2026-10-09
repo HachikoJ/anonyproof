@@ -1,0 +1,1093 @@
+{
+  "tasks": [
+    "T-24",
+    "T-35"
+  ],
+  "scope": "real loopback Nginx -> existing production Next -> isolated formal Express; no product configuration change, browser UI or production acceptance",
+  "prefix": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv",
+  "fixtureDatabase": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-IuCT8R/fixture.db",
+  "fixtureBackendDir": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-IuCT8R",
+  "templateSha256": "5349de6fcea1cab00f120108abf6b3d07998bd78868f24fc4f8fd31367713439",
+  "buildId": "4lYRvGWvLJECiJ_HbHiQN",
+  "buildSha256": "6c9d1c47e6fa2b3b52710ccee53bdd49056eaeeaaa8b6160d522683adf6a01a1",
+  "configuredTrustProxy": 1,
+  "checks": [
+    {
+      "task": "T-24",
+      "name": "Actual source 127.0.0.1, XFF absent",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Stats rewrite reaches Express",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Actual source 127.0.0.1, XFF single",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Stats rewrite reaches Express",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Actual source 127.0.0.1, XFF multi",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Stats rewrite reaches Express",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Actual source ::1, XFF absent",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Stats rewrite reaches Express",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Actual source ::1, XFF single",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Stats rewrite reaches Express",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Actual source ::1, XFF multi",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Stats rewrite reaches Express",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Direct backend header does not choose an arbitrary source identity",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "task": "T-35",
+      "name": "Real administrator login via both proxies",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Same source changing XFF shares login quota 401",
+      "actual": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Same source changing XFF shares login quota 401",
+      "actual": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Same source changing XFF shares login quota 429",
+      "actual": 429,
+      "expected": 429,
+      "pass": true
+    },
+    {
+      "task": "T-24",
+      "name": "Second actual source has independent login quota",
+      "actual": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Administrator Cookie Secure",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Administrator Cookie HttpOnly",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Administrator Cookie SameSite",
+      "actual": "Strict",
+      "expected": "Strict",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Real Next page /anonyproof",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Real Next page /anonyproof/foorpynona",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Real Next page /anonyproof/access-stats",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Production pages reference static assets",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/0bma92pht_c97.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/0frtubn3d_5lv.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/0sb7-x-cq676p.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/1ol7ko56t5296.css",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/1x7thq2yoseus.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/29bhp2xv5f0vm.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/2dzmvib5n_n7f.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/3fntmmi971322.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/3l04zcqx63h3y.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Static asset via template /anonyproof/_next/static/chunks/turbopack-2y2uka1upmxeu.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Identity POST via both proxies",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Identity Cookie Secure",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Identity Cookie HttpOnly",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Identity Cookie SameSite",
+      "actual": "Lax",
+      "expected": "Lax",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Protected identity no-store",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Formal synthetic submission via proxy",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "user real comment via proxy",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "admin real comment via proxy",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "PUT status and explanation via proxy",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Authorized detail reads current status",
+      "actual": "in_progress",
+      "expected": "in_progress",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Authorized detail reads explanation",
+      "actual": "T35 synthetic processing explanation",
+      "expected": "T35 synthetic processing explanation",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Protected detail no-store",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Missing Origin rejected through proxy",
+      "actual": 403,
+      "expected": 403,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Evil Origin rejected through proxy",
+      "actual": 403,
+      "expected": 403,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Rejected writes leave existing status unchanged",
+      "actual": "in_progress",
+      "expected": "in_progress",
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "DELETE business feedback through proxy",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "DELETE cascades feedbacks",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "DELETE cascades feedback_comments",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "DELETE cascades notifications",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "task": "T-35",
+      "name": "Deleted record inaccessible",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "single"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "multi"
+    },
+    {
+      "method": "GET",
+      "source": "::1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "::1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "single"
+    },
+    {
+      "method": "GET",
+      "source": "::1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "multi"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": true,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "single"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [
+        {
+          "name": "anonyproof_admin_session",
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "Strict",
+          "path": "/"
+        }
+      ],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 401,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "single"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 401,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "multi"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 429,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "single"
+    },
+    {
+      "method": "POST",
+      "source": "::1",
+      "directBackend": false,
+      "status": 401,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "s-maxage=31536000",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "s-maxage=31536000",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "s-maxage=31536000",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [
+        {
+          "name": "anonyproof_device_session",
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "Lax",
+          "path": "/"
+        }
+      ],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "POST",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "PUT",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "PUT",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 403,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "PUT",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 403,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "DELETE",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 404,
+      "cookieSent": true,
+      "setCookieAttributes": [],
+      "cacheControl": "no-store",
+      "sourceHeaderVariant": "none"
+    },
+    {
+      "method": "GET",
+      "source": "127.0.0.1",
+      "directBackend": false,
+      "status": 200,
+      "cookieSent": false,
+      "setCookieAttributes": [],
+      "cacheControl": null,
+      "sourceHeaderVariant": "none"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/opt/openssl@4/bin/openssl",
+        "req",
+        "-x509",
+        "-newkey",
+        "rsa:2048",
+        "-nodes",
+        "-days",
+        "1",
+        "-subj",
+        "/CN=anonyproof.deline.top",
+        "-addext",
+        "subjectAltName=DNS:anonyproof.deline.top,IP:127.0.0.1,IP:::1",
+        "-keyout",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/fixture-key.pem",
+        "-out",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/fixture-cert.pem"
+      ],
+      "exit": 0,
+      "stderr": "..+....+..+.......+.....+......+.+......+...+......+......+...+++++++++++++++++++++++++++++++++++++++*........+...+........+....+...+.....+.+.....+....+...+..+++++++++++++++++++++++++++++++++++++++*....+.......+........+.+.........+...+..+............+.+........+............+...+......+......+..........+...+...........+....+............+.........+.....+...............+.+.................+...+....+.....+.........+....+.....+.......+...............+........+..........+...........+......+....+.....+.+......+..+.............+...+.....+.......+.....+....+.....+...+..........+.................................+..+......+.+.....+.+..+...+...+..........+..............+.......+.....+....+..+...+.+.........+..............+.......+........+......+.+...........+..........+........+.....................+...+...+...+....+........+...+.+........+............+.+...+.................+....+...++++++\n.+...+...+.+++++++++++++++++++++++++++++++++++++++*....+..........+...+.....+.+......+..+......+....+........+.......+..+....+++++++++++++++++++++++++++++++++++++++*.+...............+......+...+..+...+......+..........+.....+.+..+.............++++++\n-----\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/nginx",
+        "-t",
+        "-p",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/",
+        "-c",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/nginx.conf"
+      ],
+      "exit": 0,
+      "stderr": "nginx: the configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/nginx.conf syntax is ok\nnginx: configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/nginx.conf test is successful\n"
+    }
+  ],
+  "sourceProbes": [
+    {
+      "source": "127.0.0.1",
+      "bind": true
+    },
+    {
+      "source": "::1",
+      "bind": true
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "storedIp": "127.0.0.1",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": []
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "storedIp": "127.0.0.1",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": [
+        "X-Forwarded-For",
+        "X-Real-IP",
+        "Forwarded"
+      ]
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "storedIp": "127.0.0.1",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": [
+        "X-Forwarded-For",
+        "X-Real-IP",
+        "Forwarded"
+      ]
+    },
+    {
+      "socketSource": "::1",
+      "directBackend": false,
+      "storedIp": "::1",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": []
+    },
+    {
+      "socketSource": "::1",
+      "directBackend": false,
+      "storedIp": "::1",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": [
+        "X-Forwarded-For",
+        "X-Real-IP",
+        "Forwarded"
+      ]
+    },
+    {
+      "socketSource": "::1",
+      "directBackend": false,
+      "storedIp": "::1",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": [
+        "X-Forwarded-For",
+        "X-Real-IP",
+        "Forwarded"
+      ]
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": true,
+      "storedIp": "203.0.113.77",
+      "routeTemplate": "/api/stats",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": [
+        "X-Forwarded-For"
+      ]
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "storedIp": "127.0.0.1",
+      "routeTemplate": "/unmatched",
+      "uaClassification": "browser:Chrome",
+      "status": 200,
+      "forgedHeaderVariants": [
+        "Origin"
+      ]
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "storedIp": "127.0.0.1",
+      "routeTemplate": "/unmatched",
+      "uaClassification": "browser:Chrome",
+      "status": 401,
+      "forgedHeaderVariants": [
+        "Origin",
+        "X-Forwarded-For"
+      ]
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "storedIp": "127.0.0.1",
+      "routeTemplate": "/unmatched",
+      "uaClassification": "browser:Chrome",
+      "status": 401,
+      "forgedHeaderVariants": [
+        "Origin",
+        "X-Forwarded-For"
+      ]
+    },
+    {
+      "socketSource": "127.0.0.1",
+      "directBackend": false,
+      "status": 429,
+      "accessRow": false,
+      "reason": "Limiter rejects before access recorder; quota asserted from HTTP status"
+    },
+    {
+      "socketSource": "::1",
+      "directBackend": false,
+      "storedIp": "::1",
+      "routeTemplate": "/unmatched",
+      "uaClassification": "browser:Chrome",
+      "status": 401,
+      "forgedHeaderVariants": [
+        "Origin"
+      ]
+    }
+  ],
+  "cleanup": {
+    "nginxQuitExit": 0,
+    "nginxMasterExit": 0,
+    "httpSocketClosed": true,
+    "tlsSocketClosed": true,
+    "nginxPidRemoved": true
+  },
+  "ports": {
+    "http": 57198,
+    "tls": 57179,
+    "next": 3040,
+    "backend": 4000
+  },
+  "nginxPid": 19476,
+  "staticAssets": [
+    {
+      "path": "/anonyproof/_next/static/chunks/0bma92pht_c97.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0frtubn3d_5lv.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0sb7-x-cq676p.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/1ol7ko56t5296.css",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "text/css; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/1x7thq2yoseus.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/29bhp2xv5f0vm.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/2dzmvib5n_n7f.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3fntmmi971322.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3l04zcqx63h3y.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/turbopack-2y2uka1upmxeu.js",
+      "status": 200,
+      "cacheControl": "public, max-age=31536000, immutable",
+      "contentType": "application/javascript; charset=UTF-8"
+    }
+  ],
+  "nginxInheritedLogEvidence": {
+    "fixtureHttpContextUsesDefaultCombinedLog": true,
+    "productVhostDeclaresOwnAccessLog": false,
+    "rawQueryMarkerRetained": true,
+    "rawUaMarkerRetained": true,
+    "actualLoopbackSourceRetained": true,
+    "logPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-3t36x_bv/access.log",
+    "note": "synthetic inherited logging demonstration only; production global logging not asserted; no log strategy changed"
+  },
+  "businessCountsBeforeDelete": {
+    "feedbacks": 1,
+    "feedback_comments": 2,
+    "notifications": 4
+  },
+  "summary": {
+    "T-24": {
+      "passed": 10,
+      "failed": 1
+    },
+    "T-35": {
+      "passed": 45,
+      "failed": 0
+    }
+  },
+  "acceptanceComplete": false
+}

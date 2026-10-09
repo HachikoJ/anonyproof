@@ -652,7 +652,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-24 可信代理链与IP限流来源
 
-状态：待办（待Q-05）；原始严重度：P2（安全子审计存疑）；优先级：A；工作量：M；前置依赖：Q-05、T-19、T-35。
+状态：进行中（真实两来源/伪造XFF/限额通过；直连后端伪造已复现，具体代理认证待确认）；原始严重度：P2（安全子审计存疑）；优先级：A；工作量：M；前置依赖：Q-05、T-19、T-35。
 
 **问题**：`server/index.ts:53 trust proxy=1`与多跳代理组合；旧Nginx配置使用追加XFF/错误header名。真实链路取值尚未证实。
 
@@ -1407,6 +1407,14 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 
 - 在兼容后端提交之后，用户提交/用户补充/管理员回复三个动作携带Idempotency-Key；失败和刷新保留原键，改内容不自动换键，成功清除动作，明确另作提交需确认已检查旧结果；没有状态PUT幂等扩展。重放后公开总数改为刷新权威统计，避免本地重复递增。
 - 当前两页面、T23清理与T37/38/39组合已实际production build通过，见 `T-42-frontend-build-result.json`、共享最终build日志；10项动作键生命周期/HTTP测试通过。浏览器真实丢响应/重试仍未通过，不允许因此关闭T42。
+
+### T-24 / T-35 / T-33 真实本地代理链证据（2026-10-09）
+
+- `T24_SECOND_SOURCE=::1 npx --no-install tsx tests/fix/T-24.chain.ts` 实际运行Nginx→现有production Next→新合成正式Express。本机127.0.0.2不可绑定errno49，改用真实127.0.0.1和::1；未改系统alias。每次fixture自有Nginx/Next/Express已关闭，端口和pid核验见报告。
+- T35实际45通过/0失败，涵盖三页面、全部引用静态、Secure/HttpOnly/SameSite、no-store、Origin、提交/双方评论/PUT/DELETE原子子记录。不是浏览器UI或生产发布证据，T35仍进行中。
+- T24实际10通过/1失败：两个源经代理IP正确、伪造头不改来源、同源配额共享/异源独立；直接本机backend携带XFF可选任意IP。不得把该缺口算通过。建议增加私有代理认证，具体范围/影响/回滚见 `T-24-T-33-proxy-proposal.md`，待确认后实施。
+- T33实证默认继承Nginx combined日志包含原始query/UA；应用层最小化不能关闭该项。建议本vhost禁用逐请求access/error日志，需明确批准可观察性取舍；不删除历史日志。
+- 首次fixture在429发生于访问记录器之前误要求新增access行而中止；第二次HTTPheader大小写敏感误报no-store；原失败报告保留。仅修fixture按429边界和HTTP头不区分大小写规范读值，第三次业务45项通过，真实直连失败保留。
 
 ### T-35 唯一模板及归档独立提交（2026-10-09）
 
