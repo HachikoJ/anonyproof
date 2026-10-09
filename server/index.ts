@@ -1,3 +1,4 @@
+import { FeedbackPaginationError, getAdminFeedbackPage, parseFeedbackPagination } from './utils/adminFeedbackPagination'
 import './env'
 import express from 'express'
 import cors from 'cors'
@@ -1049,15 +1050,22 @@ app.get('/api/stats', (req, res) => {
   }
 })
 
-// API: 获取所有反馈（管理员）
+db.exec('CREATE INDEX IF NOT EXISTS idx_feedback_admin_cursor ON feedbacks(created_at DESC, id DESC)')
+
+// API: 获取反馈分页（管理员）
 app.get('/api/admin/feedbacks', (req, res) => {
   try {
+    // Cached parameter-free clients retain legacy fields, bounded to 100 rows.
+    // Current clients use summary pagination; rolling UI back keeps this cap.
+    const paginated = Object.keys(req.query).length > 0
+    const pagination = paginated ? parseFeedbackPagination(req.query, demoMode ? `admin:${demoRequestDevice(req)}` : 'admin:formal') : undefined
     const ip = req.ip || req.socket.remoteAddress || 'unknown'
 
     // 记录查看操作
     logAdminAction('view_all', 'all', ip)
 
     const scope = adminRecordScope(req, 'feedbacks')
+    if (pagination) return res.json(getAdminFeedbackPage(db, contentEncryption, scope, demoMode, pagination))
     const feedbacks = db.prepare(
       `SELECT id, category, encrypted_content, device_id, created_at, status, original_content, solution, solution_updated_at,
         is_demo_template, is_demo_clone, original_content_storage_version, solution_storage_version,
@@ -1065,7 +1073,7 @@ app.get('/api/admin/feedbacks', (req, res) => {
           (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'admin' AND n.recipient_id = 'admin' AND n.is_read = 0) END AS unread_notifications
        FROM feedbacks
        WHERE ${scope.sql}
-       ORDER BY created_at DESC`
+       ORDER BY created_at DESC, id DESC LIMIT 100`
     ).all(...scope.params) as any[]
 
     res.json({
@@ -1076,6 +1084,7 @@ app.get('/api/admin/feedbacks', (req, res) => {
       }))
     })
   } catch (error) {
+    if (error instanceof FeedbackPaginationError) return res.status(400).json({ error: error.message })
     console.error('获取反馈列表失败:', error)
     res.status(500).json({ error: '获取失败' })
   }

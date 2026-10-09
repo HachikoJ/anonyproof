@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-09T01:49:46.674588+00:00",
+  "command": "lsof -nP -iTCP:4000 -iTCP:3028 -iTCP:3030 -iTCP:3032 -iTCP:3034 -sTCP:LISTEN",
+  "exitCode": 1,
+  "listeners": "",
+  "stderr": "",
+  "interpretation": "exit 1 and empty stdout means no matching listeners; this is a point-in-time check, recheck before fixture start"
+}

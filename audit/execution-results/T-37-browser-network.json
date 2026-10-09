@@ -1,0 +1,716 @@
+[
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/demo/config",
+    "status": 200,
+    "bytes": 33
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/admin/auth/session",
+    "status": 200,
+    "bytes": 23
+  },
+  {
+    "method": "POST",
+    "path": "/anonyproof/api/admin/auth/login",
+    "status": 200,
+    "bytes": 16
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/admin/feedbacks?pagination=1&limit=50&category=all&status=all&search=",
+    "status": 200,
+    "bytes": 991,
+    "rowCount": 50,
+    "ids": [
+      "T37-0999",
+      "T37-0998",
+      "T37-0997",
+      "T37-0996",
+      "T37-0995",
+      "T37-0994",
+      "T37-0993",
+      "T37-0992",
+      "T37-0991",
+      "T37-0990",
+      "T37-0989",
+      "T37-0988",
+      "T37-0987",
+      "T37-0986",
+      "T37-0985",
+      "T37-0984",
+      "T37-0983",
+      "T37-0982",
+      "T37-0981",
+      "T37-0980",
+      "T37-0979",
+      "T37-0978",
+      "T37-0977",
+      "T37-0976",
+      "T37-0975",
+      "T37-0974",
+      "T37-0973",
+      "T37-0972",
+      "T37-0971",
+      "T37-0970",
+      "T37-0969",
+      "T37-0968",
+      "T37-0967",
+      "T37-0966",
+      "T37-0965",
+      "T37-0964",
+      "T37-0963",
+      "T37-0962",
+      "T37-0961",
+      "T37-0960",
+      "T37-0959",
+      "T37-0958",
+      "T37-0957",
+      "T37-0956",
+      "T37-0955",
+      "T37-0954",
+      "T37-0953",
+      "T37-0952",
+      "T37-0951",
+      "T37-0950"
+    ],
+    "counts": {
+      "total": 1000,
+      "pending": 250,
+      "processing": 250,
+      "resolved": 250,
+      "noSolution": 250
+    },
+    "pagination": {
+      "limit": 50,
+      "total": 1000,
+      "hasMore": true,
+      "nextCursor": "eyJ2IjoxLCJ0aW1lIjoxNzAwMDAwMDAwMDA5LCJpZCI6IlQzNy0wOTUwIiwiZmlsdGVycyI6IjIwY2EwNmNiNmRhZDBhYTg2OTQ3NDhkZTFjYTY2YTFhZjk2NTI5ZjYxNDBiOWEwOTZhMjE5NzVjZTY4NDBlYzMifQ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
+    "status": 200,
+    "bytes": 26
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications?recipientType=admin&recipientId=admin&limit=30",
+    "status": 200,
+    "bytes": 261
+  }
+]

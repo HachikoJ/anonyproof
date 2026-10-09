@@ -1,0 +1,14 @@
+[
+  {
+    "path": "audit/execution-results/T-37-T-38-production-build.txt",
+    "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T37-log-raw-5yp8l1xe/T-37-T-38-production-build.txt",
+    "sha256": "4b9b22e58dc4c02803d91f70d85d30956c7a6c9e2a76bc1143e5631c7bb61593",
+    "onlyTrailingWhitespaceNormalized": true
+  },
+  {
+    "path": "audit/execution-results/T-37-type-final.txt",
+    "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T37-log-raw-5yp8l1xe/T-37-type-final.txt",
+    "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+    "onlyTrailingWhitespaceNormalized": true
+  }
+]

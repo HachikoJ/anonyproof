@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: T-37: 1000 records paginate without duplicate/gap under tied timestamps and bounded whitelist
+ok 1 - T-37: 1000 records paginate without duplicate/gap under tied timestamps and bounded whitelist
+  ---
+  duration_ms: 770.578959
+  type: 'test'
+  ...
+# Subtest: T-37: search and filters span all records with truthful filtered totals and global overview
+ok 2 - T-37: search and filters span all records with truthful filtered totals and global overview
+  ---
+  duration_ms: 706.827708
+  type: 'test'
+  ...
+# Subtest: T-37: malformed bounds/cursors/filter changes reject and never bypass administrator scope
+ok 3 - T-37: malformed bounds/cursors/filter changes reject and never bypass administrator scope
+  ---
+  duration_ms: 613.380083
+  type: 'test'
+  ...
+# Subtest: T-37: demo pagination scopes totals/search to own sandbox plus immutable templates
+ok 4 - T-37: demo pagination scopes totals/search to own sandbox plus immutable templates
+  ---
+  duration_ms: 749.300209
+  type: 'test'
+  ...
+# Subtest: T-37 cutover: parameter-free legacy fields remain available but capped at 100
+ok 5 - T-37 cutover: parameter-free legacy fields remain available but capped at 100
+  ---
+  duration_ms: 653.925375
+  type: 'test'
+  ...
+# Subtest: T-37: off-page notification resolves full detail and processing updates overview/filtered results
+ok 6 - T-37: off-page notification resolves full detail and processing updates overview/filtered results
+  ---
+  duration_ms: 584.638333
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4306.271209
