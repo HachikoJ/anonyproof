@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { randomBytes } from 'node:crypto'
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -54,14 +55,16 @@ async function probed(options: { sessions?: boolean; attempts?: boolean; codes?:
       return originalInterval(callback, ms, ...args);
     };
   `)
+  const proxyKey = randomBytes(32).toString('base64')
   const service = await startBackend({
     NODE_OPTIONS: `--require=${preload}`, LOGIN_RATE_LIMIT_MAX: '1000', IDENTITY_RATE_LIMIT_MAX: '1000',
-    ...(options.attempts ? { TRUST_PROXY: '1' } : {}),
+    ...(options.attempts ? { TRUST_PROXY: '1', PROXY_AUTH_KEY: proxyKey } : {}),
     ...(options.demo ? { DEMO_MODE: '1' } : {}),
     ...(options.identityCap ? { IDENTITY_MAX_RECORDS: options.identityCap } : {}),
   })
   return {
     service,
+    proxyHeaders: (source: string) => ({ 'X-Forwarded-For': source, 'X-AnonyProof-Proxy-Auth': proxyKey }),
     advance: async (ms: number) => {
       writeFileSync(timeFile, String(ms))
       await delay(150)
@@ -117,7 +120,7 @@ test('T-22 HTTP full failure store rejects a new source, retains old lockout and
   t.after(f.service.stop)
   const client = new Client(f.service)
   const wrong = (source: string) => client.request('/api/admin/login', {
-    method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': source },
+    method: 'POST', headers: { 'Content-Type': 'application/json', ...f.proxyHeaders(source) },
     body: JSON.stringify({ password: 'synthetic-wrong-password' }),
   })
   for (let n = 0; n < 5; n++) assert.equal((await wrong('203.0.113.10')).response.status, 401)
@@ -128,7 +131,7 @@ test('T-22 HTTP full failure store rejects a new source, retains old lockout and
   assert.equal(f.state().attempts, 10000)
   assert.equal((await wrong('203.0.113.10')).response.status, 429)
   const valid = await new Client(f.service).request('/api/admin/auth/login', {
-    method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': '203.0.113.12' },
+    method: 'POST', headers: { 'Content-Type': 'application/json', ...f.proxyHeaders('203.0.113.12') },
     body: JSON.stringify({ password: f.service.password }),
   })
   assert.equal(valid.response.status, 200)

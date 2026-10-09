@@ -1,26 +1,41 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { randomBytes } from 'node:crypto'
 import { readFileSync, readdirSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
-import { startBackend, Client, projectRoot } from './helpers'
+import { startBackend, Client, projectRoot, type FixtureRequestInit, type TestService } from './helpers'
 
 const marker = 'T33-private-marker-473911'
 const ua = `Mozilla/5.0 Chrome/125.0.0.0 Safari/537.36 ${marker}`
 
+// This fixture models the authenticated, single-source ingress approved in T-24.
+// Keep generic Client unchanged so direct/missing-proxy negative tests stay real.
+class TrustedProxyClient extends Client {
+  constructor(service: TestService, private proxyKey: string, private source: string) { super(service) }
+  async request(path: string, init: FixtureRequestInit = {}) {
+    const headers = new Headers(init.headers)
+    headers.set('X-AnonyProof-Proxy-Auth', this.proxyKey)
+    headers.set('X-Forwarded-For', this.source)
+    return super.request(path, { ...init, headers })
+  }
+}
+
 test('T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history', async t => {
-  const service=await startBackend({TRUST_PROXY:'1'}); const db=service.openDb(); const admin=new Client(service)
+  const proxyKey=randomBytes(32).toString('base64')
+  const service=await startBackend({TRUST_PROXY:'1',PROXY_AUTH_KEY:proxyKey}); const db=service.openDb(); const admin=new TrustedProxyClient(service,proxyKey,'192.0.2.34')
   t.after(async()=>{db.close();await service.stop()})
   assert.equal((await admin.login()).response.status,200)
   for(const path of ['/health',`/api/feedback/${marker}/comments?private=${marker}`,`/unknown-${marker}?private=${marker}`]) {
-    const response=await fetch(service.baseUrl+path,{headers:{'User-Agent':ua,'X-Forwarded-For':'192.0.2.33'}});await response.text()
+    const response=await fetch(service.baseUrl+path,{headers:{'User-Agent':ua,'X-Forwarded-For':'192.0.2.33','X-AnonyProof-Proxy-Auth':proxyKey}});await response.text()
   }
   await delay(50)
   const logs=db.prepare('SELECT ip,user_agent,path FROM access_logs ORDER BY id').all() as {ip:string,user_agent:string,path:string}[]
   assert.ok(logs.some(row=>row.ip==='192.0.2.33' && row.user_agent==='browser:Chrome'))
+  assert.ok(logs.some(row=>row.ip==='127.0.0.1' && row.path==='/health' && row.user_agent==='browser:Chrome'),'Health uses the socket source even when forwarding headers are supplied')
   assert.ok(logs.some(row=>row.path==='/api/feedback/:feedbackId/comments'))
   assert.ok(logs.some(row=>row.path==='/unmatched'))
   assert.ok(!JSON.stringify(logs).includes(marker))
@@ -62,14 +77,20 @@ test('T-33 business and audit new writes omit admin IP; legacy HTTP output hides
 })
 
 test('T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout', async t => {
-  const service=await startBackend({TRUST_PROXY:'1'});const db=service.openDb()
+  const proxyKey=randomBytes(32).toString('base64')
+  const service=await startBackend({TRUST_PROXY:'1',PROXY_AUTH_KEY:proxyKey});const db=service.openDb()
+  const proxyHeaders={'User-Agent':ua,'X-Forwarded-For':'192.0.2.233','X-AnonyProof-Proxy-Auth':proxyKey}
   t.after(async()=>{if(db.open)db.close();await service.stop()})
-  const response=await fetch(service.baseUrl+`/api/admin/feedback/${marker}?private=${marker}`,{headers:{'User-Agent':ua,'X-Forwarded-For':'192.0.2.233'}});await response.text()
+  const response=await fetch(service.baseUrl+`/api/admin/feedback/${marker}?private=${marker}`,{headers:proxyHeaders});await response.text()
   db.exec(`CREATE TRIGGER privacy_fault BEFORE INSERT ON access_logs BEGIN SELECT RAISE(ABORT,'${marker} 192.0.2.233'); END`)
-  await (await fetch(service.baseUrl+'/health',{headers:{'User-Agent':ua,'X-Forwarded-For':'192.0.2.233'}})).text()
+  const loggingFault=await fetch(service.baseUrl+'/api/stats',{headers:proxyHeaders})
+  assert.equal(loggingFault.status,200);await loggingFault.text()
   db.exec('DROP TRIGGER privacy_fault')
   db.prepare('INSERT INTO ip_blacklist(ip,reason,blacklisted_at,expires_at) VALUES(?,?,?,?)').run('192.0.2.233','T33 synthetic blacklist',Date.now(),Date.now()+10000)
-  assert.equal((await fetch(service.baseUrl+'/health',{headers:{'X-Forwarded-For':'192.0.2.233'}})).status,403)
+  const blocked=await fetch(service.baseUrl+'/api/stats',{headers:proxyHeaders})
+  assert.equal(blocked.status,403);await blocked.text()
+  const health=await fetch(service.baseUrl+'/health',{headers:proxyHeaders})
+  assert.equal(health.status,200);await health.text()
   await delay(150);await service.stop()
   const logs=readdirSync(join(service.dir,'logs')).filter(file=>file.endsWith('.log')).map(file=>readFileSync(join(service.dir,'logs',file),'utf8')).join('\n')+'\n'+service.output()
   for(const value of [marker,ua,'192.0.2.233','IP=127.0.0.1','access: 127.0.0.1']) assert.ok(!logs.includes(value),`Unexpected retained marker: ${value}`)
