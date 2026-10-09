@@ -1533,3 +1533,8 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 新增archive-only工具，保持原candidate guard与NULL/旧包/flags/三个版本。初版恢复绑定仅存调用参数的缺口已在真实执行前修复：私有catalog必须独立备份、每次随机唯一package binding、认证manifest绑定snapshot/isolated rows/schema摘要；高层整包恢复只凭key/catalog/三档案，在全部关系认证后才打开SQLite和发布成功marker。
 - 58/58合成测试、strict 0；主代理源码复核与SHA对照通过，证据 `T-32-archive-only-main-review.json` 和 `T-32-archive-only-local-preview.md`。初版44/中间57及编译失败分别保留，不混为当前验收。
 - 待确认具体真实D方案在私有 `/tmp/anonyproof-D-archive-format-20261010.md`：生成/独立备份内容key、三版本分别封装、异机密文/catalog备份和独立恢复，不启用正式HTTP、不接公开demo。A/B既有批准不重复请求。完整snapshot仍含旧telemetry、staging有明文；E/F未完成，T32保持进行中。
+
+### T-36 S3业务schema独立移动通过（2026-10-10）
+
+- schema.ts仅承接原业务初始化/三个游标索引函数，入口在原位置显式调用。16初始化语句/顺序AST等价、53 SQL片段原字节一致，43路由注册及handler调用不变；游标前27/32/35注册锚点不变。主代理复核源码/四个新增测试与所有对应SHA一致。
+- 新增4/4实际重复启动/错钥/故障恢复测试，关联65/65，三编译/diffcheck均0；formal/demo旧合成schema各启停3次、直接重复初始化2次，全逻辑schema/稳定业务行不重复。期间无关T32变化如实记录，未宣称整树冻结。证据`T-36-S3-result.json`；R3仅回退本模块移动，无新schema行为或生产写。T36仍待S4及最终门禁。

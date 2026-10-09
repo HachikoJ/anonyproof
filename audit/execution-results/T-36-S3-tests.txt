@@ -1,0 +1,401 @@
+TAP version 13
+# Subtest: T-02 invalid role/mode/path/password/key fails before DB creation
+ok 1 - T-02 invalid role/mode/path/password/key fails before DB creation
+  ---
+  duration_ms: 4273.704875
+  type: 'test'
+  ...
+# Subtest: T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+ok 2 - T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+  ---
+  duration_ms: 729.939416
+  type: 'test'
+  ...
+# Subtest: T-02 persisted role cannot be flipped and a formal key cannot be replaced
+ok 3 - T-02 persisted role cannot be flipped and a formal key cannot be replaced
+  ---
+  duration_ms: 1926.642834
+  type: 'test'
+  ...
+# Subtest: T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+ok 4 - T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+  ---
+  duration_ms: 902.048208
+  type: 'test'
+  ...
+# Subtest: T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+ok 5 - T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+  ---
+  duration_ms: 136.461
+  type: 'test'
+  ...
+# Subtest: T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+ok 6 - T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+  ---
+  duration_ms: 1.57375
+  type: 'test'
+  ...
+# Subtest: T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+ok 7 - T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+  ---
+  duration_ms: 30.808625
+  type: 'test'
+  ...
+# Subtest: T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+ok 8 - T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+  ---
+  duration_ms: 0.598042
+  type: 'test'
+  ...
+# Subtest: T-03 module: explicit old-format reader compatibility and demo keylessness
+ok 9 - T-03 module: explicit old-format reader compatibility and demo keylessness
+  ---
+  duration_ms: 0.22825
+  type: 'test'
+  ...
+# Subtest: T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+ok 10 - T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+  ---
+  duration_ms: 0.140167
+  type: 'test'
+  ...
+# Subtest: T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+ok 11 - T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+  ---
+  duration_ms: 0.0815
+  type: 'test'
+  ...
+# Subtest: T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+ok 12 - T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+  ---
+  duration_ms: 4.339
+  type: 'test'
+  ...
+# Subtest: T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+ok 13 - T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+  ---
+  duration_ms: 0.371417
+  type: 'test'
+  ...
+# Subtest: T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+ok 14 - T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+  ---
+  duration_ms: 0.450416
+  type: 'test'
+  ...
+# Subtest: T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+ok 15 - T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+  ---
+  duration_ms: 0.815125
+  type: 'test'
+  ...
+# Subtest: T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+ok 16 - T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+  ---
+  duration_ms: 1507.3415
+  type: 'test'
+  ...
+# Subtest: T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+ok 17 - T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+  ---
+  duration_ms: 891.2965
+  type: 'test'
+  ...
+# Subtest: T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+ok 18 - T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+  ---
+  duration_ms: 485.345666
+  type: 'test'
+  ...
+# Subtest: T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+ok 19 - T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+  ---
+  duration_ms: 906.055291
+  type: 'test'
+  ...
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 20 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2533.035458
+  type: 'test'
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 21 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 911.544667
+  type: 'test'
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 22 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 895.459667
+  type: 'test'
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 23 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 441.149542
+  type: 'test'
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 24 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 4701.32875
+  type: 'test'
+  ...
+# Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+ok 25 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+  ---
+  duration_ms: 956.662625
+  type: 'test'
+  ...
+# Subtest: T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+ok 26 - T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+  ---
+  duration_ms: 6.159125
+  type: 'test'
+  ...
+# Subtest: T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+ok 27 - T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+  ---
+  duration_ms: 1.386792
+  type: 'test'
+  ...
+# Subtest: T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+ok 28 - T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+  ---
+  duration_ms: 7.467792
+  type: 'test'
+  ...
+# Subtest: T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+ok 29 - T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+  ---
+  duration_ms: 6.296042
+  type: 'test'
+  ...
+# Subtest: T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+ok 30 - T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+  ---
+  duration_ms: 1361.1425
+  type: 'test'
+  ...
+# Subtest: T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+ok 31 - T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+  ---
+  duration_ms: 7.293958
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+ok 32 - T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+  ---
+  duration_ms: 587.673917
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+ok 33 - T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+  ---
+  duration_ms: 29.191625
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+ok 34 - T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+  ---
+  duration_ms: 25.424958
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+ok 35 - T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+  ---
+  duration_ms: 20.115958
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+ok 36 - T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+  ---
+  duration_ms: 21.509291
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+    # Subtest: demo
+    ok 1 - demo
+      ---
+      duration_ms: 7.994208
+      type: 'test'
+      ...
+    # Subtest: clone
+    ok 2 - clone
+      ---
+      duration_ms: 6.860208
+      type: 'test'
+      ...
+    # Subtest: trigger
+    ok 3 - trigger
+      ---
+      duration_ms: 7.93325
+      type: 'test'
+      ...
+    # Subtest: version
+    ok 4 - version
+      ---
+      duration_ms: 7.578084
+      type: 'test'
+      ...
+    # Subtest: realVersion
+    ok 5 - realVersion
+      ---
+      duration_ms: 7.109458
+      type: 'test'
+      ...
+    # Subtest: nullSolution
+    ok 6 - nullSolution
+      ---
+      duration_ms: 10.833917
+      type: 'test'
+      ...
+    # Subtest: ambiguousBody
+    ok 7 - ambiguousBody
+      ---
+      duration_ms: 10.082084
+      type: 'test'
+      ...
+    # Subtest: schema
+    ok 8 - schema
+      ---
+      duration_ms: 7.054166
+      type: 'test'
+      ...
+    # Subtest: primary
+    ok 9 - primary
+      ---
+      duration_ms: 7.500417
+      type: 'test'
+      ...
+    1..9
+ok 37 - T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+  ---
+  duration_ms: 91.590084
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+ok 38 - T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+  ---
+  duration_ms: 51.757917
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+ok 39 - T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+  ---
+  duration_ms: 22.615959
+  type: 'test'
+  ...
+# Subtest: T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+ok 40 - T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+  ---
+  duration_ms: 8.955625
+  type: 'test'
+  ...
+# Subtest: T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+ok 41 - T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+  ---
+  duration_ms: 8.537125
+  type: 'test'
+  ...
+# Subtest: T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+ok 42 - T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+  ---
+  duration_ms: 1662.895167
+  type: 'test'
+  ...
+# Subtest: T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+ok 43 - T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+  ---
+  duration_ms: 1363.408542
+  type: 'test'
+  ...
+# Subtest: T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+ok 44 - T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+  ---
+  duration_ms: 1277.241875
+  type: 'test'
+  ...
+# Subtest: T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+ok 45 - T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+  ---
+  duration_ms: 2277.293958
+  type: 'test'
+  ...
+# Subtest: T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+ok 46 - T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+  ---
+  duration_ms: 1509.212125
+  type: 'test'
+  ...
+# Subtest: T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+ok 47 - T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+  ---
+  duration_ms: 443.770375
+  type: 'test'
+  ...
+# Subtest: T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+ok 48 - T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+  ---
+  duration_ms: 432.386166
+  type: 'test'
+  ...
+# Subtest: T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+ok 49 - T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+  ---
+  duration_ms: 437.64825
+  type: 'test'
+  ...
+# Subtest: T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+ok 50 - T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+  ---
+  duration_ms: 414.941708
+  type: 'test'
+  ...
+# Subtest: T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+ok 51 - T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+  ---
+  duration_ms: 785.736583
+  type: 'test'
+  ...
+# Subtest: T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+ok 52 - T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+  ---
+  duration_ms: 0.395208
+  type: 'test'
+  ...
+# Subtest: T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+ok 53 - T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+  ---
+  duration_ms: 416.929958
+  type: 'test'
+  ...
+# Subtest: T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+ok 54 - T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+  ---
+  duration_ms: 1174.194875
+  type: 'test'
+  ...
+# Subtest: T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+ok 55 - T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+  ---
+  duration_ms: 1.020833
+  type: 'test'
+  ...
+# Subtest: T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+ok 56 - T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+  ---
+  duration_ms: 0.247916
+  type: 'test'
+  ...
+1..56
+# tests 65
+# suites 0
+# pass 65
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37688.993792

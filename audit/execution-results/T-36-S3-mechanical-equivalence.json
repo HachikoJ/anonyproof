@@ -1,0 +1,41 @@
+{
+  "task": "T-36",
+  "stage": "S3",
+  "baselineHead": "4374301c05f9b2388d2799e9da19c9b3c7af8d9e",
+  "mechanicalEquivalence": {
+    "businessInitializationStatements": 16,
+    "exactBusinessStatementAndCallOrder": true,
+    "routeRegistrations": 43,
+    "exactS0MethodPathAliasOrder": true,
+    "allRegistrationCallBodiesUnchanged": true,
+    "cursorChecks": [
+      {
+        "name": "initializeAdminCursorIndex",
+        "sameStatementAstPrint": true,
+        "precedingRegistrations": 27,
+        "originalAnchorPreserved": true
+      },
+      {
+        "name": "initializeCommentCursorIndex",
+        "sameStatementAstPrint": true,
+        "precedingRegistrations": 32,
+        "originalAnchorPreserved": true
+      },
+      {
+        "name": "initializeDeviceCursorIndex",
+        "sameStatementAstPrint": true,
+        "precedingRegistrations": 35,
+        "originalAnchorPreserved": true
+      }
+    ],
+    "sqlLiteralFragments": 53,
+    "sqlLiteralFragmentsByteIdentical": true,
+    "readHelpersRemainUnchangedInIndex": [
+      "readFeedback",
+      "readComment",
+      "readNotification"
+    ],
+    "schemaModuleTopLevelRuntimeInitializers": 0,
+    "comparisonMethod": "TypeScript AST printer with comments removed plus byte-exact SQL literal fragment multiset."
+  }
+}
