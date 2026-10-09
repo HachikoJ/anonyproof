@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCommentPagination } from "../hooks/useCommentPagination";
 import { useDemoConfig } from "../hooks/useDemoConfig";
 import ExternalLinks from "../components/ExternalLinks";
+import { createPendingActions, PendingActionError } from "../utils/pendingAction";
 import { recordCode } from "../utils/recordCode";
 
 type Feedback = {
@@ -98,6 +99,7 @@ export default function AdminPage() {
   const { config: demoConfig, loading: demoLoading, error: demoError } = useDemoConfig();
   const demoMode = demoConfig?.demoMode === true;
   const modeReady = !!demoConfig && !demoLoading;
+  const pendingActions = useRef(createPendingActions()).current;
   const [demoCommentId, setDemoCommentId] = useState("");
   const [demoSolutionId, setDemoSolutionId] = useState("in_progress");
   const notificationPanelRef = useRef<HTMLDivElement>(null);
@@ -471,16 +473,18 @@ export default function AdminPage() {
     const request = selectionRequestRef.current, id = selected.id, draft = comment, example = demoCommentId;
     setActionLoading("comment");
     try {
+      const requestKey = pendingActions.begin('admin_comment', id, 'admin', demoMode ? { demoCommentId } : { content: comment.trim() });
       const response = await fetch(
         `/anonyproof/api/admin/feedback/${id}/comments`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Idempotency-Key": requestKey },
           credentials: "same-origin",
           body: JSON.stringify(demoMode ? { demoCommentId } : { content: comment.trim() }),
         },
       );
       const data = await readApiJson(response);
+      pendingActions.complete('admin_comment', id, 'admin');
       if (request !== selectionRequestRef.current || !commentPages.appendPosted(data.comment, "admin")) return;
       setComment(value => value === draft ? "" : value);
       setDemoCommentId(value => value === example ? "" : value);
@@ -490,7 +494,7 @@ export default function AdminPage() {
       setMessageTone("success");
       fetchNotifications();
     } catch (error) {
-      if (request === selectionRequestRef.current) handleRequestError(error, "回复失败，请稍后重试");
+      if (request === selectionRequestRef.current) handleRequestError(error instanceof PendingActionError ? new ApiError(error.message) : error, "回复失败，请稍后重试");
     } finally {
       setActionLoading("");
     }
@@ -1000,6 +1004,12 @@ export default function AdminPage() {
                         <p className="empty-inline">暂无补充说明。</p>
                       ) : null}
                     </div>
+                    <p>发送失败后重试沿用原动作。重新登录后请先检查沟通记录，旧会话动作不能保证去重。</p>
+                    <button type="button" disabled={Boolean(actionLoading) || readOnly} onClick={() => {
+                      if (!selected || !window.confirm('上次回复可能已发送。已检查沟通记录，确定放弃旧动作并另作一次提交吗？')) return;
+                      try { pendingActions.abandon('admin_comment', selected.id, 'admin'); setMessage('已结束旧动作，下次发送作为独立提交。'); setMessageTone('info'); }
+                      catch (error) { handleRequestError(error instanceof PendingActionError ? new ApiError(error.message) : error, '旧动作无法清除。'); }
+                    }}>另作一次提交</button>
                     <form className="comment-form" onSubmit={addComment}>
                       {readOnly ? <p>{demoMode ? "公开模板只读" : demoError || "正在确认站点模式…"}</p> : demoMode ? <select aria-label="固定演示回复" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示回复</option>{demoConfig?.adminComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <>
                       <input

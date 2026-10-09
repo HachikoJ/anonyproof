@@ -5,6 +5,7 @@ import { useCommentPagination } from './hooks/useCommentPagination'
 import { useDemoConfig } from './hooks/useDemoConfig'
 import { useCrypto } from './hooks/useCrypto'
 import ExternalLinks from './components/ExternalLinks'
+import { createPendingActions } from './utils/pendingAction'
 import { recordCode } from './utils/recordCode'
 import type { Feedback, FeedbackComment, FeedbackStatus } from './types'
 
@@ -130,6 +131,7 @@ export default function HomePage() {
   const [view, setView] = useState<View>('home')
   const [category, setCategory] = useState('')
   const [content, setContent] = useState('')
+  const pendingActions = useRef(createPendingActions()).current
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; id?: string } | null>(null)
   const [stats, setStats] = useState<{ total: number } | null>(null)
@@ -426,17 +428,22 @@ export default function HomePage() {
     setIsSubmitting(true)
     setSubmitResult(null)
     try {
+      const requestKey = pendingActions.begin('feedback', '', deviceId, demoMode ? { demoExampleId } : { category, content: content.trim() })
       const encryptedContent = demoMode ? '' : await encrypt(content.trim())
       const response = await fetch('/anonyproof/api/feedback', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': requestKey },
         body: JSON.stringify(demoMode ? { demoExampleId, deviceId } : { category, encryptedContent, deviceId, originalContent: content.trim() }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '提交未完成，请稍后重试。')
+      pendingActions.complete('feedback', '', deviceId)
       setContent('')
       setSubmitResult({ success: true, message: '已生成记录编号，可在“我的提交”中查看处理进度。', id: data.id })
-      if (!demoMode) setStats((current) => ({ total: (current?.total ?? 0) + 1 }))
+      // A replay may acknowledge a record already included in the loaded total.
+      // Refresh the authoritative count instead of incrementing it twice.
+      if (!demoMode) void fetch('/anonyproof/api/stats').then(readJson)
+        .then(data => setStats({ total: data.total ?? 0 })).catch(() => setStats(null))
     } catch (error) {
       setSubmitResult({
         success: false,
@@ -453,13 +460,15 @@ export default function HomePage() {
     setCommentSending(true)
     setCommentError('')
     try {
+      const requestKey = pendingActions.begin('user_comment', feedbackId, requestOwner, demoMode ? { demoCommentId } : { content: newComment.trim() })
       const response = await fetch(`/anonyproof/api/feedback/${feedbackId}/comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': requestKey },
         body: JSON.stringify(demoMode ? { demoCommentId } : { content: newComment.trim(), commenterType: 'user' }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '补充说明未发送')
+      pendingActions.complete('user_comment', feedbackId, requestOwner)
       if (selectedRequest !== detailRequestRef.current || !commentPages.appendPosted(data.comment, requestOwner)) return
       setNewComment(value => value === draft ? '' : value)
       setDemoCommentId(value => value === example ? '' : value)
@@ -686,7 +695,11 @@ export default function HomePage() {
                 />
                 <div className="field-meta"><span>提交失败不会清空已输入内容</span><span>{content.length} / 10000</span></div>
                 </>}
-                {submitResult && !submitResult.success && <p className="form-message form-error" role="alert">{submitResult.message}</p>}
+                {submitResult && !submitResult.success && <div className="form-message form-error" role="alert"><p>{submitResult.message}</p><p>重试沿用原动作。内容改变或重试超过7天时，请先检查“我的提交”。</p><button type="button" disabled={isSubmitting} onClick={() => {
+                  if (!window.confirm('请先检查“我的提交”，上次请求可能已经成功。确定要放弃旧动作并另作一次提交吗？')) return
+                  try { pendingActions.abandon('feedback', '', deviceId); setSubmitResult(null) }
+                  catch (error) { setSubmitResult({ success: false, message: getErrorMessage(error, '旧动作无法清除。') }) }
+                }}>另作一次提交</button></div>}
                 <div className="submit-bar">
                   <button className="button button-secondary" type="button" onClick={() => setView('category')}>上一步</button>
                   <button className="button button-primary" type="button" onClick={handleSubmit} disabled={isSubmitting || !modeReady || (demoMode ? !demoExampleId : !content.trim())}>
@@ -840,7 +853,11 @@ export default function HomePage() {
                     </article>
                   ))}
                 </div>
-                {commentError && <p className="form-message form-error" role="alert">{commentError}</p>}
+                {commentError && <div className="form-message form-error" role="alert"><p>{commentError}</p><p>重试沿用原动作；请先检查沟通记录，修改失败内容需明确另作提交。</p><button type="button" disabled={commentSending} onClick={() => {
+                  if (!selectedFeedback || !window.confirm('上次补充可能已经成功。已检查沟通记录，确定另作一次提交吗？')) return
+                  try { pendingActions.abandon('user_comment', selectedFeedback.id, deviceId); setCommentError('') }
+                  catch (error) { setCommentError(getErrorMessage(error, '旧动作无法清除。')) }
+                }}>另作一次提交</button></div>}
                 <div className="comment-composer">
                   <div className="comment-input">
                     <label className="visually-hidden" htmlFor="comment">补充说明</label>
