@@ -251,22 +251,24 @@
   ],
   "artifactsSha256": {
     "T-36-S4-backend-types-exit.json": "acdcf766542dea6c5ea63bcda436f99cdc6dbe594c6f86751b6257b9fef3e477",
-    "T-36-S4-backend-types.txt": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675",
+    "T-36-S4-backend-types.txt": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1",
     "T-36-S4-build-exit.json": "c423a33e5d117c7d843b89126755f4ba0cabdeaa9e68ebf42a3936027ee0c2da",
-    "T-36-S4-build.txt": "ded90211a48cf0bb4da067790a2e7b34d9adc99115e25ad3a970fc24c5966675",
+    "T-36-S4-build.txt": "5c04068c0b93b0a06aa5b1be17a9b8c87cb6aea6a63dc8b1a492cf0bea53973b",
     "T-36-S4-ci-strict-types-exit.json": "161096e9106f81c609376e227c01eae4f787cc0e48d2a89cae894381c7ed2b57",
     "T-36-S4-ci-strict-types.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "T-36-S4-diff-check-exit.json": "fd312d2f50b7c2844e1b8d1af60e76790ddebeff26d0c144b433d38cb57d040c",
     "T-36-S4-diff-check.txt": "cfb4ba1db03f2ee54865d339a8d599c0b5ab446debcfc4ad70415a49a98bbb92",
     "T-36-S4-frontend-types-exit.json": "c5bc10b90b07a9933546c46c70447f29354e61994406c6f5107bbc07e5d21376",
-    "T-36-S4-frontend-types.txt": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
-    "T-36-S4-initial-backend-types.txt": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675",
+    "T-36-S4-frontend-types.txt": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63",
+    "T-36-S4-initial-backend-types.txt": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1",
     "T-36-S4-mechanical-equivalence.json": "5c035af7d218a47d4377fd93f68a92455aa4b1bf4732b2e9a96cb0fafc86300c",
-    "T-36-S4-own-tests-initial-failure.txt": "db205890a3b3baea300c0c9ecd41104e4ba6e4d73f7f5dc16dd147119b103386",
+    "T-36-S4-own-tests-initial-failure.txt": "1c9c47455f14d1a91b30226142f3a4753568b40732394ee2f672a2e7e0b09f47",
     "T-36-S4-own-tests.txt": "8e50a51f1c4bfc37b814ae9aa670dcd7f8e7fd2db88d9e575f49ced673013da5",
     "T-36-S4-runtime-registration-trace.json": "dffd4772d036c32e94da596f4cef053f77be192d878c378b57a867d93d1c970b",
     "T-36-S4-start-snapshot.json": "fe431110da66c5eb98ebefccec46b0bac299e291a40ecc43b7978b6352e851e8",
     "T-36-S4-tests-exit.json": "f2a82cbc058a408925668baeb5981ad329ab2e7932885c648a91e665d23aae16",
-    "T-36-S4-tests.txt": "5c4bcb8ac5f14ee9799c0b26b128c02550570ab6ceb878f9bb7f19284539ce08"
-  }
+    "T-36-S4-tests.txt": "5c4bcb8ac5f14ee9799c0b26b128c02550570ab6ceb878f9bb7f19284539ce08",
+    "T-36-S4-original-raw-logs.json": "5c4f3a42214d4d61e802eef4d610e003ab3146fbaf5fd4aa2a56a65e448ef4d0"
+  },
+  "originalRawLogEvidence": "audit/execution-results/T-36-S4-original-raw-logs.json"
 }
