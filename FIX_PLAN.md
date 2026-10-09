@@ -1550,3 +1550,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 
 - 用户批准APRA/1三版本独立私有档案、必需recovery catalog、已批独立key位置，以及本机AnonyProof-Private-Archives/20261010受限密文目录；服务器与本机均需独立取回key/catalog完成全包恢复并逐表比对。真实内容不进Git/日志。
 - 仅在A/B一致快照后执行；失败明文staging保留私有并纳入最终F清单。此授权不包含C发布、E历史最小化或F销毁；T32/T33继续进行中，不能以归档格式获批代替实际恢复验收。
+
+
+### 最终候选代理链与提交前核对（2026-10-10）
+
+- T36四模块完成后的production build与最新保留ACME模板，真实本机Nginx→Next→Express复验通过：T24 11/11、T35 45/45、T33 3/3；原T33链路证据另存before-S4文件，不覆盖历史结果。当前新证据T-33-real-chain-result.json、T-36-final-proxy-chain.txt。
+- 远端前置A/B预检实际失败NGINX_BLOCK_ERROR，尚未切维护/停应用；确认是工具解析合法空引号参数时Python字符串membership误判，不是生产Nginx语法错误。失败私有目录保留，最小兼容修正须完整合成回归后另版本重试。
+- 提交前指定私钥/token/访问key模式扫描新增450个历史blob及386条变化路径，无命中；私有历史inventory/DB/key未跟踪，脱敏证据T-18-final-candidate-privacy.json。该模式扫描不代表所有secret语法的完整证明。最终公开候选含已批准范围内修复与合成证据，真实资产操作脚本与内容始终留在私有目录。

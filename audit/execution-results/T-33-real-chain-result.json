@@ -5,12 +5,12 @@
     "T-33"
   ],
   "scope": "real loopback Nginx -> existing production Next -> isolated formal Express; no production configuration change, browser UI or production acceptance",
-  "prefix": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu",
-  "fixtureDatabase": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-Xy5wm1/fixture.db",
-  "fixtureBackendDir": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-Xy5wm1",
-  "templateSha256": "69e7e5d37c1b183e1716aee7b765609f7b1e91eeac5c40b97e2dee21c26d21f7",
-  "buildId": "vk_Sj5Z6iORyr_MxcOom_",
-  "buildSha256": "e7a1c886d79b01ed828c7e909fb727bb6f5e9baeb8b26d9326de63b026f991fb",
+  "prefix": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc",
+  "fixtureDatabase": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-HZpRr2/fixture.db",
+  "fixtureBackendDir": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-HZpRr2",
+  "templateSha256": "f7bf259c11ba1e548977dbd0866bec313fede52063f49f78c99460d496a58ead",
+  "buildId": "MjXVYYHXk4_5rwnKJQbr3",
+  "buildSha256": "9c51fabd5a0be8db0fe8e2bc21a4603ccf7dc8feab76d25ed887b71a79ceb738",
   "configuredTrustProxy": 1,
   "checks": [
     {
@@ -841,24 +841,24 @@
         "-addext",
         "subjectAltName=DNS:anonyproof.deline.top,IP:127.0.0.1,IP:::1",
         "-keyout",
-        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/fixture-key.pem",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/fixture-key.pem",
         "-out",
-        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/fixture-cert.pem"
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/fixture-cert.pem"
       ],
       "exit": 0,
-      "stderr": "........+.....+......+.+.........+.....+.+...............+...+..+.............+.........+..+......+..........+..+......+.+......+..+......+.......+..+.+++++++++++++++++++++++++++++++++++++++*..+.....+++++++++++++++++++++++++++++++++++++++*.......+...+......+....+.....+.+..+...+.......+..+...............+..........+...........+.+..................+............+........+.+............+..............+.+..+.+...........+...+.......+......+..+...+...+.+..............+..........+..+.......+..+...+.............+.....+.........+.+.......................+......+.+..+......+....+..+.............+...+.....+....+........+...+....+...+.....+.+.........+..+.........+.+.....+.+..+......+....+..+.........+.+...........+..........+...+..+.........+....+..+...+.......+...+.....+....+......+.....+.+.....+.+..+.......+.....+................+...+.....+................+.....+....+..+.......+...+..+...+...+....+.....+.+......+.....+....+..+...............+...+....+........+...+....+.................+....+............+............+.....+.......+...............+........+............................+..+.+..+....+.....+...+.......+......+...+............+...+..............+......+....+.....+......+......+.+...+..+.......+..+...+.......+...+............+...........+...+.+...+...+..+......+.+......+.....+............+..........+..+......+..........+.................+.+.........+...+.....+...+......+...+.+......+.....+.........+.........+..........+......+..+...+.......+..+..........+........+...++++++\n....+...............+..+.+.....+++++++++++++++++++++++++++++++++++++++*...+............+..+...+..........+........+.......+..+...+............+...+......+.+......+..+...+++++++++++++++++++++++++++++++++++++++*...+...+...+..+...+...+.......+...+...........+....+......+...............+...........+.......+.....+...............+.+......+...........+.......+...+..............+.+..+.+..+...+....+............+...+..+.+.....+.........+......+....+...+........+...+.+...........+.......+...+...+.....+.+........+..........+.....+......+..........+..+...+..........+......+...........+...+....+......+.........+..+.........+.+...............+...+........+...+.+.....+....+.....+....+.....+.+..+.......+..+.........+....+...+..+..........+...........+.+......+........+.......+.....+.........................+...+..............+.+..+............+.......+........+......+.......+..............+......+....+...+...............+..+....+...............+.....+....+......+.........+...+..+......+......+...+......+.+......+..+...+....+.....+.............+........+.......+.....+.+......+...+.....+.......+.........+......+.....+...+.+.........+..+.+........+......+.+...+..+...+..........+..............+.............+..............+.+..+.+......+....................+................+.....+.......+.....+.+..+.......+..+......+...+..........+..+....+.....+...............+...+.+.....+.+......+.....+...+.......+...+..+.......+..+....+...........................+.....+...+....+...+........+.......+..+...+....+...........+......................+...............+..+....+..............+.+..+.........+...+............+.............+.....+.............+........+.........+.......++++++\n-----\n"
+      "stderr": "........+...+..+.............+...+.....+.+.....+......+...+......+....+............+.....+............+.............+..+.+..+...+.+........+.+......+.....+.+.........+...+...+..+...+..................+.........+...+.........+......+....+...+...+..+...+.........+.+++++++++++++++++++++++++++++++++++++++*...+..+.........+++++++++++++++++++++++++++++++++++++++*........+.....+....+...+..+...+......+.+.........+............+..+.......+...+........+...............+....+.....+...+......+...............+.+.....+...+.+............+........+.+.....+.+..+..................+.......+.................+.........+....+......+.........+.....+.......+........+.+......+.....+.+.........+..............+....+...+............++++++\n.+......+...+.....+++++++++++++++++++++++++++++++++++++++*.+....+...+......+..+...+.......+...+......+++++++++++++++++++++++++++++++++++++++*....+.....+...++++++\n-----\n"
     },
     {
       "argv": [
         "/opt/homebrew/bin/nginx",
         "-t",
         "-p",
-        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/",
         "-c",
-        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/nginx.conf"
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/nginx.conf"
       ],
       "exit": 0,
-      "stderr": "nginx: the configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/nginx.conf syntax is ok\nnginx: configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/nginx.conf test is successful\n"
+      "stderr": "nginx: the configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/nginx.conf syntax is ok\nnginx: configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/nginx.conf test is successful\n"
     }
   ],
   "sourceProbes": [
@@ -1013,12 +1013,12 @@
     "nginxPidRemoved": true
   },
   "ports": {
-    "http": 52123,
-    "tls": 52107,
+    "http": 56795,
+    "tls": 56772,
     "next": 3040,
     "backend": 4000
   },
-  "nginxPid": 53360,
+  "nginxPid": 1176,
   "staticAssets": [
     {
       "path": "/anonyproof/_next/static/chunks/0bma92pht_c97.js",
@@ -1093,7 +1093,7 @@
     "rawQueryMarkerRetained": false,
     "rawUaMarkerRetained": false,
     "actualLoopbackSourceRetained": false,
-    "logPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-optc3pcu/access.log",
+    "logPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-T35-chain-ycflonmc/access.log",
     "note": "local synthetic template observation only; production global logging not asserted; no production log strategy changed"
   },
   "businessCountsBeforeDelete": {
