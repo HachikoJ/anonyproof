@@ -616,7 +616,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-25 身份/安装密钥/数据库会话生命周期
 
-状态：待办（C已批准具体删除/保留策略，本地实施按依赖推进；真实资产另批）；原始严重度：P1（审查第 3 条的身份无界增长）；优先级：B；工作量：M；前置依赖：Q-04、T-05、T-21。
+状态：进行中（90/30天生命周期及过期session本地验收通过；真实资产预览/快照/恢复/清理另批）；原始严重度：P1（审查第 3 条的身份无界增长）；优先级：B；工作量：M；前置依赖：Q-04、T-05、T-21。
 
 **问题**：client_identities/install_keys持续写入；session过期删除只有issueIdentitySession时触发。副本上限和内存Map清理不解决数据库长期残留。
 
@@ -1352,3 +1352,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 状态：进行中。明确管理员删除feedback时，SQLite immediate事务内重查scope、删除comments、双方notifications、feedback、更新stats并写审计；审计只留action/target/time与生成ID，兼容admin_ip列写空，不复制正文。未登录/普通用户、跨demo身份及模板规则保持。
 - 修复前独立故障矩阵2通过/8失败，修复后T-34自身10/10通过无跳过；相关T-34/T-01/T-41/T-26实际28通过/0失败/1个原T-41删除placeholder跳过，未把skip当通过。全后端strict类型检查退出0。独立六处trigger故障（审计、评论、两类通知、parent、stats）均全量snapshot回滚；其他反馈/模板/另一身份/无关合成既存孤儿逐行不变，重复404无新增delete审计，删除后HTTP各关联读不可见。
 - 完整命令/证据/限制见T-34-local-execution.md及对应before/tests/regressions/type日志。已有legacy无child FK，foreign_key_check为空只证明声明的FK合法，不能证明历史孤儿不存在；显式关联计数验证本次删除，未顺手重建表或清历史孤儿。历史孤儿须逐资产dryrun、快照、具体确认和独立恢复后处置，仍未验收。代码回滚不恢复已删除行，历史恢复不能覆盖其后新写入。
+
+### T-25 本地执行与验收（2026-10-09）
+
+- 状态：进行中。每小时/启动调度expired DB sessions；正式90天无活动且无任何反馈或user通知身份可退役；演示30天无活动仅当前固定marker副本可清关联，模板/未知marker/混合历史/无法关联通知保守保留。activity取identity/session/install key的created/last_seen最大值，删除expired child前保存其活动证据。每事务共最多500session、500feedback、100identity，批次让出、脱敏失败重试、close/unref。
+- 必要顺序修正：启动兼容适配会从identity.token_hash补session，单纯DELETE expired可能复活旧token；同事务清仅匹配expired child的兼容hash。移除issueIdentitySession内另一路无界expired DELETE，统一交给有界调度。保留有效其它Cookie和R1，不改变凭证格式/恢复模型。
+- `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-25.test.ts tests/fix/T-21.test.ts tests/fix/T-05.test.ts tests/fix/T-08.test.ts tests/fix/T-26.test.ts`实际25/25通过，T25六项包括真实HTTP/两次重启、旧Cookie401、其它validCookie200、R1原身份恢复/绑定、边界、readonly dryrun文件SHA不变、501/502共享预算、child活动证据保护、demo所有cascade及parent活动/hash故障回滚。两type退出0。证据T-25-local-result.json、T-25-dry-run.json及regression/types。
+- docs/IDENTITY_RETENTION.md包含完整策略/命令/快照及恢复门禁。真实资产未运行清理，整项不得关闭；独立提交回滚不能恢复退役身份与业务，需要批准的一致性快照独立恢复，不能覆盖清理后新记录。

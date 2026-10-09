@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 1 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2633.340458
+  type: 'test'
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 2 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 1214.985333
+  type: 'test'
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 3 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 1339.265917
+  type: 'test'
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 4 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 566.241625
+  type: 'test'
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 5 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 4792.740459
+  type: 'test'
+  ...
+# Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+ok 6 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+  ---
+  duration_ms: 827.946291
+  type: 'test'
+  ...
+# Subtest: T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+ok 7 - T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+  ---
+  duration_ms: 2547.444916
+  type: 'test'
+  ...
+# Subtest: T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+ok 8 - T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+  ---
+  duration_ms: 463.622666
+  type: 'test'
+  ...
+# Subtest: T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+ok 9 - T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+  ---
+  duration_ms: 450.423167
+  type: 'test'
+  ...
+# Subtest: T-08: invalid recovery limiter values reject startup by the offending configuration name
+ok 10 - T-08: invalid recovery limiter values reject startup by the offending configuration name
+  ---
+  duration_ms: 4057.684
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and missing code preserves R1 and its records
+ok 11 - T-21: restart with valid Cookie and missing code preserves R1 and its records
+  ---
+  duration_ms: 862.256458
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+ok 12 - T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 835.464375
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and missing code preserves R1 and its records
+ok 13 - T-21: restart with valid installation key and missing code preserves R1 and its records
+  ---
+  duration_ms: 836.507083
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and mismatching code preserves R1 and its records
+ok 14 - T-21: restart with valid installation key and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 891.648458
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid Cookie never revokes R1
+ok 15 - T-21: expired display cache with valid Cookie never revokes R1
+  ---
+  duration_ms: 451.600834
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid installation key never revokes R1
+ok 16 - T-21: expired display cache with valid installation key never revokes R1
+  ---
+  duration_ms: 445.353333
+  type: 'test'
+  ...
+# Subtest: T-21: two initializing tabs share one identity and matching codes remain valid
+ok 17 - T-21: two initializing tabs share one identity and matching codes remain valid
+  ---
+  duration_ms: 442.260041
+  type: 'test'
+  ...
+# Subtest: T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+ok 18 - T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+  ---
+  duration_ms: 5.634917
+  type: 'test'
+  ...
+# Subtest: T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+ok 19 - T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+  ---
+  duration_ms: 1.377917
+  type: 'test'
+  ...
+# Subtest: T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+ok 20 - T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+  ---
+  duration_ms: 6.855125
+  type: 'test'
+  ...
+# Subtest: T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+ok 21 - T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+  ---
+  duration_ms: 5.965333
+  type: 'test'
+  ...
+# Subtest: T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+ok 22 - T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+  ---
+  duration_ms: 1350.99825
+  type: 'test'
+  ...
+# Subtest: T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+ok 23 - T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+  ---
+  duration_ms: 7.772875
+  type: 'test'
+  ...
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 24 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 570.011333
+  type: 'test'
+  ...
+# Subtest: T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+ok 25 - T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+  ---
+  duration_ms: 1588.375917
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27902.622917

@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+ok 1 - T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+  ---
+  duration_ms: 15.021375
+  type: 'test'
+  ...
+# Subtest: T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+ok 2 - T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+  ---
+  duration_ms: 1.559083
+  type: 'test'
+  ...
+# Subtest: T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+ok 3 - T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+  ---
+  duration_ms: 7.335542
+  type: 'test'
+  ...
+# Subtest: T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+ok 4 - T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+  ---
+  duration_ms: 7.614708
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 900.489917

@@ -17,6 +17,8 @@ import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseA
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
 import { ExpiringMap, ExpiringMapCapacityError } from './utils/expiringMap'
+import { startIdentityRetention } from './utils/identityRetention'
+import { logger } from './utils/logger'
 import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
 import {
   DEMO_ADMIN_PASSWORD,
@@ -602,7 +604,8 @@ function issueIdentitySession(res: express.Response, deviceId: string) {
     db.prepare('UPDATE client_identities SET token_hash = ?, last_seen_at = ? WHERE device_id = ?')
       .run(tokenHash, now, deviceId)
 
-    db.prepare('DELETE FROM client_identity_sessions WHERE expires_at <= ?').run(now)
+    // Scheduled T-25 retention clears expired compatibility hashes and sessions
+    // atomically in bounded batches; deleting here could revive a legacy token.
     db.prepare(`
       DELETE FROM client_identity_sessions
       WHERE device_id = ?
@@ -1681,6 +1684,8 @@ app.use(identityCapacityErrorHandler)
 const apiServer = app.listen(PORT, HOST, () => {
   const logRetention = startLogRetention()
   apiServer.once('close', () => logRetention.close())
+  const identityRetention = startIdentityRetention(db, demoMode ? 'demo' : 'formal', logger)
+  apiServer.once('close', () => identityRetention.close())
   console.log(`AnonyProof API Server running on ${HOST}:${PORT}`)
   console.log(`Database: ${databasePath}`)
   if (demoMode) {
