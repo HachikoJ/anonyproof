@@ -630,7 +630,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-34 删除反馈的关联数据一致性
 
-状态：待办（C已批准具体删除/保留策略，本地实施按依赖推进；真实资产另批）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。
+状态：进行中（显式删除原子事务/权限/故障矩阵本地通过；真实孤儿处置及恢复另批）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。
 
 **问题**：`DELETE /api/admin/feedback/:id`约1058行只删除feedbacks；schema中comments/notifications无外键级联，私密沟通与摘要成为残留。
 
@@ -1346,3 +1346,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 状态：进行中，本地实现通过，历史资产未操作。原始访问及限流日志按严格created_at<now-7天删除，每表每事务最多500条，批次让出事件循环，启动调度、每小时运行、失败脱敏记录后重试；server close关闭timer。daily聚合、业务、identity及永久/到期blacklist不参与清理。累计访问/机器人/可疑/加权响应时间从保留日聚合读取，unique_visitors明确7天raw范围。
 - `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-11.test.ts tests/fix/T-10.test.ts`实际7/7通过；T-11自身4项含边界前1删/精确边界及以后3留、第二次0删、1001分500/500/1、事务故障回滚与脱敏重试、实际health200、重启恢复调度、daily/blacklist逐行不变。frontend type退出0；最终index调度接入后的全后端strict tsc退出0，见T-26-identity-server-type.txt（共享整合检查不冒充独立重复测试）。详细证据T-11-local-result.json及日志。
 - 可复验命令及运维门禁见docs/LOG_RETENTION.md。真实库执行须先给出最新逐资产dryrun计数、一致性快照及独立恢复证据再获具体批准；不得根据此本地提交直接对历史资产清理。SQLite逻辑删除不证明DB/WAL/旧备份字节已消失，字节与旧备份处置归T-32。停止timer/回退代码不能恢复已删除数据。
+
+### T-34 本地执行与验收（2026-10-09整合）
+
+- 状态：进行中。明确管理员删除feedback时，SQLite immediate事务内重查scope、删除comments、双方notifications、feedback、更新stats并写审计；审计只留action/target/time与生成ID，兼容admin_ip列写空，不复制正文。未登录/普通用户、跨demo身份及模板规则保持。
+- 修复前独立故障矩阵2通过/8失败，修复后T-34自身10/10通过无跳过；相关T-34/T-01/T-41/T-26实际28通过/0失败/1个原T-41删除placeholder跳过，未把skip当通过。全后端strict类型检查退出0。独立六处trigger故障（审计、评论、两类通知、parent、stats）均全量snapshot回滚；其他反馈/模板/另一身份/无关合成既存孤儿逐行不变，重复404无新增delete审计，删除后HTTP各关联读不可见。
+- 完整命令/证据/限制见T-34-local-execution.md及对应before/tests/regressions/type日志。已有legacy无child FK，foreign_key_check为空只证明声明的FK合法，不能证明历史孤儿不存在；显式关联计数验证本次删除，未顺手重建表或清历史孤儿。历史孤儿须逐资产dryrun、快照、具体确认和独立恢复后处置，仍未验收。代码回滚不恢复已删除行，历史恢复不能覆盖其后新写入。

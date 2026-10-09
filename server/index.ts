@@ -1197,25 +1197,30 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
 app.delete('/api/admin/feedback/:id', (req, res) => {
   try {
     const { id } = req.params
-    const ip = req.ip || req.socket.remoteAddress || 'unknown'
     // 演示模板由服务端种子维护，重启后会重新写入，因此不允许删除；其余可访问记录允许删除。
     const scope = adminRecordScope(req, 'feedbacks', true)
-    const visibleFeedback = db.prepare(`
-      SELECT id FROM feedbacks
-      WHERE id = ? AND feedbacks.is_demo_template = 0 AND ${scope.sql}
-    `).get(id, ...scope.params)
+    const deleted = db.transaction(() => {
+      // Recheck scope after acquiring the write reservation, including demo
+      // ownership and immutable templates. A missing/repeated delete is inert.
+      const visibleFeedback = db.prepare(`
+        SELECT id FROM feedbacks
+        WHERE id = ? AND feedbacks.is_demo_template = 0 AND ${scope.sql}
+      `).get(id, ...scope.params)
+      if (!visibleFeedback) return false
 
-    if (!visibleFeedback) {
-      return res.status(404).json({ error: '反馈不存在' })
-    }
-
-    // 记录删除操作
-    logAdminAction('delete', id, ip)
-
-    const stmt = db.prepare('DELETE FROM feedbacks WHERE id = ?')
-    stmt.run(id)
-
-    updateStats()
+      // Existing databases have no child foreign keys. Explicit child deletion
+      // keeps both notification recipients and private comments in this same
+      // transaction without modifying or cleaning historical orphan records.
+      db.prepare('DELETE FROM feedback_comments WHERE feedback_id = ?').run(id)
+      db.prepare('DELETE FROM notifications WHERE feedback_id = ?').run(id)
+      db.prepare('DELETE FROM feedbacks WHERE id = ?').run(id)
+      updateStats()
+      // Retain only action/target/time; the compatibility NOT NULL IP column
+      // stays empty. Never copy the erased business content into an audit row.
+      logAdminAction('delete', id, '')
+      return true
+    }).immediate()
+    if (!deleted) return res.status(404).json({ error: '反馈不存在' })
 
     res.json({ success: true })
   } catch (error) {

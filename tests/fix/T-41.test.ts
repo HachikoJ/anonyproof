@@ -140,10 +140,10 @@ test('T-41: optional access logging faults leave core feedback/comment/status op
 })
 
 // Deletion's transaction and dependent comment/notification erasure belong to
-// T-34. Its confirmation/implementation is not complete, so do not count this
-// as a passing deletion acceptance or accidentally test today's broken policy.
+// T-34.test.ts now independently covers these faults. This old placeholder is
+// retained and not counted as passing acceptance; historical assets are gated.
 test('T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults', {
-  skip: 'T-34 deletion semantics/transaction confirmation and implementation are pending',
+  skip: 'Deletion transaction is independently verified by T-34.test.ts; historical asset handling remains separately gated',
 }, async (t) => {
   const f = await fixture()
   t.after(async () => { f.db.close(); await f.service.stop() })
