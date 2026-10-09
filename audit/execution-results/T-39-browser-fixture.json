@@ -1,0 +1,21 @@
+{
+  "url": "http://127.0.0.1:3038/anonyproof",
+  "controls": {
+    "hold": "http://127.0.0.1:3038/__fixture/hold-comments",
+    "release": "http://127.0.0.1:3038/__fixture/release-comments"
+  },
+  "threads": {
+    "a": "T39-0007",
+    "b": "T39-0008"
+  },
+  "recoveryPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-845VQI/T39-synthetic-recovery-codes.json",
+  "devices": {
+    "a": "device-ibQy1rbT_UNJWHQiDGAIJqFd",
+    "b": "device-U0gWgduy8lgqhPHZ4b60Cdjo"
+  },
+  "notificationTarget": "T39-0007",
+  "initialCount": 1000,
+  "fixturePid": 52035,
+  "databasePath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-845VQI/fixture.db",
+  "fixtureOnly": true
+}

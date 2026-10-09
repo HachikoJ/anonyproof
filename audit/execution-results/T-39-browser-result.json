@@ -1,0 +1,78 @@
+{
+  "task": "T-39",
+  "fixtureOnly": true,
+  "runs": [
+    {
+      "task": "T-39",
+      "role": "user",
+      "fixtureOnly": true,
+      "checks": [
+        {
+          "name": "latest50 chronological",
+          "pass": true
+        },
+        {
+          "name": "all250 ordered deduplicated",
+          "pass": true
+        },
+        {
+          "name": "oldest exhausted",
+          "pass": true
+        },
+        {
+          "name": "post retains250 and appends1",
+          "pass": true
+        },
+        {
+          "name": "fixture hold armed",
+          "pass": true
+        },
+        {
+          "name": "actual delayed response released",
+          "pass": true
+        },
+        {
+          "name": "lateA cannot replaceB",
+          "pass": true
+        }
+      ],
+      "finalComments": [
+        "T39-B-comment-0",
+        "T39-B-comment-1",
+        "T39-B-comment-2"
+      ]
+    },
+    {
+      "task": "T-39",
+      "role": "admin",
+      "fixtureOnly": true,
+      "checks": [
+        {
+          "name": "admin latest50 chronological",
+          "pass": true
+        },
+        {
+          "name": "admin full251 no duplicates",
+          "pass": true
+        },
+        {
+          "name": "admin post retains old pages",
+          "pass": true
+        }
+      ],
+      "count": 252
+    },
+    {
+      "task": "T-39",
+      "role": "recoveredB",
+      "fixtureOnly": true,
+      "oldThreadCleared": true,
+      "searchAEmpty": true
+    }
+  ],
+  "network": {
+    "maxPageComments": 50,
+    "lateAResponseHeld": true,
+    "finalAComments": 252
+  }
+}
