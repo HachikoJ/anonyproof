@@ -133,14 +133,40 @@ export default function AdminPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationError, setNotificationError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const authEpochRef = useRef(0);
+
+  const clearProtectedState = () => {
+    ++authEpochRef.current;
+    ++listRequestRef.current;
+    ++selectionRequestRef.current;
+    cursorRef.current = null;
+    setAuthenticated(false);
+    setFeedbacks([]);
+    setSelected(null);
+    setCursorHistory([]);
+    setNextCursor(null);
+    setFilteredTotal(0);
+    setCounts(emptyCounts);
+    setDetailLoading(false);
+    setLoading(false);
+    resetComments();
+    setComment("");
+    setSolution("");
+    setActionLoading("");
+    setNotifications([]);
+    setUnreadCount(0);
+    setNotificationError("");
+    setShowNotifications(false);
+    setMessage("");
+    setPassword("");
+    feedbacksLoadedRef.current = false;
+    syncFeedbackQuery(null);
+  };
+
   const handleRequestError = (error: unknown, fallback: string) => {
     if (error instanceof ApiError && error.status === 401) {
-      setAuthenticated(false);
-      setFeedbacks([]);
-      setSelected(null);
-      setShowNotifications(false);
-      setMessage("");
-      feedbacksLoadedRef.current = false;
+      clearProtectedState();
+      setLoginError("管理会话已失效，服务重启或超过8小时后需重新登录。");
       return;
     }
     setMessage(getRequestErrorMessage(error, fallback));
@@ -181,19 +207,22 @@ export default function AdminPage() {
   };
 
   const fetchUnreadCount = async () => {
+    const epoch = authEpochRef.current;
     try {
       const response = await fetch(
         "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
         { credentials: "same-origin" },
       );
       const data = await readApiJson(response);
+      if (epoch !== authEpochRef.current) return;
       setUnreadCount(data.count);
     } catch (error) {
-      handleRequestError(error, "通知数量暂时无法加载");
+      if (epoch === authEpochRef.current) handleRequestError(error, "通知数量暂时无法加载");
     }
   };
 
   const fetchNotifications = async () => {
+    const epoch = authEpochRef.current;
     setNotificationError("");
     try {
       const [countResponse, listResponse] = await Promise.all([
@@ -210,9 +239,11 @@ export default function AdminPage() {
         readApiJson(countResponse),
         readApiJson(listResponse),
       ]);
+      if (epoch !== authEpochRef.current) return;
       setUnreadCount(countData.count);
       setNotifications(listData.notifications);
     } catch (error) {
+      if (epoch !== authEpochRef.current) return;
       if (error instanceof ApiError && error.status === 401) {
         handleRequestError(error, "");
       } else {
@@ -405,6 +436,8 @@ export default function AdminPage() {
       return;
     }
     setActionLoading(nextStatus);
+    const epoch = authEpochRef.current;
+    const selection = selectionRequestRef.current;
     try {
       const response = await fetch(
         `/anonyproof/api/admin/feedback/${selected.id}/status`,
@@ -416,6 +449,7 @@ export default function AdminPage() {
         },
       );
       await readApiJson(response);
+      if (epoch !== authEpochRef.current || selection !== selectionRequestRef.current) return;
       setMessage("");
       setMessageTone("info");
       setSolution("");
@@ -425,7 +459,7 @@ export default function AdminPage() {
       await fetchData();
       fetchNotifications();
     } catch (error) {
-      handleRequestError(error, "状态更新失败，请稍后重试");
+      if (epoch === authEpochRef.current) handleRequestError(error, "状态更新失败，请稍后重试");
     } finally {
       setActionLoading("");
     }
@@ -467,6 +501,7 @@ export default function AdminPage() {
     setShowNotifications(false);
   };
   const markAllNotificationsRead = async () => {
+    const epoch = authEpochRef.current;
     setNotificationError("");
     try {
       const response = await fetch(
@@ -474,9 +509,11 @@ export default function AdminPage() {
         { method: "PUT", credentials: "same-origin" },
       );
       await readApiJson(response);
+      if (epoch !== authEpochRef.current) return;
       setUnreadCount(0);
       setNotifications((items) => items.map((item) => ({ ...item, is_read: 1 })));
     } catch (error) {
+      if (epoch !== authEpochRef.current) return;
       if (error instanceof ApiError && error.status === 401) {
         handleRequestError(error, "");
       } else {
@@ -492,15 +529,8 @@ export default function AdminPage() {
       method: "POST",
       credentials: "same-origin",
     });
-    setAuthenticated(false);
-    setFeedbacks([]);
-    setSelected(null);
-    setNotifications([]);
-    setUnreadCount(0);
-    setShowNotifications(false);
-    setMessage("");
-    feedbacksLoadedRef.current = false;
-    syncFeedbackQuery(null);
+    clearProtectedState();
+    setLoginError("");
   };
 
   if (checking)
@@ -574,7 +604,7 @@ export default function AdminPage() {
               </button>
             </form>
             <p className="admin-auth-footnote">
-              会话仅保留在当前浏览器。
+              会话仅保留在当前浏览器，最长8小时；服务重启后需重新登录。
             </p>
           </div>
         </section>
