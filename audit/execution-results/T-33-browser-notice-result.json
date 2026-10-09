@@ -1,0 +1,8 @@
+{
+  "task": "T-33",
+  "fixtureOnly": true,
+  "visibleBeforeSubmission": true,
+  "actualNotice": "提交前检查\n删去姓名、电话、住址等身份信息\n区分亲历事实与转述内容\n保留时间、地点和可核实细节\n\n无需实名；运营者可关联本机记录，服务器与获授权管理员可读取内容。访问与限流日志保留来源 IP 7 天、浏览器家族或机器人分类及路由模板，不保存完整浏览器信息、查询参数或含业务编号的路径；处理说明、评论与操作审计不保存管理员 IP。活动 IP 黑名单按到期或人工取消规则保留，因此不等于不可追踪的完全匿名。",
+  "screenshot": "output/playwright/T-33-before-submit-notice.png",
+  "browser": "independent Playwright Chromium; production Next; formal synthetic backend"
+}

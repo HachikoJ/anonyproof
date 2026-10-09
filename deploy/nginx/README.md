@@ -11,3 +11,7 @@
 本地隔离验证只使用 127.0.0.1 高位端口、独立临时目录和自签测试证书；不启动 Homebrew 系统服务、不改 hosts、不接触真实库或真实证书。T-35 完成还需真实 Next／Express 合成链路、UI、DELETE 和外部端口验收，纯代理 fixture 或 `nginx -t` 通过不等于整项完成。具体执行入口见根目录 `DEPLOY.md`。
 
 T-24代理模式另要求受限私有include中的独立代理键与后端PROXY_AUTH_KEY一致；入口覆盖访客认证头，直接backend API缺/错键403。缺include时nginx -t失败，缺后端键时服务失败启动。实际生成/部署方式见DEPLOY.md；仓库与fixture公开报告不保存真实键。
+
+T-33 在本站 HTTP 和 HTTPS 两个 vhost 均显式设置 `access_log off; error_log /dev/null;`，不再继承全局请求日志；其他站和全局日志不变。本站代理请求级错误明细随之不可用，排障使用应用层已批准的7天最小字段、聚合统计、进程状态和本地合成探针。该变更不删除既有日志，历史文件仍需独立确认处置。启动/语法诊断仍可能由 Nginx master 写入全局日志，不把它作为本站访问记录保存。
+
+本地日志验收命令为 `python3 audit/execution-results/T-33-nginx-privacy-runner.py`，只启动独立高位回环 echo fixture；报告含本站正常、未知路径、无效请求、上游故障无请求标记的断言，以及独立对照 vhost 仍继承全局 access/error 日志的正向断言。真实 Next/Express 链路另外运行 `T33_NGINX_PRIVACY=1 npx --no-install tsx tests/fix/T-24.chain.ts`，保留 T-24/T-35 回归并写入新的 T-33 证据，不覆盖旧报告。均不代表生产已启用。

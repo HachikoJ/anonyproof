@@ -21,13 +21,14 @@ from http.cookies import SimpleCookie
 
 ROOT=Path(__file__).resolve().parents[2]
 META=json.load(sys.stdin)
-OUT=ROOT/'audit/execution-results/T-24-authenticated-chain-result.json'
+PRIVACY='--t33-privacy' in sys.argv[1:]
+OUT=ROOT/('audit/execution-results/T-33-real-chain-result.json' if PRIVACY else 'audit/execution-results/T-24-authenticated-chain-result.json')
 TMP=Path(tempfile.mkdtemp(prefix='anonyproof-T24-T35-chain-'))
 os.chmod(TMP,0o700)
 NGINX='/opt/homebrew/bin/nginx'
 OPENSSL='/opt/homebrew/opt/openssl@4/bin/openssl'
 TEMPLATE=ROOT/'deploy/nginx/anonyproof.deline.top.conf'
-result={'tasks':['T-24','T-35'],'scope':'real loopback Nginx -> existing production Next -> isolated formal Express; no product configuration change, browser UI or production acceptance',
+result={'tasks':['T-24','T-35']+(['T-33'] if PRIVACY else []),'scope':'real loopback Nginx -> existing production Next -> isolated formal Express; no production configuration change, browser UI or production acceptance',
  'prefix':str(TMP),'fixtureDatabase':META['databasePath'],'fixtureBackendDir':META['fixtureDir'],
  'templateSha256':hashlib.sha256(TEMPLATE.read_bytes()).hexdigest(),'buildId':META['buildId'],'buildSha256':META['buildHash'],
  'configuredTrustProxy':1,'checks':[],'requests':[],'commands':[],'sourceProbes':[],'cleanup':{}}
@@ -223,16 +224,21 @@ try:
     marker='T33-Nginx-inherited-raw-marker-551'
     request('GET','/anonyproof/api/stats?private='+marker,headers={'User-Agent':'T35-raw-agent-'+marker})
     time.sleep(.05)
-    access=(TMP/'access.log').read_text()
+    access=(TMP/'access.log').read_text() if (TMP/'access.log').exists() else ''
+    errors=(TMP/'error.log').read_text() if (TMP/'error.log').exists() else ''
     result['nginxInheritedLogEvidence']={'fixtureHttpContextUsesDefaultCombinedLog':True,'productVhostDeclaresOwnAccessLog':bool(re.search(r'^\s*access_log\b',TEMPLATE.read_text(),re.M)),
       'rawQueryMarkerRetained':marker in access,'rawUaMarkerRetained':('T35-raw-agent-'+marker) in access,
-      'actualLoopbackSourceRetained':'127.0.0.1' in access,'logPath':str(TMP/'access.log'),'note':'synthetic inherited logging demonstration only; production global logging not asserted; no log strategy changed'}
+      'actualLoopbackSourceRetained':'127.0.0.1' in access,'logPath':str(TMP/'access.log'),'note':'local synthetic template observation only; production global logging not asserted; no production log strategy changed'}
+    if PRIVACY:
+        check('Real Next/API URI marker absent from inherited access log',marker in access,False,'T-33')
+        check('Real Next/API UA marker absent from inherited access log',('T35-raw-agent-'+marker) in access,False,'T-33')
+        check('Real Next/API marker absent from inherited error log',marker in errors,False,'T-33')
     result['businessCountsBeforeDelete']=before
 except Exception as error:
     result['fatalType']=type(error).__name__
 finally:
     cleanup()
-    counts={task:{'passed':sum(check['pass'] for check in result['checks'] if check['task']==task),'failed':sum(not check['pass'] for check in result['checks'] if check['task']==task)} for task in ['T-24','T-35']}
+    counts={task:{'passed':sum(check['pass'] for check in result['checks'] if check['task']==task),'failed':sum(not check['pass'] for check in result['checks'] if check['task']==task)} for task in result['tasks']}
     result['summary']=counts
     result['acceptanceComplete']=not result.get('fatalType') and all(item['pass'] for item in result['checks'])
     OUT.write_text(json.dumps(result,indent=2)+'\n')

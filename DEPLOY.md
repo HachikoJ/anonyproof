@@ -203,3 +203,9 @@ npx --no-install tsx scripts/content-migration-inventory.ts /absolute/approved-s
 Nginx覆盖访客同名头，Next既有API rewrite保留内部头；Express在Origin/解析/配额前核验loopback连接、单一正确键及单一规范IP来源，失败403且不签Cookie或写业务。内部键随后从请求头和rawHeaders移除。代理模式缺配置失败启动，不能临时改trust=true绕过。无代理开发显式TRUST_PROXY=0、所有来源头忽略，仅socket作为主体；/health及非API直连页不信任来源头。
 
 启用前先准备私有配置，`nginx -t` 和本地真实链路/回归通过，再展示生产差异取得发布批准；生产未启用本方案。回滚应保留loopback绑定及入口覆盖XFF，独立回退T24代码会恢复直连伪造风险，不能继续标已修复。密钥仅用于证明入口经过本站代理，不能防御已取得该键或服务器权限的本地攻击者。
+
+### T-33 本站代理请求日志（本地已获批准，生产启用另批）
+
+唯一 vhost 模板在本站 HTTP/HTTPS 两个 server 中显式 `access_log off; error_log /dev/null;`，阻止继承全局 combined access/error 请求明细。仅本站失去 Nginx 请求级错误信息，其他 vhost 和全局日志不变；应用层按已批准的7天最小字段与聚合统计排障。Nginx 启动/语法诊断仍可用，必要时使用本地合成探针复现，不临时开启真实访客 URL/UA 请求日志。
+
+此改动不删除已有日志，也不证明实际生产或其他上游未留存请求。启用前保存当前生效 vhost，执行 `nginx -t`，取得生产发布批准后再 reload，并验收本站与对照站。回滚点是独立 T-33 配置提交；恢复原请求日志会重新暴露查询串/UA 隐私缺口，不能继续宣称日志验收通过。历史日志资产的保留/清理仍单独确认。

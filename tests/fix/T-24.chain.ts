@@ -47,7 +47,7 @@ async function main() {
       await delay(50)
     }
     if(!ready)throw new Error('Owned production Next did not become ready')
-    runner=spawn('python3',[path.join(projectRoot,'audit/execution-results/T-24-T35-chain-runner.py')],{cwd:projectRoot,stdio:['pipe','inherit','inherit']})
+    runner=spawn('python3',[path.join(projectRoot,'audit/execution-results/T-24-T35-chain-runner.py'),...(process.env.T33_NGINX_PRIVACY==='1'?['--t33-privacy']:[])],{cwd:projectRoot,stdio:['pipe','inherit','inherit']})
     // Secret travels only over this child stdin, never argv/log/artifact.
     runner.stdin!.end(JSON.stringify({databasePath:service.databasePath,password:service.password,proxyKey,backendPort:4000,nextPort:3040,tlsPort,origin,buildId:readFileSync(buildPath,'utf8').trim(),buildHash,fixtureDir:service.dir,secondSource:process.env.T24_SECOND_SOURCE||'::1'}))
     const code=await new Promise<number|null>(resolve=>runner!.once('exit',resolve))

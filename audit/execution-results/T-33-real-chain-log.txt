@@ -1,0 +1,1 @@
+{"evidence": "/Users/wilson/Documents/Codex/anonyproof/audit/execution-results/T-33-real-chain-result.json", "summary": {"T-24": {"passed": 11, "failed": 0}, "T-35": {"passed": 45, "failed": 0}, "T-33": {"passed": 3, "failed": 0}}, "fatalType": null, "allAcceptancePassed": true}

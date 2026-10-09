@@ -778,7 +778,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-36 安全边界最小模块拆分
 
-状态：待办（待Q-09）；原始严重度：P3（审查第 15 条）；优先级：C；工作量：M；前置依赖：Q-09、全部已选择的行为修复与对应API回归；T-18。
+状态：待办（Q-09具体四模块方案已批准；仍等待前置行为修复/API验收闭合）；原始严重度：P3（审查第 15 条）；优先级：C；工作量：M；前置依赖：Q-09、全部已选择的行为修复与对应API回归；T-18。
 
 **问题**：`server/index.ts`混合建表/迁移、认证、身份、演示、路由、通知，校验与限流死代码分散，后续容易漏挂保护。
 
@@ -1447,3 +1447,15 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - fixture真实扣留下一次A评论HTTP响应，用户切B并显示3条后才释放A（确认实际released1），接收后的B正文/3评论保持不变，没有旧A覆盖。注销后台并UI恢复另一身份B后旧评论已清空，A专属搜索0。结果 `T-39-browser-result.json`、network及user/admin-flow；截图 `output/playwright/T-39-user-251.png`、admin-252、user-B-after-stale。
 - 第一轮复现脚本把子串FULL-BODY-END-7误当唯一词，实际匹配7/70…等111条，等待1条超时；这是探针假设错误，改为唯一NEEDLE-cross-page，重新启动新合成fixture后全套通过。没有改变搜索产品语义。夹具身份Origin修正同T38，不影响产品代码。
 - API/类型/共享最终生产构建及上述真实浏览器验收完成，T39标已完成；未发布，其他任务仍独立。精确停止本次自有fixture并保留资产。
+
+### T-33 本站代理日志与提交前说明验收（2026-10-09）
+
+- 已获用户明确批准，唯一模板只在本站HTTP/HTTPS vhost设置 `access_log off; error_log /dev/null;`；失去本站请求级错误明细，其他站及全局不改，历史文件不删，不改生产。DEPLOY/模板README说明影响/诊断/独立回滚，回退恢复日志会重新暴露隐私缺口。
+- `python3 audit/execution-results/T-33-nginx-privacy-runner.py` 22/22通过：正常HTTP/TLS、未知路径/Host、非法URI、真实上游断连均未向本站继承access/error/master写入合成query/UA；独立对照站在前后两轮仍继承全局access/error。`python3 audit/execution-results/T-35-fixture-runner.py --t33-output` 116/116通过。
+- `T33_NGINX_PRIVACY=1 npx --no-install tsx tests/fix/T-24.chain.ts` 真实Nginx→production Next→合成正式Express：T24 11/11、T35 45/45、T33 3/3；真实页面/静态/API/Cookie/Origin/PUT/DELETE全部保持，query/UA在继承日志中不存在。各自owned PID/端口退出，证据T-33-*-result/log。
+- 独立真实浏览器在正式合成站进入提交表单，实际可见运营者可关联本机/授权服务可读/来源IP7天/UA与路径最小化的完整说明，且出现在点击提交之前，见T-33-browser-notice-result及截图output/playwright/T-33-before-submit-notice.png。未用源码文字检查代替页面。
+- T33本地代码/模板/浏览器部分闭合，整体仍进行中：生产未生效，历史库/备份/本站及可能共享代理日志尚未按具体批准处置，不能把关闭新日志宣称旧资产已经销毁。
+
+### T-36 Q-09具体批准已收到（2026-10-09）
+
+- 用户明确批准 `T-36-module-boundary-proposal.md` 四文件边界、原行为/顺序不变、独立提交/回滚和仅本地合成验收；不是生产/迁移授权。按原约定仍先闭合已选择的行为修复及对应API基线，不能因结构方案批准越过前置。未开始移动产品代码，T36保持待办。

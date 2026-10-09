@@ -12,12 +12,13 @@ import shutil
 import socket
 import ssl
 import subprocess
+import sys
 import tempfile
 import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / 'audit/execution-results/T-24-template-echo-result.json'
+OUT = ROOT / ('audit/execution-results/T-33-template-echo-result.json' if '--t33-output' in sys.argv[1:] else 'audit/execution-results/T-24-template-echo-result.json')
 NGINX = shutil.which('nginx') or '/opt/homebrew/bin/nginx'
 OPENSSL = '/opt/homebrew/opt/openssl@3/bin/openssl'
 TMP = Path(tempfile.mkdtemp(prefix='anonyproof-T35-nginx-'))
