@@ -1,3 +1,4 @@
+import { CommentPaginationError, getCommentPage, parseCommentPagination } from './utils/commentPagination'
 import { getUserFeedbackPage } from './utils/userFeedbackPagination'
 import { FeedbackPaginationError, getAdminFeedbackPage, parseFeedbackPagination } from './utils/adminFeedbackPagination'
 import './env'
@@ -1268,7 +1269,9 @@ app.get('/api/admin/logs', (req, res) => {
   }
 })
 
-// API: 获取反馈的所有评论
+db.exec('CREATE INDEX IF NOT EXISTS idx_comments_thread_cursor ON feedback_comments(feedback_id,created_at DESC,id DESC)')
+
+// API: 获取反馈的评论分页
 app.get('/api/feedback/:feedbackId/comments', (req, res) => {
   try {
     const feedbackId = String(req.params.feedbackId)
@@ -1286,9 +1289,14 @@ app.get('/api/feedback/:feedbackId/comments', (req, res) => {
       return res.status(401).json({ error: '无权查看该记录的沟通内容' })
     }
 
-    const comments = db.prepare(
-      'SELECT * FROM feedback_comments WHERE feedback_id = ? ORDER BY created_at ASC'
-    ).all(feedbackId) as any[]
+    const options = parseCommentPagination(req.query, JSON.stringify([feedbackId,
+      admin ? (demoMode ? `admin:${demoRequestDevice(req)}` : 'admin:formal') : `user:${feedback.device_id}`]))
+    if (Object.keys(req.query).length) return res.json(getCommentPage(db, contentEncryption, feedbackId, options))
+    // Cached clients retain their response fields, capped to the latest 100
+    // comments in chronological order. No parameter-free unbounded path.
+    const comments = (db.prepare(
+      'SELECT * FROM feedback_comments WHERE feedback_id = ? ORDER BY created_at DESC,id DESC LIMIT 100'
+    ).all(feedbackId) as any[]).reverse()
 
     res.json({
       success: true,
@@ -1298,6 +1306,7 @@ app.get('/api/feedback/:feedbackId/comments', (req, res) => {
       }))
     })
   } catch (error) {
+    if (error instanceof CommentPaginationError) return res.status(400).json({ error: error.message })
     console.error('获取评论失败:', error)
     res.status(500).json({ error: '获取评论失败' })
   }

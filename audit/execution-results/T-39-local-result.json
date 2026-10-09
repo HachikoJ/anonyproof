@@ -1,0 +1,75 @@
+{
+  "task": "T-39",
+  "status": "local implementation/API/static acceptance passed; production build/native-browser acceptance pending main agent",
+  "timeUTC": "2026-10-09T01:58:06.085221+00:00",
+  "scope": [
+    "server/index.ts GET comment pagination handler and composite cursor index",
+    "server/utils/commentPagination.ts",
+    "app/hooks/useCommentPagination.ts",
+    "app/page.tsx comment loading/sending/identity/thread reset",
+    "app/foorpynona/page.tsx comment loading/sending/selection reset",
+    "tests/fix/T-39.test.ts",
+    "tests/fix/T-39.browser.ts"
+  ],
+  "protocol": {
+    "path": "/api/feedback/:feedbackId/comments",
+    "query": "pagination=1; limit defaults50 max100; cursor=older or after=newer mutually exclusive",
+    "initial": "latest bounded page returned chronological ASC",
+    "cursor": "created_at/id stable boundary; tied to authorized parent+reader scope",
+    "response": "whitelisted comments plus pagination.limit,total,hasMore,nextCursor,latestCursor",
+    "legacy": "no-query fields retained, newest100 returned ASC; no unbounded path"
+  },
+  "verification": [
+    {
+      "command": "npx --no-install tsx --test tests/fix/T-39.test.ts",
+      "exit": 0,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "log": "audit/execution-results/T-39-stage1-tests.txt"
+    },
+    {
+      "command": "npm run type-check",
+      "exit": 0,
+      "log": "audit/execution-results/T-39-type-final.txt"
+    },
+    {
+      "command": "npx --no-install tsc --noEmit --strict --esModuleInterop --skipLibCheck --target es2022 --module commonjs --moduleResolution node server/index.ts",
+      "exit": 0,
+      "log": "audit/execution-results/T-39-backend-type.txt"
+    },
+    {
+      "command": "npx --no-install tsx --test tests/fix/T-01.test.ts tests/fix/T-03.test.ts tests/fix/T-09.test.ts tests/fix/T-34.test.ts tests/fix/T-38.test.ts tests/fix/T-39.test.ts",
+      "exit": 0,
+      "pass": 40,
+      "fail": 0,
+      "skip": 0,
+      "log": "audit/execution-results/T-39-regression.txt"
+    },
+    {
+      "command": "git diff --check -- app/page.tsx app/foorpynona/page.tsx server/index.ts",
+      "exit": 0
+    }
+  ],
+  "proofScope": [
+    "250 comments with tied timestamps, full older-page traversal by user/admin without gap/duplicate",
+    "bounded response/whitelist/decryption of mixed storage versions",
+    "121 new comments plus user/admin posts traverse incremental pages, loaded old pages preserved in deduplicated chronological union",
+    "accurate server COUNT independent of loaded/cursor subset",
+    "malformed/cross-thread/cross-reader cursor rejection after parent auth",
+    "demo read-only template/admin access and cross-sandbox isolation"
+  ],
+  "remaining": [
+    "main production build",
+    "native browser: initially50/total250; load earlier=>100 in ASC; own send=>101 displayed/251 true total retaining old pages; admin send and user/admin consistent result",
+    "native browser: hold A comments response via fixture-only control, switch to B(3), release A and verify A cannot overwrite B",
+    "native browser: owner recovery invalidates comments from prior identity",
+    "network bound captured by harness"
+  ],
+  "operationalChanges": {
+    "production": false,
+    "commit": false,
+    "push": false,
+    "FIX_PLAN_modified": false
+  }
+}

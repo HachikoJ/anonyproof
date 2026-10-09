@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCommentPagination } from './hooks/useCommentPagination'
 import { useDemoConfig } from './hooks/useDemoConfig'
 import { useCrypto } from './hooks/useCrypto'
 import ExternalLinks from './components/ExternalLinks'
@@ -147,8 +148,6 @@ export default function HomePage() {
   const [recordsLoading, setRecordsLoading] = useState(false)
   const [recordsError, setRecordsError] = useState('')
   const [selectedFeedback, setSelectedFeedback] = useState<UserFeedback | null>(null)
-  const [comments, setComments] = useState<FeedbackComment[]>([])
-  const [commentsLoading, setCommentsLoading] = useState(false)
   const [commentError, setCommentError] = useState('')
   const [newComment, setNewComment] = useState('')
   const [commentSending, setCommentSending] = useState(false)
@@ -168,6 +167,9 @@ export default function HomePage() {
 
   const currentDeviceRef = useRef(deviceId)
   currentDeviceRef.current = deviceId
+  const commentPages = useCommentPagination<FeedbackComment>(deviceId, readJson, error =>
+    setCommentError(getErrorMessage(error, '无法连接服务，请检查网络后重试。')))
+  const { comments, total: commentsTotal, loading: commentsLoading, hasOlder: hasOlderComments, reset: resetComments, load: loadComments } = commentPages
 
   const goHome = () => {
     setView('home')
@@ -220,27 +222,17 @@ export default function HomePage() {
     }
   }, [deviceId, filterCategory, filterStatus, searchKeyword])
 
-  const fetchComments = useCallback(async (feedbackId: string) => {
-    setCommentsLoading(true)
+  const fetchComments = useCallback(async (feedbackId: string, mode: 'latest' | 'older' | 'newer' = 'latest') => {
     setCommentError('')
-    try {
-      const response = await fetch(`/anonyproof/api/feedback/${feedbackId}/comments`)
-      const data = await readJson(response)
-      if (!response.ok || !data.success) throw new Error(data.error || '沟通记录加载失败')
-      setComments(data.comments)
-    } catch (error) {
-      setComments([])
-      setCommentError(getErrorMessage(error, '无法连接服务，请检查网络后重试。'))
-    } finally {
-      setCommentsLoading(false)
-    }
-  }, [])
+    return loadComments(feedbackId, mode)
+  }, [loadComments])
 
   const openRecord = useCallback(async (feedback: Pick<UserFeedback, 'id'>) => {
     if (!deviceId) return
     const request = ++detailRequestRef.current
     const current = () => request === detailRequestRef.current && currentDeviceRef.current === deviceId
     recordsScrollTopRef.current = recordsListRef.current?.scrollTop ?? recordsScrollTopRef.current
+    resetComments()
     setDetailLoading(true)
     setDetailError('')
     try {
@@ -271,7 +263,7 @@ export default function HomePage() {
     } finally {
       if (current()) setDetailLoading(false)
     }
-  }, [deviceId, fetchComments, fetchUnreadCount])
+  }, [deviceId, fetchComments, fetchUnreadCount, resetComments])
 
   const openRecords = useCallback(() => {
     setView('records')
@@ -297,7 +289,7 @@ export default function HomePage() {
     setRecordsNextCursor(null)
     setRecordsError('')
     setSelectedFeedback(null)
-    setComments([])
+    resetComments()
     setNotifications([])
     setUnreadCount(0)
     setDetailLoading(false)
@@ -306,7 +298,7 @@ export default function HomePage() {
     setFilterStatus('all')
     setSearchKeyword('')
     setView(current => current === 'detail' ? 'records' : current)
-  }, [deviceId])
+  }, [deviceId, resetComments])
 
   useEffect(() => {
     if (view !== 'records' || !deviceId) return
@@ -456,22 +448,24 @@ export default function HomePage() {
   }
 
   const handleAddComment = async () => {
-    if (!modeReady || !selectedFeedback || (demoMode ? !demoCommentId : newComment.trim().length < 2)) return
+    if (!modeReady || !selectedFeedback || commentsLoading || (demoMode ? !demoCommentId : newComment.trim().length < 2)) return
+    const feedbackId = selectedFeedback.id, requestOwner = deviceId, selectedRequest = detailRequestRef.current, draft = newComment, example = demoCommentId
     setCommentSending(true)
     setCommentError('')
     try {
-      const response = await fetch(`/anonyproof/api/feedback/${selectedFeedback.id}/comments`, {
+      const response = await fetch(`/anonyproof/api/feedback/${feedbackId}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(demoMode ? { demoCommentId } : { content: newComment.trim(), commenterType: 'user' }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '补充说明未发送')
-      setNewComment('')
-      setDemoCommentId('')
-      fetchComments(selectedFeedback.id)
+      if (selectedRequest !== detailRequestRef.current || !commentPages.appendPosted(data.comment, requestOwner)) return
+      setNewComment(value => value === draft ? '' : value)
+      setDemoCommentId(value => value === example ? '' : value)
+      await fetchComments(feedbackId, 'newer')
     } catch (error) {
-      setCommentError(getErrorMessage(error, '补充说明未发送，请检查网络后重试。'))
+      if (currentDeviceRef.current === requestOwner && selectedRequest === detailRequestRef.current) setCommentError(getErrorMessage(error, '补充说明未发送，请检查网络后重试。'))
     } finally {
       setCommentSending(false)
     }
@@ -835,9 +829,11 @@ export default function HomePage() {
                 <section><h2>处理说明</h2>{selectedFeedback.solution ? <p>{selectedFeedback.solution}</p> : <p className="muted-copy">处理人员尚未填写说明，状态更新后会显示在这里。</p>}</section>
               </div>
               <aside className="conversation-panel">
-                <div className="conversation-head"><h2>沟通记录</h2><span>{comments.length} 条</span></div>
+                <div className="conversation-head"><h2>沟通记录</h2><span>{commentsTotal} 条</span></div>
                 <div className="comment-list">
-                  {commentsLoading ? <div className="records-loading" aria-live="polite"><span /><p>正在加载沟通记录…</p></div> : comments.length === 0 ? <p className="empty-compact">暂无沟通记录</p> : comments.map((comment) => (
+                  {commentsLoading && <p role="status">正在加载沟通记录…</p>}
+                  {hasOlderComments && <button type="button" disabled={commentsLoading || commentSending} onClick={() => fetchComments(selectedFeedback.id, 'older')}>加载较早沟通记录</button>}
+                  {comments.length === 0 && !commentsLoading ? <p className="empty-compact">暂无沟通记录</p> : comments.map((comment) => (
                     <article className={comment.commenter_type === 'admin' ? 'is-admin' : ''} key={comment.id}>
                       <div><strong>{comment.commenter_type === 'admin' ? '处理人员回复' : '提交人补充'}</strong><time>{formatDate(comment.created_at)}</time></div>
                       <p>{comment.content}</p>
@@ -851,7 +847,7 @@ export default function HomePage() {
                     {!modeReady ? <p role="status">{demoError || '正在确认站点模式…'}</p> : demoMode ? <select id="comment" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示补充</option>{demoConfig?.userComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <textarea id="comment" value={newComment} onChange={(event) => setNewComment(event.target.value)} placeholder="补充事实、线索或问题；最多 1000 字" maxLength={1000} />}
                     {newComment.length >= 800 && <span className="comment-count" aria-live="polite">{newComment.length} / 1000</span>}
                   </div>
-                  <button className="button button-primary" type="button" disabled={commentSending || !modeReady || (demoMode ? !demoCommentId : newComment.trim().length < 2)} onClick={handleAddComment}>{commentSending ? '正在发送…' : '发送补充'}</button>
+                  <button className="button button-primary" type="button" disabled={commentSending || commentsLoading || !modeReady || (demoMode ? !demoCommentId : newComment.trim().length < 2)} onClick={handleAddComment}>{commentSending ? '正在发送…' : '发送补充'}</button>
                 </div>
               </aside>
             </div>

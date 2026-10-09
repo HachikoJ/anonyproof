@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useCommentPagination } from "../hooks/useCommentPagination";
 import { useDemoConfig } from "../hooks/useDemoConfig";
 import ExternalLinks from "../components/ExternalLinks";
 import { recordCode } from "../utils/recordCode";
@@ -21,6 +22,7 @@ type FeedbackCounts = { total: number; pending: number; processing: number; reso
 const emptyCounts: FeedbackCounts = { total: 0, pending: 0, processing: 0, resolved: 0, noSolution: 0 };
 type Comment = {
   id: number;
+  feedback_id: string;
   commenter_type: "user" | "admin";
   content: string;
   created_at: string;
@@ -109,7 +111,6 @@ export default function AdminPage() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [selected, setSelected] = useState<Feedback | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
   const [detailLoading, setDetailLoading] = useState(false);
   const selectionRequestRef = useRef(0);
   const listRequestRef = useRef(0);
@@ -119,7 +120,6 @@ export default function AdminPage() {
   const [filteredTotal, setFilteredTotal] = useState(0);
   const [counts, setCounts] = useState<FeedbackCounts>(emptyCounts);
   const readOnly = !modeReady || (demoMode && !!selected?.is_demo_template);
-  const [commentsLoading, setCommentsLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [solution, setSolution] = useState("");
   const [search, setSearch] = useState("");
@@ -228,21 +228,10 @@ export default function AdminPage() {
     }
   };
 
-  const fetchComments = async (id: string) => {
-    setCommentsLoading(true);
-    setComments([]);
-    try {
-      const response = await fetch(`/anonyproof/api/feedback/${id}/comments`, {
-        credentials: "same-origin",
-      });
-      const data = await readApiJson(response);
-      setComments(data.comments);
-    } catch (error) {
-      handleRequestError(error, "沟通记录暂时无法加载，请稍后重试");
-    } finally {
-      setCommentsLoading(false);
-    }
-  };
+  const commentPages = useCommentPagination<Comment>(authenticated ? "admin" : "logged-out", readApiJson,
+    error => handleRequestError(error, "沟通记录暂时无法加载，请稍后重试"));
+  const { comments, total: commentsTotal, loading: commentsLoading, hasOlder: hasOlderComments, reset: resetComments } = commentPages;
+  const fetchComments = (id: string, mode: "latest" | "older" | "newer" = "latest") => commentPages.load(id, mode);
 
   useEffect(() => {
     fetch("/anonyproof/api/admin/auth/session", {
@@ -310,7 +299,7 @@ export default function AdminPage() {
     setDetailLoading(false);
     syncFeedbackQuery(null);
     setSelected(null);
-    setComments([]);
+    resetComments();
     setSolution("");
     if (restoreListPosition) {
       window.requestAnimationFrame(() => {
@@ -362,7 +351,7 @@ export default function AdminPage() {
       feedbackListRef.current?.scrollTop ?? feedbackListScrollTopRef.current;
     setDetailLoading(true);
     setSelected(null);
-    setComments([]);
+    resetComments();
     setSolution("");
     setMessage("");
     try {
@@ -444,11 +433,12 @@ export default function AdminPage() {
 
   const addComment = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!selected || readOnly || (demoMode ? !demoCommentId : comment.trim().length < 2)) return;
+    if (!selected || readOnly || commentsLoading || (demoMode ? !demoCommentId : comment.trim().length < 2)) return;
+    const request = selectionRequestRef.current, id = selected.id, draft = comment, example = demoCommentId;
     setActionLoading("comment");
     try {
       const response = await fetch(
-        `/anonyproof/api/admin/feedback/${selected.id}/comments`,
+        `/anonyproof/api/admin/feedback/${id}/comments`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -456,15 +446,17 @@ export default function AdminPage() {
           body: JSON.stringify(demoMode ? { demoCommentId } : { content: comment.trim() }),
         },
       );
-      await readApiJson(response);
-      setComment("");
-      setDemoCommentId("");
-      await fetchComments(selected.id);
+      const data = await readApiJson(response);
+      if (request !== selectionRequestRef.current || !commentPages.appendPosted(data.comment, "admin")) return;
+      setComment(value => value === draft ? "" : value);
+      setDemoCommentId(value => value === example ? "" : value);
+      const loaded = await fetchComments(id, "newer");
+      if (request !== selectionRequestRef.current || !loaded) return;
       setMessage("回复已发送");
       setMessageTone("success");
       fetchNotifications();
     } catch (error) {
-      handleRequestError(error, "回复失败，请稍后重试");
+      if (request === selectionRequestRef.current) handleRequestError(error, "回复失败，请稍后重试");
     } finally {
       setActionLoading("");
     }
@@ -948,15 +940,12 @@ export default function AdminPage() {
                   </div>
                   <div className="detail-conversation">
                     <h3>
-                      沟通记录 <span>{comments.length}</span>
+                      沟通记录 <span>{commentsTotal}</span>
                     </h3>
                     <div className="comment-list">
-                      {commentsLoading ? (
-                        <div className="admin-inline-loading">
-                          <span className="spinner" />
-                          正在加载沟通记录…
-                        </div>
-                      ) : comments.length ? (
+                      {commentsLoading && <div className="admin-inline-loading"><span className="spinner" />正在加载沟通记录…</div>}
+                      {hasOlderComments && <button type="button" disabled={commentsLoading || actionLoading === "comment"} onClick={() => selected && fetchComments(selected.id, "older")}>加载较早沟通记录</button>}
+                      {comments.length ? (
                         comments.map((item) => (
                           <div
                             className={`comment ${item.commenter_type === "admin" ? "comment-admin" : ""}`}
@@ -977,9 +966,9 @@ export default function AdminPage() {
                             <p>{item.content}</p>
                           </div>
                         ))
-                      ) : (
+                      ) : !commentsLoading ? (
                         <p className="empty-inline">暂无补充说明。</p>
-                      )}
+                      ) : null}
                     </div>
                     <form className="comment-form" onSubmit={addComment}>
                       {readOnly ? <p>{demoMode ? "公开模板只读" : demoError || "正在确认站点模式…"}</p> : demoMode ? <select aria-label="固定演示回复" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示回复</option>{demoConfig?.adminComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <>
@@ -994,7 +983,7 @@ export default function AdminPage() {
                       <button
                         type="submit"
                         disabled={
-                          actionLoading === "comment" || readOnly ||
+                          actionLoading === "comment" || commentsLoading || readOnly ||
                           (demoMode ? !demoCommentId : comment.trim().length < 2)
                         }
                       >
