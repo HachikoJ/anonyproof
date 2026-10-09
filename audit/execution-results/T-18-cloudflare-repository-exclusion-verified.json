@@ -1,0 +1,20 @@
+{
+  "queriedAtUtc": "2026-10-09T22:56:19.880183+00:00",
+  "task": "T-18",
+  "scope": "Approved GitHub Cloudflare App repository exclusion",
+  "installationId": 144900571,
+  "settingsUrl": "https://github.com/settings/installations/144900571",
+  "userApproved": true,
+  "savedUsing": "Native Chrome GitHub App configuration Save button",
+  "verification": "Independent authenticated GitHub installation repositories API after save and on resumed turn",
+  "beforeCount": 24,
+  "afterCount": 23,
+  "anonyproofIncluded": false,
+  "exactOtherRepositorySetPreserved": true,
+  "remainingSetSha256": "bafdf4662745e8f48a791620292837819fe69abeef635ae30cc37ebf266a0beb",
+  "pushHeldForCloudflare": false,
+  "productionDeploymentPerformed": false,
+  "otherRepositoryNamesOmittedForPrivacy": true,
+  "futureNewRepositories": "Explicit selection required",
+  "rollback": "Restore All repositories only with authorization; doing so re-enables AnonyProof integration."
+}

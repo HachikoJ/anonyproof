@@ -1512,3 +1512,13 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 仅将现有认证配置/Map/Cookie/HMAC和三个handlers移至`server/adminAuth.ts`，index在原位置validateConfiguration、initializeSessionSigning及挂载。身份容量配置错误优先级、Origin前置、demo延迟身份回调、原Map构造定时器均保持；新模块无顶层初始化副作用。
 - 八文件关联测试38/38、0失败/跳过，前后六项类型门禁均0，diffcheck0。43个route/middleware method/path/alias顺序与S0相同，10函数/3handler AST等价（Origin仅改显式getter注入），其余40注册调用不变。demo原先已由统计→database→instanceIsolation导入，不提前其配置校验。
 - 证据`T-36-S1-result.json`及日志。S1独立提交是R1回滚点；T36仍进行中，S2身份/S3schema/S4routes及最终整合未完成。未部署。
+
+### T-18 Cloudflare 自动部署隔离已保存（2026-10-10）
+
+- 用户明确批准仅从 GitHub Cloudflare App 授权中排除 HachikoJ/anonyproof、保留其余23个仓库，并接受后续新仓库手动加入。已在原安装设置保存 Only select repositories；独立 GitHub API 再查 total_count=23、本站 absent、其余集合与变更前精确相同。脱敏证据 `T-18-cloudflare-repository-exclusion-verified.json`；原 pre-save safety followup 保留为历史，不代表当前阻塞。
+- 本站所有分支不再通过该 App 触发 Cloudflare 构建/部署；未卸载 App、未改其余仓库/DNS/云服务器。修复分支 push 的此项门禁解除，仍需候选本地验收/隐私检查和新的真实 Actions，不沿用旧提交结果。
+
+### T-36 S2身份模块独立移动通过（2026-10-10核对）
+
+- clientIdentity.ts 承接原身份/恢复/会话函数与三个处理器；入口保留原配置、legacy backfill 与注册顺序。工厂只在原 Map 初始化点创建；IdentityCapacityError 保持同一类，模块无新环境读取或签名密钥。
+- 42/42 关联真实 HTTP/合成测试通过；前后端与 CI strict 编译前后均0；43注册顺序一致，25函数和3处理器 AST 等价、46 SQL 原字节不变。主代理复核 diff、所有产物和日志 SHA256 与实际文件相符。证据 `T-36-S2-result.json`；S2为独立回滚点，T36仍待S3/S4/最终整合与新CI。

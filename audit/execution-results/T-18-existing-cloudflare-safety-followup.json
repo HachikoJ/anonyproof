@@ -1,0 +1,38 @@
+{
+  "queriedAtUtc": "2026-10-09T12:29:05.735818+00:00",
+  "scope": "Existing Cloudflare build integration safety only; no change applied",
+  "githubApp": {
+    "slug": "cloudflare-workers-and-pages",
+    "id": 85455,
+    "installationId": 144900571,
+    "repositoryAccessObserved": "All repositories",
+    "settingsUrl": "https://github.com/settings/installations/144900571"
+  },
+  "fixedCandidateCloudflareCheck": {
+    "head": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb",
+    "name": "Workers Builds: anonyproof",
+    "conclusion": "failure",
+    "checkId": 113224782056,
+    "buildId": "899bc98d-a1ce-43c8-8af8-4cb423e9465a"
+  },
+  "nativeChromeReadOnlyResult": {
+    "signedIn": true,
+    "targetBuildPage": "Page not found: may not exist or missing permission",
+    "targetAccountWorkersList": "same page not found",
+    "accountSelectorCount": 1,
+    "targetAccountAvailableInSelector": false
+  },
+  "changesApplied": false,
+  "pushHeld": true,
+  "reason": "Branch-only exclusion cannot be changed using this current Cloudflare account. GitHub app scope is all repositories, so disabling it or replacing All repositories would affect other projects and exceeds branch-only authorization.",
+  "sources": [
+    "https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/",
+    "https://developers.cloudflare.com/workers/ci-cd/builds/configuration/"
+  ],
+  "limits": [
+    "Failed check does not prove future push cannot deploy.",
+    "Existing Workers may use production settings for older preview model.",
+    "No credential values or personal account identifiers included.",
+    "No installation suspend/uninstall, repository permission change, main push or production deployment performed."
+  ]
+}
