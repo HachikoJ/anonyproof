@@ -194,3 +194,12 @@ npx --no-install tsx scripts/content-migration-inventory.ts /absolute/approved-s
 工作快照可能含原文/旧包key，需受限保存并纳入以后逐项资产确认；目标与工作candidate是hard link，不能充当独立备份。在线快照不包含之后的写入，真实切换前须停写、最终快照与恢复/映射核对；T-02角色接入、Q-04/Q-07和实际处置/发布仍未完成。验证步骤/失败恢复及完整限制见 `audit/execution-results/T-32-candidate-design.md`；可复验合成准备的命令为 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32-candidate.test.ts tests/fix/T-32.test.ts tests/fix/T-03.test.ts`，不提供未获准的真实迁移命令。
 
 管理员会话、失败登录来源与恢复码展示缓存分别固定最多1000、10000、10000项，TTL为8小时、15分钟、10分钟；每60秒自动清理，定时器unref并可关闭。会话满时新登录503，不踢有效会话、不签发新Cookie、不创建演示身份/副本；失败来源满时拒绝新增来源并保留既有锁定。展示码FIFO淘汰只影响再次展示，不撤销另存的恢复码。全部为单后端进程存储，重启管理员须重新登录。
+
+
+### T-24 私有代理边界（本地已获批准，生产启用另批）
+
+`TRUST_PROXY=1` 必须有独立32–64随机字节的规范base64 `PROXY_AUTH_KEY`，不能复用内容密钥或会话密钥。为每个实例单独生成并保存于0600环境文件；不要把真实值写入仓库、命令参数、报告或日志。在0600的 `/etc/nginx/private/anonyproof-proxy-auth.conf` 中仅配置 `proxy_set_header X-AnonyProof-Proxy-Auth "<与后端环境一致的独立键>";`，唯一vhost显式include它。父目录限制访问，给实际Nginx master所需读取权限，不扩大其他用户访问。
+
+Nginx覆盖访客同名头，Next既有API rewrite保留内部头；Express在Origin/解析/配额前核验loopback连接、单一正确键及单一规范IP来源，失败403且不签Cookie或写业务。内部键随后从请求头和rawHeaders移除。代理模式缺配置失败启动，不能临时改trust=true绕过。无代理开发显式TRUST_PROXY=0、所有来源头忽略，仅socket作为主体；/health及非API直连页不信任来源头。
+
+启用前先准备私有配置，`nginx -t` 和本地真实链路/回归通过，再展示生产差异取得发布批准；生产未启用本方案。回滚应保留loopback绑定及入口覆盖XFF，独立回退T24代码会恢复直连伪造风险，不能继续标已修复。密钥仅用于证明入口经过本站代理，不能防御已取得该键或服务器权限的本地攻击者。

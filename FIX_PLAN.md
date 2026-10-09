@@ -1420,3 +1420,11 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 
 - A批准21份配置按字节归档至legacy、两旧入口副作用前exit1，唯一支持模板和文档已接入；必要Homebrew Nginx安装通过，未启动系统服务或生产reload。逐资产hash和脚本检查见T35报告。
 - 原echo/TLS fixture实际111/111通过；2026-10-09真实Nginx→Next→Express业务45/45通过，详见T35-local-execution.md及随后T24共享链路报告。浏览器UI和最终生产启用/证书/外部端口仍待验收，任务保持进行中。代理直连边界和请求日志由T24/T33分别处理，不将它们混入本配置归档提交。
+
+### T-24 私有代理认证已批准并完成本地验收（2026-10-09）
+
+- 用户明确批准 `T-24-T-33-proxy-proposal.md` 的独立私有代理键及本站日志关闭两项具体变化；本条更新旧提案“待确认”状态。仅本地代码、模板和合成验证获准，未批准生产部署或历史日志删除；T-33单独实施/验收。
+- `server/middleware/proxyBoundary.ts` 在 Origin、限流和业务前验证：TRUST_PROXY=1须独立32–64字节规范Base64密钥、准确loopback socket、唯一私有认证头、唯一合法单IP XFF；缺/错/重复头403且无Cookie/身份/业务/日志/配额写入。认证头验证后移除；TRUST_PROXY=0完全忽略转发头并使用socket。`/health`维持本机可用。缺/错配置启动失败关闭。
+- Nginx唯一模板覆盖访客私有头，从root私有0600 include取独立键；真实键不得提交，部署时须同时准备Express环境与Nginx include。修改范围：middleware/index、.env.example、DEPLOY、唯一vhost/README及合成测试夹具，不改代理生产策略。
+- 实际 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-24.test.ts tests/fix/T-05.test.ts tests/fix/T-09.test.ts tests/fix/T-20.test.ts tests/fix/T-26.test.ts tests/fix/T-43.test.ts` 25/25通过、0skip（T24四项）；实际后端strict tsc退出0。独立echo夹具116/116通过；`T24_SECOND_SOURCE=::1 npx --no-install tsx tests/fix/T-24.chain.ts` 真实Nginx→production Next→合成Express：T24 11/11、T35 45/45，直连缺私有键403，访客伪造键被覆盖、两真实来源配额保持隔离。见T-24-related-regression/authenticated-chain-result/template-echo-result及日志。首次重复头探针因缺Host被Node解析器400拒绝，已修复夹具后重验；保留失败证据，不计作安全通过。
+- 本地已关闭该复现缺口；T24仍进行中，生产未部署/真实来源未补验。独立提交可回退，但旧版本会恢复直连伪造来源风险；任何部署回退必须先关闭公开写入或维持新代理边界。未修改真实环境、密钥和数据。

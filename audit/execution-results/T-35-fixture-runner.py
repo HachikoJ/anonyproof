@@ -5,6 +5,8 @@ import http.client
 import http.server
 import json
 import os
+import secrets
+import base64
 from pathlib import Path
 import shutil
 import socket
@@ -15,7 +17,7 @@ import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / 'audit/execution-results/T-35-fixture-result.json'
+OUT = ROOT / 'audit/execution-results/T-24-template-echo-result.json'
 NGINX = shutil.which('nginx') or '/opt/homebrew/bin/nginx'
 OPENSSL = '/opt/homebrew/opt/openssl@3/bin/openssl'
 TMP = Path(tempfile.mkdtemp(prefix='anonyproof-T35-nginx-'))
@@ -73,6 +75,11 @@ try:
     template = template.replace('    listen 443 ssl;\n    listen [::]:443 ssl;', f'    listen 127.0.0.1:{https_port} ssl;')
     template = template.replace('/etc/nginx/ssl/deline.top/fullchain.pem', str(cert)).replace('/etc/nginx/ssl/deline.top/privkey.pem', str(key))
     template = template.replace('http://127.0.0.1:3000', f'http://127.0.0.1:{backend.server_port}')
+    proxy_auth = base64.b64encode(secrets.token_bytes(32)).decode()
+    private_include=TMP/'proxy-auth.conf'
+    private_include.write_text('proxy_set_header X-AnonyProof-Proxy-Auth '+json.dumps(proxy_auth)+';\n')
+    os.chmod(private_include,0o600)
+    template=template.replace('/etc/nginx/private/anonyproof-proxy-auth.conf',str(private_include))
     # All prefix, temporary and PID paths stay within this private fixture.
     conf.write_text(f'worker_processes 1;\npid {TMP}/nginx.pid;\nerror_log {TMP}/error.log;\nevents {{ worker_connections 128; }}\nhttp {{\naccess_log {TMP}/access.log;\nclient_body_temp_path {TMP}/client_temp;\nproxy_temp_path {TMP}/proxy_temp;\nfastcgi_temp_path {TMP}/fastcgi_temp;\nuwsgi_temp_path {TMP}/uwsgi_temp;\nscgi_temp_path {TMP}/scgi_temp;\n' + template + '\n}\n')
     run([NGINX, '-t', '-p', str(TMP) + '/', '-c', str(conf)])
@@ -121,7 +128,7 @@ try:
         check('basePath passthrough ' + path, res['status'], 200)
         check('basePath preserved ' + path, json.loads(res['body'])['path'], path)
     for method in ('GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'):
-        res = request(method, '/anonyproof/api/fixture?value=a%2Fb&n=2', body='synthetic' if method in ('POST', 'PUT', 'DELETE') else None, headers={'X-Forwarded-For':'203.0.113.17', 'X-Forwarded-Proto':'http', 'Forwarded':'for=203.0.113.17', 'X-ForwardedFor':'203.0.113.18', 'X-ForwardedProto':'http'})
+        res = request(method, '/anonyproof/api/fixture?value=a%2Fb&n=2', body='synthetic' if method in ('POST', 'PUT', 'DELETE') else None, headers={'X-Forwarded-For':'203.0.113.17', 'X-Forwarded-Proto':'http', 'Forwarded':'for=203.0.113.17', 'X-ForwardedFor':'203.0.113.18', 'X-ForwardedProto':'http','X-AnonyProof-Proxy-Auth':'forged-visitor'})
         payload = json.loads(res['body'])
         check(method + ' upstream status', res['status'], 200)
         check(method + ' method preserved', payload['method'], method)
@@ -130,6 +137,7 @@ try:
         sent = {k.lower():v for k,v in payload['headers'].items()}
         for name,value in [('host','anonyproof.deline.top'),('x-forwarded-host','anonyproof.deline.top'),('x-forwarded-port','443'),('x-forwarded-proto','https'),('x-real-ip','127.0.0.1'),('x-forwarded-for','127.0.0.1')]:
             check(method + ' canonical ' + name, sent.get(name), value)
+        check(method + ' private proxy header overwrites visitor value', sent.get('x-anonyproof-proxy-auth') == proxy_auth, True)
         for name in ('forwarded','x-forwardedfor','x-forwardedproto'):
             check(method + ' cleared ' + name, name in sent, False)
         check(method + ' Cache-Control unchanged', dict(res['headers']).get('Cache-Control'), 'no-store')

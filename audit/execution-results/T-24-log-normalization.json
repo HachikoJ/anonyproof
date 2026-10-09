@@ -1,0 +1,32 @@
+[
+  {
+    "file": "T-24-auth-boundary-first-tests.txt",
+    "rawSha256": "cd585b66795048bb9d514f2b4f2c42ed272e024d3ff2c4bb476e3a002861c9da",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-raw-4o3vi6g9/T-24-auth-boundary-first-tests.txt"
+  },
+  {
+    "file": "T-24-auth-boundary-tests.txt",
+    "rawSha256": "cfe462a6eced42455bfe15dc63feb863fcb3c653cdf77d52aa90232abe445b52",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-raw-4o3vi6g9/T-24-auth-boundary-tests.txt"
+  },
+  {
+    "file": "T-24-authenticated-chain-log.txt",
+    "rawSha256": "331c3296250a7cf41ee44f66904998a7d2eb5a2deea3dba1bab8dda186db53b9",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-raw-4o3vi6g9/T-24-authenticated-chain-log.txt"
+  },
+  {
+    "file": "T-24-backend-type.txt",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-raw-4o3vi6g9/T-24-backend-type.txt"
+  },
+  {
+    "file": "T-24-related-regression.txt",
+    "rawSha256": "10b7f14708bc0e5c27f8c8640ec6727582d544991c37b1a7dd4cf39ba86714e7",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-raw-4o3vi6g9/T-24-related-regression.txt"
+  },
+  {
+    "file": "T-24-template-echo-log.txt",
+    "rawSha256": "a45a8edbc9bc5d0d321caad25a3e49dce2fe556efaa584d0dc438e172a664040",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T24-raw-4o3vi6g9/T-24-template-echo-log.txt"
+  }
+]

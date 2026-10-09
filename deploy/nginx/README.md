@@ -9,3 +9,5 @@
 `legacy/` 保留 21 份逐字归档的历史配置。回滚仓库资产可按 `audit/execution-results/T-35-assets.json` 的原路径与 SHA256 移回；资产恢复不使历史配置重新成为受支持入口。线上回滚须使用另存的原生效配置并先验证语法，不能用这些历史变体覆盖。
 
 本地隔离验证只使用 127.0.0.1 高位端口、独立临时目录和自签测试证书；不启动 Homebrew 系统服务、不改 hosts、不接触真实库或真实证书。T-35 完成还需真实 Next／Express 合成链路、UI、DELETE 和外部端口验收，纯代理 fixture 或 `nginx -t` 通过不等于整项完成。具体执行入口见根目录 `DEPLOY.md`。
+
+T-24代理模式另要求受限私有include中的独立代理键与后端PROXY_AUTH_KEY一致；入口覆盖访客认证头，直接backend API缺/错键403。缺include时nginx -t失败，缺后端键时服务失败启动。实际生成/部署方式见DEPLOY.md；仓库与fixture公开报告不保存真实键。

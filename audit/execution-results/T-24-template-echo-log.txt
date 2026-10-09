@@ -1,0 +1,1 @@
+{"pass": true, "checks": 116, "prefix": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75", "stopped": true}

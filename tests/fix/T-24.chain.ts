@@ -1,7 +1,7 @@
 // Manual real Nginx -> production Next -> isolated Express acceptance.
 // Requires existing .next build targeting 127.0.0.1:4000. Never builds/deploys.
 import { spawn } from 'node:child_process'
-import { createHash } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { setTimeout as delay } from 'node:timers/promises'
 import net from 'node:net'
@@ -22,7 +22,8 @@ async function main() {
   const tlsPort=(reserve.address() as net.AddressInfo).port
   await new Promise<void>(resolve=>reserve.close(()=>resolve()))
   const origin=`https://anonyproof.deline.top:${tlsPort}`
-  const service=await startBackend({PORT:'4000',TRUST_PROXY:'1',CORS_ORIGINS:origin,LOGIN_RATE_LIMIT_MAX:'3',LOGIN_RATE_LIMIT_WINDOW_MS:'60000',IDENTITY_RATE_LIMIT_MAX:'30'})
+  const proxyKey=randomBytes(32).toString('base64')
+  const service=await startBackend({PORT:'4000',TRUST_PROXY:'1',PROXY_AUTH_KEY:proxyKey,CORS_ORIGINS:origin,LOGIN_RATE_LIMIT_MAX:'3',LOGIN_RATE_LIMIT_WINDOW_MS:'60000',IDENTITY_RATE_LIMIT_MAX:'30'})
   const next=spawn(process.execPath,[path.join(projectRoot,'node_modules/next/dist/bin/next'),'start','-H','127.0.0.1','-p','3040'],{cwd:projectRoot,env:{...process.env,NODE_ENV:'production',API_PROXY_TARGET:service.baseUrl},detached:true,stdio:['ignore','pipe','pipe']})
   let nextOutput='';next.stdout?.on('data',value=>{nextOutput+=value.toString()});next.stderr?.on('data',value=>{nextOutput+=value.toString()})
   const nextExit=new Promise<number|null>(resolve=>next.once('exit',resolve))
@@ -48,7 +49,7 @@ async function main() {
     if(!ready)throw new Error('Owned production Next did not become ready')
     runner=spawn('python3',[path.join(projectRoot,'audit/execution-results/T-24-T35-chain-runner.py')],{cwd:projectRoot,stdio:['pipe','inherit','inherit']})
     // Secret travels only over this child stdin, never argv/log/artifact.
-    runner.stdin!.end(JSON.stringify({databasePath:service.databasePath,password:service.password,backendPort:4000,nextPort:3040,tlsPort,origin,buildId:readFileSync(buildPath,'utf8').trim(),buildHash,fixtureDir:service.dir,secondSource:process.env.T24_SECOND_SOURCE||'127.0.0.2'}))
+    runner.stdin!.end(JSON.stringify({databasePath:service.databasePath,password:service.password,proxyKey,backendPort:4000,nextPort:3040,tlsPort,origin,buildId:readFileSync(buildPath,'utf8').trim(),buildHash,fixtureDir:service.dir,secondSource:process.env.T24_SECOND_SOURCE||'::1'}))
     const code=await new Promise<number|null>(resolve=>runner!.once('exit',resolve))
     await cleanup();process.exitCode=code===0?0:1
   } finally {await cleanup()}

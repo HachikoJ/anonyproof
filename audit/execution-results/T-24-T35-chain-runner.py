@@ -21,7 +21,7 @@ from http.cookies import SimpleCookie
 
 ROOT=Path(__file__).resolve().parents[2]
 META=json.load(sys.stdin)
-OUT=ROOT/'audit/execution-results/T-24-T35-real-chain-result.json'
+OUT=ROOT/'audit/execution-results/T-24-authenticated-chain-result.json'
 TMP=Path(tempfile.mkdtemp(prefix='anonyproof-T24-T35-chain-'))
 os.chmod(TMP,0o700)
 NGINX='/opt/homebrew/bin/nginx'
@@ -92,6 +92,10 @@ try:
     template=template.replace('    listen 443 ssl;\n    listen [::]:443 ssl;',f'    listen 127.0.0.1:{tls_port} ssl;\n    listen [::1]:{tls_port} ssl;')
     template=template.replace('/etc/nginx/ssl/deline.top/fullchain.pem',str(cert)).replace('/etc/nginx/ssl/deline.top/privkey.pem',str(key))
     template=template.replace('http://127.0.0.1:3000',f"http://127.0.0.1:{META['nextPort']}")
+    private_include=TMP/'proxy-auth.conf'
+    private_include.write_text('proxy_set_header X-AnonyProof-Proxy-Auth '+json.dumps(META['proxyKey'])+';\n')
+    os.chmod(private_include,0o600)
+    template=template.replace('/etc/nginx/private/anonyproof-proxy-auth.conf',str(private_include))
     conf.write_text(f'worker_processes 1;\npid {TMP}/nginx.pid;\nerror_log {TMP}/error.log;\nevents {{worker_connections 128;}}\nhttp {{\naccess_log {TMP}/access.log;\nclient_body_temp_path {TMP}/client_temp;\nproxy_temp_path {TMP}/proxy_temp;\nfastcgi_temp_path {TMP}/fastcgi_temp;\nuwsgi_temp_path {TMP}/uwsgi_temp;\nscgi_temp_path {TMP}/scgi_temp;\n'+template+'\n}\n')
     run([NGINX,'-t','-p',str(TMP)+'/', '-c',str(conf)])
     log=(TMP/'master-output.log').open('w')
@@ -142,8 +146,8 @@ try:
             rows=db.execute('SELECT id,ip,path,user_agent FROM access_logs WHERE id>? ORDER BY id',(previous,)).fetchall()
             if rows:break
             time.sleep(.01)
-        if not rows and res['status']==429:
-            result['sourceProbes'].append({'socketSource':source,'directBackend':direct,'status':429,'accessRow':False,'reason':'Limiter rejects before access recorder; quota asserted from HTTP status'})
+        if not rows and (res['status']==429 or (direct and res['status']==403)):
+            result['sourceProbes'].append({'socketSource':source,'directBackend':direct,'status':res['status'],'accessRow':False,'reason':'Boundary or limiter rejects before access recorder; rejection asserted from HTTP status'})
             return res,None
         if len(rows)!=1:raise RuntimeError('Expected exactly one new isolated access row')
         identifier,ip,template,user_agent=rows[0]
@@ -155,12 +159,12 @@ try:
         return str(getattr(address,'ipv4_mapped',None) or address)==str(ipaddress.ip_address(expected))
     for source in sources:
         for forged in [None,'203.0.113.77','203.0.113.77, 198.51.100.29']:
-            headers={'X-Forwarded-For':forged,'X-Real-IP':'198.51.100.30','Forwarded':'for=198.51.100.31'} if forged else {}
+            headers={'X-Forwarded-For':forged,'X-Real-IP':'198.51.100.30','Forwarded':'for=198.51.100.31','X-AnonyProof-Proxy-Auth':'forged-visitor-value'} if forged else {}
             res,ip=observed_ip('GET','/anonyproof/api/stats',source,headers)
             check(f'Actual source {source}, XFF {"multi" if forged and "," in forged else "single" if forged else "absent"}',same_ip(ip,source),True,'T-24')
             check('Stats rewrite reaches Express',res['status'],200)
     res,ip=observed_ip('GET','/api/stats','127.0.0.1',{'X-Forwarded-For':'203.0.113.77'},direct=True)
-    check('Direct backend header does not choose an arbitrary source identity',same_ip(ip,'127.0.0.1'),True,'T-24')
+    check('Direct backend header without private authentication is rejected',res['status'],403,'T-24')
     # Obtain admin Cookie once; subsequent failed login probes consume a three-request fixture quota.
     auth={'Origin':META['origin']}
     login,ip=observed_ip('POST','/anonyproof/api/admin/auth/login','127.0.0.1',auth,body={'password':META['password']})

@@ -14,6 +14,7 @@ import {
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter, identityInitializationLimiter, positiveIntegerEnv, userCommentSourceLimiter, userCommentIdentityLimiter } from './middleware/rateLimit'
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
+import { createProxyBoundary } from './middleware/proxyBoundary'
 import { CommentPaginationError, getCommentPage, parseCommentPagination } from './utils/commentPagination'
 import { getUserFeedbackPage } from './utils/userFeedbackPagination'
 import { executeIdempotent, IdempotencyError, initializeIdempotency, startIdempotencyCleanup } from './utils/requestIdempotency'
@@ -74,6 +75,8 @@ app.use(['/api/identity', '/api/admin', '/api/feedback', '/api/notifications'], 
   delete req.headers['if-modified-since']
   next()
 })
+// Authenticate the proxy before any source quota, origin or business handling.
+app.use(createProxyBoundary(process.env))
 const allowedOrigins = parseAllowedOrigins(process.env.CORS_ORIGINS)
 app.use(cors({ origin: exactCorsOrigin(allowedOrigins), credentials: true }))
 // Reject before parsing/authentication can change sessions or business state.

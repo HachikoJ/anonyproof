@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 1 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2650.837666
+  type: 'test'
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 2 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 916.926917
+  type: 'test'
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 3 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 891.527916
+  type: 'test'
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 4 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 439.999084
+  type: 'test'
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 5 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 4615.824834
+  type: 'test'
+  ...
+# Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+ok 6 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+  ---
+  duration_ms: 883.793459
+  type: 'test'
+  ...
+# Subtest: T-09: both login aliases share successful and failed request quota
+ok 7 - T-09: both login aliases share successful and failed request quota
+  ---
+  duration_ms: 2545.658292
+  type: 'test'
+  ...
+# Subtest: T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+ok 8 - T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+  ---
+  duration_ms: 456.685041
+  type: 'test'
+  ...
+# Subtest: T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+ok 9 - T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+  ---
+  duration_ms: 449.15325
+  type: 'test'
+  ...
+# Subtest: T-09: five wrong passwords retain the separate fifteen-minute production lock
+ok 10 - T-09: five wrong passwords retain the separate fifteen-minute production lock
+  ---
+  duration_ms: 1563.753
+  type: 'test'
+  ...
+# Subtest: T-09: the published demo password is also limited across aliases
+ok 11 - T-09: the published demo password is also limited across aliases
+  ---
+  duration_ms: 445.546541
+  type: 'test'
+  ...
+# Subtest: T-09: invalid login limiter configuration rejects startup explicitly
+ok 12 - T-09: invalid login limiter configuration rejects startup explicitly
+  ---
+  duration_ms: 4767.863791
+  type: 'test'
+  ...
+# Subtest: T-20: private responses and authorization errors never reuse a conditional cached body
+ok 13 - T-20: private responses and authorization errors never reuse a conditional cached body
+  ---
+  duration_ms: 437.716167
+  type: 'test'
+  ...
+# Subtest: T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+ok 14 - T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+  ---
+  duration_ms: 1573.066
+  type: 'test'
+  ...
+# Subtest: T-24 proxy configuration fails closed without a canonical independent key
+ok 15 - T-24 proxy configuration fails closed without a canonical independent key
+  ---
+  duration_ms: 0.657583
+  type: 'test'
+  ...
+# Subtest: T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local
+ok 16 - T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local
+  ---
+  duration_ms: 429.932041
+  type: 'test'
+  ...
+# Subtest: T-24 unproxied requests ignore all supplied source headers
+ok 17 - T-24 unproxied requests ignore all supplied source headers
+  ---
+  duration_ms: 437.702042
+  type: 'test'
+  ...
+# Subtest: T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers
+ok 18 - T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers
+  ---
+  duration_ms: 0.471833
+  type: 'test'
+  ...
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 19 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 532.665833
+  type: 'test'
+  ...
+# Subtest: T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+ok 20 - T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+  ---
+  duration_ms: 901.242875
+  type: 'test'
+  ...
+# Subtest: T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+ok 21 - T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+  ---
+  duration_ms: 5.530333
+  type: 'test'
+  ...
+# Subtest: T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+ok 22 - T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+  ---
+  duration_ms: 140.532667
+  type: 'test'
+  ...
+# Subtest: T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+ok 23 - T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+  ---
+  duration_ms: 2.465916
+  type: 'test'
+  ...
+# Subtest: T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+ok 24 - T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+  ---
+  duration_ms: 63.729125
+  type: 'test'
+  ...
+# Subtest: T-43: patched backend still binds feedback access to the authenticated identity
+ok 25 - T-43: patched backend still binds feedback access to the authenticated identity
+  ---
+  duration_ms: 448.965625
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26413.432792
