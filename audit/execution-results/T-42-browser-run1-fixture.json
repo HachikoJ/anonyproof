@@ -1,0 +1,30 @@
+{
+  "url": "http://127.0.0.1:3044/anonyproof",
+  "adminUrl": "http://127.0.0.1:3044/anonyproof/foorpynona",
+  "fixturePid": 53624,
+  "databasePath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-KfCcsO/fixture.db",
+  "recoveryPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-KfCcsO/T42-synthetic-recovery-codes.json",
+  "devices": {
+    "a": "device-GlmfOx0exMkUdaTEMIvKbDT_",
+    "b": "device-gUmFUY2ThIMvTT_P3HWYvYg1"
+  },
+  "threads": {
+    "a1": "T42-A-1",
+    "a2": "T42-A-2",
+    "b1": "T42-B-1",
+    "b2": "T42-B-2"
+  },
+  "initialCounts": {
+    "feedbacks": 4,
+    "feedback_comments": 3,
+    "notifications": 2,
+    "request_idempotency": 0
+  },
+  "controls": {
+    "state": "/__fixture/state",
+    "dropNext": "/__fixture/drop-next/{feedback|user_comment|admin_comment}",
+    "restart": "/__fixture/restart-backend"
+  },
+  "fixtureOnly": true,
+  "lossSemantics": "Each action may lose exactly one successful committed response per run; all later responses forward normally."
+}

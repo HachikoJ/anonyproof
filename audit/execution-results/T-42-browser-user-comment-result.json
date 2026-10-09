@@ -1,0 +1,47 @@
+{
+  "task": "T-42",
+  "action": "user_comment",
+  "fixtureOnly": true,
+  "checks": [
+    {
+      "name": "user comment committed before loss",
+      "pass": true
+    },
+    {
+      "name": "comment draft kept",
+      "pass": true
+    },
+    {
+      "name": "user retry same key/id and no new counts",
+      "pass": true
+    },
+    {
+      "name": "UI one copy after replay",
+      "pass": true
+    },
+    {
+      "name": "storage failure prevents network and DB write",
+      "pass": true
+    },
+    {
+      "name": "restored storage uses original unsent key",
+      "pass": true
+    },
+    {
+      "name": "all UI comments unique",
+      "pass": true
+    }
+  ],
+  "before": {
+    "feedbacks": 4,
+    "feedback_comments": 3,
+    "notifications": 2,
+    "request_idempotency": 0
+  },
+  "after": {
+    "feedbacks": 4,
+    "feedback_comments": 5,
+    "notifications": 4,
+    "request_idempotency": 2
+  }
+}
