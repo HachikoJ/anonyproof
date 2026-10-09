@@ -1,0 +1,242 @@
+{
+  "task": "T-36",
+  "stage": "S2 client identity extraction",
+  "baselineHead": "ccf3fd065c150dc8c8c7918d7397aef42b64a629",
+  "currentHead": "ccf3fd065c150dc8c8c7918d7397aef42b64a629",
+  "scope": [
+    "server/index.ts",
+    "server/clientIdentity.ts"
+  ],
+  "productionTouched": false,
+  "committedByThisAgent": false,
+  "fixPlanModifiedByThisAgent": false,
+  "mechanicalEquivalence": {
+    "exactS0MethodPathAliasOrder": true,
+    "registrations": 43,
+    "explicitRouteRegistrations": 33,
+    "middlewareRegistrations": 10,
+    "movedFunctions": [
+      {
+        "name": "hashIdentityValue",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "safeIdentityHashEqual",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "normalizeRecoveryCode",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "formatRecoveryCode",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "isValidRecoveryCode",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "normalizeInstallKey",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "isValidInstallKey",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "createDeviceId",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "createRecoveryCode",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "rememberRecoveryCode",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "getRecentRecoveryCode",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "setIdentityCookie",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "identityFromCookie",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "issueIdentitySession",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "isDemoDeviceId",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "issueClientIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "findIdentityByInstallKey",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "bindInstallKey",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "canAdoptLegacyDevice",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "resolveClientIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "recoverClientIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "requireClientIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "ensureDemoIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "demoRequestDevice",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "canAccessDevice",
+        "sameBodyAstPrint": true
+      }
+    ],
+    "movedHandlers": [
+      {
+        "name": "readIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "initializeIdentity",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "recoverIdentity",
+        "sameBodyAstPrint": true
+      }
+    ],
+    "otherRegistrationCallsUnchanged": 39,
+    "existingSqlStringLiteralCount": 46,
+    "sqlStringLiteralsByteIdentical": true,
+    "preservedInitializers": [
+      "recentRecoveryCodes",
+      "recentRecoveryCodeTtlMs",
+      "demoRequestIdentities",
+      "identityCookieName",
+      "maxIdentitySessions"
+    ],
+    "comparisonMethod": "TypeScript AST printer for bodies and initializers; raw SQL string literal byte comparison; original comments excluded from AST comparison."
+  },
+  "initializationOrder": [
+    "Admin auth creation and configuration validation remain unchanged from S1.",
+    "IDENTITY_MAX_RECORDS is read at its original entrypoint position before admin configuration validation, then injected unchanged.",
+    "identityCookieTtlMs remains at its original position after demo seeding and before legacy-session backfill, and is injected rather than duplicated.",
+    "All business schema, column/index setup, idempotency initialization, demo seeding and legacy session SQL remain in index unchanged for S3.",
+    "createClientIdentity is called after legacy session backfill, at the original helper/store initialization boundary.",
+    "Recovery-code ExpiringMap constructor/10000 capacity/10-minute TTL/oldest eviction/unref cleanup and demo WeakMap retain their existing order and behavior.",
+    "Identity cookie name and 20-session pure constants are local to the factory; their values are unchanged.",
+    "Identity has no newly introduced signing secret. Random token, ID and recovery code generation remains in the same request functions.",
+    "Auth demo callback invokes the later initialized identity service only after listen. Identity receives cookie/origin/admin query functions; neither module imports the other.",
+    "GET implicit HEAD read-only handler and POST initialization/recovery limiter registration positions are preserved.",
+    "IdentityCapacityError is one exported class used by the existing final instanceof handler; it reads no configuration at module evaluation."
+  ],
+  "tests": {
+    "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-01.test.ts tests/fix/T-02.test.ts tests/fix/T-05.test.ts tests/fix/T-21.test.ts tests/fix/T-22.integration.test.ts tests/fix/T-25.test.ts tests/fix/T-26.test.ts tests/fix/T-42.test.ts",
+    "exitCode": 0,
+    "totals": {
+      "tests": 42,
+      "suites": 0,
+      "pass": 42,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "audit/execution-results/T-36-S2-tests.txt",
+    "sha256": "ca6d80a8b1e8a9510dfb24011552221be5f4e469228c07e8c278ad1a9f1d28df",
+    "existingTestsChanged": false
+  },
+  "typeChecks": [
+    {
+      "phase": "before",
+      "name": "frontend",
+      "command": "npm run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S2-before-frontend-types.txt",
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "phase": "before",
+      "name": "backend",
+      "command": "npm --prefix server run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S2-before-backend-types.txt",
+      "sha256": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675"
+    },
+    {
+      "phase": "before",
+      "name": "ci-strict",
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S2-before-ci-strict-types.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "phase": "after",
+      "name": "frontend",
+      "command": "npm run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S2-after-frontend-types.txt",
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "phase": "after",
+      "name": "backend",
+      "command": "npm --prefix server run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S2-after-backend-types.txt",
+      "sha256": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675"
+    },
+    {
+      "phase": "after",
+      "name": "ci-strict",
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S2-after-ci-strict-types.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "diffCheck": {
+    "command": "git diff --check",
+    "exitCode": 0,
+    "log": "audit/execution-results/T-36-S2-diff-check.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "productSha256": {
+    "server/index.ts": "ad50fac56de31453555cf8c8624a0ca84ecc91143eb77b954ec993925cb3bab4",
+    "server/clientIdentity.ts": "0e97d8b131ff18a02d92dc9a2effbac530eb5f78d2ebe98ca03fdfb2fe8a7c7b"
+  },
+  "limits": [
+    "S2 only; schema/routes extraction has not started.",
+    "Actual random-port synthetic HTTP tests support the mechanical comparison; source comparison does not replace requests.",
+    "No scripts, FIX_PLAN, existing test assertions, production data or configuration modified by this agent.",
+    "The module adds no environment read at import time and no auth/identity import cycle.",
+    "No production deployment or remote CI run is implied."
+  ]
+}
