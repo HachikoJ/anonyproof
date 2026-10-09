@@ -1,0 +1,304 @@
+{
+  "task": "T-36",
+  "stage": "S4",
+  "source": "Actual Express Application calls captured by T-36.test.ts fixture-only preload, successful own test run; no request bodies/headers/cookies recorded.",
+  "matchesS0": true,
+  "registrations": [
+    {
+      "order": 1,
+      "method": "USE",
+      "paths": [
+        "/api/identity",
+        "/api/admin",
+        "/api/feedback",
+        "/api/notifications"
+      ]
+    },
+    {
+      "order": 2,
+      "method": "USE",
+      "paths": null
+    },
+    {
+      "order": 3,
+      "method": "USE",
+      "paths": null
+    },
+    {
+      "order": 4,
+      "method": "USE",
+      "paths": [
+        "/api"
+      ]
+    },
+    {
+      "order": 5,
+      "method": "POST",
+      "paths": [
+        "/api/admin/auth/login",
+        "/api/admin/login"
+      ]
+    },
+    {
+      "order": 6,
+      "method": "POST",
+      "paths": [
+        "/api/identity/recover"
+      ]
+    },
+    {
+      "order": 7,
+      "method": "USE",
+      "paths": null
+    },
+    {
+      "order": 8,
+      "method": "USE",
+      "paths": null
+    },
+    {
+      "order": 9,
+      "method": "USE",
+      "paths": null
+    },
+    {
+      "order": 10,
+      "method": "GET",
+      "paths": [
+        "/"
+      ]
+    },
+    {
+      "order": 11,
+      "method": "GET",
+      "paths": [
+        "/health"
+      ]
+    },
+    {
+      "order": 12,
+      "method": "GET",
+      "paths": [
+        "/api/demo/config"
+      ]
+    },
+    {
+      "order": 13,
+      "method": "POST",
+      "paths": [
+        "/api/admin/auth/login",
+        "/api/admin/login"
+      ]
+    },
+    {
+      "order": 14,
+      "method": "GET",
+      "paths": [
+        "/api/admin/auth/session",
+        "/api/admin/session"
+      ]
+    },
+    {
+      "order": 15,
+      "method": "POST",
+      "paths": [
+        "/api/admin/auth/logout",
+        "/api/admin/logout"
+      ]
+    },
+    {
+      "order": 16,
+      "method": "USE",
+      "paths": [
+        "/api/admin"
+      ]
+    },
+    {
+      "order": 17,
+      "method": "USE",
+      "paths": [
+        "/api/admin/access"
+      ]
+    },
+    {
+      "order": 18,
+      "method": "GET",
+      "paths": [
+        "/api/admin/access/stats"
+      ]
+    },
+    {
+      "order": 19,
+      "method": "GET",
+      "paths": [
+        "/api/admin/access/logs"
+      ]
+    },
+    {
+      "order": 20,
+      "method": "GET",
+      "paths": [
+        "/api/admin/access/suspicious"
+      ]
+    },
+    {
+      "order": 21,
+      "method": "GET",
+      "paths": [
+        "/api/admin/access/blacklist"
+      ]
+    },
+    {
+      "order": 22,
+      "method": "DELETE",
+      "paths": [
+        "/api/admin/access/blacklist/:ip"
+      ]
+    },
+    {
+      "order": 23,
+      "method": "GET",
+      "paths": [
+        "/api/identity"
+      ]
+    },
+    {
+      "order": 24,
+      "method": "POST",
+      "paths": [
+        "/api/identity"
+      ]
+    },
+    {
+      "order": 25,
+      "method": "POST",
+      "paths": [
+        "/api/identity/recover"
+      ]
+    },
+    {
+      "order": 26,
+      "method": "POST",
+      "paths": [
+        "/api/feedback"
+      ]
+    },
+    {
+      "order": 27,
+      "method": "GET",
+      "paths": [
+        "/api/stats"
+      ]
+    },
+    {
+      "order": 28,
+      "method": "GET",
+      "paths": [
+        "/api/admin/feedbacks"
+      ]
+    },
+    {
+      "order": 29,
+      "method": "GET",
+      "paths": [
+        "/api/admin/feedback/:id"
+      ]
+    },
+    {
+      "order": 30,
+      "method": "PUT",
+      "paths": [
+        "/api/admin/feedback/:id/status"
+      ]
+    },
+    {
+      "order": 31,
+      "method": "DELETE",
+      "paths": [
+        "/api/admin/feedback/:id"
+      ]
+    },
+    {
+      "order": 32,
+      "method": "GET",
+      "paths": [
+        "/api/admin/logs"
+      ]
+    },
+    {
+      "order": 33,
+      "method": "GET",
+      "paths": [
+        "/api/feedback/:feedbackId/comments"
+      ]
+    },
+    {
+      "order": 34,
+      "method": "POST",
+      "paths": [
+        "/api/feedback/:feedbackId/comments"
+      ]
+    },
+    {
+      "order": 35,
+      "method": "POST",
+      "paths": [
+        "/api/admin/feedback/:feedbackId/comments"
+      ]
+    },
+    {
+      "order": 36,
+      "method": "GET",
+      "paths": [
+        "/api/feedback/device/:deviceId"
+      ]
+    },
+    {
+      "order": 37,
+      "method": "GET",
+      "paths": [
+        "/api/feedback/:feedbackId"
+      ]
+    },
+    {
+      "order": 38,
+      "method": "GET",
+      "paths": [
+        "/api/notifications/unread-count"
+      ]
+    },
+    {
+      "order": 39,
+      "method": "GET",
+      "paths": [
+        "/api/notifications"
+      ]
+    },
+    {
+      "order": 40,
+      "method": "PUT",
+      "paths": [
+        "/api/notifications/:id/read"
+      ]
+    },
+    {
+      "order": 41,
+      "method": "PUT",
+      "paths": [
+        "/api/notifications/:id/unread"
+      ]
+    },
+    {
+      "order": 42,
+      "method": "PUT",
+      "paths": [
+        "/api/notifications/read-all"
+      ]
+    },
+    {
+      "order": 43,
+      "method": "USE",
+      "paths": null
+    }
+  ]
+}

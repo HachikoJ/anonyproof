@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
-import { mkdtempSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { createRequire } from 'node:module'
@@ -204,4 +204,90 @@ test('T-36 failed schema initialization is not swallowed; retry still fails unti
       else assert.deepEqual(logicalSnapshot(check), baseline)
     } finally { check.close(); await service.stop() }
   }
+})
+
+
+test('T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior', async t => {
+  const folder = mkdtempSync(path.join(tmpdir(), 'anonyproof-T36-route-trace-'))
+  const tracePath = path.join(folder, 'registration-trace.json')
+  const preloadPath = path.join(folder, 'trace-preload.cjs')
+  const expressPath = createRequire(path.join(projectRoot, 'server/package.json')).resolve('express')
+  // Fixture-only preload records actual Application calls, never headers/body,
+  // internal router layers or query/settings getters. No production hook exists.
+  writeFileSync(preloadPath, `const fs = require('node:fs');
+const application = require(${JSON.stringify(expressPath)}).application;
+const trace = []; let depth = 0;
+for (const method of ['use','get','post','put','delete']) {
+  const original = application[method];
+  application[method] = function (...args) {
+    const record = depth === 0 && (method === 'use' || args.length > 1);
+    depth++;
+    try {
+      const result = original.apply(this,args);
+      if (record) {
+        const first = args[0];
+        const paths = typeof first === 'string' ? [first]
+          : Array.isArray(first) && first.every(p => typeof p === 'string') ? first : null;
+        trace.push({ order: trace.length + 1, method: method.toUpperCase(), paths });
+        fs.writeFileSync(${JSON.stringify(tracePath)}, JSON.stringify(trace));
+      }
+      return result;
+    } finally { depth--; }
+  };
+}`, { mode: 0o600 })
+  const service = await startBackend({ NODE_OPTIONS: '--require=' + preloadPath })
+  t.after(service.stop)
+  const baseline = JSON.parse(readFileSync(path.join(projectRoot,
+    'audit/execution-results/T-36-route-baseline.json'), 'utf8'))
+  const trace = JSON.parse(readFileSync(tracePath, 'utf8'))
+  assert.equal(trace.length, 43)
+  assert.deepEqual(trace, baseline.registrations)
+  for (const prefix of ['/api/admin/auth', '/api/admin']) {
+    const client = new Client(service)
+    assert.deepEqual((await client.request(prefix + '/session')).data, { authenticated: false })
+    const login = await client.post(prefix + '/login', { password: service.password })
+    assert.equal(login.response.status, 200); assert.equal(login.data.success, true)
+    assert.ok(login.response.headers.getSetCookie().some(cookie =>
+      cookie.startsWith('anonyproof_admin_session=') && cookie.includes('HttpOnly') &&
+      cookie.includes('SameSite=Strict') && cookie.split('; ').includes('Path=/') &&
+      cookie.split('; ').includes('Max-Age=28800') && cookie.split('; ').includes('Secure')))
+    for (const sessionPath of ['/api/admin/auth/session', '/api/admin/session'])
+      assert.deepEqual((await client.request(sessionPath)).data, { authenticated: true })
+    assert.equal((await client.request('/api/admin/access/blacklist/192.0.2.254', { method: 'DELETE' })).response.status, 200)
+    assert.deepEqual((await client.request(prefix + '/logout', { method: 'POST' })).data, { success: true })
+    for (const sessionPath of ['/api/admin/auth/session', '/api/admin/session'])
+      assert.deepEqual((await client.request(sessionPath)).data, { authenticated: false })
+    assert.equal((await client.request('/api/admin/feedback/missing-record')).response.status, 401)
+  }
+  const user = new Client(service), admin = new Client(service)
+  const identity = (await user.identity()).data
+  const body = 'T36 synthetic route body'
+  const created = await user.post('/api/feedback', { deviceId: identity.deviceId,
+    category: 'suggestion', originalContent: body, encryptedContent: 'T36 synthetic discarded envelope' })
+  assert.equal(created.response.status, 200)
+  const id = created.data.id
+  const detail = await user.request('/api/feedback/' + id)
+  assert.equal(detail.response.status, 200); assert.equal(detail.data.feedback.id, id)
+  assert.equal(detail.data.feedback.original_content, body)
+  const deviceList = await user.request('/api/feedback/device/' + encodeURIComponent(identity.deviceId))
+  assert.equal(deviceList.response.status, 200); assert.equal(deviceList.data.feedbacks[0].id, id)
+  const comment = await user.post('/api/feedback/' + id + '/comments', { content: 'T36 synthetic route comment' })
+  assert.equal(comment.response.status, 200)
+  const comments = await user.request('/api/feedback/' + id + '/comments')
+  assert.equal(comments.response.status, 200); assert.equal(comments.data.comments[0].id, comment.data.comment.id)
+  assert.equal((await new Client(service).request('/api/feedback/' + id)).response.status, 401)
+  assert.equal((await user.request('/api/feedback/missing-record')).response.status, 404)
+  assert.equal((await user.request('/api/feedback/%ZZ')).response.status, 400)
+  assert.equal((await admin.login()).response.status, 200)
+  assert.equal((await admin.request('/api/admin/feedback/' + id)).data.feedback.id, id)
+  assert.equal((await admin.post('/api/admin/feedback/' + id + '/status',
+    { status: 'in_progress', solution: '' }, 'PUT')).response.status, 200)
+  const notifications = await user.request('/api/notifications?recipientType=user&recipientId=' + encodeURIComponent(identity.deviceId))
+  assert.equal(notifications.response.status, 200); assert.ok(notifications.data.notifications.length > 0)
+  const noticeId = notifications.data.notifications[0].id
+  assert.equal((await user.request('/api/notifications/' + noticeId + '/read', { method: 'PUT' })).data.updated, 1)
+  assert.equal((await user.request('/api/notifications/' + noticeId + '/unread', { method: 'PUT' })).data.updated, 1)
+  // Parameterized admin route retains its original path, authorization and result.
+  assert.equal((await admin.request('/api/admin/feedback/' + id, { method: 'DELETE' })).response.status, 200)
+  assert.equal((await user.request('/api/feedback/' + id)).response.status, 404)
 })

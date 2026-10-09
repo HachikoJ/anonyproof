@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+ok 1 - T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+  ---
+  duration_ms: 1245.990833
+  type: 'test'
+  ...
+# Subtest: T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+ok 2 - T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+  ---
+  duration_ms: 1155.411958
+  type: 'test'
+  ...
+# Subtest: T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+ok 3 - T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+  ---
+  duration_ms: 2061.054875
+  type: 'test'
+  ...
+# Subtest: T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+ok 4 - T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+  ---
+  duration_ms: 1477.745
+  type: 'test'
+  ...
+# Subtest: T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior
+ok 5 - T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior
+  ---
+  duration_ms: 576.764125
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6692.395333

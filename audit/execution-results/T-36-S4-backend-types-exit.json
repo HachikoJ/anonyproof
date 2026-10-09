@@ -1,0 +1,14 @@
+{
+  "name": "backend-types",
+  "command": [
+    "npm",
+    "--prefix",
+    "server",
+    "run",
+    "type-check"
+  ],
+  "startedAtUtc": "2026-10-09T23:10:37.370Z",
+  "completedAtUtc": "2026-10-09T23:10:38.738Z",
+  "exitCode": 0,
+  "signal": null
+}

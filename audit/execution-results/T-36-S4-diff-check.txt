@@ -1,0 +1,3 @@
+git diff --check
+
+git diff --no-index --check /dev/null server/routes.ts

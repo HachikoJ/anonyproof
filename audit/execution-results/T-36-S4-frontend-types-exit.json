@@ -1,0 +1,12 @@
+{
+  "name": "frontend-types",
+  "command": [
+    "npm",
+    "run",
+    "type-check"
+  ],
+  "startedAtUtc": "2026-10-09T23:10:37.369Z",
+  "completedAtUtc": "2026-10-09T23:10:40.021Z",
+  "exitCode": 0,
+  "signal": null
+}
