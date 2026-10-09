@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+ok 1 - T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+  ---
+  duration_ms: 733.882875
+  type: 'test'
+  ...
+# Subtest: T-10: failed legacy migration rolls back added columns and remains retryable
+ok 2 - T-10: failed legacy migration rolls back added columns and remains retryable
+  ---
+  duration_ms: 343.4495
+  type: 'test'
+  ...
+# Subtest: T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+ok 3 - T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+  ---
+  duration_ms: 552.465375
+  type: 'test'
+  ...
+# Subtest: T-11: exact seven-day boundary, both raw tables, idempotence and aggregates/blacklists preserved
+ok 4 - T-11: exact seven-day boundary, both raw tables, idempotence and aggregates/blacklists preserved
+  ---
+  duration_ms: 6.955083
+  type: 'test'
+  ...
+# Subtest: T-11: bounded yielding batches drain backlog then schedule hourly and close cancels pending work
+ok 5 - T-11: bounded yielding batches drain backlog then schedule hourly and close cancels pending work
+  ---
+  duration_ms: 3.651167
+  type: 'test'
+  ...
+# Subtest: T-11: a failed second delete rolls back first; scheduler logs code only and retries
+ok 6 - T-11: a failed second delete rolls back first; scheduler logs code only and retries
+  ---
+  duration_ms: 0.858875
+  type: 'test'
+  ...
+# Subtest: T-11: live process failure is observable without breaking health, restart drains raw backlog and keeps daily totals
+ok 7 - T-11: live process failure is observable without breaking health, restart drains raw backlog and keeps daily totals
+  ---
+  duration_ms: 2065.776625
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3997.026166

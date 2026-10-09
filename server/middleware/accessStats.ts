@@ -49,6 +49,8 @@ db.exec(`
     reason TEXT NOT NULL,
     created_at INTEGER NOT NULL
   );
+
+  CREATE INDEX IF NOT EXISTS idx_rate_limit_logs_created_at ON rate_limit_logs(created_at);
 `)
 
 // 检测是否为爬虫

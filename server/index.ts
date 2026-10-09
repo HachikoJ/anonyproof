@@ -9,6 +9,7 @@ import {
   getSuspiciousAccessLogs,
   getIPBlacklist,
   unblacklistIP,
+  startLogRetention,
 } from './utils/accessStats'
 import { accessStatsMiddleware } from './middleware/accessStats'
 import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, identityRecoveryLimiter, identityInitializationLimiter, positiveIntegerEnv, userCommentSourceLimiter, userCommentIdentityLimiter } from './middleware/rateLimit'
@@ -1672,7 +1673,9 @@ const identityCapacityErrorHandler: express.ErrorRequestHandler = (error, _req, 
 app.use(identityCapacityErrorHandler)
 
 // 启动服务器
-app.listen(PORT, HOST, () => {
+const apiServer = app.listen(PORT, HOST, () => {
+  const logRetention = startLogRetention()
+  apiServer.once('close', () => logRetention.close())
   console.log(`AnonyProof API Server running on ${HOST}:${PORT}`)
   console.log(`Database: ${databasePath}`)
   if (demoMode) {

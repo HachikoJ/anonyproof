@@ -600,7 +600,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-11 原始访问日志保留窗口和清理
 
-状态：待办（C已批准具体删除/保留策略，本地实施按依赖推进；真实资产另批）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。
+状态：进行中（7天调度/边界/故障/重启本地验收通过；真实资产快照/清理/恢复另批）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。
 
 **问题**：`server/utils/accessStats.ts:190 cleanupOldLogs()`没有调用方；access_logs/rate_limit_logs无限增长。日志清理独立于T-10查询性能。
 
@@ -1340,3 +1340,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 状态：已完成。sessions/loginAttempts/recentRecoveryCodes使用同一独立ExpiringMap，容量1000/10000/10000，TTL8h/15min/10min不变，60秒unref sweep，可close；已有有效会话不被容量淘汰。正确登录先预留session容量再创建demo身份，身份失败撤预留；满容量503不签Cookie/创建身份副本。失败来源保护满容量503，已有锁定保留；恢复码展示FIFO淘汰不改变R1。
 - 实际模块+HTTP+T-09/T-05/T-21关联34/34通过，最新HTTP补TTL前10秒边界后4/4通过，不叠加计数。真实上限fixture记录size而非token，注入时钟与真实清理回调；覆盖注销、错误签名、到期无人命中自动删除及新身份失败释放。全后端strict tsc、frontend type及diff-check通过。原失败记录器竞态/错表名保留日志，最终已修测试并说明；证据 `audit/execution-results/T-22-result.json`。
 - 命令：`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-22.test.ts tests/fix/T-22.integration.test.ts tests/fix/T-09.test.ts tests/fix/T-05.test.ts tests/fix/T-21.test.ts`。本任务仍为单进程内存；重启登录UI契约由T-23独立验证。独立提交回滚点；回退会恢复无界/惰性清理缺口，不作为长期生产配置。
+
+### T-11 本地执行与验收（2026-10-09整合）
+
+- 状态：进行中，本地实现通过，历史资产未操作。原始访问及限流日志按严格created_at<now-7天删除，每表每事务最多500条，批次让出事件循环，启动调度、每小时运行、失败脱敏记录后重试；server close关闭timer。daily聚合、业务、identity及永久/到期blacklist不参与清理。累计访问/机器人/可疑/加权响应时间从保留日聚合读取，unique_visitors明确7天raw范围。
+- `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-11.test.ts tests/fix/T-10.test.ts`实际7/7通过；T-11自身4项含边界前1删/精确边界及以后3留、第二次0删、1001分500/500/1、事务故障回滚与脱敏重试、实际health200、重启恢复调度、daily/blacklist逐行不变。frontend type退出0；最终index调度接入后的全后端strict tsc退出0，见T-26-identity-server-type.txt（共享整合检查不冒充独立重复测试）。详细证据T-11-local-result.json及日志。
+- 可复验命令及运维门禁见docs/LOG_RETENTION.md。真实库执行须先给出最新逐资产dryrun计数、一致性快照及独立恢复证据再获具体批准；不得根据此本地提交直接对历史资产清理。SQLite逻辑删除不证明DB/WAL/旧备份字节已消失，字节与旧备份处置归T-32。停止timer/回退代码不能恢复已删除数据。

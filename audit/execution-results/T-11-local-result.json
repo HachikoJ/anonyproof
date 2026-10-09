@@ -1,0 +1,47 @@
+{
+  "task": "T-11",
+  "scope": "Approved local implementation and disposable synthetic database validation; no real database or deployment operations",
+  "runtime": "Node 22 from /tmp/anonyproof-runtime-22/node_modules/node/bin",
+  "policy": {
+    "rawRetentionDays": 7,
+    "expirationComparison": "created_at < now - 7 days; exact boundary retained",
+    "tables": ["access_logs", "rate_limit_logs"],
+    "preserved": ["access_stats", "ip_blacklist", "business and identity tables"],
+    "intervalMilliseconds": 3600000,
+    "batchMaximumPerTable": 500,
+    "startup": "schedule on successful listen; drain startup backlog with event-loop yields",
+    "close": "cancel outstanding unreferenced timer on server close"
+  },
+  "checks": [
+    {
+      "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-11.test.ts tests/fix/T-10.test.ts",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "log": "T-11-regression-first.txt"
+    },
+    { "command": "npm run type-check", "exitCode": 0, "log": "T-11-type.txt" },
+    {
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "log": "T-11-server-type.txt",
+      "note": "Before parent added the two index startup integration statements; parent must verify final integrated tree"
+    }
+  ],
+  "observedAcceptance": [
+    "One expired entry per raw table deleted; three entries per table at/after boundary retained; second pass deleted zero",
+    "Backlog 1001 per table drained in 500,500,1 batches, yielding before every batch; next run one hour; close cancels pending work",
+    "Fault in second delete rolled back first delete; error recorded only SQLITE_CONSTRAINT_TRIGGER without injected sensitive message; next scheduled run resumed",
+    "Actual API process with failing cleanup still returned health 200; restart scheduled cleanup again and removed expired entries from both raw tables",
+    "Daily aggregate fixture, including historical visits 9876 in the boundary test, and both permanent/expired blacklist rows unchanged",
+    "Overview cumulative counts and weighted response-time average matched preserved daily aggregates after deletion; distinct IP count explicitly scoped to seven days"
+  ],
+  "wholeTaskStatus": "Local acceptance passed; real historical cleanup remains dependent on exact asset approval, consistent snapshot and independent restore verification",
+  "rollback": "Stopping/reverting the scheduler cannot restore deleted rows; restore an approved consistent snapshot into an independent copy, do not overwrite writes made after cleanup",
+  "limitations": [
+    "SQLite logical DELETE does not prove byte erasure in database, WAL or prior backups",
+    "No production database was modified; no real asset count or credential is included",
+    "The legacy cumulative daily data is preserved as stored; this task does not invent missing historical source logs"
+  ]
+}
