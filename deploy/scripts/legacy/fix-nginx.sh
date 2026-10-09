@@ -1,4 +1,8 @@
 #!/bin/bash
+# T-35: Unsupported historical script. Original body is retained below.
+printf '%s\n' 'This historical deployment script is disabled; use DEPLOY.md and the supported Nginx template.' >&2
+exit 1
+
 # 修复匿证项目的 Nginx 配置
 
 echo "正在配置 Nginx..."
