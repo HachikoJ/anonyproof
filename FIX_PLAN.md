@@ -353,7 +353,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-37 管理反馈列表分页
 
-状态：进行中（分页/API/类型及共享生产构建通过；真实浏览器交互待验收）；原始严重度：P1（审查第 5 条）；优先级：A；工作量：M；前置依赖：T-19、T-18。
+状态：已完成（分页/API/类型/生产构建及真实浏览器跨页、筛选、通知、详情、处理验收通过）；原始严重度：P1（审查第 5 条）；优先级：A；工作量：M；前置依赖：T-19、T-18。
 
 **问题**：`GET /api/admin/feedbacks`约929行全量返回正文及不使用的encrypted_content，前端全部内存筛选/搜索。大库请求和DOM都会增长。
 
@@ -652,7 +652,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-24 可信代理链与IP限流来源
 
-状态：进行中（真实两来源/伪造XFF/限额通过；直连后端伪造已复现，具体代理认证待确认）；原始严重度：P2（安全子审计存疑）；优先级：A；工作量：M；前置依赖：Q-05、T-19、T-35。
+状态：进行中（私有代理认证已批准；本地直连拒绝/两来源/伪造头/限额通过，生产部署及来源补验待完成）；原始严重度：P2（安全子审计存疑）；优先级：A；工作量：M；前置依赖：Q-05、T-19、T-35。
 
 **问题**：`server/index.ts:53 trust proxy=1`与多跳代理组合；旧Nginx配置使用追加XFF/错误header名。真实链路取值尚未证实。
 
@@ -1428,3 +1428,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - Nginx唯一模板覆盖访客私有头，从root私有0600 include取独立键；真实键不得提交，部署时须同时准备Express环境与Nginx include。修改范围：middleware/index、.env.example、DEPLOY、唯一vhost/README及合成测试夹具，不改代理生产策略。
 - 实际 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-24.test.ts tests/fix/T-05.test.ts tests/fix/T-09.test.ts tests/fix/T-20.test.ts tests/fix/T-26.test.ts tests/fix/T-43.test.ts` 25/25通过、0skip（T24四项）；实际后端strict tsc退出0。独立echo夹具116/116通过；`T24_SECOND_SOURCE=::1 npx --no-install tsx tests/fix/T-24.chain.ts` 真实Nginx→production Next→合成Express：T24 11/11、T35 45/45，直连缺私有键403，访客伪造键被覆盖、两真实来源配额保持隔离。见T-24-related-regression/authenticated-chain-result/template-echo-result及日志。首次重复头探针因缺Host被Node解析器400拒绝，已修复夹具后重验；保留失败证据，不计作安全通过。
 - 本地已关闭该复现缺口；T24仍进行中，生产未部署/真实来源未补验。独立提交可回退，但旧版本会恢复直连伪造来源风险；任何部署回退必须先关闭公开写入或维持新代理边界。未修改真实环境、密钥和数据。
+
+### T-37 真实浏览器验收闭合（2026-10-09）
+
+- 用户明确批准终端Playwright仅本地合成站；使用技能CLI独立浏览器，无用户Cookie/登录会话。真实production Next构建沿用T23/T37/T38/T39/T42最终build，夹具 `npx --no-install tsx tests/fix/T-37.browser.ts`，操作脚本 `audit/execution-results/T-37-browser-flow.js` 通过技能CLI run-code执行，结果 `T-37-browser-result.json`，截图 `output/playwright/T-37-admin-final.png`。
+- 实际14项页面断言通过：50条首/次页互不重叠、前后页复原、末页禁用、跨页搜索与组合筛选/冲突0、概览不随筛选缩水、摘要无正文末尾而授权详情含末尾、处理后resolved251/no_solution249且筛选空/详情保留、通知准确打开非当前页且不插入列表、URL重载仍显示该详情。SQLite只读复核处理状态和通知未读0；实际网络列表均≤50、详情>160字符、PUT成功。未用HTTP测试冒充浏览器。
+- T37本地修改及全部规定验收通过，标已完成；未部署生产，后续提交实际远端CI仍等Cloudflare分支隔离。测试资产均合成，精确SIGTERM停止自有夹具，未删除资产。
