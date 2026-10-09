@@ -192,3 +192,5 @@ npx --no-install tsx scripts/content-migration-inventory.ts /absolute/approved-s
 `scripts/content-migration-candidate.ts`是尚未接入业务/CLI的准备模块，仅在合成fixture调用：readonly源→0700/0600私人工作快照→T-03同格式转换/逐条认证→VACUUM INTO新候选→不覆盖的发布。不会删除源、旧备份或失败工作目录，不加载环境文件；需要显式绝对source/全新`.db`目标和独立内容key。演示/混合行、触发器、未知版本、不支持schema、NULL字段、旧空正文但有非标准旧包均拒绝；不擅自决定数据映射或把NULL改空串。
 
 工作快照可能含原文/旧包key，需受限保存并纳入以后逐项资产确认；目标与工作candidate是hard link，不能充当独立备份。在线快照不包含之后的写入，真实切换前须停写、最终快照与恢复/映射核对；T-02角色接入、Q-04/Q-07和实际处置/发布仍未完成。验证步骤/失败恢复及完整限制见 `audit/execution-results/T-32-candidate-design.md`；可复验合成准备的命令为 `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32-candidate.test.ts tests/fix/T-32.test.ts tests/fix/T-03.test.ts`，不提供未获准的真实迁移命令。
+
+管理员会话、失败登录来源与恢复码展示缓存分别固定最多1000、10000、10000项，TTL为8小时、15分钟、10分钟；每60秒自动清理，定时器unref并可关闭。会话满时新登录503，不踢有效会话、不签发新Cookie、不创建演示身份/副本；失败来源满时拒绝新增来源并保留既有锁定。展示码FIFO淘汰只影响再次展示，不撤销另存的恢复码。全部为单后端进程存储，重启管理员须重新登录。

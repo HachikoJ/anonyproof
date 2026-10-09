@@ -19,9 +19,10 @@ async function startWithSessionProbe(overrides: Record<string, string> = {}) {
     const originalSet = Map.prototype.set;
     Map.prototype.set = function(key, value) {
       const result = Reflect.apply(originalSet, this, [key, value]);
+      const expiry = typeof value === 'object' && value !== null ? value.value : value;
       if (typeof key === 'string' && /^[a-f0-9]{64}\\.[a-f0-9]{64}$/.test(key)
-          && Number.isSafeInteger(value) && value > Date.now() + 7 * 60 * 60 * 1000
-          && value <= Date.now() + 8 * 60 * 60 * 1000) {
+          && Number.isSafeInteger(expiry) && expiry > Date.now() + 7 * 60 * 60 * 1000
+          && expiry <= Date.now() + 8 * 60 * 60 * 1000) {
         fs.writeFileSync(counter, String(Number(fs.readFileSync(counter, 'utf8')) + 1));
       }
       return result;

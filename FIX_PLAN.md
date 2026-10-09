@@ -307,7 +307,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-22 管理会话/失败尝试Map的过期清理和上限
 
-状态：待办（容量整合先等待T-21）；原始严重度：P2（审查第 11 条）；优先级：B；工作量：M；前置依赖：T-19、T-09、T-21。
+状态：已完成（固定容量、自动过期、满容量拒绝及恢复码兼容均通过本地验收）；原始严重度：P2（审查第 11 条）；优先级：B；工作量：M；前置依赖：T-19、T-09、T-21。
 
 **问题**：`sessions`、`loginAttempts`过期项只有再次命中时才被清理，`recentRecoveryCodes`亦有同类无界缓存行为；长时间进程可持续占用内存。
 
@@ -1334,3 +1334,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 原生浏览器实际同站恶意子域携带管理员/身份 Cookie：身份POST及logout均403、无新Cookie/身份变更；异站同动作Cookie未发送，仍403。恶意来源GET返回只读结果但CORS阻断读取，DB不变；回到合法页admin authenticated=true、identity GET200。`T-26-identity-browser-network.json`记录实际发送布尔值，未采集凭证。
 - 新生产Next start+合成正式backend完整提交入口实际初始化POST200、feedback POST200、同身份记录GET200，UI显示同一合成提交。证据 `T-26-identity-normal-network.json` 去除query，`T-26-identity-acceptance.json` 与独立type/build/regression日志；截图只在工具中观察，没有编造本地图片路径。两个测试harness均已SIGTERM退出0，库/密钥留在独立临时目录，未触真实材料。
 - 可复验：运行 `tests/fix/T-26.browser.ts` 点击输出三个本地域名的身份/注销按钮；运行 `tests/fix/T-26.identity-normal-browser.ts` 在输出URL执行合成线索提交/我的提交，检查网络JSON身份请求是POST。回滚必须保留GET只读边界与来源防护，不能恢复状态写GET。
+
+### T-22 执行与验收（2026-10-08）
+
+- 状态：已完成。sessions/loginAttempts/recentRecoveryCodes使用同一独立ExpiringMap，容量1000/10000/10000，TTL8h/15min/10min不变，60秒unref sweep，可close；已有有效会话不被容量淘汰。正确登录先预留session容量再创建demo身份，身份失败撤预留；满容量503不签Cookie/创建身份副本。失败来源保护满容量503，已有锁定保留；恢复码展示FIFO淘汰不改变R1。
+- 实际模块+HTTP+T-09/T-05/T-21关联34/34通过，最新HTTP补TTL前10秒边界后4/4通过，不叠加计数。真实上限fixture记录size而非token，注入时钟与真实清理回调；覆盖注销、错误签名、到期无人命中自动删除及新身份失败释放。全后端strict tsc、frontend type及diff-check通过。原失败记录器竞态/错表名保留日志，最终已修测试并说明；证据 `audit/execution-results/T-22-result.json`。
+- 命令：`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-22.test.ts tests/fix/T-22.integration.test.ts tests/fix/T-09.test.ts tests/fix/T-05.test.ts tests/fix/T-21.test.ts`。本任务仍为单进程内存；重启登录UI契约由T-23独立验证。独立提交回滚点；回退会恢复无界/惰性清理缺口，不作为长期生产配置。

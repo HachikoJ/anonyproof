@@ -15,6 +15,7 @@ import { adminLoginLimiter, feedbackSubmitLimiter, feedbackIdentityLimiter, iden
 import { cookieWriteOriginGuard, exactCorsOrigin, isTrustedRequestOrigin, parseAllowedOrigins } from './middleware/requestOrigin'
 import { openDatabase, databasePath } from './utils/database'
 import { loadContentEncryption } from './utils/contentEncryption'
+import { ExpiringMap, ExpiringMapCapacityError } from './utils/expiringMap'
 import { MAX_ENCRYPTED_CONTENT_BYTES, validateCategory, validateCommentContent, validateDeviceId, validateFeedbackContent, validateSolutionContent, validateStatus } from './utils/validation'
 import {
   DEMO_ADMIN_PASSWORD,
@@ -42,8 +43,10 @@ const adminPassword = demoMode ? DEMO_ADMIN_PASSWORD : configuredAdminPassword
 const sessionSecret = process.env.SESSION_SECRET
 const sessionTtlMs = 8 * 60 * 60 * 1000
 const loginAttemptLimit = demoMode ? 50 : 5
-const sessions = new Map<string, number>()
-const loginAttempts = new Map<string, { count: number; resetAt: number }>()
+const sessions = new ExpiringMap<string, number>({ maxEntries: 1000, expiresAt: value => value })
+const loginAttempts = new ExpiringMap<string, { count: number; resetAt: number }>({
+  maxEntries: 10000, expiresAt: value => value.resetAt,
+})
 const maxIdentityRecords = positiveIntegerEnv('IDENTITY_MAX_RECORDS', 100000)
 class IdentityCapacityError extends Error {}
 
@@ -218,13 +221,32 @@ app.post(['/api/admin/auth/login', '/api/admin/login'], (req, res) => {
   if (!safePasswordEqual(password, adminPassword)) {
     const nextAttempt = attempt && attempt.resetAt > now ? attempt : { count: 0, resetAt: now + 15 * 60 * 1000 }
     nextAttempt.count += 1
-    loginAttempts.set(ip, nextAttempt)
+    try {
+      loginAttempts.set(ip, nextAttempt)
+    } catch (error) {
+      if (!(error instanceof ExpiringMapCapacityError)) throw error
+      return res.status(503).json({ error: '登录保护容量已满，请稍后再试' })
+    }
     return res.status(401).json({ error: '密码错误' })
   }
-  loginAttempts.delete(ip)
-  const demoIdentity = demoMode ? ensureDemoIdentity(req, res) : undefined
-  setSessionCookie(res, createSession())
-  res.json({ success: true, ...(demoIdentity ? { deviceId: demoIdentity.deviceId, recoveryCode: demoIdentity.recoveryCode } : {}) })
+  // Reserve capacity before demo identity issuance can write rows or cookies.
+  // A full store rejects new logins without evicting existing valid sessions.
+  let session: string
+  try {
+    session = createSession()
+  } catch (error) {
+    if (!(error instanceof ExpiringMapCapacityError)) throw error
+    return res.status(503).json({ error: '管理员会话容量已满，请稍后再试' })
+  }
+  try {
+    const demoIdentity = demoMode ? ensureDemoIdentity(req, res) : undefined
+    loginAttempts.delete(ip)
+    setSessionCookie(res, session)
+    res.json({ success: true, ...(demoIdentity ? { deviceId: demoIdentity.deviceId, recoveryCode: demoIdentity.recoveryCode } : {}) })
+  } catch (error) {
+    sessions.delete(session)
+    throw error
+  }
 })
 
 app.get(['/api/admin/auth/session', '/api/admin/session'], (req, res) => {
@@ -501,7 +523,9 @@ function createRecoveryCode() {
   return formatRecoveryCode(value)
 }
 
-const recentRecoveryCodes = new Map<string, { code: string; expiresAt: number }>()
+const recentRecoveryCodes = new ExpiringMap<string, { code: string; expiresAt: number }>({
+  maxEntries: 10000, expiresAt: value => value.expiresAt, onCapacity: 'evict-oldest',
+})
 const recentRecoveryCodeTtlMs = 10 * 60 * 1000
 
 function rememberRecoveryCode(deviceId: string, recoveryCode: string) {
