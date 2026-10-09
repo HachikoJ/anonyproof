@@ -8,11 +8,11 @@ import { startBackend } from './helpers'
 
 test('T-24 proxy configuration fails closed without a canonical independent key', () => {
   for (const key of [undefined, '', 'placeholder', randomBytes(31).toString('base64'), randomBytes(65).toString('base64')]) {
-    assert.throws(() => createProxyBoundary({ TRUST_PROXY: '1', PROXY_AUTH_KEY: key }))
+    assert.throws(() => createProxyBoundary({ NODE_ENV: 'test', TRUST_PROXY: '1', PROXY_AUTH_KEY: key }))
   }
-  assert.throws(() => createProxyBoundary({ TRUST_PROXY: 'true' }))
-  assert.doesNotThrow(() => createProxyBoundary({ TRUST_PROXY: '0' }))
-  assert.doesNotThrow(() => createProxyBoundary({ TRUST_PROXY: '1', PROXY_AUTH_KEY: randomBytes(32).toString('base64') }))
+  assert.throws(() => createProxyBoundary({ NODE_ENV: 'test', TRUST_PROXY: 'true' }))
+  assert.doesNotThrow(() => createProxyBoundary({ NODE_ENV: 'test', TRUST_PROXY: '0' }))
+  assert.doesNotThrow(() => createProxyBoundary({ NODE_ENV: 'test', TRUST_PROXY: '1', PROXY_AUTH_KEY: randomBytes(32).toString('base64') }))
 })
 
 test('T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local', async t => {
@@ -69,7 +69,7 @@ test('T-24 unproxied requests ignore all supplied source headers', async t => {
 
 test('T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers', () => {
   const key=randomBytes(32).toString('base64')
-  const boundary=createProxyBoundary({TRUST_PROXY:'1',PROXY_AUTH_KEY:key})
+  const boundary=createProxyBoundary({NODE_ENV:'test',TRUST_PROXY:'1',PROXY_AUTH_KEY:key})
   for (const [peer,allowed] of [['127.0.0.1',true],['::1',true],['::ffff:127.0.0.1',true],
     ['192.0.2.17',false],['::ffff:192.0.2.17',false],['2001:db8::1',false]] as const) {
     const request:any={path:'/api/stats',socket:{remoteAddress:peer},headers:{

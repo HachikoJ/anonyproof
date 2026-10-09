@@ -1,0 +1,119 @@
+{
+  "scope": "T-24 test-only ProcessEnv objects explicitly set NODE_ENV=test; no product change or relaxation of proxy assertions",
+  "startedAt": "2026-10-09T12:22:10.438297+00:00",
+  "head": "6fdbb05bf7314931e42663a4f6f4e2835742bc3c",
+  "affectedFiles": [
+    "tests/fix/T-24.test.ts"
+  ],
+  "nodeVersion": "v22.23.3",
+  "originalFailure": "Frontend/backend npm type checks failed with five TS2345 errors: merged NodeJS.ProcessEnv requires NODE_ENV on synthetic direct middleware config objects. Original baseline failure logs and exits remain intact.",
+  "commands": [
+    {
+      "name": "associatedTests",
+      "argv": [
+        "npx",
+        "--no-install",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/fix/T-24.test.ts",
+        "tests/fix/T-22.integration.test.ts",
+        "tests/fix/T-33.test.ts"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 7.199,
+      "log": "audit/execution-results/T-24-fixture-types-after-tests.txt",
+      "logSha256": "70c9caa51bf280466df8fff5795f86ce1b958332e4f2c591bef92b9e724fc133"
+    },
+    {
+      "name": "frontendTypes",
+      "argv": [
+        "npm",
+        "run",
+        "type-check"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 2.411,
+      "log": "audit/execution-results/T-24-fixture-types-after-frontend.txt",
+      "logSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "name": "backendTypes",
+      "argv": [
+        "npm",
+        "--prefix",
+        "server",
+        "run",
+        "type-check"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 2.237,
+      "log": "audit/execution-results/T-24-fixture-types-after-backend.txt",
+      "logSha256": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675"
+    },
+    {
+      "name": "ciStrictBackendTypes",
+      "argv": [
+        "npx",
+        "--no-install",
+        "tsc",
+        "--noEmit",
+        "--target",
+        "ES2017",
+        "--module",
+        "commonjs",
+        "--esModuleInterop",
+        "--skipLibCheck",
+        "--strict",
+        "server/demo.ts",
+        "server/env.ts",
+        "server/index.ts",
+        "server/middleware/accessStats.ts",
+        "server/middleware/proxyBoundary.ts",
+        "server/middleware/rateLimit.ts",
+        "server/middleware/rateLimitEnhanced.ts",
+        "server/middleware/requestOrigin.ts",
+        "server/utils/accessPrivacy.ts",
+        "server/utils/accessStats.ts",
+        "server/utils/adminFeedbackPagination.ts",
+        "server/utils/commentPagination.ts",
+        "server/utils/comments.ts",
+        "server/utils/contentEncryption.ts",
+        "server/utils/database.ts",
+        "server/utils/expiringMap.ts",
+        "server/utils/identityRetention.ts",
+        "server/utils/instanceIsolation.ts",
+        "server/utils/logRetention.ts",
+        "server/utils/logger.ts",
+        "server/utils/requestIdempotency.ts",
+        "server/utils/userFeedbackPagination.ts",
+        "server/utils/validation.ts"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 1.024,
+      "log": "audit/execution-results/T-24-fixture-types-after-ci-strict.txt",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "diffCheck",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 0.02,
+      "log": "audit/execution-results/T-24-fixture-types-after-diff-check.txt",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "allChecksPassed": true,
+  "finishedAt": "2026-10-09T12:22:23.389903+00:00",
+  "associatedTestTotals": {
+    "tests": 14,
+    "pass": 14,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  }
+}
