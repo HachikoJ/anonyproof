@@ -1,6 +1,6 @@
 # 受支持的 Nginx 配置
 
-唯一受支持的入口模板是 `anonyproof.deline.top.conf`，在 Nginx `http` 上下文中明确 include。不能用通配符加载本目录及 `legacy/`，不能复制历史配置作为替代入口。模板保留 Nginx → Next（回环 3000）→ Express（回环 4000）和 `/anonyproof` basePath，HTTP 308 保留写入方法，未知 Host 或业务路径之外返回 404。
+唯一受支持的入口模板是 `anonyproof.deline.top.conf`，在 Nginx `http` 上下文中明确 include。不能用通配符加载本目录及 `legacy/`，不能复制历史配置作为替代入口。模板保留 Nginx → Next（回环 3000）→ Express（回环 4000）和 `/anonyproof` basePath，HTTP 业务请求以 308 保留写入方法，保留已核实的 `/.well-known/acme-challenge/` 与 `/var/www/_acme-challenge` 证书验证 webroot；未知 Host、缺失 challenge 或其他业务路径之外返回 404。正式适配时先核对实际续期 webroot，不能把 server 级 return 放在 challenge location 前使其失效。
 
 模板以 Nginx 直接接受公网连接为前提。在确认 CDN／负载均衡、真实证书、服务角色、TRUST_PROXY 和实际 socket 前，不能当作生产可直接启用的配置。`X-Forwarded-For` 在此前提下由入口覆盖为 socket 来源；有前置代理时必须按 T-24 验证来源与头部契约，不能仅改成 append。正式启用与 reload 需单独授权，并先备份当前生效 vhost、运行实际 `nginx -t`。
 

@@ -1,0 +1,45 @@
+{
+  "task": "T-35",
+  "syntheticOnly": true,
+  "templateSha256": "f7bf259c11ba1e548977dbd0866bec313fede52063f49f78c99460d496a58ead",
+  "checks": [
+    {
+      "name": "nginx syntax",
+      "pass": true
+    },
+    {
+      "name": "ACME existing token False",
+      "pass": true
+    },
+    {
+      "name": "ACME missing token False",
+      "pass": true
+    },
+    {
+      "name": "ACME unknown Host rejected False",
+      "pass": true
+    },
+    {
+      "name": "HTTP business method-preserving redirect",
+      "pass": true
+    },
+    {
+      "name": "ACME existing token True",
+      "pass": true
+    },
+    {
+      "name": "ACME missing token True",
+      "pass": true
+    },
+    {
+      "name": "ACME unknown Host rejected True",
+      "pass": true
+    },
+    {
+      "name": "HTTPS root redirect unchanged",
+      "pass": true
+    }
+  ],
+  "passed": true,
+  "ownedProcessStopped": true
+}
