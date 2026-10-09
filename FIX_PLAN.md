@@ -1527,3 +1527,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 
 - 只读实查本站原HTTP/HTTPS均保留 ACME webroot。唯一模板现显式保留这两个 location，并把HTTP业务308放入 location /，避免server级return截断challenge；不改证书或其他站。
 - `python3 audit/execution-results/T-35-acme-template-runner.py` 实际退出0、9/9：HTTP/TLS已有token原样200、缺token404、未知Host404、POST业务308保留完整目标、HTTPS根跳转不变；自有进程停止，文件保留。证据 `T-35-acme-template-result.json`；最终真实链路和生产发布仍分别验收，T35保持进行中。
+
+### T-32 APRA整包保全本地准备（2026-10-10，真实执行待确认）
+
+- 新增archive-only工具，保持原candidate guard与NULL/旧包/flags/三个版本。初版恢复绑定仅存调用参数的缺口已在真实执行前修复：私有catalog必须独立备份、每次随机唯一package binding、认证manifest绑定snapshot/isolated rows/schema摘要；高层整包恢复只凭key/catalog/三档案，在全部关系认证后才打开SQLite和发布成功marker。
+- 58/58合成测试、strict 0；主代理源码复核与SHA对照通过，证据 `T-32-archive-only-main-review.json` 和 `T-32-archive-only-local-preview.md`。初版44/中间57及编译失败分别保留，不混为当前验收。
+- 待确认具体真实D方案在私有 `/tmp/anonyproof-D-archive-format-20261010.md`：生成/独立备份内容key、三版本分别封装、异机密文/catalog备份和独立恢复，不启用正式HTTP、不接公开demo。A/B既有批准不重复请求。完整snapshot仍含旧telemetry、staging有明文；E/F未完成，T32保持进行中。

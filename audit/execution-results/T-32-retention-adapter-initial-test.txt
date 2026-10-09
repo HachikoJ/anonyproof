@@ -1,0 +1,157 @@
+TAP version 13
+# Subtest: T-32 archive-only: exact schema/types/NULL/flags/identity/old packages survive independent authenticated restore
+ok 1 - T-32 archive-only: exact schema/types/NULL/flags/identity/old packages survive independent authenticated restore
+  ---
+  duration_ms: 91.585667
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: isolated typed rows distinguish missing parents, NULL target comments and general notifications
+ok 2 - T-32 archive-only: isolated typed rows distinguish missing parents, NULL target comments and general notifications
+  ---
+  duration_ms: 54.832292
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: three versions with the same IDs retain different bodies without merging; version substitution fails
+ok 3 - T-32 archive-only: three versions with the same IDs retain different bodies without merging; version substitution fails
+  ---
+  duration_ms: 200.723042
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: wrong key, tag/cipher/header corruption, truncation and kind swap never publish unauthenticated plaintext
+    # Subtest: wrong-key
+    ok 1 - wrong-key
+      ---
+      duration_ms: 2.584125
+      type: 'test'
+      ...
+    # Subtest: wrong-kind
+    ok 2 - wrong-kind
+      ---
+      duration_ms: 2.199042
+      type: 'test'
+      ...
+    # Subtest: cipher
+    ok 3 - cipher
+      ---
+      duration_ms: 1.857708
+      type: 'test'
+      ...
+    # Subtest: tag
+    ok 4 - tag
+      ---
+      duration_ms: 1.636334
+      type: 'test'
+      ...
+    # Subtest: header
+    ok 5 - header
+      ---
+      duration_ms: 0.630792
+      type: 'test'
+      ...
+    # Subtest: truncate
+    ok 6 - truncate
+      ---
+      duration_ms: 2.320625
+      type: 'test'
+      ...
+    1..6
+ok 4 - T-32 archive-only: wrong key, tag/cipher/header corruption, truncation and kind swap never publish unauthenticated plaintext
+  ---
+  duration_ms: 19.330875
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: empty and multi-chunk large files authenticate and round trip with private independent files
+ok 5 - T-32 archive-only: empty and multi-chunk large files authenticate and round trip with private independent files
+  ---
+  duration_ms: 76.269792
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: exclusive outputs and racing restore targets never replace existing files
+ok 6 - T-32 archive-only: exclusive outputs and racing restore targets never replace existing files
+  ---
+  duration_ms: 50.868375
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: unapproved runtime mode, invalid keys/bindings, broad permissions and symlink paths fail before publication
+    # Subtest: runtime
+    ok 1 - runtime
+      ---
+      duration_ms: 9.835333
+      type: 'test'
+      ...
+    # Subtest: key
+    ok 2 - key
+      ---
+      duration_ms: 8.274291
+      type: 'test'
+      ...
+    # Subtest: binding
+    ok 3 - binding
+      ---
+      duration_ms: 8.298209
+      type: 'test'
+      ...
+    # Subtest: source-mode
+    ok 4 - source-mode
+      ---
+      duration_ms: 8.739042
+      type: 'test'
+      ...
+    # Subtest: parent-mode
+    ok 5 - parent-mode
+      ---
+      duration_ms: 8.993209
+      type: 'test'
+      ...
+    # Subtest: source-symlink
+    ok 6 - source-symlink
+      ---
+      duration_ms: 8.923
+      type: 'test'
+      ...
+    # Subtest: parent-symlink
+    ok 7 - parent-symlink
+      ---
+      duration_ms: 9.07625
+      type: 'test'
+      ...
+    1..7
+ok 7 - T-32 archive-only: unapproved runtime mode, invalid keys/bindings, broad permissions and symlink paths fail before publication
+  ---
+  duration_ms: 62.6145
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: committed WAL snapshot survives unchanged writer and contains original role/flags
+ok 8 - T-32 archive-only: committed WAL snapshot survives unchanged writer and contains original role/flags
+  ---
+  duration_ms: 59.491042
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: giant metadata rows and unsupported relationship schema fail without a completion marker or source changes
+    # Subtest: large-row
+    ok 1 - large-row
+      ---
+      duration_ms: 66.300708
+      type: 'test'
+      ...
+    # Subtest: schema
+    ok 2 - schema
+      ---
+      duration_ms: 15.12025
+      type: 'test'
+      ...
+    1..2
+ok 9 - T-32 archive-only: giant metadata rows and unsupported relationship schema fail without a completion marker or source changes
+  ---
+  duration_ms: 81.713209
+  type: 'test'
+  ...
+1..9
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1025.657209

@@ -1,0 +1,32 @@
+{
+  "task": "T-32",
+  "scope": "Local archive-only preparation; not real historical completion",
+  "reviewedAtUtc": "2026-10-09T23:05:41.057812+00:00",
+  "sourceSha256": {
+    "scripts/private-retention-archive.ts": "b16f6d36b2506887fd6f926e70495546ce3d851c1c598c15c1c15a2c8ab6dd19",
+    "scripts/content-retention-adapter.ts": "23756f9fac5cb7ad4caa19c06d07b0dc735c679da5e27062168b0577e45405bd",
+    "tests/fix/T-32-retention-adapter.test.ts": "4e5fc8bf427649557f8c71873e1fd466ce1fd39229eef7cf3d447c7c7a9a91ad"
+  },
+  "logSha256": {
+    "audit/execution-results/T-32-retention-package-final-tests.txt": "5d20f23f5657814166b8a4de7751817037ddba7975c96dae8766de54424e7fba",
+    "audit/execution-results/T-32-retention-package-final-typecheck.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tests": {
+    "total": 58,
+    "pass": 58,
+    "fail": 0,
+    "skip": 0
+  },
+  "strictTypeExitCode": 0,
+  "newProcessPackageRecoveryTested": true,
+  "catalogRequired": true,
+  "uniquePackageBinding": true,
+  "sourceDataTouched": false,
+  "productionTouched": false,
+  "mainReview": "Source reviewed; exact product and final log hashes checked. Original lost-binding gap fixed before real execution approval.",
+  "remaining": [
+    "Concrete real APRA format/copy approval",
+    "Real key backup, three version recovery verification",
+    "E telemetry minimization/retention and F plaintext retirement"
+  ]
+}

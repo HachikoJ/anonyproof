@@ -1,0 +1,4 @@
+Two initial wrapper commands completed their npx subprocesses, then failed before printing/propagating their exit status.
+zsh:3: read-only variable: status
+Initial TAP records 24 pass / 0 fail; initial typecheck output is empty. Neither wrapper failure is represented as command success.
+Final reruns use retention_test_exit / retention_type_exit and record actual subprocess exitCode=0 in separate result JSON files.

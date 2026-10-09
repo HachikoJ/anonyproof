@@ -1,0 +1,4 @@
+{
+  "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict scripts/content-retention-adapter.ts scripts/private-retention-archive.ts tests/fix/T-32-retention-adapter.test.ts",
+  "exitCode": 0
+}
