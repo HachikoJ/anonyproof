@@ -1,0 +1,205 @@
+{
+  "task": "T-36",
+  "stage": "S1 admin authentication extraction",
+  "baselineHead": "63b60a671bd128c511be8057fe14684fc90b64a7",
+  "currentHead": "1e82baf57327237a2285387a2f56f3f9874b26c5",
+  "scope": [
+    "server/index.ts",
+    "server/adminAuth.ts"
+  ],
+  "fixtureOnlyValidation": true,
+  "productionTouched": false,
+  "committedByThisAgent": false,
+  "fixPlanModifiedByThisAgent": false,
+  "mechanicalEquivalence": {
+    "routeCount": 43,
+    "explicitRouteRegistrations": 33,
+    "middlewareRegistrations": 10,
+    "exactS0MethodPathAliasOrder": true,
+    "comparisonMethod": "TypeScript AST printer with comments removed; string/template literal content preserved",
+    "movedFunctionBodies": [
+      {
+        "name": "signSession",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "createSession",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "getCookie",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "validSession",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "setSessionCookie",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "clearSessionCookie",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "safePasswordEqual",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "requireSameOrigin",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": "deferred getAllowedOrigins() dependency injection"
+      },
+      {
+        "name": "requireAdmin",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      },
+      {
+        "name": "isAdminAuthenticated",
+        "sameBodyAstPrint": true,
+        "allowedAdjustment": null
+      }
+    ],
+    "movedHandlerBodies": [
+      {
+        "name": "login",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "session",
+        "sameBodyAstPrint": true
+      },
+      {
+        "name": "logout",
+        "sameBodyAstPrint": true
+      }
+    ],
+    "otherRegistrationCallsUnchanged": 40
+  },
+  "initializationOrder": [
+    "Content codec remains first.",
+    "createAdminAuth reads existing admin configuration and creates exactly the original two ExpiringMaps.",
+    "IDENTITY_MAX_RECORDS validation remains before admin production configuration validation.",
+    "validateConfiguration() runs at the original validation point.",
+    "Global proxy, Origin, parsing, rate limiting and access-stat middlewares remain in their exact order.",
+    "initializeSessionSigning() generates or selects the signing secret at its original point after public routes.",
+    "Login/session/logout aliases and requireAdmin mount remain in original registration positions.",
+    "Allowed origins getter and demo identity callback are deferred until requests, after db/identity initialization.",
+    "Existing ExpiringMap constructor cleanup timers/unref behavior is preserved; no new cleanup lifecycle added."
+  ],
+  "tests": {
+    "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-01.test.ts tests/fix/T-07.test.ts tests/fix/T-09.test.ts tests/fix/T-22.test.ts tests/fix/T-22.integration.test.ts tests/fix/T-23.test.ts tests/fix/T-24.test.ts tests/fix/T-27.test.ts",
+    "exitCode": 0,
+    "totals": {
+      "tests": 38,
+      "suites": 0,
+      "pass": 38,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "log": "audit/execution-results/T-36-S1-tests.txt",
+    "sha256": "58a7deef8137f99989be7b0609f990096d80d4c7f810bde2ace8ec9a6b742d7a",
+    "existingTestsChanged": false
+  },
+  "typeChecks": [
+    {
+      "phase": "before",
+      "name": "frontend",
+      "command": "npm run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S1-before-frontend-types.txt",
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "phase": "before",
+      "name": "backend",
+      "command": "npm --prefix server run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S1-before-backend-types.txt",
+      "sha256": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675"
+    },
+    {
+      "phase": "before",
+      "name": "ci-strict",
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S1-before-ci-strict-types.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "phase": "after",
+      "name": "frontend",
+      "command": "npm run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S1-after-frontend-types.txt",
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "phase": "after",
+      "name": "backend",
+      "command": "npm --prefix server run type-check",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S1-after-backend-types.txt",
+      "sha256": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675"
+    },
+    {
+      "phase": "after",
+      "name": "ci-strict",
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "log": "audit/execution-results/T-36-S1-after-ci-strict-types.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "diffCheck": {
+    "command": "git diff --check",
+    "exitCode": 0,
+    "log": "audit/execution-results/T-36-S1-diff-check.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "productSha256": {
+    "server/index.ts": "1711332aa73121e40011eca86e8b6977db325e1a5015d84160093cca83efaf7e",
+    "server/adminAuth.ts": "96de365dc1b34a9a12243a062af61204885d601e5921e5e7092a77e372b7b5ef"
+  },
+  "limits": [
+    "S1 only; client identity/schema/routes module extractions have not started.",
+    "AST equivalence and source route order support actual HTTP tests and do not replace them.",
+    "Existing T42 browser fixture on 4000 was not stopped or reused by random-port HTTP tests.",
+    "No remote CI run, production deploy or real-data operation is implied.",
+    "Coordinator may advance HEAD through independent commits; compared server baseline is the explicitly recorded commit."
+  ],
+  "moduleEvaluation": {
+    "existingFirstDemoLoadPath": "index.ts -> utils/accessStats.ts -> utils/database.ts -> utils/instanceIsolation.ts -> demo.ts",
+    "existingRuntimeEdges": [
+      {
+        "file": "server/utils/accessStats.ts",
+        "runtimeImport": "./database"
+      },
+      {
+        "file": "server/utils/database.ts",
+        "runtimeImport": "./instanceIsolation"
+      },
+      {
+        "file": "server/utils/instanceIsolation.ts",
+        "runtimeImport": "../demo"
+      }
+    ],
+    "adminAuthImportAfterExistingAccessStatsImport": true,
+    "demoContainsExistingTopLevelEnvValidation": "DEMO_MAX_CLONES",
+    "demoEnvValidationEvaluationPointUnchanged": true,
+    "adminAuthModuleTopLevelRuntimeInitializers": 0,
+    "envSideEffectImportRemainsFirst": true,
+    "explanation": "The existing accessStats dependency graph already evaluates demo.ts before the newly introduced adminAuth import. demo.ts top-level fixed timestamps/data and DEMO_MAX_CLONES validation remain at that existing point. adminAuth adds only imported declarations and a factory definition until the explicit original initialization point."
+  }
+}

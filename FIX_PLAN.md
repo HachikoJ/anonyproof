@@ -1505,3 +1505,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - Q09用户批准的具体四模块方案已保存在`T-36-module-boundary-proposal.md`；只移动adminAuth、clientIdentity、schema、routes，入口保留显式原顺序。不引入接口/schema/权限/依赖/部署变化。
 - S0 `T-36-route-baseline.json`记录当前43个顶层注册（33 route注册含前置limiter、10 USE），alias与重复注册按序保存；与完整API/后续成功type门禁联合构成基线，不用字符串检查代替HTTP。开始S1只移动管理员认证，后续S2/S3/S4分别在前一步独立通过/提交后开始。
 - 本地修复前置已验收；真实历史资产/生产切换独立继续，最终候选真实CI待GitHub既有Cloudflare集成安全边界核实。T36未完成，不能将旧固定提交CI套用到最终拆分候选。
+
+
+### T-36 S1管理员认证独立移动通过（2026-10-09）
+
+- 仅将现有认证配置/Map/Cookie/HMAC和三个handlers移至`server/adminAuth.ts`，index在原位置validateConfiguration、initializeSessionSigning及挂载。身份容量配置错误优先级、Origin前置、demo延迟身份回调、原Map构造定时器均保持；新模块无顶层初始化副作用。
+- 八文件关联测试38/38、0失败/跳过，前后六项类型门禁均0，diffcheck0。43个route/middleware method/path/alias顺序与S0相同，10函数/3handler AST等价（Origin仅改显式getter注入），其余40注册调用不变。demo原先已由统计→database→instanceIsolation导入，不提前其配置校验。
+- 证据`T-36-S1-result.json`及日志。S1独立提交是R1回滚点；T36仍进行中，S2身份/S3schema/S4routes及最终整合未完成。未部署。
