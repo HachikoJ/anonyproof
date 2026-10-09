@@ -1,11 +1,15 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDemoConfig } from './hooks/useDemoConfig'
 import { useCrypto } from './hooks/useCrypto'
 import ExternalLinks from './components/ExternalLinks'
 import { recordCode } from './utils/recordCode'
 import type { Feedback, FeedbackComment, FeedbackStatus } from './types'
+
+type UserFeedback = Pick<Feedback, 'id' | 'category' | 'created_at' | 'status' | 'original_content' | 'solution' | 'solution_updated_at' | 'unread_notifications'>
+type RecordCounts = { total: number; pending: number; in_progress: number; resolved: number; no_solution: number }
+const emptyRecordCounts: RecordCounts = { total: 0, pending: 0, in_progress: 0, resolved: 0, no_solution: 0 }
 
 type View = 'home' | 'category' | 'compose' | 'records' | 'detail'
 
@@ -119,6 +123,8 @@ export default function HomePage() {
   const recordsListRef = useRef<HTMLDivElement>(null)
   const recordsScrollTopRef = useRef(0)
   const recordsLoadedRef = useRef(false)
+  const recordsOwnerRef = useRef('')
+  const selectedOwnerRef = useRef('')
   const notificationsLoadedRef = useRef(false)
   const [view, setView] = useState<View>('home')
   const [category, setCategory] = useState('')
@@ -126,10 +132,21 @@ export default function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; id?: string } | null>(null)
   const [stats, setStats] = useState<{ total: number } | null>(null)
-  const [records, setRecords] = useState<Feedback[]>([])
+  const [records, setRecords] = useState<UserFeedback[]>([])
+  const [recordCounts, setRecordCounts] = useState<RecordCounts>(emptyRecordCounts)
+  const [recordsTotal, setRecordsTotal] = useState(0)
+  const [recordsPage, setRecordsPage] = useState(0)
+  const [recordCursors, setRecordCursors] = useState<(string | null)[]>([null])
+  const [recordsNextCursor, setRecordsNextCursor] = useState<string | null>(null)
+  const recordsContextRef = useRef('')
+  const recordsPositionRef = useRef<{ cursor: string | null; page: number }>({ cursor: null, page: 0 })
+  const recordsRequestRef = useRef(0)
+  const detailRequestRef = useRef(0)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const [detailError, setDetailError] = useState('')
   const [recordsLoading, setRecordsLoading] = useState(false)
   const [recordsError, setRecordsError] = useState('')
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null)
+  const [selectedFeedback, setSelectedFeedback] = useState<UserFeedback | null>(null)
   const [comments, setComments] = useState<FeedbackComment[]>([])
   const [commentsLoading, setCommentsLoading] = useState(false)
   const [commentError, setCommentError] = useState('')
@@ -149,6 +166,9 @@ export default function HomePage() {
   const [codeCopied, setCodeCopied] = useState(false)
   const { deviceId, recoveryCode, recoverIdentity, identityLoading, identityError, encrypt } = useCrypto()
 
+  const currentDeviceRef = useRef(deviceId)
+  currentDeviceRef.current = deviceId
+
   const goHome = () => {
     setView('home')
     setShowNotifications(false)
@@ -160,31 +180,45 @@ export default function HomePage() {
     try {
       const response = await fetch(`/anonyproof/api/notifications/unread-count?recipientType=user&recipientId=${deviceId}`)
       const data = await readJson(response)
-      if (response.ok && data.success) setUnreadCount(data.count)
+      if (currentDeviceRef.current === deviceId && response.ok && data.success) setUnreadCount(data.count)
     } catch {
       // Notification count is non-critical; keep the rest of the app usable.
     }
   }, [deviceId])
 
-  const fetchRecords = useCallback(async () => {
-    if (!deviceId) return []
+  const fetchRecords = useCallback(async (cursor: string | null = null, page = 0) => {
+    if (!deviceId) return false
+    const request = ++recordsRequestRef.current
+    const current = () => request === recordsRequestRef.current && currentDeviceRef.current === deviceId
     setRecordsLoading(true)
     setRecordsError('')
+    const query = new URLSearchParams({ pagination: '1', limit: '50', category: filterCategory,
+      status: filterStatus, search: searchKeyword })
+    if (cursor) query.set('cursor', cursor)
     try {
-      const response = await fetch(`/anonyproof/api/feedback/device/${deviceId}`)
+      const response = await fetch(`/anonyproof/api/feedback/device/${encodeURIComponent(deviceId)}?${query}`)
       const data = await readJson(response)
+      if (!current()) return false
       if (!response.ok || !data.success) throw new Error(data.error || '记录加载失败')
+      recordsOwnerRef.current = deviceId
       setRecords(data.feedbacks)
+      setRecordCounts(data.counts)
+      setRecordsTotal(data.pagination.total)
+      setRecordsNextCursor(data.pagination.nextCursor)
+      setRecordsPage(page)
+      recordsPositionRef.current = { cursor, page }
+      setRecordCursors(items => [...items.slice(0, page), cursor])
       recordsLoadedRef.current = true
-      return data.feedbacks as Feedback[]
+      return true
     } catch (error) {
+      if (!current()) return false
       const message = getErrorMessage(error, '无法连接服务，请检查网络后重试。')
       setRecordsError(recordsLoadedRef.current ? `${message} 当前显示上次数据。` : message)
-      return []
+      return false
     } finally {
-      setRecordsLoading(false)
+      if (current()) setRecordsLoading(false)
     }
-  }, [deviceId])
+  }, [deviceId, filterCategory, filterStatus, searchKeyword])
 
   const fetchComments = useCallback(async (feedbackId: string) => {
     setCommentsLoading(true)
@@ -202,23 +236,41 @@ export default function HomePage() {
     }
   }, [])
 
-  const openRecord = useCallback((feedback: Feedback) => {
+  const openRecord = useCallback(async (feedback: Pick<UserFeedback, 'id'>) => {
+    if (!deviceId) return
+    const request = ++detailRequestRef.current
+    const current = () => request === detailRequestRef.current && currentDeviceRef.current === deviceId
     recordsScrollTopRef.current = recordsListRef.current?.scrollTop ?? recordsScrollTopRef.current
-    setSelectedFeedback(feedback)
-    setView('detail')
-    fetchComments(feedback.id)
-    if (deviceId && (feedback.unread_notifications ?? 0) > 0) {
-      fetch(`/anonyproof/api/notifications/read-all?recipientType=user&recipientId=${encodeURIComponent(deviceId)}&feedbackId=${encodeURIComponent(feedback.id)}`, { method: 'PUT' })
-        .then(async (response) => {
-          const data = await readJson(response)
-          if (!response.ok || !data.success) return
-          setRecords(items => items.map(item => item.id === feedback.id ? { ...item, unread_notifications: 0 } : item))
-          setNotifications(items => items.map(item => item.feedback_id === feedback.id ? { ...item, is_read: 1 } : item))
-          await fetchUnreadCount()
-        })
-        .catch(() => undefined)
+    setDetailLoading(true)
+    setDetailError('')
+    try {
+      const response = await fetch(`/anonyproof/api/feedback/${encodeURIComponent(feedback.id)}`)
+      const data = await readJson(response)
+      if (!current()) return
+      if (!response.ok || !data.success) throw new Error(data.error || '详情加载失败')
+      const detail: UserFeedback = data.feedback
+      selectedOwnerRef.current = deviceId
+      setSelectedFeedback(detail)
+      setView('detail')
+      fetchComments(detail.id)
+      if ((detail.unread_notifications ?? 0) > 0) {
+        fetch(`/anonyproof/api/notifications/read-all?recipientType=user&recipientId=${encodeURIComponent(deviceId)}&feedbackId=${encodeURIComponent(detail.id)}`, { method: 'PUT' })
+          .then(async (readResponse) => {
+            const result = await readJson(readResponse)
+            if (!current() || !readResponse.ok || !result.success) return
+            setRecords(items => items.map(item => item.id === detail.id ? { ...item, unread_notifications: 0 } : item))
+            setNotifications(items => items.map(item => item.feedback_id === detail.id ? { ...item, is_read: 1 } : item))
+            await fetchUnreadCount()
+          }).catch(() => undefined)
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return true
+    } catch (error) {
+      if (current()) setDetailError(getErrorMessage(error, '详情加载失败，请稍后重试。'))
+      return false
+    } finally {
+      if (current()) setDetailLoading(false)
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [deviceId, fetchComments, fetchUnreadCount])
 
   const openRecords = useCallback(() => {
@@ -227,11 +279,53 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
-  // 身份初始化或换机恢复完成后，如果用户已经进入列表页，立即读取新身份名下的记录。
+  // Drop previous identity's records, cursors and in-flight responses before
+  // loading the recovered identity. No summary is ever used as full detail.
+  useEffect(() => {
+    recordsRequestRef.current++
+    detailRequestRef.current++
+    recordsLoadedRef.current = false
+    recordsOwnerRef.current = selectedOwnerRef.current = ''
+    recordsContextRef.current = ''
+    recordsPositionRef.current = { cursor: null, page: 0 }
+    notificationsLoadedRef.current = false
+    setRecords([])
+    setRecordCounts(emptyRecordCounts)
+    setRecordsTotal(0)
+    setRecordsPage(0)
+    setRecordCursors([null])
+    setRecordsNextCursor(null)
+    setRecordsError('')
+    setSelectedFeedback(null)
+    setComments([])
+    setNotifications([])
+    setUnreadCount(0)
+    setDetailLoading(false)
+    setDetailError('')
+    setFilterCategory('all')
+    setFilterStatus('all')
+    setSearchKeyword('')
+    setView(current => current === 'detail' ? 'records' : current)
+  }, [deviceId])
+
   useEffect(() => {
     if (view !== 'records' || !deviceId) return
-    fetchRecords()
-  }, [view, deviceId, fetchRecords])
+    recordsRequestRef.current++
+    setRecordsLoading(true)
+    const context = JSON.stringify([deviceId, filterCategory, filterStatus, searchKeyword])
+    if (recordsContextRef.current !== context) {
+      recordsContextRef.current = context
+      recordsPositionRef.current = { cursor: null, page: 0 }
+      setRecords([])
+      recordsLoadedRef.current = false
+      setRecordsPage(0)
+      setRecordCursors([null])
+      setRecordsNextCursor(null)
+    }
+    const { cursor, page } = recordsPositionRef.current
+    const timer = window.setTimeout(() => { fetchRecords(cursor, page) }, 250)
+    return () => { window.clearTimeout(timer); recordsRequestRef.current++ }
+  }, [view, deviceId, filterCategory, filterStatus, searchKeyword, fetchRecords])
 
   useEffect(() => {
     fetch('/anonyproof/api/stats')
@@ -273,10 +367,12 @@ export default function HomePage() {
     try {
       const response = await fetch(`/anonyproof/api/notifications?recipientType=user&recipientId=${deviceId}&limit=20`)
       const data = await readJson(response)
+      if (currentDeviceRef.current !== deviceId) return
       if (!response.ok || !data.success) throw new Error(data.error || '通知加载失败')
       setNotifications(data.notifications)
       notificationsLoadedRef.current = true
     } catch (error) {
+      if (currentDeviceRef.current !== deviceId) return
       const message = getErrorMessage(error, '无法连接服务，请检查网络后重试。')
       setNotificationError(
         notificationsLoadedRef.current ? `${message} 当前显示上次通知。` : message,
@@ -321,11 +417,8 @@ export default function HomePage() {
 
   const openNotification = async (notification: Notification) => {
     if (!notification.is_read) await markAsRead(notification.id)
-    const latestRecords = records.length ? records : await fetchRecords()
-    const match = latestRecords.find((record) => record.id === notification.feedback_id)
-    if (match) openRecord(match)
-    else openRecords()
-    setShowNotifications(false)
+    const opened = await openRecord({ id: notification.feedback_id })
+    if (opened) setShowNotifications(false)
   }
 
   const handleSubmit = async () => {
@@ -405,7 +498,10 @@ export default function HomePage() {
     setRecovering(true)
     setRecoveryMessage(null)
     try {
-      await recoverIdentity(code)
+      const recoveredDevice = await recoverIdentity(code)
+      currentDeviceRef.current = recoveredDevice
+      recordsRequestRef.current++
+      detailRequestRef.current++
       setRecoveryInput('')
       setRecoveryMessage({ tone: 'success', text: '已切换到该恢复码对应的提交记录。' })
     } catch (error) {
@@ -415,13 +511,6 @@ export default function HomePage() {
     }
   }
 
-  const filteredRecords = useMemo(() => records.filter((record) => {
-    const matchesCategory = filterCategory === 'all' || record.category === filterCategory
-    const matchesStatus = filterStatus === 'all' || record.status === filterStatus
-    const matchesSearch = !searchKeyword.trim() || record.original_content?.toLowerCase().includes(searchKeyword.trim().toLowerCase())
-    return matchesCategory && matchesStatus && matchesSearch
-  }), [records, filterCategory, filterStatus, searchKeyword])
-
   useEffect(() => {
     if (view !== 'records') return
     const frame = window.requestAnimationFrame(() => {
@@ -430,12 +519,10 @@ export default function HomePage() {
       }
     })
     return () => window.cancelAnimationFrame(frame)
-  }, [view, filteredRecords])
+  }, [view, records])
 
-  const recordCounts = useMemo(() => records.reduce((result, record) => {
-    result[record.status] = (result[record.status] ?? 0) + 1
-    return result
-  }, {} as Record<string, number>), [records])
+  const visibleRecords = recordsOwnerRef.current === deviceId ? records : []
+  const visibleRecordCounts = recordsOwnerRef.current === deviceId ? recordCounts : emptyRecordCounts
 
   return (
     <div className="app-shell">
@@ -484,6 +571,8 @@ export default function HomePage() {
                     </button>
                   ))}
                 </div>
+                {detailLoading && <p role="status">正在读取提交详情…</p>}
+                {detailError && <p role="alert">{detailError}</p>}
                 {notificationError && <p className="notification-error" role="alert">{notificationError}</p>}
               </section>
             )}
@@ -675,29 +764,31 @@ export default function HomePage() {
               </div>
             )}
             <div className="record-summary" aria-label="提交状态概览">
-              <div><span>{records.length}</span><small>全部提交</small></div>
-              <div><span>{recordCounts.pending ?? 0}</span><small>待受理</small></div>
-              <div><span>{recordCounts.in_progress ?? 0}</span><small>处理中</small></div>
-              <div><span>{recordCounts.resolved ?? 0}</span><small>已办结</small></div>
-              <div><span>{recordCounts.no_solution ?? 0}</span><small>暂无法处理</small></div>
+              <div><span>{visibleRecordCounts.total}</span><small>全部提交</small></div>
+              <div><span>{visibleRecordCounts.pending ?? 0}</span><small>待受理</small></div>
+              <div><span>{visibleRecordCounts.in_progress ?? 0}</span><small>处理中</small></div>
+              <div><span>{visibleRecordCounts.resolved ?? 0}</span><small>已办结</small></div>
+              <div><span>{visibleRecordCounts.no_solution ?? 0}</span><small>暂无法处理</small></div>
             </div>
             <div className="filters" aria-label="筛选提交记录">
               <input aria-label="搜索提交内容" value={searchKeyword} onChange={(event) => { recordsScrollTopRef.current = 0; setSearchKeyword(event.target.value) }} placeholder="搜索提交内容" />
               <select aria-label="按提交类型筛选" value={filterCategory} onChange={(event) => { recordsScrollTopRef.current = 0; setFilterCategory(event.target.value) }}><option value="all">全部类型</option>{categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select>
               <select aria-label="按处理状态筛选" value={filterStatus} onChange={(event) => { recordsScrollTopRef.current = 0; setFilterStatus(event.target.value) }}><option value="all">全部状态</option>{Object.entries(statusConfig).map(([key, value]) => <option value={key} key={key}>{value.label}</option>)}</select>
             </div>
+            {detailLoading && <p role="status">正在读取提交详情…</p>}
+            {detailError && <p role="alert">{detailError}</p>}
             <div className="records-results">
-              {recordsError && <div className="inline-error" role="alert"><span>{recordsError}</span><button type="button" onClick={fetchRecords}>重试</button></div>}
+              {recordsError && <div className="inline-error" role="alert"><span>{recordsError}</span><button type="button" onClick={() => fetchRecords(recordCursors[recordsPage], recordsPage)}>重试</button></div>}
               {identityLoading || recordsLoading ? (
                 <div className="records-loading" aria-live="polite"><span /><p>正在读取当前浏览器的提交记录…</p></div>
               ) : identityError ? (
                 <div className="inline-error" role="alert"><span>{identityError}</span><button type="button" onClick={() => window.location.reload()}>重新载入</button></div>
-              ) : filteredRecords.length === 0 ? (
-                <div className="empty-state"><strong>{records.length ? '没有符合当前条件的记录' : '当前浏览器暂无提交记录'}</strong><p>{records.length ? '调整搜索词或筛选条件后重试。' : '提交后，处理状态和沟通记录会显示在这里。'}</p>{!records.length && <button className="button button-primary" type="button" onClick={() => setView('category')}>提交第一条线索</button>}</div>
+              ) : visibleRecords.length === 0 ? (
+                <div className="empty-state"><strong>{visibleRecordCounts.total ? '没有符合当前条件的记录' : '当前浏览器暂无提交记录'}</strong><p>{visibleRecordCounts.total ? '调整搜索词或筛选条件后重试。' : '提交后，处理状态和沟通记录会显示在这里。'}</p>{!visibleRecordCounts.total && <button className="button button-primary" type="button" onClick={() => setView('category')}>提交第一条线索</button>}</div>
               ) : (
                 <div className="record-list" ref={recordsListRef} onScroll={(event) => { recordsScrollTopRef.current = event.currentTarget.scrollTop }}>
-                  {filteredRecords.map((record) => (
-                    <button key={record.id} type="button" onClick={() => openRecord(record)}>
+                  {visibleRecords.map((record) => (
+                    <button key={record.id} type="button" onClick={() => openRecord(record)} disabled={detailLoading}>
                       <span className="record-main">
                         <span className="record-meta">
                           <span className={`category-tag category-tag-${record.category}`}>{categoryName(record.category)}</span>
@@ -713,10 +804,15 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+            <div className="records-pagination" aria-label="提交记录分页">
+              <span>第 {recordsPage + 1} 页，符合条件共 {recordsOwnerRef.current === deviceId ? recordsTotal : 0} 条</span>
+              <button type="button" disabled={recordsLoading || recordsPage === 0} onClick={() => fetchRecords(recordCursors[recordsPage - 1], recordsPage - 1)}>上一页</button>
+              <button type="button" disabled={recordsLoading || !recordsNextCursor} onClick={() => fetchRecords(recordsNextCursor, recordsPage + 1)}>下一页</button>
+            </div>
           </section>
         )}
 
-        {view === 'detail' && selectedFeedback && (
+        {view === 'detail' && selectedFeedback && selectedOwnerRef.current === deviceId && (
           <section className="task-view detail-view">
             <div className="detail-head">
               <button className="back-link" type="button" onClick={() => setView('records')} aria-label="返回我的提交">

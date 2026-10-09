@@ -1,3 +1,4 @@
+import { getUserFeedbackPage } from './utils/userFeedbackPagination'
 import { FeedbackPaginationError, getAdminFeedbackPage, parseFeedbackPagination } from './utils/adminFeedbackPagination'
 import './env'
 import express from 'express'
@@ -1408,7 +1409,11 @@ app.post('/api/feedback/:feedbackId/comments', (req, res, next) => {
 }, userCommentSourceLimiter, userCommentIdentityLimiter, (req, res) => addFeedbackComment(req, res, 'user'))
 app.post('/api/admin/feedback/:feedbackId/comments', (req, res) => addFeedbackComment(req, res, 'admin'))
 
-// API: 获取某设备的所有反馈
+db.exec('CREATE INDEX IF NOT EXISTS idx_feedback_device_cursor ON feedbacks(device_id, created_at DESC, id DESC)')
+
+// Compatibility fields are retained for parameter-free cached clients, bounded
+// to 100 rows. The current frontend opts into summaries and global counts.
+// API: 获取某设备的反馈分页
 app.get('/api/feedback/device/:deviceId', (req, res) => {
   try {
     const { deviceId } = req.params
@@ -1417,12 +1422,14 @@ app.get('/api/feedback/device/:deviceId', (req, res) => {
     }
 
     const scope = userRecordScope('feedbacks')
+    const options = parseFeedbackPagination(req.query, `user:${deviceId}`)
+    if (Object.keys(req.query).length) return res.json(getUserFeedbackPage(db, contentEncryption, deviceId, scope, options))
     const feedbacks = db.prepare(
       `SELECT id, category, original_content, created_at, status, solution, solution_updated_at, original_content_storage_version, solution_storage_version,
         (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id = feedbacks.id AND n.recipient_type = 'user' AND n.recipient_id = ? AND n.is_read = 0) AS unread_notifications
        FROM feedbacks
        WHERE device_id = ? AND ${scope.sql}
-       ORDER BY created_at DESC`
+       ORDER BY created_at DESC, id DESC LIMIT 100`
     ).all(deviceId, deviceId, ...scope.params) as any[]
 
     res.json({
@@ -1433,7 +1440,31 @@ app.get('/api/feedback/device/:deviceId', (req, res) => {
       }))
     })
   } catch (error) {
+    if (error instanceof FeedbackPaginationError) return res.status(400).json({ error: error.message })
     console.error('获取设备反馈失败:', error)
+    res.status(500).json({ error: '获取失败' })
+  }
+})
+
+// Full text is loaded only after record authorization, including notification
+// targets outside the currently displayed page and active filters.
+app.get('/api/feedback/:feedbackId', (req, res) => {
+  try {
+    const scope = userRecordScope('feedbacks')
+    const row = db.prepare(`SELECT id, device_id, category, created_at, status,
+      original_content, solution, solution_updated_at, original_content_storage_version, solution_storage_version,
+      (SELECT COUNT(*) FROM notifications n WHERE n.feedback_id=feedbacks.id
+        AND n.recipient_type='user' AND n.recipient_id=feedbacks.device_id AND n.is_read=0) AS unread_notifications
+      FROM feedbacks WHERE id=? AND ${scope.sql}`).get(String(req.params.feedbackId), ...scope.params) as any
+    if (!row) return res.status(404).json({ error: '反馈不存在' })
+    if (!canAccessDevice(req, row.device_id)) return res.status(401).json({ error: '无权查看该记录' })
+    const record = readFeedback(row)
+    res.json({ success: true, feedback: { id: record.id, category: record.category,
+      created_at: new Date(record.created_at).toISOString(), status: record.status,
+      original_content: record.original_content, solution: record.solution,
+      solution_updated_at: record.solution_updated_at, unread_notifications: record.unread_notifications } })
+  } catch (error) {
+    console.error('获取反馈详情失败:', error)
     res.status(500).json({ error: '获取失败' })
   }
 })

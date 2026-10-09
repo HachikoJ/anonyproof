@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+ok 1 - T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+  ---
+  duration_ms: 1090.145916
+  type: 'test'
+  ...
+# Subtest: T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+ok 2 - T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+  ---
+  duration_ms: 1717.407708
+  type: 'test'
+  ...
+# Subtest: T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+ok 3 - T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+  ---
+  duration_ms: 1.265333
+  type: 'test'
+  ...
+# Subtest: T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+ok 4 - T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+  ---
+  duration_ms: 48.398292
+  type: 'test'
+  ...
+# Subtest: T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+ok 5 - T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+  ---
+  duration_ms: 0.801333
+  type: 'test'
+  ...
+# Subtest: T-03 module: explicit old-format reader compatibility and demo keylessness
+ok 6 - T-03 module: explicit old-format reader compatibility and demo keylessness
+  ---
+  duration_ms: 0.259541
+  type: 'test'
+  ...
+# Subtest: T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+ok 7 - T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+  ---
+  duration_ms: 0.148458
+  type: 'test'
+  ...
+# Subtest: T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+ok 8 - T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+  ---
+  duration_ms: 0.090166
+  type: 'test'
+  ...
+# Subtest: T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+ok 9 - T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+  ---
+  duration_ms: 5.407875
+  type: 'test'
+  ...
+# Subtest: T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+ok 10 - T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+  ---
+  duration_ms: 1.03575
+  type: 'test'
+  ...
+# Subtest: T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+ok 11 - T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+  ---
+  duration_ms: 0.787292
+  type: 'test'
+  ...
+# Subtest: T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+ok 12 - T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+  ---
+  duration_ms: 1.001416
+  type: 'test'
+  ...
+# Subtest: T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+ok 13 - T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+  ---
+  duration_ms: 2344.7235
+  type: 'test'
+  ...
+# Subtest: T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+ok 14 - T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+  ---
+  duration_ms: 1051.903041
+  type: 'test'
+  ...
+# Subtest: T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+ok 15 - T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+  ---
+  duration_ms: 533.291291
+  type: 'test'
+  ...
+# Subtest: T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+ok 16 - T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+  ---
+  duration_ms: 943.965417
+  type: 'test'
+  ...
+# Subtest: T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+ok 17 - T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+  ---
+  duration_ms: 3021.880792
+  type: 'test'
+  ...
+# Subtest: T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+ok 18 - T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+  ---
+  duration_ms: 459.750708
+  type: 'test'
+  ...
+# Subtest: T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+ok 19 - T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+  ---
+  duration_ms: 497.662458
+  type: 'test'
+  ...
+# Subtest: T-08: invalid recovery limiter values reject startup by the offending configuration name
+ok 20 - T-08: invalid recovery limiter values reject startup by the offending configuration name
+  ---
+  duration_ms: 4223.673917
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and missing code preserves R1 and its records
+ok 21 - T-21: restart with valid Cookie and missing code preserves R1 and its records
+  ---
+  duration_ms: 1671.532042
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+ok 22 - T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 1053.717041
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and missing code preserves R1 and its records
+ok 23 - T-21: restart with valid installation key and missing code preserves R1 and its records
+  ---
+  duration_ms: 891.48925
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and mismatching code preserves R1 and its records
+ok 24 - T-21: restart with valid installation key and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 885.818833
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid Cookie never revokes R1
+ok 25 - T-21: expired display cache with valid Cookie never revokes R1
+  ---
+  duration_ms: 447.217375
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid installation key never revokes R1
+ok 26 - T-21: expired display cache with valid installation key never revokes R1
+  ---
+  duration_ms: 449.144375
+  type: 'test'
+  ...
+# Subtest: T-21: two initializing tabs share one identity and matching codes remain valid
+ok 27 - T-21: two initializing tabs share one identity and matching codes remain valid
+  ---
+  duration_ms: 434.529208
+  type: 'test'
+  ...
+# Subtest: T-38: 1000 records / two identities, stable tied-time cursor and 160-codepoint bounded summary
+ok 28 - T-38: 1000 records / two identities, stable tied-time cursor and 160-codepoint bounded summary
+  ---
+  duration_ms: 1028.277667
+  type: 'test'
+  ...
+# Subtest: T-38: encrypted full-content search beyond summaries/pages, global counts and independent full detail
+ok 29 - T-38: encrypted full-content search beyond summaries/pages, global counts and independent full detail
+  ---
+  duration_ms: 791.953833
+  type: 'test'
+  ...
+# Subtest: T-38: malformed parameters/cursor identity/filter binding cannot bypass authorization
+ok 30 - T-38: malformed parameters/cursor identity/filter binding cannot bypass authorization
+  ---
+  duration_ms: 494.373083
+  type: 'test'
+  ...
+# Subtest: T-38: recovery R1 replaces list ownership, and demo list excludes templates/other sandboxes/legacy rows
+ok 31 - T-38: recovery R1 replaces list ownership, and demo list excludes templates/other sandboxes/legacy rows
+  ---
+  duration_ms: 1033.912666
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8368.574541
