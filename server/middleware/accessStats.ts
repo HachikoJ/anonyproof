@@ -1,6 +1,7 @@
 // 访问统计中间件
 import { logger } from '../utils/logger'
 import { openDatabase } from '../utils/database'
+import { accessRouteTemplate, classifyUserAgent, safeSuspiciousReason, safeRateLimitReason, safeAccessErrorCode } from '../utils/accessPrivacy'
 
 const db = openDatabase()
 
@@ -162,7 +163,7 @@ function logRateLimit(ip: string, path: string, reason: string) {
   const stmt = db.prepare(
     'INSERT INTO rate_limit_logs (ip, path, reason, created_at) VALUES (?, ?, ?, ?)'
   )
-  stmt.run(ip, path, reason, Date.now())
+  stmt.run(ip, accessRouteTemplate(path), safeRateLimitReason(reason), Date.now())
 
   // 检查是否需要加入黑名单
   const countStmt = db.prepare(
@@ -178,7 +179,7 @@ function logRateLimit(ip: string, path: string, reason: string) {
       'INSERT OR REPLACE INTO ip_blacklist (ip, reason, attempts, blacklisted_at, expires_at) VALUES (?, ?, ?, ?, ?)'
     )
     insertStmt.run(ip, 'Exceeded rate limit 10 times in 1 hour', result.count, Date.now(), expiresAt)
-    logger.warn(`IP ${ip} blacklisted for 24 hours due to excessive rate limit violations`)
+    logger.warn('Source blacklisted for 24 hours due to excessive rate limit violations')
   }
 }
 
@@ -249,9 +250,9 @@ export const recordAccess = db.transaction((entry: AccessLogEntry) => {
   const date = new Date(entry.createdAt).toISOString().slice(0, 10)
   const dayStart = Date.parse(date + 'T00:00:00Z')
   const unique = hasDailyVisitor.get(entry.ip, dayStart, dayStart + 86400000) ? 0 : 1
-  insertAccessLog.run(entry.ip, entry.userAgent, entry.path, entry.method,
+  insertAccessLog.run(entry.ip, classifyUserAgent(entry.userAgent), accessRouteTemplate(entry.path), entry.method,
     entry.statusCode, entry.responseTime, entry.isBot ? 1 : 0,
-    entry.isSuspicious ? 1 : 0, entry.suspiciousReason, entry.createdAt)
+    entry.isSuspicious ? 1 : 0, safeSuspiciousReason(entry.suspiciousReason), entry.createdAt)
   incrementDailyStats.run(date, unique, entry.isBot ? 1 : 0,
     entry.isSuspicious ? 1 : 0, Math.round(entry.responseTime), entry.responseTime)
 })
@@ -265,12 +266,12 @@ export function accessStatsMiddleware(req: any, res: any, next: any) {
 
   // 检查是否在黑名单中
   if (isIPBlacklisted(ip)) {
-    logger.warn(`Blacklisted IP attempted access: ${ip}`)
+    logger.warn('Blacklisted source attempted access')
     return res.status(403).json({ error: 'Access denied' })
   }
 
   // 检测爬虫
-  const { isBot, botName } = detectBot(userAgent)
+  const { isBot } = detectBot(userAgent)
 
   // 检测可疑行为
   const { isSuspicious, reason } = detectSuspicious(ip, userAgent, path)
@@ -281,17 +282,17 @@ export function accessStatsMiddleware(req: any, res: any, next: any) {
 
     try {
       recordAccess.immediate({
-        ip, userAgent, path, method: req.method, statusCode: res.statusCode,
+        ip, userAgent, path: accessRouteTemplate(req.route?.path || path), method: req.method, statusCode: res.statusCode,
         responseTime, isBot, isSuspicious, suspiciousReason: reason || null,
         createdAt: Date.now(),
       })
 
       // 记录可疑访问
       if (isSuspicious) {
-        logger.warn(`Suspicious access detected: IP=${ip}, Reason=${reason}, Path=${path}`)
+        logger.warn('Suspicious access detected', { reason: safeSuspiciousReason(reason), route: accessRouteTemplate(req.route?.path || path) })
       }
     } catch (error) {
-      logger.error('Failed to log access:', error)
+      logger.error('Failed to log access', { code: safeAccessErrorCode(error) })
     }
   })
 

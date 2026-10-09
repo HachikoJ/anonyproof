@@ -708,7 +708,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-33 数据可关联性与匿名说明一致
 
-状态：待办（C已批准定位及新写最小化；等待T-11；历史值处置另批）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。
+状态：进行中（T-11本地保留窗口前置通过，新写/兼容读取最小化本地通过；浏览器/Nginx/历史资产另验）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。
 
 **问题**：access_logs的IP/UA/path、device_id与正文、管理员处理IP等能被运营者关联；“匿名”若被理解为不可追踪就超过实际能力。
 
@@ -1359,3 +1359,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 必要顺序修正：启动兼容适配会从identity.token_hash补session，单纯DELETE expired可能复活旧token；同事务清仅匹配expired child的兼容hash。移除issueIdentitySession内另一路无界expired DELETE，统一交给有界调度。保留有效其它Cookie和R1，不改变凭证格式/恢复模型。
 - `npx --no-install tsx --test --test-concurrency=1 tests/fix/T-25.test.ts tests/fix/T-21.test.ts tests/fix/T-05.test.ts tests/fix/T-08.test.ts tests/fix/T-26.test.ts`实际25/25通过，T25六项包括真实HTTP/两次重启、旧Cookie401、其它validCookie200、R1原身份恢复/绑定、边界、readonly dryrun文件SHA不变、501/502共享预算、child活动证据保护、demo所有cascade及parent活动/hash故障回滚。两type退出0。证据T-25-local-result.json、T-25-dry-run.json及regression/types。
 - docs/IDENTITY_RETENTION.md包含完整策略/命令/快照及恢复门禁。真实资产未运行清理，整项不得关闭；独立提交回滚不能恢复退役身份与业务，需要批准的一致性快照独立恢复，不能覆盖清理后新记录。
+
+### T-33 本地执行与验收（2026-10-09）
+
+- 状态：进行中。依据T-11本地7天调度已验证的新写前置，raw access/rate-limit DB仅保留IP、固定browser/bot/script枚举及route模板，无原始UA/query/业务ID路径；底层写函数规范化防旁路，权限/黑名单/真实IP代理策略不变。Winston只受控reason/route/error code，不长存原始IP；所有业务/审计adminIP新写空或NULL，旧HTTP读隐藏或分类转换，旧库行未物理修改。
+- 修复前3项失败，另新增真实URIError泄漏探针：畸形参数400时stderr包含合成业务marker。最后error handler仅URIError固定400，避免默认stack写路径，其余错误语义保持；最终T33六项+T10/T11/T34共23/23通过，两types0、diffcheck0。所有测试为临时合成DB/日志，没有真实用户样本。证据T-33-local-result.json及before/probe/uri-before/final日志。
+- 页面和README隐私句逐字匹配，完整字段/窗口/黑名单例外见docs/ACCESS_PRIVACY.md；浏览器提交前可见性仍待实际生产构建UI验收。历史IP/UA/路径及backup/WAL处置须逐资产确认。受支持Nginx模板目前继承全局access/error日志，T35/T33生产阶段必须明确最小化/保留并实际核验，不能将应用日志结果外推至代理层。
+- 未调用的server/utils/comments.ts仍有旧raw adminIp工具且未接T03加密，运行路由不引用；作为非本次范围遗留工具记录，不扩展本次修改、不把活动HTTP验收等同所有弃用源码安全。独立提交可回退代码，但回滚不应恢复新增敏感字段写入；生产新写与历史值没有自动清理授权。

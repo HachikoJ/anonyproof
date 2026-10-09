@@ -409,7 +409,7 @@ for (const table of ['feedback_comments', 'notifications']) {
 // Storage flags are internal. Authorization is performed by each caller before
 // decrypting; public response shapes continue to return the authorized plaintext.
 function readFeedback(row: any) {
-  const { original_content_storage_version, solution_storage_version, ...record } = row
+  const { original_content_storage_version, solution_storage_version, solution_admin_ip, ...record } = row
   return {
     ...record,
     original_content: contentEncryption.decrypt(row.original_content, `feedbacks:${row.id}:original_content`, original_content_storage_version),
@@ -417,12 +417,12 @@ function readFeedback(row: any) {
   }
 }
 function readComment(row: any) {
-  const { content_storage_version, ...record } = row
+  const { content_storage_version, admin_ip, ...record } = row
   return { ...record, content: contentEncryption.decrypt(row.content,
     `feedback_comments:${row.feedback_id}:${row.commenter_type}:content`, content_storage_version) }
 }
 function readNotification(row: any) {
-  const { content_storage_version, ...record } = row
+  const { content_storage_version, admin_ip, ...record } = row
   const context = `notifications:${row.feedback_id}:${row.recipient_type}:${row.recipient_id}:${row.type}`
   return { ...record,
     title: contentEncryption.decrypt(row.title, `${context}:title`, content_storage_version),
@@ -933,11 +933,11 @@ app.post('/api/identity/recover', (req, res) => {
 })
 
 // 工具函数：记录管理员操作
-const logAdminAction = (action: string, targetId: string, ip: string) => {
+const logAdminAction = (action: string, targetId: string, _ip: string) => {
   const stmt = db.prepare(
     'INSERT INTO admin_logs (action, target_id, admin_ip, created_at) VALUES (?, ?, ?, ?)'
   )
-  stmt.run(action, targetId, ip, Date.now())
+  stmt.run(action, targetId, '', Date.now())
 }
 
 // 工具函数：更新统计
@@ -1164,7 +1164,7 @@ app.put('/api/admin/feedback/:id/status', (req, res) => {
       if (trimmedSolution) {
         db.prepare(
           'UPDATE feedbacks SET status = ?, solution = ?, solution_storage_version = ?, solution_updated_at = ?, solution_admin_ip = ? WHERE id = ?'
-        ).run(status, contentEncryption.encrypt(trimmedSolution, `feedbacks:${id}:solution`), contentEncryption.storageVersion, Date.now(), ip, id)
+        ).run(status, contentEncryption.encrypt(trimmedSolution, `feedbacks:${id}:solution`), contentEncryption.storageVersion, Date.now(), '', id)
       } else {
         db.prepare('UPDATE feedbacks SET status = ? WHERE id = ?').run(status, id)
       }
@@ -1242,7 +1242,7 @@ app.get('/api/admin/logs', (req, res) => {
     logAdminAction('view_logs', 'logs', ip)
 
     const logs = db.prepare(
-      'SELECT * FROM admin_logs ORDER BY created_at DESC LIMIT 100'
+      'SELECT id,action,target_id,created_at FROM admin_logs ORDER BY created_at DESC LIMIT 100'
     ).all()
 
     res.json({
@@ -1318,7 +1318,7 @@ const addFeedbackComment = (req: express.Request, res: express.Response, comment
     }
 
     const createdAt = Date.now()
-    const adminIp = commenterType === 'admin' ? (req.ip || req.socket.remoteAddress || 'unknown') : null
+    const adminIp = null
 
     const result = db.transaction(() => {
       // Recheck the scoped parent while holding the write reservation.
@@ -1672,6 +1672,12 @@ app.put('/api/notifications/read-all', (req, res) => {
 // Capacity is checked before any new identity/session/demo clone is written,
 // including implicit identity issuance during a demo administrator login.
 const identityCapacityErrorHandler: express.ErrorRequestHandler = (error, _req, res, next) => {
+  // Express's default URI decode error includes the raw route parameter in
+  // stderr. Keep the 400 response without retaining that identifier.
+  if (error instanceof URIError && !res.headersSent) {
+    res.status(400).json({ error: 'Invalid request path' })
+    return
+  }
   if (error instanceof IdentityCapacityError && !res.headersSent) {
     res.status(503).json({ error: error.message })
     return

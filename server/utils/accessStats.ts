@@ -2,6 +2,7 @@
 import { openDatabase } from './database'
 import { cleanupRawLogBatch, RAW_LOG_RETENTION_MS, scheduleRawLogRetention } from './logRetention'
 import { logger } from './logger'
+import { displayAccessLog, accessRouteTemplate } from './accessPrivacy'
 
 const db = openDatabase()
 
@@ -73,9 +74,10 @@ export function getRecentAccessLogs(limit: number = 100) {
       suspicious_reason,
       datetime(created_at / 1000, 'unixepoch', 'localtime') as created_at
     FROM access_logs
+    WHERE created_at >= ?
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => displayAccessLog(entry))
 }
 
 // 获取可疑访问日志
@@ -91,10 +93,10 @@ export function getSuspiciousAccessLogs(limit: number = 50) {
       suspicious_reason,
       datetime(created_at / 1000, 'unixepoch', 'localtime') as created_at
     FROM access_logs
-    WHERE is_suspicious = 1
+    WHERE is_suspicious = 1 AND created_at >= ?
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => displayAccessLog(entry))
 }
 
 // 获取爬虫访问日志
@@ -108,10 +110,10 @@ export function getBotAccessLogs(limit: number = 50) {
       method,
       datetime(created_at / 1000, 'unixepoch', 'localtime') as created_at
     FROM access_logs
-    WHERE is_bot = 1
+    WHERE is_bot = 1 AND created_at >= ?
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => displayAccessLog(entry))
 }
 
 // 获取热门路径
@@ -123,10 +125,11 @@ export function getTopPaths(limit: number = 10) {
       COUNT(DISTINCT ip) as unique_visitors,
       AVG(response_time) as avg_response_time
     FROM access_logs
+    WHERE created_at >= ?
     GROUP BY path
     ORDER BY visits DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => ({...entry, path: accessRouteTemplate(entry.path)}))
 }
 
 // 获取活跃 IP
