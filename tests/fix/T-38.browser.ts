@@ -17,7 +17,14 @@ async function main() {
     CONTENT_ENCRYPTION_KEY: key, CORS_ORIGINS: `http://127.0.0.1:${edgePort}` })
   const encryption = loadContentEncryption({ demoMode: false, env: { CONTENT_ENCRYPTION_KEY: key } })
   const a = new Client(service), b = new Client(service)
-  const ia = (await a.identity()).data, ib = (await b.identity()).data
+  const fixtureOrigin = `http://127.0.0.1:${edgePort}`
+  const ra = await a.identity({ headers: { Origin: fixtureOrigin } })
+  const rb = await b.identity({ headers: { Origin: fixtureOrigin } })
+  if (ra.response.status !== 200 || rb.response.status !== 200) {
+    await service.stop()
+    throw new Error('Synthetic identity setup failed before seeding')
+  }
+  const ia = ra.data, ib = rb.data
   const recoveryPath = path.join(service.dir, 'T38-synthetic-recovery-codes.json')
   writeFileSync(recoveryPath, JSON.stringify({ a: ia.recoveryCode, b: ib.recoveryCode }) + '\n', { mode: 0o600 })
   const db = service.openDb()

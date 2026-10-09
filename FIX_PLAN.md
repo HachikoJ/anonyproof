@@ -369,7 +369,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-38 用户反馈列表分页
 
-状态：进行中（分页/授权详情/API/类型验收通过；最终构建和浏览器切换身份验收待完成）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18、T-37的公共分页解析。
+状态：已完成（分页/授权详情/API/类型/最终构建及真实浏览器跨页、通知、恢复身份隔离通过）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18、T-37的公共分页解析。
 
 **问题**：`GET /api/feedback/device/:deviceId`约1231行全量记录和全文，用户端`records`全量筛选。
 
@@ -1434,3 +1434,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 用户明确批准终端Playwright仅本地合成站；使用技能CLI独立浏览器，无用户Cookie/登录会话。真实production Next构建沿用T23/T37/T38/T39/T42最终build，夹具 `npx --no-install tsx tests/fix/T-37.browser.ts`，操作脚本 `audit/execution-results/T-37-browser-flow.js` 通过技能CLI run-code执行，结果 `T-37-browser-result.json`，截图 `output/playwright/T-37-admin-final.png`。
 - 实际14项页面断言通过：50条首/次页互不重叠、前后页复原、末页禁用、跨页搜索与组合筛选/冲突0、概览不随筛选缩水、摘要无正文末尾而授权详情含末尾、处理后resolved251/no_solution249且筛选空/详情保留、通知准确打开非当前页且不插入列表、URL重载仍显示该详情。SQLite只读复核处理状态和通知未读0；实际网络列表均≤50、详情>160字符、PUT成功。未用HTTP测试冒充浏览器。
 - T37本地修改及全部规定验收通过，标已完成；未部署生产，后续提交实际远端CI仍等Cloudflare分支隔离。测试资产均合成，精确SIGTERM停止自有夹具，未删除资产。
+
+### T-38 真实浏览器验收闭合（2026-10-09）
+
+- 独立Playwright真实操作恢复合成A、1000条/50条首末页、前后页精确复原、搜索摘要之外的正文/跨页组合筛选与0结果、全局概览1000保持、授权完整详情、非当前页通知；随后UI恢复B，只有B页且A详情/通知清空，B搜索A专属标记0条。12项断言全部通过，网络全部列表≤50，SQLite只读核对通知未读0。证据 `T-38-browser-result.json`、network、flow；截图 `output/playwright/T-38-user-B-final.png` 遮盖合成恢复码（仅截图DOM遮盖）。
+- 夹具最初向4000发送身份Origin而只允许edge3034，身份403导致seed NOT NULL失败；只修夹具显式使用已配置edge Origin并检查200，未改产品。首次截图末尾定位类名写错导致timeout，保留私有失败输出，修正后整套重新执行通过；不把失败算通过。脚本RECOVERY_A/B占位从0600合成recoveryPath读取，不发布恢复码。
+- 最终production build证据沿用已通过的T23/T37/T38/T39/T42共享构建；产品在该构建后无前端改动。本项所需API/类型/构建/浏览器验收闭合，标已完成；未推送/部署。精确停止自有fixture，保留合成资产。
