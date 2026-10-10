@@ -1557,3 +1557,12 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - T36四模块完成后的production build与最新保留ACME模板，真实本机Nginx→Next→Express复验通过：T24 11/11、T35 45/45、T33 3/3；原T33链路证据另存before-S4文件，不覆盖历史结果。当前新证据T-33-real-chain-result.json、T-36-final-proxy-chain.txt。
 - 远端前置A/B预检实际失败NGINX_BLOCK_ERROR，尚未切维护/停应用；确认是工具解析合法空引号参数时Python字符串membership误判，不是生产Nginx语法错误。失败私有目录保留，最小兼容修正须完整合成回归后另版本重试。
 - 提交前指定私钥/token/访问key模式扫描新增450个历史blob及386条变化路径，无命中；私有历史inventory/DB/key未跟踪，脱敏证据T-18-final-candidate-privacy.json。该模式扫描不代表所有secret语法的完整证明。最终公开候选含已批准范围内修复与合成证据，真实资产操作脚本与内容始终留在私有目录。
+
+
+### A/B/D真实生产阶段完成，非任务全量关闭（2026-10-10）
+
+- 实际执行A/B(v2)预检→维护→停两旧应用→三版本一致备份→验证，均退出0。外网根/页面/API为503+Retry-After；旧进程/DB写者/3000与4000监听为0，已列旧DB文件0600、data0700，其他Nginx配置与对照站响应不变。三个版本各自online快照与独立新inode恢复副本全schema/类型/值摘要相同。无业务或日志删除，无新站发布。
+- 预检初版对合法引号空参数解析失败，原脚本/事件/私有失败目录保留；仅字符串membership改tuple，完整109/109及真实预检通过后才用新版本目录执行。未放宽其它布局拒绝或覆盖失败材料。
+- 已按批准D为三个快照分别生成APRA/1密文、独立恢复catalog和独立内容根key；服务器与本机分别从独立取回的key/catalog完整认证恢复，再用独立新inode逐表schema/类型/全量值与A/B摘要比对，三版本均通过。helper字节与已验证提交SHA一致，服务器既有Node22/tsx/SQLite typed ABI实际探针通过；未安装全局依赖或改旧依赖树。
+- 本机密文/catalog在已批AnonyProof-Private-Archives/20261010，key在独立AnonyProof-Private-Secrets目录，目录0700文件0600。所有真实材料和失败staging保持私有，不进Git/CI/网站。公开脱敏实际证据T-02-T-32-approved-ABD-actual-summary.json。
+- T02/T32仍进行中：新合成站C尚未发布；全量快照/档案包含旧遥测，仅为过渡保全材料。E逐版本最小化、最终私有保留档案与F所有旧明文/日志/过渡资产退役必须按精确清单批准验收，不能用D成功代替。

@@ -1,0 +1,57 @@
+{
+  "tasks": [
+    "T-02",
+    "T-32"
+  ],
+  "recordedAtUtc": "2026-10-10T06:55:17.256133+00:00",
+  "approvedStages": [
+    "A",
+    "B",
+    "D"
+  ],
+  "maintenancePublicResponsesVerified": {
+    "paths": [
+      "/",
+      "/anonyproof",
+      "/anonyproof/api/demo/config"
+    ],
+    "status": 503,
+    "retryAfter": "300"
+  },
+  "oldAppsStopped": true,
+  "oldProjectProcesses": 0,
+  "oldDatabaseWriters": 0,
+  "selectedPortListeners": 0,
+  "approvedDatabaseFiles0600": true,
+  "dataDirectory0700": true,
+  "ABConsistentSnapshots": 3,
+  "ABIndependentRestoreCopies": 3,
+  "ABSchemaAndTypedRowsEqual": true,
+  "controlSiteResponseUnchanged": true,
+  "otherNginxConfigsUnchanged": true,
+  "DArchiveFormat": "APRA/1",
+  "DVersionsSeparate": 3,
+  "DServerFullPackageAuthenticationAndTypedRowsEqualAB": true,
+  "DLocalFullPackageAuthenticationAndTypedRowsEqualAB": true,
+  "DIndependentKeyAndCatalogRetrievedBothLocations": true,
+  "DPrivateLocalPermissionsVerified": true,
+  "historicalBusinessPublished": false,
+  "existingRecordsDeleted": false,
+  "historicalLogsDeleted": false,
+  "newDemoPublished": false,
+  "finalRetentionComplete": false,
+  "historicalPlaintextDisposalComplete": false,
+  "taskClosure": false,
+  "preflightFailurePreserved": {
+    "code": "NGINX_BLOCK_ERROR",
+    "cause": "Quoted empty config argument misclassified by Python substring membership; one-line tuple membership correction only. Old script and failure assets preserved.",
+    "v2FullSyntheticChecksPassed": 109,
+    "v2ActualPreflightPassed": true
+  },
+  "ABScriptSha256": "60ab10fc9e3d00fe6c92730b3b9742ca8d2ca39ef28803cfde66e020c104d28c",
+  "limits": [
+    "Private complete snapshots/archives include old telemetry and remain transitional; E minimization and exact F asset disposal need separate approval.",
+    "C new public synthetic demo release remains separately approved.",
+    "Full private schemas, row counts, hashes, key/catalog and archive contents are deliberately excluded from this public report."
+  ]
+}
