@@ -3,9 +3,7 @@
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { createHash, randomBytes } from 'node:crypto'
-import { constants, mkdirSync, mkdtempSync, openSync, closeSync, fsyncSync, lstatSync, linkSync, createWriteStream, createReadStream, readFileSync } from 'node:fs'
-import { once } from 'node:events'
-import { finished } from 'node:stream/promises'
+import { constants, mkdirSync, mkdtempSync, openSync, closeSync, writeSync, fsyncSync, lstatSync, linkSync, createReadStream, readFileSync } from 'node:fs'
 import type DatabaseType from 'better-sqlite3'
 import {
   PRIVATE_RETENTION_FORMAT, PrivateRetentionError, assertPrivateDirectory, assertPrivateFile,
@@ -54,20 +52,16 @@ function typed(value: SqlValue): TypedValue {
 
 async function writePrivateLines(file: string, produce: (write: (value: unknown) => Promise<void>) => Promise<void>) {
   const fd = openSync(file, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, 0o600)
-  const stream = createWriteStream(file, { fd, autoClose: false, highWaterMark: 64 * 1024 })
-  // Attach rejection handling before producers write; no unhandled stream errors.
-  const completion = finished(stream)
-  void completion.catch(() => undefined)
   try {
     await produce(async value => {
-      if (!stream.write(JSON.stringify(value) + '\n', 'utf8')) await once(stream, 'drain')
+      const bytes = Buffer.from(JSON.stringify(value) + '\n', 'utf8')
+      let offset = 0
+      while (offset < bytes.length) offset += writeSync(fd, bytes, offset, bytes.length - offset)
+      await new Promise<void>(resolve => setImmediate(resolve))
     })
-    stream.end()
-    await completion
     fsyncSync(fd)
   } finally {
-    if (!stream.writableFinished) stream.destroy()
-    try { closeSync(fd) } catch { /* A failed stream may close the fd. */ }
+    closeSync(fd)
   }
 }
 

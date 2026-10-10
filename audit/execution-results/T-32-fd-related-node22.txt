@@ -1,0 +1,370 @@
+TAP version 13
+# Subtest: T-32 rejected authentication cannot close a later reused descriptor or break subsequent archives
+ok 1 - T-32 rejected authentication cannot close a later reused descriptor or break subsequent archives
+  ---
+  duration_ms: 874.964416
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+ok 2 - T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+  ---
+  duration_ms: 617.496416
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+ok 3 - T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+  ---
+  duration_ms: 29.405792
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+ok 4 - T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+  ---
+  duration_ms: 22.170416
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+ok 5 - T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+  ---
+  duration_ms: 20.799625
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+ok 6 - T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+  ---
+  duration_ms: 20.092167
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+    # Subtest: demo
+    ok 1 - demo
+      ---
+      duration_ms: 9.049791
+      type: 'test'
+      ...
+    # Subtest: clone
+    ok 2 - clone
+      ---
+      duration_ms: 7.710375
+      type: 'test'
+      ...
+    # Subtest: trigger
+    ok 3 - trigger
+      ---
+      duration_ms: 7.757333
+      type: 'test'
+      ...
+    # Subtest: version
+    ok 4 - version
+      ---
+      duration_ms: 9.617791
+      type: 'test'
+      ...
+    # Subtest: realVersion
+    ok 5 - realVersion
+      ---
+      duration_ms: 11.414708
+      type: 'test'
+      ...
+    # Subtest: nullSolution
+    ok 6 - nullSolution
+      ---
+      duration_ms: 12.491084
+      type: 'test'
+      ...
+    # Subtest: ambiguousBody
+    ok 7 - ambiguousBody
+      ---
+      duration_ms: 12.128917
+      type: 'test'
+      ...
+    # Subtest: schema
+    ok 8 - schema
+      ---
+      duration_ms: 9.477333
+      type: 'test'
+      ...
+    # Subtest: primary
+    ok 9 - primary
+      ---
+      duration_ms: 9.153375
+      type: 'test'
+      ...
+    1..9
+ok 7 - T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+  ---
+  duration_ms: 110.128208
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+ok 8 - T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+  ---
+  duration_ms: 48.60275
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+ok 9 - T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+  ---
+  duration_ms: 18.9135
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: exact schema/types/NULL/flags/identity/old packages survive independent authenticated restore
+ok 10 - T-32 archive-only: exact schema/types/NULL/flags/identity/old packages survive independent authenticated restore
+  ---
+  duration_ms: 77.109708
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: isolated typed rows distinguish missing parents, NULL target comments and general notifications
+ok 11 - T-32 archive-only: isolated typed rows distinguish missing parents, NULL target comments and general notifications
+  ---
+  duration_ms: 60.640541
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: three versions with the same IDs retain different bodies without merging; version substitution fails
+ok 12 - T-32 archive-only: three versions with the same IDs retain different bodies without merging; version substitution fails
+  ---
+  duration_ms: 187.255625
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: wrong key, tag/cipher/header corruption, truncation and kind swap never publish unauthenticated plaintext
+    # Subtest: wrong-key
+    ok 1 - wrong-key
+      ---
+      duration_ms: 1.6995
+      type: 'test'
+      ...
+    # Subtest: wrong-kind
+    ok 2 - wrong-kind
+      ---
+      duration_ms: 1.530041
+      type: 'test'
+      ...
+    # Subtest: cipher
+    ok 3 - cipher
+      ---
+      duration_ms: 1.826625
+      type: 'test'
+      ...
+    # Subtest: tag
+    ok 4 - tag
+      ---
+      duration_ms: 1.441375
+      type: 'test'
+      ...
+    # Subtest: header
+    ok 5 - header
+      ---
+      duration_ms: 1.061125
+      type: 'test'
+      ...
+    # Subtest: truncate
+    ok 6 - truncate
+      ---
+      duration_ms: 2.188167
+      type: 'test'
+      ...
+    1..6
+ok 13 - T-32 archive-only: wrong key, tag/cipher/header corruption, truncation and kind swap never publish unauthenticated plaintext
+  ---
+  duration_ms: 15.329208
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: empty and multi-chunk large files authenticate and round trip with private independent files
+ok 14 - T-32 archive-only: empty and multi-chunk large files authenticate and round trip with private independent files
+  ---
+  duration_ms: 85.82025
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: exclusive outputs and racing restore targets never replace existing files
+ok 15 - T-32 archive-only: exclusive outputs and racing restore targets never replace existing files
+  ---
+  duration_ms: 57.604584
+  type: 'test'
+  ...
+# Subtest: T-32 package restore: a new process restores using only separately copied key, catalog and three archives
+ok 16 - T-32 package restore: a new process restores using only separately copied key, catalog and three archives
+  ---
+  duration_ms: 323.427084
+  type: 'test'
+  ...
+# Subtest: T-32 package restore: every preparation gets a unique package binding and valid cross-package substitutions fail
+    # Subtest: snapshot
+    ok 1 - snapshot
+      ---
+      duration_ms: 4.29675
+      type: 'test'
+      ...
+    # Subtest: isolatedRows
+    ok 2 - isolatedRows
+      ---
+      duration_ms: 7.432458
+      type: 'test'
+      ...
+    # Subtest: manifest
+    ok 3 - manifest
+      ---
+      duration_ms: 11.276917
+      type: 'test'
+      ...
+    # Subtest: catalog
+    ok 4 - catalog
+      ---
+      duration_ms: 2.849792
+      type: 'test'
+      ...
+    # Subtest: logical-mapping
+    ok 5 - logical-mapping
+      ---
+      duration_ms: 15.423042
+      type: 'test'
+      ...
+    # Subtest: catalog-extra-path
+    ok 6 - catalog-extra-path
+      ---
+      duration_ms: 2.059958
+      type: 'test'
+      ...
+    # Subtest: catalog-missing
+    ok 7 - catalog-missing
+      ---
+      duration_ms: 1.352833
+      type: 'test'
+      ...
+    1..7
+ok 17 - T-32 package restore: every preparation gets a unique package binding and valid cross-package substitutions fail
+  ---
+  duration_ms: 152.902125
+  type: 'test'
+  ...
+# Subtest: T-32 package restore: authenticated manifest digest/schema relationships are checked before any success publication
+    # Subtest: snapshotDigest
+    ok 1 - snapshotDigest
+      ---
+      duration_ms: 24.510917
+      type: 'test'
+      ...
+    # Subtest: isolatedRowsDigest
+    ok 2 - isolatedRowsDigest
+      ---
+      duration_ms: 19.628917
+      type: 'test'
+      ...
+    # Subtest: schemaDigest
+    ok 3 - schemaDigest
+      ---
+      duration_ms: 23.641709
+      type: 'test'
+      ...
+    1..3
+ok 18 - T-32 package restore: authenticated manifest digest/schema relationships are checked before any success publication
+  ---
+  duration_ms: 125.390875
+  type: 'test'
+  ...
+# Subtest: T-32 package restore: a publication race leaves authenticated partial files but no successful completion marker
+ok 19 - T-32 package restore: a publication race leaves authenticated partial files but no successful completion marker
+  ---
+  duration_ms: 81.692375
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: unapproved runtime mode, invalid keys/bindings, broad permissions and symlink paths fail before publication
+    # Subtest: runtime
+    ok 1 - runtime
+      ---
+      duration_ms: 11.334
+      type: 'test'
+      ...
+    # Subtest: key
+    ok 2 - key
+      ---
+      duration_ms: 11.995833
+      type: 'test'
+      ...
+    # Subtest: binding
+    ok 3 - binding
+      ---
+      duration_ms: 11.377875
+      type: 'test'
+      ...
+    # Subtest: source-mode
+    ok 4 - source-mode
+      ---
+      duration_ms: 9.591291
+      type: 'test'
+      ...
+    # Subtest: parent-mode
+    ok 5 - parent-mode
+      ---
+      duration_ms: 9.480792
+      type: 'test'
+      ...
+    # Subtest: source-symlink
+    ok 6 - source-symlink
+      ---
+      duration_ms: 9.646583
+      type: 'test'
+      ...
+    # Subtest: parent-symlink
+    ok 7 - parent-symlink
+      ---
+      duration_ms: 8.863
+      type: 'test'
+      ...
+    1..7
+ok 20 - T-32 archive-only: unapproved runtime mode, invalid keys/bindings, broad permissions and symlink paths fail before publication
+  ---
+  duration_ms: 72.747625
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: committed WAL snapshot survives unchanged writer and contains original role/flags
+ok 21 - T-32 archive-only: committed WAL snapshot survives unchanged writer and contains original role/flags
+  ---
+  duration_ms: 69.836583
+  type: 'test'
+  ...
+# Subtest: T-32 archive-only: giant metadata rows and unsupported relationship schema fail without a completion marker or source changes
+    # Subtest: large-row
+    ok 1 - large-row
+      ---
+      duration_ms: 67.844958
+      type: 'test'
+      ...
+    # Subtest: schema
+    ok 2 - schema
+      ---
+      duration_ms: 13.0185
+      type: 'test'
+      ...
+    1..2
+ok 22 - T-32 archive-only: giant metadata rows and unsupported relationship schema fail without a completion marker or source changes
+  ---
+  duration_ms: 81.141625
+  type: 'test'
+  ...
+# Subtest: T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+ok 23 - T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+  ---
+  duration_ms: 10.362709
+  type: 'test'
+  ...
+# Subtest: T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+ok 24 - T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+  ---
+  duration_ms: 7.651625
+  type: 'test'
+  ...
+# Subtest: T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+ok 25 - T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+  ---
+  duration_ms: 1423.655792
+  type: 'test'
+  ...
+1..25
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5249.562916

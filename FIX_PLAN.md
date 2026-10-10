@@ -1566,3 +1566,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 已按批准D为三个快照分别生成APRA/1密文、独立恢复catalog和独立内容根key；服务器与本机分别从独立取回的key/catalog完整认证恢复，再用独立新inode逐表schema/类型/全量值与A/B摘要比对，三版本均通过。helper字节与已验证提交SHA一致，服务器既有Node22/tsx/SQLite typed ABI实际探针通过；未安装全局依赖或改旧依赖树。
 - 本机密文/catalog在已批AnonyProof-Private-Archives/20261010，key在独立AnonyProof-Private-Secrets目录，目录0700文件0600。所有真实材料和失败staging保持私有，不进Git/CI/网站。公开脱敏实际证据T-02-T-32-approved-ABD-actual-summary.json。
 - T02/T32仍进行中：新合成站C尚未发布；全量快照/档案包含旧遥测，仅为过渡保全材料。E逐版本最小化、最终私有保留档案与F所有旧明文/日志/过渡资产退役必须按精确清单批准验收，不能用D成功代替。
+
+
+### T-32真实候选CI发现并修正描述符关闭竞态（2026-10-10）
+
+- 本候选59db49b真实CI运行38032124091失败：243通过、1失败、1既存跳过；T32一次认证失败后下一归档准备失败，六个后续场景未运行，不能计通过。失败日志T-18-candidate-59db49b-CI-failure.txt保留。此前本地251项并不替代该平台验证。
+- Node20最小合成循环实际复现EBADF/write。原因是失败pipeline destroy触发异步fs stream close，与finally同步关闭后复用fd冲突。仅改离线helper为单一fd所有者、64KiB同步chunk加事件循环让步；私有manifest写入同样保持单一所有者。APRA/1、AES-GCM/AAD/验证/发布边界与接口不变，没有回避错误鉴权测试。
+- 新增T-32-archive-fd.test.ts：64轮错误认证后无发布、外部复用fd可继续写入、随后正确归档恢复字节相同。Node20实际1/1，Node22关联59/59、strict0。证据T-32-fd-CI-regression-result.json。独立T32提交后重跑真实候选CI，T36仍进行中；无发布/历史覆盖/删除。

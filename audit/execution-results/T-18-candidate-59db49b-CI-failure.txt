@@ -1,0 +1,1262 @@
+build (20.x)	Backend smoke and repair regression tests	﻿2026-10-10T06:50:32.3759797Z ##[group]Run npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:32.3760949Z ^[[36;1mnpx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts^[[0m
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:32.3840717Z shell: /usr/bin/bash -e {0}
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:32.3841211Z ##[endgroup]
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:32.8566652Z TAP version 13
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:34.3975453Z # Subtest: T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:34.4030893Z ok 1 - T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:34.4032392Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:34.4033356Z   duration_ms: 1192.219755
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:34.4034439Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:36.6925457Z # Subtest: T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:36.6927598Z ok 2 - T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:36.6928926Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:36.6929690Z   duration_ms: 2296.616818
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:36.6930247Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:44.4679308Z # Subtest: T-02 invalid role/mode/path/password/key fails before DB creation
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:44.4715767Z ok 3 - T-02 invalid role/mode/path/password/key fails before DB creation
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:44.4716395Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:44.4716623Z   duration_ms: 7411.740473
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:44.4716868Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:45.7852416Z # Subtest: T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:45.8127317Z ok 4 - T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:45.8128298Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:45.8128703Z   duration_ms: 1324.580967
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:45.8128977Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:49.0989339Z # Subtest: T-02 persisted role cannot be flipped and a formal key cannot be replaced
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:49.1028948Z ok 5 - T-02 persisted role cannot be flipped and a formal key cannot be replaced
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:49.1030303Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:49.1032295Z   duration_ms: 3312.531454
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:49.1032620Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8138831Z # Subtest: T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8141146Z ok 6 - T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8142712Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8143724Z   duration_ms: 1551.792379
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8144434Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8147073Z # Subtest: T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8148810Z ok 7 - T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8149728Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8151074Z   duration_ms: 164.52201
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:50.8151954Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3845528Z # Subtest: T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3886431Z ok 8 - T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3890926Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3891417Z   duration_ms: 1.871272
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3891885Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3892812Z # Subtest: T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3894373Z ok 9 - T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3895126Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3895461Z   duration_ms: 108.578224
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3895853Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3896717Z # Subtest: T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3898055Z ok 10 - T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3898709Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3898923Z   duration_ms: 1.283265
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3899154Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3899948Z # Subtest: T-03 module: explicit old-format reader compatibility and demo keylessness
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3900643Z ok 11 - T-03 module: explicit old-format reader compatibility and demo keylessness
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3901040Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3901239Z   duration_ms: 0.731926
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3901459Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3901988Z # Subtest: T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3902798Z ok 12 - T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3903269Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3903753Z   duration_ms: 0.335566
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3904166Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3905011Z # Subtest: T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3906273Z ok 13 - T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3907002Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3907341Z   duration_ms: 0.349763
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3907701Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3908512Z # Subtest: T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3909772Z ok 14 - T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3910472Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3910787Z   duration_ms: 6.858892
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3911115Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3911858Z # Subtest: T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3912968Z ok 15 - T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3914007Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3914321Z   duration_ms: 1.041624
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3914661Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3915480Z # Subtest: T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3916730Z ok 16 - T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3917462Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3917758Z   duration_ms: 1.171246
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3918089Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3918918Z # Subtest: T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3920214Z ok 17 - T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3920938Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3921232Z   duration_ms: 1.835506
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:51.3921562Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:54.1058444Z # Subtest: T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:54.1060216Z ok 18 - T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:54.1061545Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:54.1062182Z   duration_ms: 2725.827478
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:54.1062722Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:55.7315864Z # Subtest: T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:55.7318339Z ok 19 - T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:55.7319832Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:55.7320647Z   duration_ms: 1626.081987
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:55.7321326Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:56.5827049Z # Subtest: T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:56.5829413Z ok 20 - T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:56.5830301Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:56.5847272Z   duration_ms: 850.738883
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:56.5850465Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.1264532Z # Subtest: T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.1266582Z ok 21 - T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.1268084Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.1268489Z   duration_ms: 1544.584449
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.1268927Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.5236469Z # Subtest: T-04: actual submit hook returns only the compatibility marker with no browser WebCrypto
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.5238822Z ok 22 - T-04: actual submit hook returns only the compatibility marker with no browser WebCrypto
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.5240039Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.5240693Z   duration_ms: 3.076374
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:58.5241379Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:59.3404368Z # Subtest: T-04: real cipher failures roll back feedback/comment/status and later required notifications
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:59.3406175Z ok 23 - T-04: real cipher failures roll back feedback/comment/status and later required notifications
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:59.3407169Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:59.3407662Z   duration_ms: 850.744071
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:50:59.3408244Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:02.5513069Z # Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:02.5565381Z ok 24 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:02.5567899Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:02.5568925Z   duration_ms: 2872.147271
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:02.5569597Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:04.1152632Z # Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:04.1200272Z ok 25 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:04.1204283Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:04.1204679Z   duration_ms: 1564.130245
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:04.1205093Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:05.6328913Z # Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:05.6381296Z ok 26 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:05.6382340Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:05.6385340Z   duration_ms: 1517.690655
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:05.6394106Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:06.3883233Z # Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:06.3925882Z ok 27 - T-05: zero clone allowance creates identities without copies and never returns 500
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:06.3934308Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:06.3935164Z   duration_ms: 755.459142
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:06.3935824Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:14.5836228Z # Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:14.5881130Z ok 28 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:14.5882209Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:14.5882958Z   duration_ms: 8194.859005
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:14.5883877Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:15.9848191Z # Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:15.9850023Z ok 29 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:15.9851172Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:15.9851711Z   duration_ms: 1401.571531
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:15.9852344Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:19.2216985Z # Subtest: T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:19.2271709Z ok 30 - T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:19.2277254Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:19.2277834Z   duration_ms: 2909.117961
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:19.2278423Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:22.1157363Z # Subtest: T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:22.1199441Z ok 31 - T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:22.1200601Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:22.1201292Z   duration_ms: 2894.017218
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:22.1201750Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:23.6178078Z # Subtest: T-06: default quota admits ten and blocks eleventh, boundary one is configurable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:23.6229377Z ok 32 - T-06: default quota admits ten and blocks eleventh, boundary one is configurable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:23.6230589Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:23.6231218Z   duration_ms: 1501.431687
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:23.6231708Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:31.4078930Z # Subtest: T-06: invalid source/identity/window configuration fails startup explicitly
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:31.4080334Z ok 33 - T-06: invalid source/identity/window configuration fails startup explicitly
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:31.4082484Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:31.4084457Z   duration_ms: 7790.894103
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:31.4084965Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:34.6851999Z # Subtest: T-07: user quota spans feedback IDs, unauthorized identities stay rejected and no comments/notices appear on 429
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:34.6898973Z ok 34 - T-07: user quota spans feedback IDs, unauthorized identities stay rejected and no comments/notices appear on 429
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:34.6900440Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:34.6901182Z   duration_ms: 2935.934484
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:34.6901628Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:37.5414754Z # Subtest: T-07: source quota spans identities and changing untrusted XFF cannot reset it
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:37.5450578Z ok 35 - T-07: source quota spans identities and changing untrusted XFF cannot reset it
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:37.5451633Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:37.5452389Z   duration_ms: 2855.270822
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:37.5453059Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.0409220Z # Subtest: T-07: default identity quota is twenty; threshold one can be configured
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.0450942Z ok 36 - T-07: default identity quota is twenty; threshold one can be configured
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.0452082Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.0452441Z   duration_ms: 1499.406867
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.0452844Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.8292923Z # Subtest: T-07: existing formal-admin access to the user-comment route is preserved and spans target IDs
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.8334086Z ok 37 - T-07: existing formal-admin access to the user-comment route is preserved and spans target IDs
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.8335440Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.8335698Z   duration_ms: 789.322156
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:39.8335939Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:47.4615856Z # Subtest: T-07: invalid limiter configuration fails startup by its name
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:47.4617096Z ok 38 - T-07: invalid limiter configuration fails startup by its name
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:47.4617697Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:47.4618073Z   duration_ms: 7632.511941
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:47.4618648Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:50.6932165Z # Subtest: T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:50.6985443Z ok 39 - T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:50.6986932Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:50.6987682Z   duration_ms: 2897.109049
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:50.6988140Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:51.4362199Z # Subtest: T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:51.4418430Z ok 40 - T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:51.4419994Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:51.4420656Z   duration_ms: 743.083682
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:51.4421297Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:52.2010942Z # Subtest: T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:52.2055918Z ok 41 - T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:52.2057198Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:52.2057588Z   duration_ms: 764.892835
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:52.2058011Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:59.2244728Z # Subtest: T-08: invalid recovery limiter values reject startup by the offending configuration name
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:59.2245736Z ok 42 - T-08: invalid recovery limiter values reject startup by the offending configuration name
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:59.2246262Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:59.2246793Z   duration_ms: 7023.572994
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:51:59.2247053Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:02.4535285Z # Subtest: T-09: both login aliases share successful and failed request quota
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:02.4577892Z ok 43 - T-09: both login aliases share successful and failed request quota
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:02.4578921Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:02.4579565Z   duration_ms: 2901.250736
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:02.4580213Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.2395493Z # Subtest: T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.2459438Z ok 44 - T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.2460737Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.2461448Z   duration_ms: 787.335345
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.2462142Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.9628863Z # Subtest: T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.9689066Z ok 45 - T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.9694259Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.9694914Z   duration_ms: 723.801002
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:03.9695503Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:05.7850425Z # Subtest: T-09: five wrong passwords retain the separate fifteen-minute production lock
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:05.7894589Z ok 46 - T-09: five wrong passwords retain the separate fifteen-minute production lock
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:05.7895715Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:05.7896422Z   duration_ms: 1821.844936
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:05.7896878Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:06.4972724Z # Subtest: T-09: the published demo password is also limited across aliases
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:06.5009634Z ok 47 - T-09: the published demo password is also limited across aliases
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:06.5010618Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:06.5011284Z   duration_ms: 712.800867
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:06.5012116Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:14.7752169Z # Subtest: T-09: invalid login limiter configuration rejects startup explicitly
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:14.7753168Z ok 48 - T-09: invalid login limiter configuration rejects startup explicitly
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:14.7754156Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:14.7754571Z   duration_ms: 8278.110217
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:14.7754994Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9705571Z # Subtest: T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9707558Z ok 49 - T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9708980Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9734247Z   duration_ms: 1232.077752
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9755769Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9756707Z # Subtest: T-10: failed legacy migration rolls back added columns and remains retryable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9758072Z ok 50 - T-10: failed legacy migration rolls back added columns and remains retryable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9758931Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9759406Z   duration_ms: 595.9861
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:16.9759790Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:17.7009380Z # Subtest: T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:17.7014319Z ok 51 - T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:17.7015625Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:17.7015980Z   duration_ms: 762.533225
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:17.7016371Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1743840Z # Subtest: T-11: exact seven-day boundary, both raw tables, idempotence and aggregates/blacklists preserved
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1745869Z ok 52 - T-11: exact seven-day boundary, both raw tables, idempotence and aggregates/blacklists preserved
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1747029Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1747712Z   duration_ms: 9.182641
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1748420Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1773210Z # Subtest: T-11: bounded yielding batches drain backlog then schedule hourly and close cancels pending work
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1775085Z ok 53 - T-11: bounded yielding batches drain backlog then schedule hourly and close cancels pending work
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1779368Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1782633Z   duration_ms: 5.883492
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1783073Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1784679Z # Subtest: T-11: a failed second delete rolls back first; scheduler logs code only and retries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1786067Z ok 54 - T-11: a failed second delete rolls back first; scheduler logs code only and retries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1786899Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1787290Z   duration_ms: 1.621827
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:18.1787698Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:20.6241833Z # Subtest: T-11: live process failure is observable without breaking health, restart drains raw backlog and keeps daily totals
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:20.6243308Z ok 55 - T-11: live process failure is observable without breaking health, restart drains raw backlog and keeps daily totals
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:20.6244349Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:20.6244854Z   duration_ms: 2482.409196
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:20.6245331Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:21.7967074Z # Subtest: T-12: feedback input matrix rejects before business writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:21.7968682Z ok 56 - T-12: feedback input matrix rejects before business writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:21.7969629Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:21.7970267Z   duration_ms: 852.53195
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:21.7970718Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:22.9736142Z # Subtest: T-13: both comment routes validate types and preserve bounded UTF-8 text
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:22.9739686Z ok 57 - T-13: both comment routes validate types and preserve bounded UTF-8 text
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:22.9740432Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:22.9740782Z   duration_ms: 854.211356
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:22.9741170Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.1865640Z # Subtest: T-14: approved solution length/type boundary rejects before status/log/notification writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.1867282Z ok 58 - T-14: approved solution length/type boundary rejects before status/log/notification writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.1868142Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.1868470Z   duration_ms: 890.410392
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.1868908Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6537831Z # Subtest: T-16: root HTTP parser dependencies reject known malformed shapes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6539052Z ok 59 - T-16: root HTTP parser dependencies reject known malformed shapes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6539745Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6540090Z   duration_ms: 61.083887
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6540361Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6554751Z # Subtest: T-16: server HTTP parser dependencies reject known malformed shapes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6556610Z ok 60 - T-16: server HTTP parser dependencies reject known malformed shapes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6557737Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6604841Z   duration_ms: 51.677706
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:24.6621969Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.4448728Z # Subtest: T-16: actual backend routes and bounded HTTP parser failures preserve availability
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.4450203Z ok 61 - T-16: actual backend routes and bounded HTTP parser failures preserve availability
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.4451004Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.4451410Z   duration_ms: 821.352769
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.4451858Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9265249Z # Subtest: T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9267102Z ok 62 - T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9268334Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9268854Z   duration_ms: 7.039503
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9269385Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9968061Z # Subtest: T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9969782Z ok 63 - T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9970758Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9971350Z   duration_ms: 94.868035
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:25.9971752Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:27.8557762Z # Subtest: T-19: restarting an explicit fixture database returns and opens that same database
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:27.8604355Z ok 64 - T-19: restarting an explicit fixture database returns and opens that same database
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:27.8605534Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:27.8606271Z   duration_ms: 1490.821178
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:27.8606971Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:28.6009591Z # Subtest: T-19: isolated production backend and existing authorized flow run
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:28.6062604Z ok 65 - T-19: isolated production backend and existing authorized flow run
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:28.6063958Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:28.6064780Z   duration_ms: 746.580497
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:28.6065475Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.2678917Z # Subtest: T-19: production rejects missing secret
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.2720705Z ok 66 - T-19: production rejects missing secret
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.2721732Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.2722330Z   duration_ms: 666.201704
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.2722813Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.9388800Z # Subtest: T-19: production rejects short secret
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.9427712Z ok 67 - T-19: production rejects short secret
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.9428305Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.9428672Z   duration_ms: 671.698687
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:29.9429080Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:30.4926607Z # Subtest: T-19: production rejects missing password
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:30.4963122Z ok 68 - T-19: production rejects missing password
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:30.4964021Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:30.4964421Z   duration_ms: 553.721817
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:30.4964810Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:31.0528431Z # Subtest: T-19: production rejects short password
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:31.0529360Z ok 69 - T-19: production rejects short password
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:31.0529764Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:31.0530029Z   duration_ms: 560.157295
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:31.0530329Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:32.2006066Z # Subtest: T-20: private responses and authorization errors never reuse a conditional cached body
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:32.2011911Z ok 70 - T-20: private responses and authorization errors never reuse a conditional cached body
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:32.2012851Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:32.2013329Z   duration_ms: 820.467735
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:32.2013960Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:34.3618780Z # Subtest: T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:34.3620604Z ok 71 - T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:34.3621505Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:34.3621962Z   duration_ms: 2161.969925
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:34.3622449Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:36.2555921Z # Subtest: T-21: restart with valid Cookie and missing code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:36.2605833Z ok 72 - T-21: restart with valid Cookie and missing code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:36.2606912Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:36.2607508Z   duration_ms: 1534.96216
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:36.2607976Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:37.6815156Z # Subtest: T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:37.6882441Z ok 73 - T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:37.6883920Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:37.6884525Z   duration_ms: 1425.840237
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:37.6885151Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:39.1590371Z # Subtest: T-21: restart with valid installation key and missing code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:39.1630009Z ok 74 - T-21: restart with valid installation key and missing code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:39.1631281Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:39.1634124Z   duration_ms: 1477.70695
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:39.1634568Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:40.5805470Z # Subtest: T-21: restart with valid installation key and mismatching code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:40.5858828Z ok 75 - T-21: restart with valid installation key and mismatching code preserves R1 and its records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:40.5860207Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:40.5860956Z   duration_ms: 1421.888601
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:40.5861609Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:41.3560145Z # Subtest: T-21: expired display cache with valid Cookie never revokes R1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:41.3619764Z ok 76 - T-21: expired display cache with valid Cookie never revokes R1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:41.3620882Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:41.3621430Z   duration_ms: 775.601533
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:41.3622010Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.0794640Z # Subtest: T-21: expired display cache with valid installation key never revokes R1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.0860920Z ok 77 - T-21: expired display cache with valid installation key never revokes R1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.0862284Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.0862864Z   duration_ms: 723.570549
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.0863656Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.7875004Z # Subtest: T-21: two initializing tabs share one identity and matching codes remain valid
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.7876285Z ok 78 - T-21: two initializing tabs share one identity and matching codes remain valid
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.7877166Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.7877730Z   duration_ms: 708.08349
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:42.7878125Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:44.3034569Z # Subtest: T-22 HTTP capacity refuses demo login before cookies/identity/clones, preserves valid sessions, timer reclaims and logout deletes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:44.3085690Z ok 79 - T-22 HTTP capacity refuses demo login before cookies/identity/clones, preserves valid sessions, timer reclaims and logout deletes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:44.3104363Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:44.3116813Z   duration_ms: 1156.012367
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:44.3117387Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:45.3604236Z # Subtest: T-22 HTTP full failure store rejects a new source, retains old lockout and automatically expires all 10000 entries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:45.3646928Z ok 80 - T-22 HTTP full failure store rejects a new source, retains old lockout and automatically expires all 10000 entries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:45.3648419Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:45.3649253Z   duration_ms: 1059.397306
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:45.3649709Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:46.4394203Z # Subtest: T-22 real display cache evicts oldest at 10000 without changing saved R1, and timer expires entries without reads
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:46.4460919Z ok 81 - T-22 real display cache evicts oldest at 10000 without changing saved R1, and timer expires entries without reads
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:46.4462455Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:46.4463382Z   duration_ms: 1078.73167
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:46.4464327Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.2743032Z # Subtest: T-22 demo identity failure releases the reserved admin session and never signs cookies
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.2744719Z ok 82 - T-22 demo identity failure releases the reserved admin session and never signs cookies
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.2745571Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.2745920Z   duration_ms: 835.333983
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.2746301Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8118388Z # Subtest: T-22 timer frees expired entries without any later lookup and uses unref/60s
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8119789Z ok 83 - T-22 timer frees expired entries without any later lookup and uses unref/60s
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8120566Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8121001Z   duration_ms: 1.667313
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8121436Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8124899Z # Subtest: T-22 expiry boundary is inclusive and expired gets discard the entry
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8126654Z ok 84 - T-22 expiry boundary is inclusive and expired gets discard the entry
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8127628Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8128063Z   duration_ms: 0.212627
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8128718Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8130349Z # Subtest: T-22 session expiry remains exactly 8h, attempts 15min and display codes 10min
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8131778Z ok 85 - T-22 session expiry remains exactly 8h, attempts 15min and display codes 10min
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8133269Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8134023Z   duration_ms: 0.352237
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8134558Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8135481Z # Subtest: T-22 full session storage rejects a new entry without displacing valid sessions
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8136793Z ok 86 - T-22 full session storage rejects a new entry without displacing valid sessions
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8137875Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8138096Z   duration_ms: 0.566207
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8138323Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8139557Z # Subtest: T-22 full source-attempt storage does not discard valid lockouts
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8141039Z ok 87 - T-22 full source-attempt storage does not discard valid lockouts
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8141782Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8142217Z   duration_ms: 0.279572
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8142741Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8147691Z # Subtest: T-22 capacity is recovered from expired entries before rejection or eviction
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8149358Z ok 88 - T-22 capacity is recovered from expired entries before rejection or eviction
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8149985Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8150438Z   duration_ms: 0.333333
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8150893Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8153614Z # Subtest: T-22 code display capacity evicts the oldest successful set deterministically
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8157687Z ok 89 - T-22 code display capacity evicts the oldest successful set deterministically
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8158600Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8159010Z   duration_ms: 0.265285
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8159438Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8160406Z # Subtest: T-22 logout delete is immediate and close cancels cleanup once
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8168015Z ok 90 - T-22 logout delete is immediate and close cancels cleanup once
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8168426Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8168850Z   duration_ms: 0.278039
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8169302Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8170090Z # Subtest: T-22 invalid capacity/expiry reject without corrupting valid entries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8171112Z ok 91 - T-22 invalid capacity/expiry reject without corrupting valid entries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8171688Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8172070Z   duration_ms: 0.379629
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8172559Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8173341Z # Subtest: T-22 real cleanup timer is unrefed so an otherwise idle process exits
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8174734Z ok 92 - T-22 real cleanup timer is unrefed so an otherwise idle process exits
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8175397Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8175727Z   duration_ms: 179.026094
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8176108Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8177388Z # Subtest: T-22 configured 1000 sessions and 10000 attempt/code bounds hold under a full fill
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8178600Z ok 93 - T-22 configured 1000 sessions and 10000 attempt/code bounds hold under a full fill
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8179329Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8179673Z   duration_ms: 23.120237
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:47.8180046Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6815255Z # Subtest: T-23 single instance: same-secret restart invalidates old admin session, re-login and logout remain usable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6817453Z ok 94 - T-23 single instance: same-secret restart invalidates old admin session, re-login and logout remain usable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6818728Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6819117Z   duration_ms: 1536.038304
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6821051Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6823964Z # Subtest: T-23 supported PM2 roles use one backend instance
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6825143Z ok 95 - T-23 supported PM2 roles use one backend instance
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6825920Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6826387Z   duration_ms: 4.193319
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:49.6826771Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.0600238Z # Subtest: T-24 proxy configuration fails closed without a canonical independent key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.0602271Z ok 96 - T-24 proxy configuration fails closed without a canonical independent key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.0604103Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.0604935Z   duration_ms: 1.412458
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.0605397Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.8249140Z # Subtest: T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.8313297Z ok 97 - T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.8315164Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.8315924Z   duration_ms: 795.013986
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:50.8316627Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5682624Z # Subtest: T-24 unproxied requests ignore all supplied source headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5689357Z ok 98 - T-24 unproxied requests ignore all supplied source headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5690230Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5690765Z   duration_ms: 742.367197
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5691049Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5691645Z # Subtest: T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5692514Z ok 99 - T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5693323Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5693816Z   duration_ms: 1.021918
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.5694062Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9878837Z # Subtest: T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9886781Z ok 100 - T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9891072Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9894794Z   duration_ms: 10.630348
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9895630Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9897258Z # Subtest: T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9899513Z ok 101 - T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9900714Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9901076Z   duration_ms: 3.427891
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9901505Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9902838Z # Subtest: T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9905317Z ok 102 - T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9906519Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9906884Z   duration_ms: 11.70814
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9907282Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9908216Z # Subtest: T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9909687Z ok 103 - T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9910536Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9910913Z   duration_ms: 10.788794
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:51.9911325Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1411843Z # Subtest: T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1415272Z ok 104 - T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1416737Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1417324Z   duration_ms: 2169.230455
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1417797Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1418833Z # Subtest: T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1420170Z ok 105 - T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1420898Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1421152Z   duration_ms: 17.748562
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:54.1421435Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:55.5073354Z # Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:55.5132033Z ok 106 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:55.5136502Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:55.5137340Z   duration_ms: 1039.178244
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:55.5138039Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:56.9916823Z # Subtest: T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:56.9918420Z ok 107 - T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:56.9919276Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:56.9919632Z   duration_ms: 1484.851709
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:56.9919933Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.4726175Z # Subtest: T-27: only explicit canonical origin configuration is accepted
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.4729263Z ok 108 - T-27: only explicit canonical origin configuration is accepted
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.4729967Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.4730321Z   duration_ms: 2.253529
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.4730605Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.5191579Z # Subtest: T-27: actual CORS preflight/read responses expose only approved exact origins
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.5285204Z ok 109 - T-27: actual CORS preflight/read responses expose only approved exact origins
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.5292620Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.5293251Z   duration_ms: 72.832498
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:52:57.5294094Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:01.5843187Z # Subtest: T-27: actual production backend rejects missing or invalid origin configuration
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:01.5904998Z ok 110 - T-27: actual production backend rejects missing or invalid origin configuration
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:01.5905845Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:01.5906195Z   duration_ms: 4065.288365
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:01.5906592Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:02.3770338Z # Subtest: T-27: product backend preflight and authenticated reads use the exact configured origins
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:02.3772096Z ok 111 - T-27: product backend preflight and authenticated reads use the exact configured origins
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:02.3773083Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:02.3773828Z   duration_ms: 792.884628
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:02.3774404Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:03.4849108Z # Subtest: T-31: each supported request maximum independently enforces configured boundaries one and three
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:03.4905753Z     # Subtest: LOGIN_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:03.4909904Z     ok 1 - LOGIN_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:03.4910718Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:03.4911306Z       duration_ms: 769.18608
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:03.4911913Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.2065819Z     # Subtest: LOGIN_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.2111957Z     ok 2 - LOGIN_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.2115501Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.2116195Z       duration_ms: 723.938362
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.2116783Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.9077184Z     # Subtest: IDENTITY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.9138111Z     ok 3 - IDENTITY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.9139039Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.9139597Z       duration_ms: 700.799906
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:04.9140171Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:05.6125770Z     # Subtest: IDENTITY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:05.6188106Z     ok 4 - IDENTITY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:05.6189016Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:05.6189771Z       duration_ms: 704.802874
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:05.6190513Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:06.3737902Z     # Subtest: RECOVERY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:06.3784349Z     ok 5 - RECOVERY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:06.3785257Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:06.3785966Z       duration_ms: 761.085247
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:06.3786631Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.1394838Z     # Subtest: RECOVERY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.1443046Z     ok 6 - RECOVERY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.1444530Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.1445319Z       duration_ms: 765.237062
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.1446041Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.8557918Z     # Subtest: FEEDBACK_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.8615030Z     ok 7 - FEEDBACK_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.8615926Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.8616775Z       duration_ms: 716.256528
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:07.8617587Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:08.6265340Z     # Subtest: FEEDBACK_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:08.6296568Z     ok 8 - FEEDBACK_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:08.6299648Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:08.6300011Z       duration_ms: 767.045822
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:08.6300432Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:09.3886620Z     # Subtest: FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:09.3951100Z     ok 9 - FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:09.3951779Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:09.3952116Z       duration_ms: 765.401281
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:09.3952381Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.1084851Z     # Subtest: FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.1129864Z     ok 10 - FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.1130811Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.1131405Z       duration_ms: 719.53159
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.1131987Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.8770314Z     # Subtest: COMMENT_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.8817054Z     ok 11 - COMMENT_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.8817799Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.8818706Z       duration_ms: 768.55137
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:10.8819458Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:11.6502135Z     # Subtest: COMMENT_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:11.6547279Z     ok 12 - COMMENT_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:11.6548167Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:11.6548717Z       duration_ms: 773.02341
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:11.6549294Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:12.4173708Z     # Subtest: COMMENT_IDENTITY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:12.4222092Z     ok 13 - COMMENT_IDENTITY_RATE_LIMIT_MAX=1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:12.4222989Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:12.4224014Z       duration_ms: 766.99675
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:12.4224610Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1427876Z     # Subtest: COMMENT_IDENTITY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1493312Z     ok 14 - COMMENT_IDENTITY_RATE_LIMIT_MAX=3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1494838Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1495581Z       duration_ms: 725.033848
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1496354Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1509773Z     1..14
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1511022Z ok 112 - T-31: each supported request maximum independently enforces configured boundaries one and three
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1514076Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1514456Z   duration_ms: 10430.428198
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.1514839Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.8688605Z # Subtest: T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.8689681Z ok 113 - T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.8690237Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.8690484Z   duration_ms: 726.249708
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:13.8690779Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1000782Z # Subtest: T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1003857Z ok 114 - T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1005349Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1005975Z   duration_ms: 832.958895
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1006439Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1430427Z # Subtest: T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1436728Z ok 115 - T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1437429Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1437903Z   duration_ms: 50.263896
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1438509Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1797673Z # Subtest: T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1799455Z ok 116 - T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1800549Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1800902Z   duration_ms: 38.372614
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.1801298Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.2238714Z # Subtest: T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.2240776Z ok 117 - T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.2241578Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.2241883Z   duration_ms: 38.746398
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.2242265Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3606938Z # Subtest: T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3609577Z ok 118 - T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3611106Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3611800Z   duration_ms: 34.732181
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3612512Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3614531Z # Subtest: T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3616040Z     # Subtest: demo
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3616726Z     ok 1 - demo
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3617376Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3617905Z       duration_ms: 20.32592
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3618975Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3619427Z     # Subtest: clone
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3620029Z     ok 2 - clone
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3620555Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3621049Z       duration_ms: 19.852535
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3621656Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3622075Z     # Subtest: trigger
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3622660Z     ok 3 - trigger
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3623212Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3624009Z       duration_ms: 20.29925
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3624764Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3625299Z     # Subtest: version
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3625763Z     ok 4 - version
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3626173Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3626575Z       duration_ms: 20.361796
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3627046Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3627645Z     # Subtest: realVersion
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3628233Z     ok 5 - realVersion
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3639543Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3639925Z       duration_ms: 23.582169
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3640328Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3868556Z     # Subtest: nullSolution
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3871115Z     ok 6 - nullSolution
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3871444Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3871800Z       duration_ms: 26.629274
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.3872121Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4498079Z     # Subtest: ambiguousBody
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4499040Z     ok 7 - ambiguousBody
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4499623Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4500012Z       duration_ms: 22.870731
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4500455Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4500821Z     # Subtest: schema
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4501226Z     ok 8 - schema
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4501594Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4501959Z       duration_ms: 19.595105
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4502377Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4502733Z     # Subtest: primary
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4503139Z     ok 9 - primary
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4503722Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4504097Z       duration_ms: 20.29913
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4504543Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4847023Z     1..9
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4848699Z ok 119 - T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4850111Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4850537Z   duration_ms: 227.381076
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.4851009Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6250203Z # Subtest: T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6252360Z ok 120 - T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6253731Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6254529Z   duration_ms: 130.293707
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6255232Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6375314Z # Subtest: T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6376596Z ok 121 - T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6377198Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6377415Z   duration_ms: 43.923497
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:15.6377682Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1255394Z # Subtest: T-32 archive-only: exact schema/types/NULL/flags/identity/old packages survive independent authenticated restore
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1257773Z ok 122 - T-32 archive-only: exact schema/types/NULL/flags/identity/old packages survive independent authenticated restore
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1274684Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1275233Z   duration_ms: 73.515347
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1275789Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1761199Z # Subtest: T-32 archive-only: isolated typed rows distinguish missing parents, NULL target comments and general notifications
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1763876Z ok 123 - T-32 archive-only: isolated typed rows distinguish missing parents, NULL target comments and general notifications
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1764717Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1764993Z   duration_ms: 52.257076
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.1765288Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3005784Z # Subtest: T-32 archive-only: three versions with the same IDs retain different bodies without merging; version substitution fails
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3007695Z ok 124 - T-32 archive-only: three versions with the same IDs retain different bodies without merging; version substitution fails
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3008468Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3008938Z   duration_ms: 145.308789
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3009419Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3115261Z # Subtest: T-32 archive-only: wrong key, tag/cipher/header corruption, truncation and kind swap never publish unauthenticated plaintext
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3117680Z not ok 125 - T-32 archive-only: wrong key, tag/cipher/header corruption, truncation and kind swap never publish unauthenticated plaintext
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3119056Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3119669Z   duration_ms: 3.13861
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3120701Z   location: '/home/runner/work/anonyproof/anonyproof/tests/fix/T-32-retention-adapter.test.ts:13:10376'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3121767Z   failureType: 'testCodeFailure'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3122530Z   error: 'T-32 private retention failed: ARCHIVE_PREPARATION_FAILED'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3123329Z   code: 'ARCHIVE_PREPARATION_FAILED'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3124195Z   name: 'PrivateRetentionError'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3124685Z   stack: |-
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3125497Z     fail (/home/runner/work/anonyproof/anonyproof/scripts/private-retention-archive.ts:23:44)
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3126972Z     sealPrivateRetentionFile (/home/runner/work/anonyproof/anonyproof/scripts/private-retention-archive.ts:156:5)
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3128316Z     process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3129745Z     async TestContext.<anonymous> (/home/runner/work/anonyproof/anonyproof/tests/fix/T-32-retention-adapter.test.ts:168:3)
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3130960Z     async Test.run (node:internal/test_runner/test:797:9)
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3131850Z     async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.3132554Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.4743264Z # Subtest: T-32 archive-only: empty and multi-chunk large files authenticate and round trip with private independent files
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.4745554Z ok 126 - T-32 archive-only: empty and multi-chunk large files authenticate and round trip with private independent files
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.4746299Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.4746567Z   duration_ms: 143.735357
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.4746860Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.5201925Z # Subtest: T-32 archive-only: exclusive outputs and racing restore targets never replace existing files
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.5204180Z ok 127 - T-32 archive-only: exclusive outputs and racing restore targets never replace existing files
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.5205332Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.5205780Z   duration_ms: 51.270067
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.5206160Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.9604951Z # Subtest: T-32 package restore: a new process restores using only separately copied key, catalog and three archives
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.9607187Z ok 128 - T-32 package restore: a new process restores using only separately copied key, catalog and three archives
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.9608303Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.9608889Z   duration_ms: 412.810904
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:16.9612149Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0040323Z # Subtest: T-32 package restore: every preparation gets a unique package binding and valid cross-package substitutions fail
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0041775Z     # Subtest: snapshot
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0042311Z     ok 1 - snapshot
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0042797Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0043101Z       duration_ms: 3.668119
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0043714Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0069209Z     # Subtest: isolatedRows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0069971Z     ok 2 - isolatedRows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0070557Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0071022Z       duration_ms: 2.883264
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0071542Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0120859Z     # Subtest: manifest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0121382Z     ok 3 - manifest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0121810Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0122209Z       duration_ms: 4.968817
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0122624Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0150436Z     # Subtest: catalog
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0151342Z     ok 4 - catalog
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0151818Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0152243Z       duration_ms: 2.88147
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0152650Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0409841Z     # Subtest: logical-mapping
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0410471Z     ok 5 - logical-mapping
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0410970Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0411384Z       duration_ms: 2.851613
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0411839Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0412310Z     # Subtest: catalog-extra-path
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0416304Z     ok 6 - catalog-extra-path
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0416787Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0417163Z       duration_ms: 1.216812
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0417567Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0417949Z     # Subtest: catalog-missing
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0418378Z     ok 7 - catalog-missing
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0418764Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0419099Z       duration_ms: 0.98554
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0419397Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0419595Z     1..7
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0420220Z ok 129 - T-32 package restore: every preparation gets a unique package binding and valid cross-package substitutions fail
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0420824Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0421031Z   duration_ms: 108.241
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0421250Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0727463Z # Subtest: T-32 package restore: authenticated manifest digest/schema relationships are checked before any success publication
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0728865Z     # Subtest: snapshotDigest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0729373Z     ok 1 - snapshotDigest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0729689Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0729954Z       duration_ms: 10.383226
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0730260Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0815816Z     # Subtest: isolatedRowsDigest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0817194Z     ok 2 - isolatedRowsDigest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0818109Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0818793Z       duration_ms: 8.819601
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.0819277Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1131374Z     # Subtest: schemaDigest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1131981Z     ok 3 - schemaDigest
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1132487Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1132967Z       duration_ms: 8.809628
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1133639Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1134381Z     1..3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1135969Z ok 130 - T-32 package restore: authenticated manifest digest/schema relationships are checked before any success publication
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1137527Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1138031Z   duration_ms: 70.600748
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.1138365Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3330662Z # Subtest: T-32 package restore: a publication race leaves authenticated partial files but no successful completion marker
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3332604Z ok 131 - T-32 package restore: a publication race leaves authenticated partial files but no successful completion marker
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3333928Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3334319Z   duration_ms: 49.989172
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3334760Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3336085Z # Subtest: T-32 archive-only: unapproved runtime mode, invalid keys/bindings, broad permissions and symlink paths fail before publication
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3337328Z     # Subtest: runtime
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3337765Z     ok 1 - runtime
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3338596Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3344301Z       duration_ms: 22.423115
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3344871Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3345376Z     # Subtest: key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3345856Z     ok 2 - key
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3346300Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3347090Z       duration_ms: 25.306869
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3347655Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3348129Z     # Subtest: binding
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3348652Z     ok 3 - binding
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3349162Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3349656Z       duration_ms: 22.704421
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3350244Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3350752Z     # Subtest: source-mode
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3351150Z     ok 4 - source-mode
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3351457Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3351740Z       duration_ms: 22.334877
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3352341Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3353138Z     # Subtest: parent-mode
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3353973Z     ok 5 - parent-mode
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3354757Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3355289Z       duration_ms: 23.647676
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3355904Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3356301Z     # Subtest: source-symlink
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3357046Z     ok 6 - source-symlink
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3357415Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3358064Z       duration_ms: 23.184792
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3358412Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3358930Z     # Subtest: parent-symlink
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3359537Z     ok 7 - parent-symlink
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3360065Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3360412Z       duration_ms: 26.168334
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3360726Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3360983Z     1..7
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3361934Z ok 132 - T-32 archive-only: unapproved runtime mode, invalid keys/bindings, broad permissions and symlink paths fail before publication
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3362951Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3363876Z   duration_ms: 166.549408
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.3364629Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4128492Z # Subtest: T-32 archive-only: committed WAL snapshot survives unchanged writer and contains original role/flags
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4130306Z ok 133 - T-32 archive-only: committed WAL snapshot survives unchanged writer and contains original role/flags
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4131286Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4131782Z   duration_ms: 50.211806
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4132368Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4748940Z # Subtest: T-32 archive-only: giant metadata rows and unsupported relationship schema fail without a completion marker or source changes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4750190Z     # Subtest: large-row
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4750860Z     ok 1 - large-row
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4751418Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4751921Z       duration_ms: 93.284281
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4752465Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4784211Z     # Subtest: schema
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4784708Z     ok 2 - schema
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4785129Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4785541Z       duration_ms: 28.249323
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4786006Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4787223Z     1..2
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4788016Z ok 134 - T-32 archive-only: giant metadata rows and unsupported relationship schema fail without a completion marker or source changes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4788658Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4788871Z   duration_ms: 122.128996
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:17.4789109Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4137013Z # Subtest: T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4138996Z ok 135 - T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4140141Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4140584Z   duration_ms: 21.049175
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4141022Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4154815Z # Subtest: T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4156289Z ok 136 - T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4157079Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4157312Z   duration_ms: 21.01661
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4157836Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4158812Z # Subtest: T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4160468Z ok 137 - T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4161112Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4161338Z   duration_ms: 2550.017535
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:20.4161602Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:21.6474892Z # Subtest: T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:21.6526109Z ok 138 - T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:21.6527398Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:21.6528104Z   duration_ms: 835.432533
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:21.6528561Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:22.4346986Z # Subtest: T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:22.4410758Z ok 139 - T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:22.4412093Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:22.4412849Z   duration_ms: 789.145484
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:22.4413263Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.3384412Z # Subtest: T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.3387316Z ok 140 - T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.3388384Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.3388904Z   duration_ms: 901.144712
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.3389303Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6579110Z # Subtest: T-33 classifications and routes never retain arbitrary input; all recognized outputs are idempotent
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6626934Z ok 141 - T-33 classifications and routes never retain arbitrary input; all recognized outputs are idempotent
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6628285Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6628916Z   duration_ms: 10.563093
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6629469Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6630693Z # Subtest: T-33 exported writers minimize direct calls and rate-limit blacklist warnings do not retain source identifiers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6632536Z ok 142 - T-33 exported writers minimize direct calls and rate-limit blacklist warnings do not retain source identifiers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6633861Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6634460Z   duration_ms: 311.606537
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:23.6634903Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:24.4486691Z # Subtest: T-33 malformed route parameters return 400 without persisting the raw business marker to stderr
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:24.4488131Z ok 143 - T-33 malformed route parameters return 400 without persisting the raw business marker to stderr
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:24.4488834Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:24.4489316Z   duration_ms: 790.837795
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:24.4489793Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:25.5960525Z # Subtest: T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:25.6009131Z ok 144 - T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:25.6010614Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:25.6011348Z   duration_ms: 811.234944
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:25.6012008Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:26.3449027Z # Subtest: T-34: audit/child/parent/statistics failures roll back every affected business row
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:26.3495566Z     # Subtest: admin_logs INSERT WHEN NEW.action='delete'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:26.3496621Z     ok 1 - admin_logs INSERT WHEN NEW.action='delete'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:26.3497465Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:26.3497876Z       duration_ms: 749.018766
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:26.3498315Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.0839645Z     # Subtest: feedback_comments DELETE all rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.0904725Z     ok 2 - feedback_comments DELETE all rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.0916029Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.0918039Z       duration_ms: 738.832812
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.0918361Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.8274631Z     # Subtest: notifications DELETE WHEN OLD.recipient_type='admin'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.8321344Z     ok 3 - notifications DELETE WHEN OLD.recipient_type='admin'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.8322385Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.8323000Z       duration_ms: 743.414997
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:27.8323924Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:28.5659497Z     # Subtest: notifications DELETE WHEN OLD.recipient_type='user'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:28.5708373Z     ok 4 - notifications DELETE WHEN OLD.recipient_type='user'
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:28.5709023Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:28.5709352Z       duration_ms: 738.462721
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:28.5709727Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:29.3537982Z     # Subtest: feedbacks DELETE all rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:29.3594260Z     ok 5 - feedbacks DELETE all rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:29.3595291Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:29.3595934Z       duration_ms: 787.464734
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:29.3596388Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1449084Z     # Subtest: stats UPDATE all rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1520051Z     ok 6 - stats UPDATE all rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1521193Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1521857Z       duration_ms: 790.910157
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1522308Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1522629Z     1..6
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1523664Z ok 145 - T-34: audit/child/parent/statistics failures roll back every affected business row
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1524478Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1524829Z   duration_ms: 4549.413022
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.1525204Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.9245387Z # Subtest: T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.9288516Z ok 146 - T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.9289664Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.9290327Z   duration_ms: 779.270036
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:30.9291010Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:31.6774149Z # Subtest: T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:31.6775207Z ok 147 - T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:31.6776005Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:31.6776495Z   duration_ms: 753.133913
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:31.6776995Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:34.3044400Z # Subtest: T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:34.3089062Z ok 148 - T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:34.3090481Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:34.3091164Z   duration_ms: 2261.432768
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:34.3091615Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:36.4616216Z # Subtest: T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:36.4651612Z ok 149 - T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:36.4653145Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:36.4654037Z   duration_ms: 2158.438167
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:36.4654775Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:40.2707860Z # Subtest: T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:40.2751173Z ok 150 - T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:40.2752737Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:40.2753719Z   duration_ms: 3806.081468
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:40.2754491Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:43.0681931Z # Subtest: T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:43.0738225Z ok 151 - T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:43.0739740Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:43.0740400Z   duration_ms: 2813.091929
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:43.0741134Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:44.0956138Z # Subtest: T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:44.0958453Z ok 152 - T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:44.0959426Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:44.0959789Z   duration_ms: 1027.150049
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:44.0960164Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:45.4213301Z # Subtest: T-37: 1000 records paginate without duplicate/gap under tied timestamps and bounded whitelist
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:45.4275318Z ok 153 - T-37: 1000 records paginate without duplicate/gap under tied timestamps and bounded whitelist
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:45.4276649Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:45.4277217Z   duration_ms: 983.143586
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:45.4277809Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:46.2928317Z # Subtest: T-37: search and filters span all records with truthful filtered totals and global overview
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:46.2972153Z ok 154 - T-37: search and filters span all records with truthful filtered totals and global overview
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:46.2973628Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:46.2974064Z   duration_ms: 870.110738
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:46.2974324Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.1361960Z # Subtest: T-37: malformed bounds/cursors/filter changes reject and never bypass administrator scope
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.1410262Z ok 155 - T-37: malformed bounds/cursors/filter changes reject and never bypass administrator scope
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.1411636Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.1412384Z   duration_ms: 844.801879
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.1413075Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.8700994Z # Subtest: T-37: demo pagination scopes totals/search to own sandbox plus immutable templates
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.8757748Z ok 156 - T-37: demo pagination scopes totals/search to own sandbox plus immutable templates
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.8758834Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.8759478Z   duration_ms: 733.833684
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:47.8760132Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:48.6339069Z # Subtest: T-37 cutover: parameter-free legacy fields remain available but capped at 100
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:48.6394850Z ok 157 - T-37 cutover: parameter-free legacy fields remain available but capped at 100
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:48.6395359Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:48.6395583Z   duration_ms: 763.744102
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:48.6395830Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:49.4149344Z # Subtest: T-37: off-page notification resolves full detail and processing updates overview/filtered results
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:49.4150707Z ok 158 - T-37: off-page notification resolves full detail and processing updates overview/filtered results
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:49.4151390Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:49.4151873Z   duration_ms: 781.378653
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:49.4152364Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:50.6205041Z # Subtest: T-38: 1000 records / two identities, stable tied-time cursor and 160-codepoint bounded summary
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:50.6281583Z ok 159 - T-38: 1000 records / two identities, stable tied-time cursor and 160-codepoint bounded summary
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:50.6282803Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:50.6283235Z   duration_ms: 866.339151
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:50.6283848Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:51.5794115Z # Subtest: T-38: encrypted full-content search beyond summaries/pages, global counts and independent full detail
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:51.5835097Z ok 160 - T-38: encrypted full-content search beyond summaries/pages, global counts and independent full detail
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:51.5838152Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:51.5838783Z   duration_ms: 958.529375
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:51.5839393Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:52.3704897Z # Subtest: T-38: malformed parameters/cursor identity/filter binding cannot bypass authorization
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:52.3763336Z ok 161 - T-38: malformed parameters/cursor identity/filter binding cannot bypass authorization
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:52.3764659Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:52.3765164Z   duration_ms: 791.652738
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:52.3765686Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:53.8602413Z # Subtest: T-38: recovery R1 replaces list ownership, and demo list excludes templates/other sandboxes/legacy rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:53.8605302Z ok 162 - T-38: recovery R1 replaces list ownership, and demo list excludes templates/other sandboxes/legacy rows
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:53.8606336Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:53.8606849Z   duration_ms: 1490.083814
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:53.8607268Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.0618411Z # Subtest: T-39: 250 tied-time comments paginate newest then older with exact chronology/total and bounded whitelist
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.0671081Z ok 163 - T-39: 250 tied-time comments paginate newest then older with exact chronology/total and bounded whitelist
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.0672372Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.0672925Z   duration_ms: 853.820658
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.0674807Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.8740105Z # Subtest: T-39: send and incremental newer pages retain loaded old pages, no duplicate and accurate count
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.8799585Z ok 164 - T-39: send and incremental newer pages retain loaded old pages, no duplicate and accurate count
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.8800956Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.8801597Z   duration_ms: 812.261303
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:55.8802351Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:56.7002331Z # Subtest: T-39: auth is checked before pagination, cursor binds thread and reader scope; malformed bounds reject
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:56.7059234Z ok 165 - T-39: auth is checked before pagination, cursor binds thread and reader scope; malformed bounds reject
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:56.7060527Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:56.7061150Z   duration_ms: 826.393373
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:56.7061621Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:57.4818525Z # Subtest: T-39: demo read-only template admin access and sandbox comment isolation are preserved
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:57.4819965Z ok 166 - T-39: demo read-only template admin access and sandbox comment isolation are preserved
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:57.4820616Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:57.4821083Z   duration_ms: 781.673565
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:57.4821581Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:58.7002114Z # Subtest: T-40: notification limit stays bounded for users and admins without weakening access
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:58.7014613Z ok 167 - T-40: notification limit stays bounded for users and admins without weakening access
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:58.7015564Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:58.7015940Z   duration_ms: 889.762622
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:58.7016332Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8823805Z # Subtest: T-41: feedback statistics and required notification faults roll back the entire business write
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8825344Z     # Subtest: feedbacks INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8826279Z     ok 1 - feedbacks INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8827072Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8827648Z       duration_ms: 18.281655
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8828273Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8907066Z     # Subtest: stats UPDATE failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8919688Z     ok 2 - stats UPDATE failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8920567Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8920982Z       duration_ms: 9.041413
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8921401Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8965200Z     # Subtest: notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8969166Z     ok 3 - notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8969959Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8970410Z       duration_ms: 10.067384
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.8970832Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.9106261Z     1..3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.9177689Z ok 168 - T-41: feedback statistics and required notification faults roll back the entire business write
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.9179884Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.9181738Z   duration_ms: 864.310413
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:53:59.9182407Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6905002Z # Subtest: T-41: user and admin comment notification faults cannot persist orphaned comments
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6906562Z     # Subtest: user: feedback_comments INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6907654Z     ok 1 - user: feedback_comments INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6908559Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6909166Z       duration_ms: 13.341858
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6909831Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.6984569Z     # Subtest: user: notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7007390Z     ok 2 - user: notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7008024Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7008454Z       duration_ms: 7.077446
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7008897Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7089114Z     # Subtest: admin: feedback_comments INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7090198Z     ok 3 - admin: feedback_comments INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7091014Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7091430Z       duration_ms: 4.86814
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7091849Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7146048Z     # Subtest: admin: notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7162729Z     ok 4 - admin: notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7163616Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7164252Z       duration_ms: 5.04489
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7164689Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7231746Z     1..4
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7276651Z ok 169 - T-41: user and admin comment notification faults cannot persist orphaned comments
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7277731Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7278432Z   duration_ms: 815.485484
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:00.7279109Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4485385Z # Subtest: T-41: status audit/update/notification failures preserve all fields and related records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4486967Z     # Subtest: admin_logs INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4487606Z     ok 1 - admin_logs INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4488083Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4488448Z       duration_ms: 10.312296
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4488888Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4529818Z     # Subtest: feedbacks UPDATE failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4531854Z     ok 2 - feedbacks UPDATE failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4532518Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4533041Z       duration_ms: 5.573026
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4533992Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4575653Z     # Subtest: notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4576621Z     ok 3 - notifications INSERT failure
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4577172Z       ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4577531Z       duration_ms: 5.396527
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4577932Z       ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4711462Z     1..3
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4767883Z ok 170 - T-41: status audit/update/notification failures preserve all fields and related records
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4768802Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4769162Z   duration_ms: 747.960012
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:01.4769573Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2471570Z # Subtest: T-41: optional access logging faults leave core feedback/comment/status operations successful
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2473997Z ok 171 - T-41: optional access logging faults leave core feedback/comment/status operations successful
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2475454Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2475864Z   duration_ms: 775.732783
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2487347Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2488321Z # Subtest: T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2489901Z ok 172 - T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults # SKIP Deletion transaction is independently verified by T-34.test.ts; historical asset handling remains separately gated
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2490810Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2491018Z   duration_ms: 0.431897
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:02.2491266Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:03.4455941Z # Subtest: T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:03.4501202Z ok 173 - T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:03.4502467Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:03.4502859Z   duration_ms: 832.185283
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:03.4503298Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:04.3060350Z # Subtest: T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:04.3128209Z ok 174 - T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:04.3129818Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:04.3130415Z   duration_ms: 861.458961
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:04.3130967Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.1766735Z # Subtest: T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.1808892Z ok 175 - T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.1810276Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.1810949Z   duration_ms: 869.810435
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.1811624Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.9764258Z # Subtest: T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.9814501Z ok 176 - T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.9816066Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.9816841Z   duration_ms: 800.45301
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:05.9817554Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4627320Z # Subtest: T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4705868Z ok 177 - T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4714250Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4714958Z   duration_ms: 1485.353252
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4715402Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4716724Z # Subtest: T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4718841Z ok 178 - T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4719944Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4720266Z   duration_ms: 0.891445
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:07.4720616Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:08.2690050Z # Subtest: T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:08.2735320Z ok 179 - T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:08.2736320Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:08.2736709Z   duration_ms: 806.174459
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:08.2737113Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6020045Z # Subtest: T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6022443Z ok 180 - T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6024186Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6024997Z   duration_ms: 2327.420599
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6025759Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6026640Z # Subtest: T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6027602Z ok 181 - T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6028196Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6028726Z   duration_ms: 2.81176
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6029329Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6030510Z # Subtest: T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6032380Z ok 182 - T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6033972Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6034613Z   duration_ms: 0.505444
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:10.6035313Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.0947744Z # Subtest: T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.0951375Z ok 183 - T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.0952354Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.0952857Z   duration_ms: 7.482861
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.0953375Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2770880Z # Subtest: T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2772719Z ok 184 - T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2773853Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2774243Z   duration_ms: 205.558497
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2774744Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2776042Z # Subtest: T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2777871Z ok 185 - T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2778715Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2779079Z   duration_ms: 5.633738
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.2779451Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.3143213Z # Subtest: T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.3206125Z ok 186 - T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.3207396Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.3207929Z   duration_ms: 140.538599
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:11.3208480Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.0905389Z # Subtest: T-43: patched backend still binds feedback access to the authenticated identity
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.0908659Z ok 187 - T-43: patched backend still binds feedback access to the authenticated identity
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.0910101Z   ---
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.0910672Z   duration_ms: 776.762937
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.0911219Z   ...
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1137980Z 1..187
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1138519Z # tests 245
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1138909Z # suites 0
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1139279Z # pass 243
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1139641Z # fail 1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1139994Z # cancelled 0
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1140386Z # skipped 1
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1140747Z # todo 0
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1145548Z # duration_ms 219272.086415
+build (20.x)	Backend smoke and repair regression tests	2026-10-10T06:54:12.1332175Z ##[error]Process completed with exit code 1.

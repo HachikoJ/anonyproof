@@ -2,10 +2,9 @@
 import path from 'node:path'
 import {
   constants, lstatSync, realpathSync, openSync, closeSync, readSync, writeSync,
-  fsyncSync, fstatSync, mkdtempSync, linkSync, createReadStream, createWriteStream,
+  fsyncSync, fstatSync, mkdtempSync, linkSync,
 } from 'node:fs'
 import { createCipheriv, createDecipheriv, createHash, hkdfSync, randomBytes } from 'node:crypto'
-import { pipeline } from 'node:stream/promises'
 
 export const PRIVATE_RETENTION_FORMAT = 'APRA/1' as const
 const MAGIC = Buffer.from('APRA0001', 'ascii')
@@ -120,7 +119,11 @@ export async function privateFileDigest(file: string) {
   try {
     fd = openPrivateRead(file)
     const hash = createHash('sha256')
-    for await (const chunk of createReadStream(file, { fd, autoClose: false, highWaterMark: CHUNK_BYTES })) hash.update(chunk)
+    const chunk = Buffer.alloc(CHUNK_BYTES)
+    for (let bytes; (bytes = readSync(fd, chunk, 0, chunk.length, null)) > 0;) {
+      hash.update(chunk.subarray(0, bytes))
+      await new Promise<void>(resolve => setImmediate(resolve))
+    }
     return hash.digest('hex')
   } catch (error) {
     if (error instanceof PrivateRetentionError) throw error
@@ -143,11 +146,15 @@ export async function sealPrivateRetentionFile(options: ArchiveInput & { plainte
     writeAll(output, Buffer.concat([MAGIC, nonce]))
     const cipher = createCipheriv('aes-256-gcm', key, nonce, { authTagLength: TAG_BYTES })
     cipher.setAAD(parameters.aad)
-    await pipeline(
-      createReadStream(options.plaintextPath, { fd: input, autoClose: false, highWaterMark: CHUNK_BYTES }),
-      cipher,
-      createWriteStream(options.archivePath, { fd: output, autoClose: false, highWaterMark: CHUNK_BYTES }),
-    )
+    // One owner closes each descriptor. On a failed pipeline, Node 20 destroys
+    // fs streams even with autoClose:false; their delayed close can otherwise
+    // race the caller's close/reuse and close an unrelated subsequent file.
+    const chunk = Buffer.alloc(CHUNK_BYTES)
+    for (let bytes; (bytes = readSync(input, chunk, 0, chunk.length, null)) > 0;) {
+      writeAll(output, cipher.update(chunk.subarray(0, bytes)))
+      await new Promise<void>(resolve => setImmediate(resolve))
+    }
+    writeAll(output, cipher.final())
     writeAll(output, cipher.getAuthTag())
     fsyncSync(output)
     return { sealed: true as const, format: PRIVATE_RETENTION_FORMAT }
@@ -182,11 +189,16 @@ export async function restorePrivateRetentionFile(options: ArchiveInput & { arch
       const final = decipher.final()
       writeAll(output, final)
     } else {
-      await pipeline(
-        createReadStream(options.archivePath, { fd: input, autoClose: false, start: headerBytes,
-          end: size - TAG_BYTES - 1, highWaterMark: CHUNK_BYTES }),
-        decipher, createWriteStream(stagedPlaintext, { fd: output, autoClose: false, highWaterMark: CHUNK_BYTES }),
-      )
+      const chunk = Buffer.alloc(CHUNK_BYTES)
+      let position = headerBytes, remaining = size - headerBytes - TAG_BYTES
+      while (remaining > 0) {
+        const bytes = readSync(input, chunk, 0, Math.min(chunk.length, remaining), position)
+        if (!bytes) fail('INVALID_ARCHIVE')
+        writeAll(output, decipher.update(chunk.subarray(0, bytes)))
+        position += bytes; remaining -= bytes
+        await new Promise<void>(resolve => setImmediate(resolve))
+      }
+      writeAll(output, decipher.final())
     }
     fsyncSync(output)
     closeSync(output); output = undefined
