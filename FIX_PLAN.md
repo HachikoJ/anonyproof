@@ -1587,3 +1587,10 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - C新站具体方案已准备，固定60文件候选包/CI/安装构建命令/私有配置/独立空demo库/唯一vhost/公网与独立浏览器验收/503回滚都有具体范围。实时PM2仅旧两条stopped，持久化dump仍为online；C须明确批准移除这两条旧注册和开机项、保存新合成两进程，旧代码/库/日志保留。方案在私有/tmp目录，当前未上传/安装/发布。
 - E工具25/25合成测试及strict编译0；三个真实D恢复版本四项共12次只读预览0、源SHA不变。具体方案仅新私有副本：保留未知业务/身份/NULL/聚合，孤儿分档、旧adminIP置空，最终长期档案不含任何逐请求raw日志；原聚合精度未知和全缺身份表的旧版本分别显式离线映射，不补造/不补表。六套APRA主/孤儿档案须两地独立恢复/业务联合比对。等待此次E具体批准，不执行真实转换，不删除旧源/D/日志。F最终精确处置另批。
 - 当前任务35已完成、8进行中（T02/T11/T25/T34/T24/T32/T33/T35）；D恢复/审批准备不改变完成数。
+
+
+### 待C/E批准的精确执行入口与F只读预览（2026-10-10）
+
+- C私有完整方案：`/private/tmp/anonyproof-release-proposal-20261010-30ej40a9/C-release-preview.md`；候选包、逐文件manifest、PM2 wrapper、vhost、合成接线验证和冻结SHA都在同目录。仅固定5c23a04（真实CI通过）代码，后续1c2c965为证据文档，不把它的CI宣称完成。C未实际上传/安装/修改生产。
+- E私有完整方案：`/tmp/anonyproof-E-minimization-proposal-20261010.md`；冻结工具/test/25通过日志/strict0及真实12次只读计划在`/private/tmp/anonyproof-E-local-20261010-fy74jlkx/`。每阶段执行须验证冻结SHA和源状态，专门离线例外必须按具体批准，不自动采用。E未实际转换历史资产。
+- F当前只读候选清单：`/private/tmp/anonyproof-F-inventory-20261010/F-current-candidates.private.json`。按当前DB/sidecar、6项目日志、本站30Nginx轮转、私有AB/D明文/过渡档案及本机副本逐资产盘点；执行前要加上未来E明文并重新冻结精确清单，不允许按目录通配删除。共享30Nginx文件只读扫描无明确本站Host标签；combined旧access无Host而不能可靠归属，保留该不确定性，禁止泛删共享/其他站日志。当前无任何F批准或删除。
