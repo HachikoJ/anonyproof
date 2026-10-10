@@ -1,0 +1,27 @@
+{
+  "codeCandidate": "5c23a042e807b92312dac8fa1a9dc2e6037f575d",
+  "actualVersions": [
+    {
+      "version": 1,
+      "authenticatedRestore": true,
+      "schemaAndAllTypedRowsEqualAB": true
+    },
+    {
+      "version": 2,
+      "authenticatedRestore": true,
+      "schemaAndAllTypedRowsEqualAB": true
+    },
+    {
+      "version": 3,
+      "authenticatedRestore": true,
+      "schemaAndAllTypedRowsEqualAB": true
+    }
+  ],
+  "originalPackagesModified": false,
+  "oldSourcesModified": false,
+  "scope": "Approved D recovery compatibility after fd race correction; no E/F operation",
+  "helperSha256": {
+    "content-retention-adapter.ts": "3f93e4181be2dabebbde83e56f90ea76d849959bdee5bf832ffe87095e7b7ae0",
+    "private-retention-archive.ts": "42599b3b512bcc03ef784f951f475df896774fa89599b1a0587ebdf5d89e8ce3"
+  }
+}
