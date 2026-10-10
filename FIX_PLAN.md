@@ -778,7 +778,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-36 安全边界最小模块拆分
 
-状态：进行中（四模块方案已批准，本地行为/API基线已闭合；按模块实施并独立验证提交）；原始严重度：P3（审查第 15 条）；优先级：C；工作量：M；前置依赖：Q-09、全部已选择的行为修复与对应API回归；T-18。
+状态：已完成（四模块分别验证/提交；实际43注册与HTTP一致，重复初始化/失败恢复、本地全量与最终固定候选真实CI通过）；原始严重度：P3（审查第 15 条）；优先级：C；工作量：M；前置依赖：Q-09、全部已选择的行为修复与对应API回归；T-18。
 
 **问题**：`server/index.ts`混合建表/迁移、认证、身份、演示、路由、通知，校验与限流死代码分散，后续容易漏挂保护。
 
@@ -1573,3 +1573,9 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 本候选59db49b真实CI运行38032124091失败：243通过、1失败、1既存跳过；T32一次认证失败后下一归档准备失败，六个后续场景未运行，不能计通过。失败日志T-18-candidate-59db49b-CI-failure.txt保留。此前本地251项并不替代该平台验证。
 - Node20最小合成循环实际复现EBADF/write。原因是失败pipeline destroy触发异步fs stream close，与finally同步关闭后复用fd冲突。仅改离线helper为单一fd所有者、64KiB同步chunk加事件循环让步；私有manifest写入同样保持单一所有者。APRA/1、AES-GCM/AAD/验证/发布边界与接口不变，没有回避错误鉴权测试。
 - 新增T-32-archive-fd.test.ts：64轮错误认证后无发布、外部复用fd可继续写入、随后正确归档恢复字节相同。Node20实际1/1，Node22关联59/59、strict0。证据T-32-fd-CI-regression-result.json。独立T32提交后重跑真实候选CI，T36仍进行中；无发布/历史覆盖/删除。
+
+
+### T-36逐项关闭与最终固定候选CI通过（2026-10-10）
+
+- 新候选5c23a04真实CI运行38033385313成功：252项中251通过、0失败、1既有T41占位跳过；两types/严格后端/build均通过。依赖审计与构建两个artifact真实存在，server生产审计0、root为4个范围外/已记录advisory（0 critical）；不把warning解释为无风险。实际结果T-18-candidate-5c23a04-actual-CI.json与日志/artefacts。旧失败CI仍保留。
+- 对T36原始验收逐项复核：S1/S2/S3/S4各独立提交；43运行注册trace、认证alias、Cookie、具体参数HTTP、schema重复启动/故障恢复、原SQL与初始化顺序均通过；最新本机Nginx→Next→Express链59/59。至此T36标已完成，独立关闭证据T-36-final-closure.json。历史资产和生产启用任务仍各自进行中，不借此关闭。
