@@ -1,0 +1,186 @@
+{
+  "checkedAtUtc": "2026-10-11",
+  "run": {
+    "conclusion": "success",
+    "databaseId": 38035917776,
+    "headSha": "40808c0d6e19573e662f947fa49f9024526fc670",
+    "jobs": [
+      {
+        "completedAt": "2026-10-10T07:58:32Z",
+        "conclusion": "success",
+        "databaseId": 114166183363,
+        "name": "build (20.x)",
+        "startedAt": "2026-10-10T07:52:25Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-10-10T07:52:27Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-10-10T07:52:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:52:27Z",
+            "conclusion": "success",
+            "name": "Checkout code",
+            "number": 2,
+            "startedAt": "2026-10-10T07:52:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:52:32Z",
+            "conclusion": "success",
+            "name": "Setup Node.js 20.x",
+            "number": 3,
+            "startedAt": "2026-10-10T07:52:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:52:34Z",
+            "conclusion": "success",
+            "name": "Upgrade npm",
+            "number": 4,
+            "startedAt": "2026-10-10T07:52:32Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:54:55Z",
+            "conclusion": "success",
+            "name": "Install dependencies",
+            "number": 5,
+            "startedAt": "2026-10-10T07:52:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:54:56Z",
+            "conclusion": "success",
+            "name": "Verify installed trees and SQLite native ABI",
+            "number": 6,
+            "startedAt": "2026-10-10T07:54:55Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:54:56Z",
+            "conclusion": "skipped",
+            "name": "Show npm debug log",
+            "number": 7,
+            "startedAt": "2026-10-10T07:54:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:55:00Z",
+            "conclusion": "success",
+            "name": "Frontend type check",
+            "number": 8,
+            "startedAt": "2026-10-10T07:54:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:55:06Z",
+            "conclusion": "success",
+            "name": "Backend type check",
+            "number": 9,
+            "startedAt": "2026-10-10T07:55:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:55:16Z",
+            "conclusion": "success",
+            "name": "Build",
+            "number": 10,
+            "startedAt": "2026-10-10T07:55:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:25Z",
+            "conclusion": "success",
+            "name": "Backend smoke and repair regression tests",
+            "number": 11,
+            "startedAt": "2026-10-10T07:55:16Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:27Z",
+            "conclusion": "success",
+            "name": "Audit production dependencies",
+            "number": 12,
+            "startedAt": "2026-10-10T07:58:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:28Z",
+            "conclusion": "success",
+            "name": "Upload dependency audit reports",
+            "number": 13,
+            "startedAt": "2026-10-10T07:58:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:30Z",
+            "conclusion": "success",
+            "name": "Upload build artifacts",
+            "number": 14,
+            "startedAt": "2026-10-10T07:58:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:30Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js 20.x",
+            "number": 27,
+            "startedAt": "2026-10-10T07:58:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:30Z",
+            "conclusion": "success",
+            "name": "Post Checkout code",
+            "number": 28,
+            "startedAt": "2026-10-10T07:58:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-10-10T07:58:30Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 29,
+            "startedAt": "2026-10-10T07:58:30Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/HachikoJ/anonyproof/actions/runs/38035917776/job/114166183363"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/HachikoJ/anonyproof/actions/runs/38035917776"
+  },
+  "actualTapCounts": {
+    "tests": 252,
+    "pass": 251,
+    "fail": 0,
+    "skipped": 1
+  },
+  "actualArtifactSummary": [
+    {
+      "id": 11664087460,
+      "name": "build-20.x",
+      "bytes": 25787581,
+      "expired": false,
+      "headSha": "40808c0d6e19573e662f947fa49f9024526fc670"
+    },
+    {
+      "id": 11663672687,
+      "name": "dependency-audit-20.x",
+      "bytes": 1802,
+      "expired": false,
+      "headSha": "40808c0d6e19573e662f947fa49f9024526fc670"
+    }
+  ],
+  "rawLogSha256": "3b018ce5fd05e9bb87a10b00769cbda9121fbb874d9bca16d3f91124327fb756",
+  "rawLogPreservedPrivate": true,
+  "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts",
+  "existingSkipNotCountedAsPass": true,
+  "doesNotProveProductionOrHistoricalDisposal": true
+}
