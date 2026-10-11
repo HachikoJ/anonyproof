@@ -600,7 +600,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-11 原始访问日志保留窗口和清理
 
-状态：已阻塞（C保留任务、E窗口/批次和最终无raw已通过；F768文件已明确批准，但本机管理员子进程被macOS Documents隐私权限拒绝；待终端root预检与双机逐文件退役验收）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。
+状态：已阻塞（C调度/E原始日志窗口与无raw归档已通过；F服务器旧DB及项目/本站日志已逐文件退役验收；本机352旧副本仍在，待用户成功终端执行已批删除并验收）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。
 
 **问题**：`server/utils/accessStats.ts:190 cleanupOldLogs()`没有调用方；access_logs/rate_limit_logs无限增长。日志清理独立于T-10查询性能。
 
@@ -630,7 +630,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-34 删除反馈的关联数据一致性
 
-状态：已阻塞（C新合成删除级联和E历史孤儿隔离/双机恢复已通过；F已明确批准；待本机root预检及旧关联副本逐文件退役验收）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。
+状态：已阻塞（C新合成反馈级联、E孤儿隔离/恢复已通过；F服务器旧关联副本已退役；本机旧业务关联副本仍在，待已批删除及验收）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。
 
 **问题**：`DELETE /api/admin/feedback/:id`约1058行只删除feedbacks；schema中comments/notifications无外键级联，私密沟通与摘要成为残留。
 
@@ -692,7 +692,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-32 历史明文/可解密密文及备份处置
 
-状态：已阻塞（E六套最终档案双机全量恢复已通过；F含两份旧PM2备份已明确批准；待解决本机macOS Documents权限、root预检及双机旧明文/WAL/过渡档案退役验收）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
+状态：已阻塞（E六套双机认证档案已通过；F服务器416旧库/WAL/过渡档案等已逐文件退役，24最终canonical及根key保持；本机352旧副本仍在，待已批删除及验收）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
 
 **问题**：即便改新写入，feedbacks.original_content、旧key+cipher字段、comments/notifications以及备份仍含敏感内容；单改代码不消除旧数据风险。
 
@@ -708,7 +708,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-33 数据可关联性与匿名说明一致
 
-状态：已阻塞（C代理日志关闭/新日志最小化、E最终最小化已通过；F已明确批准；待本机root预检及历史日志/IP关联副本逐文件退役验收）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。
+状态：已阻塞（C新日志最小化、E最终无raw及adminIP映射已通过；F服务器历史日志/实际IP副本已退役且新站/其他配置不变；本机旧关联副本仍在，待已批删除及验收）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。
 
 **问题**：access_logs的IP/UA/path、device_id与正文、管理员处理IP等能被运营者关联；“匿名”若被理解为不可追踪就超过实际能力。
 
@@ -1636,3 +1636,13 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 下一步：解决本机终端的真实权限访问路径；执行前双机fresh预检/运行基线复核；当前v4写前journal与逐文件pinned fd guards执行768路径；逐路径ENOENT、保留档案内容/权限/调整后nlink与新合成站/其他站不变通过后，分别关闭T11/T32/T33/T34。无须重审或重跑既有全量UI/CI；未授权删除审批清单/私有inventory，物理擦除和共享日志归属限制继续保留。
 - 本轮只读复核子代理因账号用量限制未执行，不作为新的独立完成证据；前序35项逐项审计与C/E四项实际独立验收仍为已有证据。公开脱敏状态证据：`audit/execution-results/F-approved-preflight-blocker-20261011.json`。
 - 权限补充实测：用户再次回复“给你授权”后，尝试专用Computer Use控制Terminal被工具明确拒绝（`Computer Use is not allowed to use the app com.apple.Terminal for safety reasons`）。不是F批准缺失，不能改用AppleScript或其他UI技术绕过此限制；需用户亲自在终端运行上面的只读预检。再次逐路径确认本机352目标仍在，没有删除；该工具拒绝私有receipt已保存。
+
+
+### F本机终端预检已通过、服务器416文件实际退役（2026-10-11）
+
+- 用户贴出自己终端root成功preflight：352目标/195保留、全部metadata/hash/aliases和noOpenTargets=true。该结果是真实只读验收，不是删除执行；代理sudo权限不共享、管理员子进程Documents读取仍拒绝。因此已提供同一已批准工具的execute命令（见下方），没有追加F批准要求。当前本机352目标均仍存在。
+- 服务器F已在冻结清单、真实人类授权receipt、完整fresh root预检和当前运行基线之后，使用字节未变的v4 executor实际unlink416文件；写前intent与completed共832记录逐路径独立重读一致。所有416路径ENOENT，48保留项元数据/hash/调整后nlink通过；24最终canonical APRA/catalog保留、根key仅核验元数据未读/未哈希，所有目录保留。
+- 第一次服务器wrapper在任何unlink前停止：C历史守卫发现另一项目starvault配置已外部更新。只读查证仅该vhost变化、include集合不变、本站vhost仍匹配C冻结SHA、starvault没有引用旧AnonyProof路径；保留这项外部更新，以精确当前SHA冻结后再做before/after比较。只改私有验收守卫，不改任何Nginx/项目配置，也不改F768路径/保护集/执行工具。不以旧C他站SHA覆盖他人的变更；首次空运行目录/失败版本保留。
+- 服务器删除后独立核验：/proc无旧unlink raw文件句柄，已盘点目录无清单外历史残留（共享/其他站日志保持明确排除）；当前两demo PID/cwd/restarts、主/备PM2、vhost/proxy/session配置摘要和当前他站配置集合/hash均与本次before相同。四路200、health200、直连缺/错键403、新DB完整性/FK/七模板、对照站状态通过。未产生新的明文恢复副本，以E双机完整恢复+最终文件SHA不变支持可恢复性。
+- 公开结果 `audit/execution-results/F-server-exact-disposal-20261011.json`；完整832路径事件仅私有，根key/真实内容/实际IP不进Git。服务器执行完成时间2026-10-11 21:59:00（Asia/Shanghai）。本机352仍待删，任务仍39/43，T11/T32/T33/T34各保留独立部分验收，不提前关闭。
+- 本机同一成功终端的已批准执行命令：`sudo /opt/homebrew/bin/python3 /private/tmp/anonyproof-F-executor-20261011/f_exact_executor.py execute /private/tmp/anonyproof-F-final-20261011-o443odej/F-exact-assets.private.json --host local --approval-receipt /private/tmp/anonyproof-F-executor-20261011/F-human-approval-20261011.private.json --journal /private/tmp/anonyproof-F-executor-20261011/F-local-unlink.private.jsonl`。它会fresh preflight后才unlink并写持久journal；成功需要exactFilesUnlinked=352/全部目标不存在/保留内容权限不变。报错先原样记录、查已删/未删和journal，不盲目重跑；F执行不提供D旧原样回滚，只能E恢复批准保留业务。收到实际执行结果后，主代理逐路径复核双机并完成原43项最终独立审计。
