@@ -1,0 +1,39 @@
+{
+  "format": "AnonyProof/F-execution-preparation-redacted/1",
+  "verifiedAtUtc": "2026-10-11T05:40:28.926065+00:00",
+  "FHumanApprovalReceived": false,
+  "manifestSha256": "d42b0c6c494199a665aa8293b804d770ac3f4324bd864c9701161c76a275acf0",
+  "scopeFileCount": 768,
+  "serverTargetCount": 416,
+  "localTargetCount": 352,
+  "syntheticTestsPassed": 31,
+  "syntheticTestsFailed": 0,
+  "allUnlinkCallsMocked": true,
+  "actualFilesDeleted": false,
+  "independentExecutorReviewCompleted": true,
+  "confirmedExecutorIssuesCorrected": [
+    "write-ahead durable journal before unlink",
+    "root lsof visibility and reject stderr",
+    "same frozen manifest bytes hashed and parsed",
+    "pinned target/parent descriptors and full final metadata"
+  ],
+  "serverRealRootPreflightPassed": true,
+  "serverPreservedFilesVerified": 48,
+  "localMetadataHashAndAliasesVerified": true,
+  "localPreservedMetadataFilesVerified": 195,
+  "localFullProcessVisibilityProved": false,
+  "localNoninteractiveSudoAvailable": false,
+  "localFinalPreflightGate": "LOCAL_ROOT_VISIBILITY_REQUIRED",
+  "missingApprovalGateVerified": "EXPLICIT_APPROVAL_RECEIPT_AND_JOURNAL_REQUIRED",
+  "remaining": [
+    "genuine human F approval including two old PM2 backups",
+    "local administrator authorization and full root preflight",
+    "fresh exact guards then approved unlink and post-verification"
+  ],
+  "physicalErasureClaimed": false,
+  "executionEvidenceSHA256": {
+    "f_exact_executor.py": "d91c42b614107c987e66610b7265c893775b3dbcd8780267094b71a7e9654b12",
+    "test_f_exact_executor.py": "af87b6115fb8acfd75b5ff39737629247d95fc75e1a4c7f63267aa0277a2e4aa",
+    "synthetic-tests-v4.private.log": "34747737af948f1cccd60c0bdf13fc923d877b9d7ca57529482ec7d70e356d32"
+  }
+}

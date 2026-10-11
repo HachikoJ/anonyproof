@@ -1615,3 +1615,12 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 真实内容/源计数/键/catalog/typed摘要仅私有；公开脱敏证据：C-approved-release-20261011.json、C-public-browser-20261011.json、C-three-page-static-20261011.json、E-approved-six-package-recovery-20261011.json。完整范围、实际命令、独立验收及F入口见T-C-E-production-acceptance-20261011.md。
 - 失败材料保留：C部署验收曾误用旧模板ID前缀（安全503停新后改为exact7 IDs）；来源日志按已归一化/unmatched记录核对；浏览器脚本Cookie名/成功对话框/幂等键格式三次输入错误修正。E先遇隔离目录SQLite搜索路径缺失，再遇SQLite backup页布局不同的过严字节断言；改成独立完整schema/typed比对，未放宽业务验收、未改产品/格式。
 - APRA适配器原保守transitional metadata沿用，不擅改格式；E独立receipt证明最终候选无raw，但F未完之前旧明文/含raw全量D包仍在，不能声称历史处置闭环或物理擦除。
+
+
+### F精确执行工具准备与真实权限门禁（2026-10-11，未删除）
+
+- F768路径和冻结manifest不变，原具体审批问题仍待用户答复；C/E批准与自动继续不替代F。精确提案 `/tmp/anonyproof-F-final-exact-proposal-20261011.md` 已补工具/权限门禁，未扩展资产范围。
+- 私有工具 `/private/tmp/anonyproof-F-executor-20261011/f_exact_executor.py`，test_f_exact_executor.py；独立评审发现四处工具缺口并修正：先持久意图再unlink，root可见性及lsof警告拒绝，冻结摘要/解析同一bytes，pinned fd哈希/完整stat/固定parent dirfd。journal创建父目录亦fsync，打开后复核0700/identity。31/31合成测试实际通过；所有unlink全mock，真实和合成文件均未删除，旧失败版本/日志保留。
+- 服务器root只读预检416待删/48保留实际通过，全部metadata/hash/alias及无占用核验通过。本机352待删/195保留metadata/hash/alias通过；非root不能证明全机无占用，当前sudo-n不可用、root PID1不可见，因此最终本机预检以LOCAL_ROOT_VISIBILITY_REQUIRED失败关闭，不采用旧非root无占用结论。F获批后需用户在系统管理员提示授权root同清单只读预检；不接收密码。
+- 缺真实F人工批准及journal，execute入口实际返回EXPLICIT_APPROVAL_RECEIPT_AND_JOURNAL_REQUIRED；不得自行生成批准receipt。最后stat/unlink窗口仍依靠旧写者停用和禁止并发操作，未声称完全抵抗恶意同权限操作者。
+- 脱敏实测索引 F-executor-preparation-20261011.json；私有source/test/log SHA在F-executor-freeze.private.json。该准备不是F删除验收，T11/T32/T33/T34仍未完成；当前39/43。
