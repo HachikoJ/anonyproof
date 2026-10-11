@@ -600,7 +600,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-11 原始访问日志保留窗口和清理
 
-状态：已阻塞（C保留任务已部署、E工作副本窗口/批次和最终无raw通过；仅待F精确旧资产退役批准及验收）；待E真实保留处置、F逐资产退役、C部署补验）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。
+状态：已阻塞（C保留任务、E窗口/批次和最终无raw已通过；F768文件已明确批准，但本机管理员子进程被macOS Documents隐私权限拒绝；待终端root预检与双机逐文件退役验收）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。
 
 **问题**：`server/utils/accessStats.ts:190 cleanupOldLogs()`没有调用方；access_logs/rate_limit_logs无限增长。日志清理独立于T-10查询性能。
 
@@ -630,7 +630,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-34 删除反馈的关联数据一致性
 
-状态：已阻塞（C新合成删除实际级联/E历史孤儿先隔离再移除及双机恢复通过；仅待F旧关联副本退役批准及验收）；待E孤儿隔离、F旧关联副本退役）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。
+状态：已阻塞（C新合成删除级联和E历史孤儿隔离/双机恢复已通过；F已明确批准；待本机root预检及旧关联副本逐文件退役验收）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。
 
 **问题**：`DELETE /api/admin/feedback/:id`约1058行只删除feedbacks；schema中comments/notifications无外键级联，私密沟通与摘要成为残留。
 
@@ -692,7 +692,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-32 历史明文/可解密密文及备份处置
 
-状态：已阻塞（E六套最终保留档案双机全量恢复通过；仅待F旧明文/WAL/过渡档案逐资产退役批准及验收）；待E最终保留档案、F旧明文和过渡档案退役）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
+状态：已阻塞（E六套最终档案双机全量恢复已通过；F含两份旧PM2备份已明确批准；待解决本机macOS Documents权限、root预检及双机旧明文/WAL/过渡档案退役验收）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。
 
 **问题**：即便改新写入，feedbacks.original_content、旧key+cipher字段、comments/notifications以及备份仍含敏感内容；单改代码不消除旧数据风险。
 
@@ -708,7 +708,7 @@ fixture 为每次测试创建临时目录和独立 SQLite 文件；显式设置 
 
 ### T-33 数据可关联性与匿名说明一致
 
-状态：已阻塞（C代理请求日志关闭/新日志最小字段和E最小化通过；仅待F历史日志与关联副本退役批准及验收）；待C代理日志配置、E最小化、F历史日志/副本退役）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。
+状态：已阻塞（C代理日志关闭/新日志最小化、E最终最小化已通过；F已明确批准；待本机root预检及历史日志/IP关联副本逐文件退役验收）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。
 
 **问题**：access_logs的IP/UA/path、device_id与正文、管理员处理IP等能被运营者关联；“匿名”若被理解为不可追踪就超过实际能力。
 
@@ -1624,3 +1624,14 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 服务器root只读预检416待删/48保留实际通过，全部metadata/hash/alias及无占用核验通过。本机352待删/195保留metadata/hash/alias通过；非root不能证明全机无占用，当前sudo-n不可用、root PID1不可见，因此最终本机预检以LOCAL_ROOT_VISIBILITY_REQUIRED失败关闭，不采用旧非root无占用结论。F获批后需用户在系统管理员提示授权root同清单只读预检；不接收密码。
 - 缺真实F人工批准及journal，execute入口实际返回EXPLICIT_APPROVAL_RECEIPT_AND_JOURNAL_REQUIRED；不得自行生成批准receipt。最后stat/unlink窗口仍依靠旧写者停用和禁止并发操作，未声称完全抵抗恶意同权限操作者。
 - 脱敏实测索引 F-executor-preparation-20261011.json；私有source/test/log SHA在F-executor-freeze.private.json。该准备不是F删除验收，T11/T32/T33/T34仍未完成；当前39/43。
+
+
+### F具体批准与macOS实际权限阻塞（2026-10-11，尚未删除）
+
+- 用户明确回复“批准整份 F，含两份旧 PM2 备份，立即执行”，绑定冻结manifest SHA `d42b0c6c494199a665aa8293b804d770ac3f4324bd864c9701161c76a275acf0` 的768精确路径（server416/local352）。真实授权receipt已私有记录；无需再次批准F。四任务的原严重度/依赖/验收独立保留。
+- 当前冻结tool/test/log SHA逐项复核无变化。服务器root预检再次通过416目标、48保留、全部hash/metadata/aliases和无占用；新合成站四路200、health200、缺/错代理键403、两demo在线及主/备PM2仅demo、runtime私有权限/DB完整性/七模板、其他配置/对照站均通过。运行基线只私有保存，不输出keys/实际IP。
+- 本机先前非root metadata/hash/alias覆盖352目标、195保留。系统管理员提示已成功进入root执行，但在第一个Documents文件读取时返回 `PermissionError errno=1 Operation not permitted`；实际路径为私有旧D recovery receipt。这是macOS隐私访问限制，不能用root身份或已有F批准声称绕过。诊断及root输出仅私有保存，没有文件删除。
+- 已请用户在自己的终端运行只读完整预检：`sudo /opt/homebrew/bin/python3 /private/tmp/anonyproof-F-executor-20261011/f_exact_executor.py preflight /private/tmp/anonyproof-F-final-20261011-o443odej/F-exact-assets.private.json --host local`。如macOS提示需允许终端访问Documents；密码只在终端输入，不发送给代理。成功需352目标、195保留、noOpenTargets=true；还必须取得有同等实际权限的执行路径，不能把用户一次预检结果当永久删除门禁。
+- 实际双机逐路径复查768目标全在、无unlink journal；没有因本机权限失败先删服务器。枚举本机151已盘点目录没有清单外文件；服务器所有194额外目录项均是清单明确排除的共享/其他站日志，没有扩大删除。当前39完成、4部分解决/已阻塞；公开新合成站仍正常。
+- 下一步：解决本机终端的真实权限访问路径；执行前双机fresh预检/运行基线复核；当前v4写前journal与逐文件pinned fd guards执行768路径；逐路径ENOENT、保留档案内容/权限/调整后nlink与新合成站/其他站不变通过后，分别关闭T11/T32/T33/T34。无须重审或重跑既有全量UI/CI；未授权删除审批清单/私有inventory，物理擦除和共享日志归属限制继续保留。
+- 本轮只读复核子代理因账号用量限制未执行，不作为新的独立完成证据；前序35项逐项审计与C/E四项实际独立验收仍为已有证据。公开脱敏状态证据：`audit/execution-results/F-approved-preflight-blocker-20261011.json`。
