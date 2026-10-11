@@ -1,0 +1,28 @@
+{
+  "task": "T-29",
+  "source": "app/components/LocalFileUpload.tsx",
+  "proposedTarget": "archive/unsupported-uploads/LocalFileUpload.tsx.txt",
+  "sha256": "3e0a902757ff4d0ddc770cce70ab656214a630e72c2785981d7897e1177e4f21",
+  "bytes": 3423,
+  "gitMode": "100644",
+  "callers": [],
+  "reachableFromRouteEntry": false,
+  "sourceUnchanged": true,
+  "proposedTargetExists": false,
+  "sourceExists": false,
+  "targetSha256": "3e0a902757ff4d0ddc770cce70ab656214a630e72c2785981d7897e1177e4f21",
+  "exactBytesPreserved": true,
+  "authorization": "A approved exact move; independent from T-28",
+  "status": "completed",
+  "checks": "T-29-checks.json",
+  "browser": {
+    "engine": "Codex in-app browser",
+    "fixtureOnly": true,
+    "productionBuild": true,
+    "observed": "text submission success and record visible",
+    "resourceCountAtSubmission": 13,
+    "externalRequests": 0,
+    "uploadLocalRequests": 0,
+    "fileInputs": 0
+  }
+}

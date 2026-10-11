@@ -1,0 +1,8 @@
+{
+  "rawEvidenceDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T32-inventory-raw-96v11g3t",
+  "files": [
+    "T-32-inventory-type.txt",
+    "T-32-inventory-type-final.txt"
+  ],
+  "change": "console line/EOF whitespace only"
+}

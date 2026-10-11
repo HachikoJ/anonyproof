@@ -1,0 +1,91 @@
+{
+  "checkedAtUTC": "2026-10-08T09:03:10.930544+00:00",
+  "task": "T-22",
+  "scope": "local synthetic fixtures only; no production, GitHub push or real database changes",
+  "bounds": {
+    "sessions": 1000,
+    "loginAttempts": 10000,
+    "recentRecoveryCodes": 10000
+  },
+  "ttlMs": {
+    "sessions": 28800000,
+    "loginAttempts": 900000,
+    "recentRecoveryCodes": 600000
+  },
+  "cleanupIntervalMs": 60000,
+  "capacityPolicy": {
+    "sessions": "503 before demo identity/cookie writes; no valid session eviction",
+    "loginAttempts": "503 for new failed source; retain existing lockout",
+    "recentRecoveryCodes": "evict oldest successful set; saved R1 unchanged"
+  },
+  "verification": {
+    "combinedRegression": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skip": 0,
+      "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-22.test.ts tests/fix/T-22.integration.test.ts tests/fix/T-09.test.ts tests/fix/T-05.test.ts tests/fix/T-21.test.ts"
+    },
+    "latestHttpBoundaryAdditions": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-22.integration.test.ts"
+    },
+    "fixtureInstrumentation": "NODE_OPTIONS preload instruments real backing Maps, fills with synthetic entries to actual bounds, offsets Date.now and accelerates only real cleanup callbacks to 20ms. Module clock tests separately verify 60s scheduling/unref. No production hook or lowered bound. Reports store sizes only, never session or recovery values."
+  },
+  "checks": [
+    {
+      "name": "T-22-regression",
+      "exitCode": 0,
+      "rawPath": "/tmp/anonyproof-T22-final3-tests.txt",
+      "rawSha256": "5243654412bf634f3bf00e59b12690d598e5a0750c73668b5bf91a1e14839f80",
+      "reportPath": "audit/execution-results/T-22-regression.txt"
+    },
+    {
+      "name": "T-22-http-boundaries",
+      "exitCode": 0,
+      "rawPath": "/tmp/anonyproof-T22-http-boundaries.txt",
+      "rawSha256": "d56ae19b41122b7fb6c4daf64c732bb8ba5bcf6c7d7985ac21840224ebc5ed73",
+      "reportPath": "audit/execution-results/T-22-http-boundaries.txt"
+    },
+    {
+      "name": "T-22-backend-type",
+      "exitCode": 0,
+      "rawPath": "/tmp/anonyproof-T22-backend-type.txt",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reportPath": "audit/execution-results/T-22-backend-type.txt"
+    },
+    {
+      "name": "T-22-frontend-type",
+      "exitCode": 0,
+      "rawPath": "/tmp/anonyproof-T22-frontend-type-final.txt",
+      "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+      "reportPath": "audit/execution-results/T-22-frontend-type.txt"
+    }
+  ],
+  "preservedFailedRuns": [
+    {
+      "rawPath": "/tmp/anonyproof-T22-tests.txt",
+      "rawSha256": "cc28f6a14812ec98e26194584858938c65b6b2ac6f97001ba6079ff97b002e84",
+      "exitCode": 1
+    },
+    {
+      "rawPath": "/tmp/anonyproof-T22-final-tests.txt",
+      "rawSha256": "7f8e8545d0d1e7d4ebbd55a146c7335e89bd5ccdf26a01bdee2087f2bed4875b",
+      "exitCode": 1
+    },
+    {
+      "rawPath": "/tmp/anonyproof-T22-final2-tests.txt",
+      "rawSha256": "bd3fa24ee7244daed5bdc3a3ec59453692f4a775cda18a83354d327e7c217018",
+      "exitCode": 1
+    }
+  ],
+  "failuresExplanation": "Initial fixture queried nonexistent comments table; corrected to feedback_comments. Two subsequent runs exposed state-report file truncation between process write/read; corrected to atomic rename publication. Final checks pass.",
+  "limitations": [
+    "T-23 restart/re-login frontend behavior is a separate task; T-22 remains process-local.",
+    "No browser UX modification; API capacity responses validated through real backend HTTP.",
+    "Current shared index.ts also contains separately owned T-26/T-34 edits; integrate task hunks independently."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "startedAtUtc": "2026-10-09T23:13:42.805Z",
+  "completedAtUtc": "2026-10-09T23:13:42.869Z",
+  "checks": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "/dev/null",
+        "server/routes.ts"
+      ],
+      "exitCode": 1,
+      "output": "",
+      "interpretation": "git --no-index returns 1 for the /dev/null-to-new-file difference; empty --check output means no whitespace diagnostics. This is not reported as command exit 0."
+    }
+  ],
+  "ownedFileTrailingWhitespaceDiagnostics": []
+}

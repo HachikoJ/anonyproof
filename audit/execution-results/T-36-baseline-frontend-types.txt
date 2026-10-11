@@ -1,0 +1,14 @@
+
+> anonyproof@0.1.0 type-check
+> tsc --noEmit
+
+tests/fix/T-24.test.ts(11,45): error TS2345: Argument of type '{ TRUST_PROXY: string; PROXY_AUTH_KEY: string | undefined; }' is not assignable to parameter of type 'ProcessEnv'.
+  Property 'NODE_ENV' is missing in type '{ TRUST_PROXY: string; PROXY_AUTH_KEY: string | undefined; }' but required in type 'ProcessEnv'.
+tests/fix/T-24.test.ts(13,43): error TS2345: Argument of type '{ TRUST_PROXY: string; }' is not assignable to parameter of type 'ProcessEnv'.
+  Property 'NODE_ENV' is missing in type '{ TRUST_PROXY: string; }' but required in type 'ProcessEnv'.
+tests/fix/T-24.test.ts(14,49): error TS2345: Argument of type '{ TRUST_PROXY: string; }' is not assignable to parameter of type 'ProcessEnv'.
+  Property 'NODE_ENV' is missing in type '{ TRUST_PROXY: string; }' but required in type 'ProcessEnv'.
+tests/fix/T-24.test.ts(15,49): error TS2345: Argument of type '{ TRUST_PROXY: string; PROXY_AUTH_KEY: string; }' is not assignable to parameter of type 'ProcessEnv'.
+  Property 'NODE_ENV' is missing in type '{ TRUST_PROXY: string; PROXY_AUTH_KEY: string; }' but required in type 'ProcessEnv'.
+tests/fix/T-24.test.ts(72,38): error TS2345: Argument of type '{ TRUST_PROXY: string; PROXY_AUTH_KEY: string; }' is not assignable to parameter of type 'ProcessEnv'.
+  Property 'NODE_ENV' is missing in type '{ TRUST_PROXY: string; PROXY_AUTH_KEY: string; }' but required in type 'ProcessEnv'.

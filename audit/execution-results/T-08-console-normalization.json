@@ -1,0 +1,10 @@
+{
+  "rawEvidenceDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T08-raw-gizv74bi",
+  "files": [
+    "T-08-harness-initial.txt",
+    "T-08-before.txt",
+    "T-08-backend-type.txt",
+    "T-08-frontend-type.txt"
+  ],
+  "change": "console line/EOF whitespace only"
+}

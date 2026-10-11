@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+ok 1 - T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+  ---
+  duration_ms: 556.305542
+  type: 'test'
+  ...
+# Subtest: T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+ok 2 - T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+  ---
+  duration_ms: 484.545208
+  type: 'test'
+  ...
+# Subtest: T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+ok 3 - T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+  ---
+  duration_ms: 446.836209
+  type: 'test'
+  ...
+# Subtest: T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+ok 4 - T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+  ---
+  duration_ms: 463.404875
+  type: 'test'
+  ...
+# Subtest: T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+ok 5 - T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+  ---
+  duration_ms: 889.465333
+  type: 'test'
+  ...
+# Subtest: T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+ok 6 - T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+  ---
+  duration_ms: 0.397084
+  type: 'test'
+  ...
+# Subtest: T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+ok 7 - T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+  ---
+  duration_ms: 464.041167
+  type: 'test'
+  ...
+# Subtest: T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+ok 8 - T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+  ---
+  duration_ms: 1347.24
+  type: 'test'
+  ...
+# Subtest: T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+ok 9 - T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+  ---
+  duration_ms: 1.02075
+  type: 'test'
+  ...
+# Subtest: T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+ok 10 - T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+  ---
+  duration_ms: 0.253333
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4796.785625

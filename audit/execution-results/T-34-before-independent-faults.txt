@@ -1,0 +1,661 @@
+TAP version 13
+# Subtest: T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+not ok 1 - T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+  ---
+  duration_ms: 598.567291
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:3091'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    2 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:51:83)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: T-34: audit/child/parent/statistics failures roll back every affected business row
+    # Subtest: admin_logs INSERT WHEN NEW.action='delete'
+    ok 1 - admin_logs INSERT WHEN NEW.action='delete'
+      ---
+      duration_ms: 559.217834
+      type: 'test'
+      ...
+    # Subtest: feedback_comments DELETE all rows
+    not ok 2 - feedback_comments DELETE all rows
+      ---
+      duration_ms: 509.814542
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:6267'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:96:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:88:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: notifications DELETE WHEN OLD.recipient_type='admin'
+    not ok 3 - notifications DELETE WHEN OLD.recipient_type='admin'
+      ---
+      duration_ms: 534.352583
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:6267'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:96:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:88:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: notifications DELETE WHEN OLD.recipient_type='user'
+    not ok 4 - notifications DELETE WHEN OLD.recipient_type='user'
+      ---
+      duration_ms: 624.412208
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:6267'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:96:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:88:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: feedbacks DELETE all rows
+    not ok 5 - feedbacks DELETE all rows
+      ---
+      duration_ms: 515.215625
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:6267'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+
+          {
+        +   admin_logs: [
+        +     {
+        +       action: 'delete',
+        +       admin_ip: '127.0.0.1',
+        +       created_at: 1791449883236,
+        +       id: 1,
+        +       target_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+        +     }
+        +   ],
+        -   admin_logs: [],
+            feedback_comments: [
+              {
+                admin_ip: null,
+                attachment_id: null,
+                commenter_type: 'user',
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        feedbacks:
+          0:
+            id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-WfjwCmaqxLDoylCmPI7ZyzcG'
+            created_at: 1791449883228
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"FUz03K42+ZEYwIRj","tag":"+MxIeOA9bc06qYrguw0BsA==","ciphertext":"2NjZfjiUDdZIGNcdK44VmELgUpDxbK/mvkCbHw=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+          1:
+            id: 'e4edbe11-f605-4122-bb6d-2c5235e0c791'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-yDgJ6ulCWm6kN-MuW4Mt4LFg'
+            created_at: 1791449883230
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"Qx2rM9DwtvGcrCU0","tag":"3Swo1BCMTEnN9T4pp2E9pA==","ciphertext":"a5KUQ6jgqL8ZTUgLqMrZfQMyOXitmqXJ1itRfg=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+          0:
+            id: 1
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            commenter_type: 'user'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"6JH4+zAGg+igE2mY","tag":"f3RP/QVRguKeiFrKU5YdBQ==","ciphertext":"oOA0E9u7PS7xQKG4EbEUTC+g1PKV6+SOgWMB97N/8hVH6A=="}'
+            created_at: 1791449883232
+            admin_ip: ~
+            attachment_id: ~
+            content_storage_version: 1
+          1:
+            id: 2
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            commenter_type: 'admin'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"RHLQ3gELchQBghsQ","tag":"DAUfzr4w8Br2OcttiNf2PA==","ciphertext":"30IpkmTvwigW0oHWAcBPM+nkaQbwoBIuhEs8vpKscRFGBA8="}'
+            created_at: 1791449883234
+            admin_ip: '127.0.0.1'
+            attachment_id: ~
+            content_storage_version: 1
+        notifications:
+          0:
+            id: 1
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"0CzBDDNf4cnxufeX","tag":"cnbTSnxHrPgFQZHVFyvgEg==","ciphertext":"zjyOiZZO/Vmg6PXEw1eRY43WJi/pd6Gm"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"YhhL58VzRelVx4fj","tag":"53o12ULFEpXeTt5pCj4how==","ciphertext":"nGCVrMl9L7imIEgK4v2YPO/XySoeomV6FDgi+A=="}'
+            is_read: 0
+            created_at: 1791449883229
+            content_storage_version: 1
+          1:
+            id: 2
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: 'e4edbe11-f605-4122-bb6d-2c5235e0c791'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"tUppEPHor0QDIRX8","tag":"Ep60u+EtTHyjXB7tSm6u5g==","ciphertext":"UtfQ+vZW5DlboStsOdvhZ4iYYK/ZgOnA"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"PIc7pxzi3JX2YYez","tag":"Dv0/5uxCx4zA85Fs5H5L+w==","ciphertext":"YvXkqGj4LiEqMAS7Fu6OoRZQw4ah6STjATdsAA=="}'
+            is_read: 0
+            created_at: 1791449883230
+            content_storage_version: 1
+          2:
+            id: 3
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"i5RhgeKY1wmMeSJ9","tag":"e5DQAIQ64tFX7N+EuPJzgw==","ciphertext":"D43k0+aGK5ZA804vyiLNCIykoh+j9LAq"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"4k0WLJxHccgWnfB1","tag":"6YyBYoVICIm86ZEf7mf4vQ==","ciphertext":"y0zT2y++mjwjq9ecLtA5QzW0SIBhet4rtgYtM7GFgk8ic8m7UtQiz4uc8NM/xMLr8t5CZzlU2pEemO1crMA1JlWAkhDPpg=="}'
+            is_read: 0
+            created_at: 1791449883233
+            content_storage_version: 1
+          3:
+            id: 4
+            recipient_type: 'user'
+            recipient_id: 'device-WfjwCmaqxLDoylCmPI7ZyzcG'
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"rpbD53ZlrR9wxLtv","tag":"44VdzQYVwqL2Fg99jTz4+Q==","ciphertext":"2HEIF/1RwwUjG+SrDrv8NkeKucFgXKP4M/x6iNafD8wx"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"rzDs7syVLAuBVcoV","tag":"K7H/cG2Mu9WmHxsOVdAYgg==","ciphertext":"9eNTqiIWv+/uurtz28MkjDS0bNBx7b+lV7i5MUVIiDdizqMCIPKNprEFvr5PU2yhZEhY9e3JAu2C/P0+FNpPryFqq/H/00FEazs="}'
+            is_read: 0
+            created_at: 1791449883234
+            content_storage_version: 1
+        admin_logs:
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 2
+            encrypted_count: 2
+      actual:
+        feedbacks:
+          0:
+            id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-WfjwCmaqxLDoylCmPI7ZyzcG'
+            created_at: 1791449883228
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"FUz03K42+ZEYwIRj","tag":"+MxIeOA9bc06qYrguw0BsA==","ciphertext":"2NjZfjiUDdZIGNcdK44VmELgUpDxbK/mvkCbHw=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+          1:
+            id: 'e4edbe11-f605-4122-bb6d-2c5235e0c791'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-yDgJ6ulCWm6kN-MuW4Mt4LFg'
+            created_at: 1791449883230
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"Qx2rM9DwtvGcrCU0","tag":"3Swo1BCMTEnN9T4pp2E9pA==","ciphertext":"a5KUQ6jgqL8ZTUgLqMrZfQMyOXitmqXJ1itRfg=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+          0:
+            id: 1
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            commenter_type: 'user'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"6JH4+zAGg+igE2mY","tag":"f3RP/QVRguKeiFrKU5YdBQ==","ciphertext":"oOA0E9u7PS7xQKG4EbEUTC+g1PKV6+SOgWMB97N/8hVH6A=="}'
+            created_at: 1791449883232
+            admin_ip: ~
+            attachment_id: ~
+            content_storage_version: 1
+          1:
+            id: 2
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            commenter_type: 'admin'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"RHLQ3gELchQBghsQ","tag":"DAUfzr4w8Br2OcttiNf2PA==","ciphertext":"30IpkmTvwigW0oHWAcBPM+nkaQbwoBIuhEs8vpKscRFGBA8="}'
+            created_at: 1791449883234
+            admin_ip: '127.0.0.1'
+            attachment_id: ~
+            content_storage_version: 1
+        notifications:
+          0:
+            id: 1
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"0CzBDDNf4cnxufeX","tag":"cnbTSnxHrPgFQZHVFyvgEg==","ciphertext":"zjyOiZZO/Vmg6PXEw1eRY43WJi/pd6Gm"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"YhhL58VzRelVx4fj","tag":"53o12ULFEpXeTt5pCj4how==","ciphertext":"nGCVrMl9L7imIEgK4v2YPO/XySoeomV6FDgi+A=="}'
+            is_read: 0
+            created_at: 1791449883229
+            content_storage_version: 1
+          1:
+            id: 2
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: 'e4edbe11-f605-4122-bb6d-2c5235e0c791'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"tUppEPHor0QDIRX8","tag":"Ep60u+EtTHyjXB7tSm6u5g==","ciphertext":"UtfQ+vZW5DlboStsOdvhZ4iYYK/ZgOnA"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"PIc7pxzi3JX2YYez","tag":"Dv0/5uxCx4zA85Fs5H5L+w==","ciphertext":"YvXkqGj4LiEqMAS7Fu6OoRZQw4ah6STjATdsAA=="}'
+            is_read: 0
+            created_at: 1791449883230
+            content_storage_version: 1
+          2:
+            id: 3
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"i5RhgeKY1wmMeSJ9","tag":"e5DQAIQ64tFX7N+EuPJzgw==","ciphertext":"D43k0+aGK5ZA804vyiLNCIykoh+j9LAq"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"4k0WLJxHccgWnfB1","tag":"6YyBYoVICIm86ZEf7mf4vQ==","ciphertext":"y0zT2y++mjwjq9ecLtA5QzW0SIBhet4rtgYtM7GFgk8ic8m7UtQiz4uc8NM/xMLr8t5CZzlU2pEemO1crMA1JlWAkhDPpg=="}'
+            is_read: 0
+            created_at: 1791449883233
+            content_storage_version: 1
+          3:
+            id: 4
+            recipient_type: 'user'
+            recipient_id: 'device-WfjwCmaqxLDoylCmPI7ZyzcG'
+            feedback_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"rpbD53ZlrR9wxLtv","tag":"44VdzQYVwqL2Fg99jTz4+Q==","ciphertext":"2HEIF/1RwwUjG+SrDrv8NkeKucFgXKP4M/x6iNafD8wx"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"e636e7bcf2951975c5aefd375c3dea6a","nonce":"rzDs7syVLAuBVcoV","tag":"K7H/cG2Mu9WmHxsOVdAYgg==","ciphertext":"9eNTqiIWv+/uurtz28MkjDS0bNBx7b+lV7i5MUVIiDdizqMCIPKNprEFvr5PU2yhZEhY9e3JAu2C/P0+FNpPryFqq/H/00FEazs="}'
+            is_read: 0
+            created_at: 1791449883234
+            content_storage_version: 1
+        admin_logs:
+          0:
+            id: 1
+            action: 'delete'
+            target_id: '0e724e6d-1696-403c-8bf6-7a9a9f7d16b0'
+            admin_ip: '127.0.0.1'
+            created_at: 1791449883236
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 2
+            encrypted_count: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:98:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:88:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: stats UPDATE all rows
+    not ok 6 - stats UPDATE all rows
+      ---
+      duration_ms: 515.205625
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:6267'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+
+          {
+        +   admin_logs: [
+        +     {
+        +       action: 'delete',
+        +       admin_ip: '127.0.0.1',
+        +       created_at: 1791449883753,
+        +       id: 1,
+        +       target_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+        +     }
+        +   ],
+        -   admin_logs: [],
+            feedback_comments: [
+              {
+                admin_ip: null,
+                attachment_id: null,
+                commenter_type: 'user',
+        ...
+              },
+        -     {
+        -       category: 'report',
+        -       created_at: 1791449883744,
+        -       device_id: 'device-8PLfJEdBgGhHtndAZmKhcCZh',
+        -       encrypted_content: 'server-encrypted:v1',
+        -       id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db',
+        -       is_demo_clone: 0,
+        -       is_demo_template: 0,
+        -       original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"mrNcaa7pxlkTeFdw","tag":"LgdePUnpCDUcCiPjdq6Wew==","ciphertext":"MLdd9KFEj6uFXh++fifBdPs+tdVw5+qgJAV0Gw=="}',
+        -       original_content_storage_version: 1,
+        -       solution: '',
+        -       solution_admin_ip: '',
+        -       solution_storage_version: 0,
+        -       solution_updated_at: null,
+        -       status: 'pending'
+        -     }
+            ],
+            notifications: [
+              {
+                content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"1eVWUV9QxUmnMLqc","tag":"UWAIe99cyXMRL0xzE9ybxg==","ciphertext":"5/PxoiUCh0pJk2znqeVS7OHNqDjHW2x35X7h7w=="}',
+                content_storage_version: 1,
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        feedbacks:
+          0:
+            id: '5beac74d-512e-4fcf-b168-4a39e28280d9'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-zeYYDSAfeKFZxWyKrJ2S_MPt'
+            created_at: 1791449883746
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"L/UlWVoLG0siMZ/f","tag":"GZqqfEciVaM2mDbSwrDCCw==","ciphertext":"Vd/iW+Bnd83y+nC6oY/k9eRhK3bKf+bqtvW6Fg=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+          1:
+            id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-8PLfJEdBgGhHtndAZmKhcCZh'
+            created_at: 1791449883744
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"mrNcaa7pxlkTeFdw","tag":"LgdePUnpCDUcCiPjdq6Wew==","ciphertext":"MLdd9KFEj6uFXh++fifBdPs+tdVw5+qgJAV0Gw=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+          0:
+            id: 1
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            commenter_type: 'user'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Eid/2zrv4k+r9mK+","tag":"B/Yd5tZsLRyNi/bJ3ktm0w==","ciphertext":"bzCf4N3TEduzkw52KuKbZ9yZyqNfnV3hzzjpn1QzEnnZxA=="}'
+            created_at: 1791449883749
+            admin_ip: ~
+            attachment_id: ~
+            content_storage_version: 1
+          1:
+            id: 2
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            commenter_type: 'admin'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Siqc3FDn7KQAf8Jn","tag":"Zf4rT/qoG0OOzqZ24LBjBA==","ciphertext":"Oki+Pt9+rs2sERTj6oznArIUaHq+D9XpM/cSZ+RisNmU23M="}'
+            created_at: 1791449883750
+            admin_ip: '127.0.0.1'
+            attachment_id: ~
+            content_storage_version: 1
+        notifications:
+          0:
+            id: 1
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Vkb9cs+75D3yIRPt","tag":"GnKPgR4pcQs0avL7n1oYZQ==","ciphertext":"IqA668/muhzCaYpIP193E1ozXfOt3p7V"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"1eVWUV9QxUmnMLqc","tag":"UWAIe99cyXMRL0xzE9ybxg==","ciphertext":"5/PxoiUCh0pJk2znqeVS7OHNqDjHW2x35X7h7w=="}'
+            is_read: 0
+            created_at: 1791449883744
+            content_storage_version: 1
+          1:
+            id: 2
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '5beac74d-512e-4fcf-b168-4a39e28280d9'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"iXFDzx8cabgBT3Hb","tag":"HekOO94RxRPgBwZsM71LvQ==","ciphertext":"MFY1/8d2Hy2VfArbjMT6I24yYZRjvUui"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"uLD9arH4wogfvhir","tag":"LXCRYazEaXzRjqlzhTRXvg==","ciphertext":"4EoQToDmXbkEI9Yxc+cAi3qgeRqJTZfOkJCHPg=="}'
+            is_read: 0
+            created_at: 1791449883746
+            content_storage_version: 1
+          2:
+            id: 3
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Hr8+t6CR2Wa5j6lG","tag":"KdawGHFlKhPm8gb0CQ67Qg==","ciphertext":"XgesfmrY3i2baCJniQxrcSqLysDCTBkj"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"XxMJzusuPYjTIsUR","tag":"T9koiN9o22/BAJX4cpusYA==","ciphertext":"P/v7+93MPM3IqGcyfD8pGtVlQ/i4yUWZx5ZasNlokdELVtjsVsRrgJ0bOoblxccmw4HAYCNDM8UxVUwr7EjyLm6N48FlSg=="}'
+            is_read: 0
+            created_at: 1791449883749
+            content_storage_version: 1
+          3:
+            id: 4
+            recipient_type: 'user'
+            recipient_id: 'device-8PLfJEdBgGhHtndAZmKhcCZh'
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"HbYGO8z4HuyjADby","tag":"vkVOrlzXi0h0D/PAP2WUQg==","ciphertext":"ZMqYRQRasnd/xVfT/I+Ghcwv9hUBVKB5iHVZ0Rz4OeXE"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"NxRxnR4fIkPzkBta","tag":"zqi/QdDYQoimgjkYlQqLgg==","ciphertext":"g9XzgiF5wK1xNKf8LQ8UPbRoITBqPrbLysBkd6e3q+nouzP3jTRqqyRCQ4uzYUDH9T0SpUfUIP1opoT9hg2HP9/qh9KUOLUALFQ="}'
+            is_read: 0
+            created_at: 1791449883750
+            content_storage_version: 1
+        admin_logs:
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 2
+            encrypted_count: 2
+      actual:
+        feedbacks:
+          0:
+            id: '5beac74d-512e-4fcf-b168-4a39e28280d9'
+            category: 'report'
+            encrypted_content: 'server-encrypted:v1'
+            device_id: 'device-zeYYDSAfeKFZxWyKrJ2S_MPt'
+            created_at: 1791449883746
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"L/UlWVoLG0siMZ/f","tag":"GZqqfEciVaM2mDbSwrDCCw==","ciphertext":"Vd/iW+Bnd83y+nC6oY/k9eRhK3bKf+bqtvW6Fg=="}'
+            solution: ''
+            original_content_storage_version: 1
+            solution_storage_version: 0
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+          0:
+            id: 1
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            commenter_type: 'user'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Eid/2zrv4k+r9mK+","tag":"B/Yd5tZsLRyNi/bJ3ktm0w==","ciphertext":"bzCf4N3TEduzkw52KuKbZ9yZyqNfnV3hzzjpn1QzEnnZxA=="}'
+            created_at: 1791449883749
+            admin_ip: ~
+            attachment_id: ~
+            content_storage_version: 1
+          1:
+            id: 2
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            commenter_type: 'admin'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Siqc3FDn7KQAf8Jn","tag":"Zf4rT/qoG0OOzqZ24LBjBA==","ciphertext":"Oki+Pt9+rs2sERTj6oznArIUaHq+D9XpM/cSZ+RisNmU23M="}'
+            created_at: 1791449883750
+            admin_ip: '127.0.0.1'
+            attachment_id: ~
+            content_storage_version: 1
+        notifications:
+          0:
+            id: 1
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Vkb9cs+75D3yIRPt","tag":"GnKPgR4pcQs0avL7n1oYZQ==","ciphertext":"IqA668/muhzCaYpIP193E1ozXfOt3p7V"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"1eVWUV9QxUmnMLqc","tag":"UWAIe99cyXMRL0xzE9ybxg==","ciphertext":"5/PxoiUCh0pJk2znqeVS7OHNqDjHW2x35X7h7w=="}'
+            is_read: 0
+            created_at: 1791449883744
+            content_storage_version: 1
+          1:
+            id: 2
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '5beac74d-512e-4fcf-b168-4a39e28280d9'
+            type: 'new_feedback'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"iXFDzx8cabgBT3Hb","tag":"HekOO94RxRPgBwZsM71LvQ==","ciphertext":"MFY1/8d2Hy2VfArbjMT6I24yYZRjvUui"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"uLD9arH4wogfvhir","tag":"LXCRYazEaXzRjqlzhTRXvg==","ciphertext":"4EoQToDmXbkEI9Yxc+cAi3qgeRqJTZfOkJCHPg=="}'
+            is_read: 0
+            created_at: 1791449883746
+            content_storage_version: 1
+          2:
+            id: 3
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"Hr8+t6CR2Wa5j6lG","tag":"KdawGHFlKhPm8gb0CQ67Qg==","ciphertext":"XgesfmrY3i2baCJniQxrcSqLysDCTBkj"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"XxMJzusuPYjTIsUR","tag":"T9koiN9o22/BAJX4cpusYA==","ciphertext":"P/v7+93MPM3IqGcyfD8pGtVlQ/i4yUWZx5ZasNlokdELVtjsVsRrgJ0bOoblxccmw4HAYCNDM8UxVUwr7EjyLm6N48FlSg=="}'
+            is_read: 0
+            created_at: 1791449883749
+            content_storage_version: 1
+          3:
+            id: 4
+            recipient_type: 'user'
+            recipient_id: 'device-8PLfJEdBgGhHtndAZmKhcCZh'
+            feedback_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            type: 'comment'
+            title: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"HbYGO8z4HuyjADby","tag":"vkVOrlzXi0h0D/PAP2WUQg==","ciphertext":"ZMqYRQRasnd/xVfT/I+Ghcwv9hUBVKB5iHVZ0Rz4OeXE"}'
+            content: 'apc:{"v":1,"alg":"A256GCM","kid":"3104286f9daa39ca85691722c5d6f001","nonce":"NxRxnR4fIkPzkBta","tag":"zqi/QdDYQoimgjkYlQqLgg==","ciphertext":"g9XzgiF5wK1xNKf8LQ8UPbRoITBqPrbLysBkd6e3q+nouzP3jTRqqyRCQ4uzYUDH9T0SpUfUIP1opoT9hg2HP9/qh9KUOLUALFQ="}'
+            is_read: 0
+            created_at: 1791449883750
+            content_storage_version: 1
+        admin_logs:
+          0:
+            id: 1
+            action: 'delete'
+            target_id: 'a24e27b7-f1d2-4dda-908b-bf89a78160db'
+            admin_ip: '127.0.0.1'
+            created_at: 1791449883753
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 2
+            encrypted_count: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:98:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:88:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 2 - T-34: audit/child/parent/statistics failures roll back every affected business row
+  ---
+  duration_ms: 3259.69225
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:2:5877'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+ok 3 - T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+  ---
+  duration_ms: 532.804083
+  type: 'test'
+  ...
+# Subtest: T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+not ok 4 - T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+  ---
+  duration_ms: 689.366417
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:3:1195'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    2 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-34.test.ts:127:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 10
+# suites 0
+# pass 2
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5299.685584

@@ -1,0 +1,121 @@
+CHECKOUT: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+COMMAND: npx --no-install tsx --test --test-concurrency=1 tests/fix/T-43.test.ts tests/fix/T-09.test.ts tests/fix/T-17.test.ts tests/fix/T-19.test.ts
+TAP version 13
+# Subtest: T-09: both login aliases share successful and failed request quota
+ok 1 - T-09: both login aliases share successful and failed request quota
+  ---
+  duration_ms: 2713.565459
+  type: 'test'
+  ...
+# Subtest: T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+ok 2 - T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+  ---
+  duration_ms: 455.97075
+  type: 'test'
+  ...
+# Subtest: T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+ok 3 - T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+  ---
+  duration_ms: 448.158708
+  type: 'test'
+  ...
+# Subtest: T-09: five wrong passwords retain the separate fifteen-minute production lock
+ok 4 - T-09: five wrong passwords retain the separate fifteen-minute production lock
+  ---
+  duration_ms: 1574.964958
+  type: 'test'
+  ...
+# Subtest: T-09: the published demo password is also limited across aliases
+ok 5 - T-09: the published demo password is also limited across aliases
+  ---
+  duration_ms: 443.508417
+  type: 'test'
+  ...
+# Subtest: T-09: invalid login limiter configuration rejects startup explicitly
+ok 6 - T-09: invalid login limiter configuration rejects startup explicitly
+  ---
+  duration_ms: 4692.981417
+  type: 'test'
+  ...
+# Subtest: T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+ok 7 - T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+  ---
+  duration_ms: 4.041583
+  type: 'test'
+  ...
+# Subtest: T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+ok 8 - T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+  ---
+  duration_ms: 44.93375
+  type: 'test'
+  ...
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 9 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 424.0475
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 10 - T-19: production rejects missing secret
+  ---
+  duration_ms: 375.139125
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short secret
+ok 11 - T-19: production rejects short secret
+  ---
+  duration_ms: 372.831
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing password
+ok 12 - T-19: production rejects missing password
+  ---
+  duration_ms: 365.213125
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short password
+ok 13 - T-19: production rejects short password
+  ---
+  duration_ms: 366.522417
+  type: 'test'
+  ...
+# Subtest: T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+ok 14 - T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+  ---
+  duration_ms: 5.133625
+  type: 'test'
+  ...
+# Subtest: T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+ok 15 - T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+  ---
+  duration_ms: 122.620625
+  type: 'test'
+  ...
+# Subtest: T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+ok 16 - T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets
+  ---
+  duration_ms: 2.223458
+  type: 'test'
+  ...
+# Subtest: T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+ok 17 - T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers
+  ---
+  duration_ms: 64.338167
+  type: 'test'
+  ...
+# Subtest: T-43: patched backend still binds feedback access to the authenticated identity
+ok 18 - T-43: patched backend still binds feedback access to the authenticated identity
+  ---
+  duration_ms: 449.97325
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13744.038
+EXIT: 0

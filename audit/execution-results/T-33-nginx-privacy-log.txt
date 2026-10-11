@@ -1,0 +1,1 @@
+{"evidence": "/Users/wilson/Documents/Codex/anonyproof/audit/execution-results/T-33-nginx-privacy-result.json", "summary": {"passed": 22, "failed": 0}, "fatalType": null, "allAcceptancePassed": true}

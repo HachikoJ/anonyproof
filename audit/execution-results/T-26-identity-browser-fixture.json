@@ -1,0 +1,6 @@
+{
+  "allowed": "http://app.fixture.localhost:50919",
+  "sameSiteDenied": "http://evil.fixture.localhost:50920",
+  "crossSiteDenied": "http://outside.other.localhost:50920",
+  "fixturePid": 17955
+}

@@ -1,0 +1,32 @@
+{
+  "task": "T-21",
+  "date": "2026-10-08T08:22:24.819175+00:00",
+  "fixtureOnly": true,
+  "browser": "Codex in-app browser",
+  "frontend": "next build + next start via loopback edge",
+  "checks": [
+    {
+      "scenario": "Cookie retained, only local recovery code removed, backend restarted",
+      "passed": true,
+      "observed": "original synthetic submission visible; missing-code message present; Copy disabled"
+    },
+    {
+      "scenario": "Independent localhost cookie/storage uses separately saved original R1",
+      "passed": true,
+      "observed": "recovery success message and same synthetic submission"
+    },
+    {
+      "scenario": "Wrong local recovery code, backend restarted",
+      "passed": true,
+      "observed": "wrong code not displayed; original submission retained; Copy disabled"
+    },
+    {
+      "scenario": "Matching original code after another backend restart",
+      "passed": true,
+      "observed": "original code displayed, Copy enabled, same record"
+    }
+  ],
+  "credentialsPersisted": false,
+  "screenshot": "Missing-code state visually checked with browser screenshot; image shown in tool output, not a saved local artifact",
+  "shutdown": "fixture session exited 0 after SIGTERM"
+}

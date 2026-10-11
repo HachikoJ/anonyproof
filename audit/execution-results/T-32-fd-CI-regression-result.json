@@ -1,0 +1,59 @@
+{
+  "task": "T-32",
+  "atUtc": "2026-10-10T07:08:14.590357+00:00",
+  "actualFailedCI": {
+    "runId": 38032124091,
+    "head": "59db49bb0af47439538d5527797de97e98f79a47",
+    "testCounts": {
+      "pass": 243,
+      "fail": 1,
+      "skipped": 1
+    },
+    "failure": "ARCHIVE_PREPARATION_FAILED after prior rejected authentication"
+  },
+  "actualNode20BeforeReproduction": {
+    "exitCode": 1,
+    "rawCode": "EBADF",
+    "syscall": "write",
+    "firstCycleCompleted": true
+  },
+  "fix": "Exclusive descriptor ownership via bounded 64KiB read/write chunks with event-loop yields; no raw-fd fs stream asynchronous close races. Private line writing follows same ownership. APRA/1 format and authentication/publication guards unchanged.",
+  "actualNode20NewFdRegression": {
+    "exitCode": 0,
+    "pass": 1,
+    "fail": 0,
+    "cycles": 64,
+    "checks": "Rejected authentication leaves no published plaintext; unrelated reused descriptor stays writable; subsequent valid archives/restores match 200000 bytes."
+  },
+  "actualNode22Related": {
+    "exitCode": 0,
+    "pass": 59,
+    "fail": 0,
+    "skipped": 0
+  },
+  "strictTypesExitCode": 0,
+  "sourceHashes": {
+    "scripts/private-retention-archive.ts": "42599b3b512bcc03ef784f951f475df896774fa89599b1a0587ebdf5d89e8ce3",
+    "scripts/content-retention-adapter.ts": "3f93e4181be2dabebbde83e56f90ea76d849959bdee5bf832ffe87095e7b7ae0",
+    "tests/fix/T-32-archive-fd.test.ts": "d9223a8e03f4885d57d6fdbeb53455607c4092ba557b40f60b6df2e86cef2d10"
+  },
+  "logFormatting": {
+    "T-18-candidate-59db49b-CI-failure.txt": {
+      "rawSha256": "c9444c20f98246da129dc807f058c8a1d76b97551609188bcc1d6396850a18b2"
+    },
+    "T-32-fd-node20.txt": {
+      "rawSha256": "e5cc531c147721d3e05d3e378a840dc2c5438f97fe3ebc5ebeb83af370e3e42a"
+    },
+    "T-32-fd-related-node22.txt": {
+      "rawSha256": "95a0db1f8894911a7f631dd34e6281d212f91f0f5895b9d12ea567b635a2e453"
+    },
+    "T-32-fd-types.txt": {
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "limits": [
+    "Final candidate remote CI must rerun; original failure is retained.",
+    "Actual D packages were already fully authenticated/recovered; no real archive overwrite or deletion performed.",
+    "T32 final business retention/plaintext disposal remains separately gated."
+  ]
+}

@@ -1,10 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCommentPagination } from './hooks/useCommentPagination'
+import { useDemoConfig } from './hooks/useDemoConfig'
 import { useCrypto } from './hooks/useCrypto'
 import ExternalLinks from './components/ExternalLinks'
+import { createPendingActions } from './utils/pendingAction'
 import { recordCode } from './utils/recordCode'
 import type { Feedback, FeedbackComment, FeedbackStatus } from './types'
+
+type UserFeedback = Pick<Feedback, 'id' | 'category' | 'created_at' | 'status' | 'original_content' | 'solution' | 'solution_updated_at' | 'unread_notifications'>
+type RecordCounts = { total: number; pending: number; in_progress: number; resolved: number; no_solution: number }
+const emptyRecordCounts: RecordCounts = { total: 0, pending: 0, in_progress: 0, resolved: 0, no_solution: 0 }
 
 type View = 'home' | 'category' | 'compose' | 'records' | 'detail'
 
@@ -109,23 +116,40 @@ function BackIcon() {
 }
 
 export default function HomePage() {
+  const { config: demoConfig, loading: demoLoading, error: demoError } = useDemoConfig()
+  const demoMode = demoConfig?.demoMode === true
+  const modeReady = !!demoConfig && !demoLoading
+  const [demoExampleId, setDemoExampleId] = useState('')
+  const [demoCommentId, setDemoCommentId] = useState('')
   const notificationPanelRef = useRef<HTMLDivElement>(null)
   const recordsListRef = useRef<HTMLDivElement>(null)
   const recordsScrollTopRef = useRef(0)
   const recordsLoadedRef = useRef(false)
+  const recordsOwnerRef = useRef('')
+  const selectedOwnerRef = useRef('')
   const notificationsLoadedRef = useRef(false)
   const [view, setView] = useState<View>('home')
   const [category, setCategory] = useState('')
   const [content, setContent] = useState('')
+  const pendingActions = useRef(createPendingActions()).current
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; id?: string } | null>(null)
   const [stats, setStats] = useState<{ total: number } | null>(null)
-  const [records, setRecords] = useState<Feedback[]>([])
+  const [records, setRecords] = useState<UserFeedback[]>([])
+  const [recordCounts, setRecordCounts] = useState<RecordCounts>(emptyRecordCounts)
+  const [recordsTotal, setRecordsTotal] = useState(0)
+  const [recordsPage, setRecordsPage] = useState(0)
+  const [recordCursors, setRecordCursors] = useState<(string | null)[]>([null])
+  const [recordsNextCursor, setRecordsNextCursor] = useState<string | null>(null)
+  const recordsContextRef = useRef('')
+  const recordsPositionRef = useRef<{ cursor: string | null; page: number }>({ cursor: null, page: 0 })
+  const recordsRequestRef = useRef(0)
+  const detailRequestRef = useRef(0)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const [detailError, setDetailError] = useState('')
   const [recordsLoading, setRecordsLoading] = useState(false)
   const [recordsError, setRecordsError] = useState('')
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null)
-  const [comments, setComments] = useState<FeedbackComment[]>([])
-  const [commentsLoading, setCommentsLoading] = useState(false)
+  const [selectedFeedback, setSelectedFeedback] = useState<UserFeedback | null>(null)
   const [commentError, setCommentError] = useState('')
   const [newComment, setNewComment] = useState('')
   const [commentSending, setCommentSending] = useState(false)
@@ -143,6 +167,12 @@ export default function HomePage() {
   const [codeCopied, setCodeCopied] = useState(false)
   const { deviceId, recoveryCode, recoverIdentity, identityLoading, identityError, encrypt } = useCrypto()
 
+  const currentDeviceRef = useRef(deviceId)
+  currentDeviceRef.current = deviceId
+  const commentPages = useCommentPagination<FeedbackComment>(deviceId, readJson, error =>
+    setCommentError(getErrorMessage(error, '无法连接服务，请检查网络后重试。')))
+  const { comments, total: commentsTotal, loading: commentsLoading, hasOlder: hasOlderComments, reset: resetComments, load: loadComments } = commentPages
+
   const goHome = () => {
     setView('home')
     setShowNotifications(false)
@@ -154,66 +184,88 @@ export default function HomePage() {
     try {
       const response = await fetch(`/anonyproof/api/notifications/unread-count?recipientType=user&recipientId=${deviceId}`)
       const data = await readJson(response)
-      if (response.ok && data.success) setUnreadCount(data.count)
+      if (currentDeviceRef.current === deviceId && response.ok && data.success) setUnreadCount(data.count)
     } catch {
       // Notification count is non-critical; keep the rest of the app usable.
     }
   }, [deviceId])
 
-  const fetchRecords = useCallback(async () => {
-    if (!deviceId) return []
+  const fetchRecords = useCallback(async (cursor: string | null = null, page = 0) => {
+    if (!deviceId) return false
+    const request = ++recordsRequestRef.current
+    const current = () => request === recordsRequestRef.current && currentDeviceRef.current === deviceId
     setRecordsLoading(true)
     setRecordsError('')
+    const query = new URLSearchParams({ pagination: '1', limit: '50', category: filterCategory,
+      status: filterStatus, search: searchKeyword })
+    if (cursor) query.set('cursor', cursor)
     try {
-      const response = await fetch(`/anonyproof/api/feedback/device/${deviceId}`)
+      const response = await fetch(`/anonyproof/api/feedback/device/${encodeURIComponent(deviceId)}?${query}`)
       const data = await readJson(response)
+      if (!current()) return false
       if (!response.ok || !data.success) throw new Error(data.error || '记录加载失败')
+      recordsOwnerRef.current = deviceId
       setRecords(data.feedbacks)
+      setRecordCounts(data.counts)
+      setRecordsTotal(data.pagination.total)
+      setRecordsNextCursor(data.pagination.nextCursor)
+      setRecordsPage(page)
+      recordsPositionRef.current = { cursor, page }
+      setRecordCursors(items => [...items.slice(0, page), cursor])
       recordsLoadedRef.current = true
-      return data.feedbacks as Feedback[]
+      return true
     } catch (error) {
+      if (!current()) return false
       const message = getErrorMessage(error, '无法连接服务，请检查网络后重试。')
       setRecordsError(recordsLoadedRef.current ? `${message} 当前显示上次数据。` : message)
-      return []
+      return false
     } finally {
-      setRecordsLoading(false)
+      if (current()) setRecordsLoading(false)
     }
-  }, [deviceId])
+  }, [deviceId, filterCategory, filterStatus, searchKeyword])
 
-  const fetchComments = useCallback(async (feedbackId: string) => {
-    setCommentsLoading(true)
+  const fetchComments = useCallback(async (feedbackId: string, mode: 'latest' | 'older' | 'newer' = 'latest') => {
     setCommentError('')
-    try {
-      const response = await fetch(`/anonyproof/api/feedback/${feedbackId}/comments`)
-      const data = await readJson(response)
-      if (!response.ok || !data.success) throw new Error(data.error || '沟通记录加载失败')
-      setComments(data.comments)
-    } catch (error) {
-      setComments([])
-      setCommentError(getErrorMessage(error, '无法连接服务，请检查网络后重试。'))
-    } finally {
-      setCommentsLoading(false)
-    }
-  }, [])
+    return loadComments(feedbackId, mode)
+  }, [loadComments])
 
-  const openRecord = useCallback((feedback: Feedback) => {
+  const openRecord = useCallback(async (feedback: Pick<UserFeedback, 'id'>) => {
+    if (!deviceId) return
+    const request = ++detailRequestRef.current
+    const current = () => request === detailRequestRef.current && currentDeviceRef.current === deviceId
     recordsScrollTopRef.current = recordsListRef.current?.scrollTop ?? recordsScrollTopRef.current
-    setSelectedFeedback(feedback)
-    setView('detail')
-    fetchComments(feedback.id)
-    if (deviceId && (feedback.unread_notifications ?? 0) > 0) {
-      fetch(`/anonyproof/api/notifications/read-all?recipientType=user&recipientId=${encodeURIComponent(deviceId)}&feedbackId=${encodeURIComponent(feedback.id)}`, { method: 'PUT' })
-        .then(async (response) => {
-          const data = await readJson(response)
-          if (!response.ok || !data.success) return
-          setRecords(items => items.map(item => item.id === feedback.id ? { ...item, unread_notifications: 0 } : item))
-          setNotifications(items => items.map(item => item.feedback_id === feedback.id ? { ...item, is_read: 1 } : item))
-          await fetchUnreadCount()
-        })
-        .catch(() => undefined)
+    resetComments()
+    setDetailLoading(true)
+    setDetailError('')
+    try {
+      const response = await fetch(`/anonyproof/api/feedback/${encodeURIComponent(feedback.id)}`)
+      const data = await readJson(response)
+      if (!current()) return
+      if (!response.ok || !data.success) throw new Error(data.error || '详情加载失败')
+      const detail: UserFeedback = data.feedback
+      selectedOwnerRef.current = deviceId
+      setSelectedFeedback(detail)
+      setView('detail')
+      fetchComments(detail.id)
+      if ((detail.unread_notifications ?? 0) > 0) {
+        fetch(`/anonyproof/api/notifications/read-all?recipientType=user&recipientId=${encodeURIComponent(deviceId)}&feedbackId=${encodeURIComponent(detail.id)}`, { method: 'PUT' })
+          .then(async (readResponse) => {
+            const result = await readJson(readResponse)
+            if (!current() || !readResponse.ok || !result.success) return
+            setRecords(items => items.map(item => item.id === detail.id ? { ...item, unread_notifications: 0 } : item))
+            setNotifications(items => items.map(item => item.feedback_id === detail.id ? { ...item, is_read: 1 } : item))
+            await fetchUnreadCount()
+          }).catch(() => undefined)
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return true
+    } catch (error) {
+      if (current()) setDetailError(getErrorMessage(error, '详情加载失败，请稍后重试。'))
+      return false
+    } finally {
+      if (current()) setDetailLoading(false)
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [deviceId, fetchComments, fetchUnreadCount])
+  }, [deviceId, fetchComments, fetchUnreadCount, resetComments])
 
   const openRecords = useCallback(() => {
     setView('records')
@@ -221,11 +273,53 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
-  // 身份初始化或换机恢复完成后，如果用户已经进入列表页，立即读取新身份名下的记录。
+  // Drop previous identity's records, cursors and in-flight responses before
+  // loading the recovered identity. No summary is ever used as full detail.
+  useEffect(() => {
+    recordsRequestRef.current++
+    detailRequestRef.current++
+    recordsLoadedRef.current = false
+    recordsOwnerRef.current = selectedOwnerRef.current = ''
+    recordsContextRef.current = ''
+    recordsPositionRef.current = { cursor: null, page: 0 }
+    notificationsLoadedRef.current = false
+    setRecords([])
+    setRecordCounts(emptyRecordCounts)
+    setRecordsTotal(0)
+    setRecordsPage(0)
+    setRecordCursors([null])
+    setRecordsNextCursor(null)
+    setRecordsError('')
+    setSelectedFeedback(null)
+    resetComments()
+    setNotifications([])
+    setUnreadCount(0)
+    setDetailLoading(false)
+    setDetailError('')
+    setFilterCategory('all')
+    setFilterStatus('all')
+    setSearchKeyword('')
+    setView(current => current === 'detail' ? 'records' : current)
+  }, [deviceId, resetComments])
+
   useEffect(() => {
     if (view !== 'records' || !deviceId) return
-    fetchRecords()
-  }, [view, deviceId, fetchRecords])
+    recordsRequestRef.current++
+    setRecordsLoading(true)
+    const context = JSON.stringify([deviceId, filterCategory, filterStatus, searchKeyword])
+    if (recordsContextRef.current !== context) {
+      recordsContextRef.current = context
+      recordsPositionRef.current = { cursor: null, page: 0 }
+      setRecords([])
+      recordsLoadedRef.current = false
+      setRecordsPage(0)
+      setRecordCursors([null])
+      setRecordsNextCursor(null)
+    }
+    const { cursor, page } = recordsPositionRef.current
+    const timer = window.setTimeout(() => { fetchRecords(cursor, page) }, 250)
+    return () => { window.clearTimeout(timer); recordsRequestRef.current++ }
+  }, [view, deviceId, filterCategory, filterStatus, searchKeyword, fetchRecords])
 
   useEffect(() => {
     fetch('/anonyproof/api/stats')
@@ -267,10 +361,12 @@ export default function HomePage() {
     try {
       const response = await fetch(`/anonyproof/api/notifications?recipientType=user&recipientId=${deviceId}&limit=20`)
       const data = await readJson(response)
+      if (currentDeviceRef.current !== deviceId) return
       if (!response.ok || !data.success) throw new Error(data.error || '通知加载失败')
       setNotifications(data.notifications)
       notificationsLoadedRef.current = true
     } catch (error) {
+      if (currentDeviceRef.current !== deviceId) return
       const message = getErrorMessage(error, '无法连接服务，请检查网络后重试。')
       setNotificationError(
         notificationsLoadedRef.current ? `${message} 当前显示上次通知。` : message,
@@ -315,15 +411,13 @@ export default function HomePage() {
 
   const openNotification = async (notification: Notification) => {
     if (!notification.is_read) await markAsRead(notification.id)
-    const latestRecords = records.length ? records : await fetchRecords()
-    const match = latestRecords.find((record) => record.id === notification.feedback_id)
-    if (match) openRecord(match)
-    else openRecords()
-    setShowNotifications(false)
+    const opened = await openRecord({ id: notification.feedback_id })
+    if (opened) setShowNotifications(false)
   }
 
   const handleSubmit = async () => {
-    if (!content.trim()) {
+    if (!modeReady) { setSubmitResult({ success: false, message: demoError || '正在确认站点模式，请稍后再试。' }); return }
+    if (demoMode ? !demoExampleId : !content.trim()) {
       setSubmitResult({ success: false, message: '请填写事实或线索。' })
       return
     }
@@ -334,17 +428,22 @@ export default function HomePage() {
     setIsSubmitting(true)
     setSubmitResult(null)
     try {
-      const encryptedContent = await encrypt(content.trim())
+      const requestKey = pendingActions.begin('feedback', '', deviceId, demoMode ? { demoExampleId } : { category, content: content.trim() })
+      const encryptedContent = demoMode ? '' : await encrypt(content.trim())
       const response = await fetch('/anonyproof/api/feedback', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, encryptedContent, deviceId, originalContent: content.trim() }),
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': requestKey },
+        body: JSON.stringify(demoMode ? { demoExampleId, deviceId } : { category, encryptedContent, deviceId, originalContent: content.trim() }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '提交未完成，请稍后重试。')
+      pendingActions.complete('feedback', '', deviceId)
       setContent('')
       setSubmitResult({ success: true, message: '已生成记录编号，可在“我的提交”中查看处理进度。', id: data.id })
-      setStats((current) => ({ total: (current?.total ?? 0) + 1 }))
+      // A replay may acknowledge a record already included in the loaded total.
+      // Refresh the authoritative count instead of incrementing it twice.
+      if (!demoMode) void fetch('/anonyproof/api/stats').then(readJson)
+        .then(data => setStats({ total: data.total ?? 0 })).catch(() => setStats(null))
     } catch (error) {
       setSubmitResult({
         success: false,
@@ -356,21 +455,26 @@ export default function HomePage() {
   }
 
   const handleAddComment = async () => {
-    if (!selectedFeedback || newComment.trim().length < 2) return
+    if (!modeReady || !selectedFeedback || commentsLoading || (demoMode ? !demoCommentId : newComment.trim().length < 2)) return
+    const feedbackId = selectedFeedback.id, requestOwner = deviceId, selectedRequest = detailRequestRef.current, draft = newComment, example = demoCommentId
     setCommentSending(true)
     setCommentError('')
     try {
-      const response = await fetch(`/anonyproof/api/feedback/${selectedFeedback.id}/comments`, {
+      const requestKey = pendingActions.begin('user_comment', feedbackId, requestOwner, demoMode ? { demoCommentId } : { content: newComment.trim() })
+      const response = await fetch(`/anonyproof/api/feedback/${feedbackId}/comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newComment.trim(), commenterType: 'user' }),
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': requestKey },
+        body: JSON.stringify(demoMode ? { demoCommentId } : { content: newComment.trim(), commenterType: 'user' }),
       })
       const data = await readJson(response)
       if (!response.ok || !data.success) throw new Error(data.error || '补充说明未发送')
-      setNewComment('')
-      fetchComments(selectedFeedback.id)
+      pendingActions.complete('user_comment', feedbackId, requestOwner)
+      if (selectedRequest !== detailRequestRef.current || !commentPages.appendPosted(data.comment, requestOwner)) return
+      setNewComment(value => value === draft ? '' : value)
+      setDemoCommentId(value => value === example ? '' : value)
+      await fetchComments(feedbackId, 'newer')
     } catch (error) {
-      setCommentError(getErrorMessage(error, '补充说明未发送，请检查网络后重试。'))
+      if (currentDeviceRef.current === requestOwner && selectedRequest === detailRequestRef.current) setCommentError(getErrorMessage(error, '补充说明未发送，请检查网络后重试。'))
     } finally {
       setCommentSending(false)
     }
@@ -397,7 +501,10 @@ export default function HomePage() {
     setRecovering(true)
     setRecoveryMessage(null)
     try {
-      await recoverIdentity(code)
+      const recoveredDevice = await recoverIdentity(code)
+      currentDeviceRef.current = recoveredDevice
+      recordsRequestRef.current++
+      detailRequestRef.current++
       setRecoveryInput('')
       setRecoveryMessage({ tone: 'success', text: '已切换到该恢复码对应的提交记录。' })
     } catch (error) {
@@ -407,13 +514,6 @@ export default function HomePage() {
     }
   }
 
-  const filteredRecords = useMemo(() => records.filter((record) => {
-    const matchesCategory = filterCategory === 'all' || record.category === filterCategory
-    const matchesStatus = filterStatus === 'all' || record.status === filterStatus
-    const matchesSearch = !searchKeyword.trim() || record.original_content?.toLowerCase().includes(searchKeyword.trim().toLowerCase())
-    return matchesCategory && matchesStatus && matchesSearch
-  }), [records, filterCategory, filterStatus, searchKeyword])
-
   useEffect(() => {
     if (view !== 'records') return
     const frame = window.requestAnimationFrame(() => {
@@ -422,12 +522,10 @@ export default function HomePage() {
       }
     })
     return () => window.cancelAnimationFrame(frame)
-  }, [view, filteredRecords])
+  }, [view, records])
 
-  const recordCounts = useMemo(() => records.reduce((result, record) => {
-    result[record.status] = (result[record.status] ?? 0) + 1
-    return result
-  }, {} as Record<string, number>), [records])
+  const visibleRecords = recordsOwnerRef.current === deviceId ? records : []
+  const visibleRecordCounts = recordsOwnerRef.current === deviceId ? recordCounts : emptyRecordCounts
 
   return (
     <div className="app-shell">
@@ -476,6 +574,8 @@ export default function HomePage() {
                     </button>
                   ))}
                 </div>
+                {detailLoading && <p role="status">正在读取提交详情…</p>}
+                {detailError && <p role="alert">{detailError}</p>}
                 {notificationError && <p className="notification-error" role="alert">{notificationError}</p>}
               </section>
             )}
@@ -490,10 +590,10 @@ export default function HomePage() {
             <section className="hero-band">
               <div className="hero-copy">
                 <h1>让重要线索<br />被认真看见。</h1>
-                <p className="hero-lead">提交建议、投诉与违规线索，处理进度随时可查。</p>
+                <p className="hero-lead">{!modeReady ? demoError || '正在确认站点模式…' : demoMode ? demoConfig?.notice : '提交建议、投诉与违规线索，处理进度随时可查。'}</p>
                 <div className="hero-actions">
-                  <button className="button button-primary" type="button" onClick={() => { setCategory(''); setSubmitResult(null); setView('category') }}>
-                    提交线索 <span aria-hidden="true">→</span>
+                  <button className="button button-primary" type="button" disabled={!modeReady} onClick={() => { setCategory(''); setSubmitResult(null); setView('category') }}>
+                    {demoMode ? '体验合成案例' : '提交线索'} <span aria-hidden="true">→</span>
                   </button>
                   <button className="button button-secondary" type="button" onClick={openRecords}>查看我的提交</button>
                 </div>
@@ -508,13 +608,13 @@ export default function HomePage() {
                   <span className="live-dot"><i />持续可查</span>
                 </div>
                 <ol>
-                  <li><span>01</span><div><strong>描述事实</strong></div></li>
+                  <li><span>01</span><div><strong>{demoMode ? '选择合成案例' : '描述事实'}</strong></div></li>
                   <li><span>02</span><div><strong>提交受理</strong></div></li>
                   <li><span>03</span><div><strong>查看进度</strong></div></li>
                 </ol>
                 <div className="flow-proof">
                   <span>{stats ? stats.total : '—'}</span>
-                  <div><strong>已收到的提交</strong><small>公开统计仅展示总量</small></div>
+                  <div><strong>{demoMode ? '固定合成案例' : '已收到的提交'}</strong><small>{demoMode ? '访客沙箱不会改变此总量' : '公开统计仅展示总量'}</small></div>
                 </div>
               </aside>
             </section>
@@ -545,11 +645,12 @@ export default function HomePage() {
             <div className="task-heading">
               <p className="eyebrow">第 1 步，共 2 步</p>
               <h1>选择提交类型</h1>
-              <p>选择最接近的类型，进入下一步填写具体内容。</p>
+              <p>{demoMode ? '选择固定合成案例的类型，体验本浏览器的隔离沙箱。' : '选择最接近的类型，进入下一步填写具体内容。'}</p>
+              {!modeReady && <p role="status">{demoError || '正在确认站点模式…'}</p>}
             </div>
             <div className="category-list">
               {categories.map((item) => (
-                <button key={item.id} type="button" onClick={() => { setCategory(item.id); setView('compose') }}>
+                <button key={item.id} type="button" disabled={!modeReady} onClick={() => { setCategory(item.id); setDemoExampleId(demoConfig?.examples?.find(example => example.category === item.id)?.id || ''); setView('compose') }}>
                   <span className="category-index">{item.index}</span>
                   <span><strong>{item.name}</strong><small>{item.description}</small></span>
                   <i aria-hidden="true">→</i>
@@ -567,11 +668,22 @@ export default function HomePage() {
             </button>
             <div className="task-heading">
               <p className="eyebrow">第 2 步，共 2 步 · {categoryName(category)}</p>
-              <h1>描述事实与线索</h1>
-              <p>优先写清可核实的信息，不必使用正式措辞。</p>
+              <h1>{demoMode ? '选择合成演示案例' : '描述事实与线索'}</h1>
+              <p>{demoMode ? demoConfig?.notice : '优先写清可核实的信息，不必使用正式措辞。'}</p>
             </div>
             <div className="compose-layout">
               <div className="compose-main">
+                {!modeReady ? <p role="status">{demoError || '正在确认站点模式…'}</p> : demoMode ? (
+                  <>
+                    <label htmlFor="demo-example">固定合成案例</label>
+                    <select id="demo-example" value={demoExampleId} onChange={event => setDemoExampleId(event.target.value)}>
+                      <option value="">请选择案例</option>
+                      {demoConfig?.examples?.filter(example => example.category === category).map(example => <option key={example.id} value={example.id}>{example.label}</option>)}
+                    </select>
+                    <p>{demoConfig?.examples?.find(example => example.id === demoExampleId)?.content}</p>
+                    <p className="field-meta">示例正文不可编辑。仅保存选定的合成案例，不接收真实材料。</p>
+                  </>
+                ) : <>
                 <label htmlFor="evidence-content">提交内容</label>
                 <textarea
                   id="evidence-content"
@@ -582,22 +694,27 @@ export default function HomePage() {
                   autoFocus
                 />
                 <div className="field-meta"><span>提交失败不会清空已输入内容</span><span>{content.length} / 10000</span></div>
-                {submitResult && !submitResult.success && <p className="form-message form-error" role="alert">{submitResult.message}</p>}
+                </>}
+                {submitResult && !submitResult.success && <div className="form-message form-error" role="alert"><p>{submitResult.message}</p><p>重试沿用原动作。内容改变或重试超过7天时，请先检查“我的提交”。</p><button type="button" disabled={isSubmitting} onClick={() => {
+                  if (!window.confirm('请先检查“我的提交”，上次请求可能已经成功。确定要放弃旧动作并另作一次提交吗？')) return
+                  try { pendingActions.abandon('feedback', '', deviceId); setSubmitResult(null) }
+                  catch (error) { setSubmitResult({ success: false, message: getErrorMessage(error, '旧动作无法清除。') }) }
+                }}>另作一次提交</button></div>}
                 <div className="submit-bar">
                   <button className="button button-secondary" type="button" onClick={() => setView('category')}>上一步</button>
-                  <button className="button button-primary" type="button" onClick={handleSubmit} disabled={isSubmitting || !content.trim()}>
-                    {isSubmitting ? '正在提交…' : '提交线索'}
+                  <button className="button button-primary" type="button" onClick={handleSubmit} disabled={isSubmitting || !modeReady || (demoMode ? !demoExampleId : !content.trim())}>
+                    {isSubmitting ? '正在提交…' : demoMode ? '创建沙箱记录' : '提交线索'}
                   </button>
                 </div>
               </div>
               <aside className="privacy-panel">
-                <h2>提交前检查</h2>
-                <ul>
+                <h2>{demoMode ? '演示范围' : '提交前检查'}</h2>
+                {demoMode ? <p>每个浏览器拥有独立沙箱；只能选择固定合成内容。公开模板只读，其他访客记录和原始日志不可访问。</p> : <><ul>
                   <li><span />删去姓名、电话、住址等身份信息</li>
                   <li><span />区分亲历事实与转述内容</li>
                   <li><span />保留时间、地点和可核实细节</li>
                 </ul>
-                <p>平台会保存提交原文、本机识别码、访问 IP 与浏览器信息；这些信息仍可能间接识别提交环境，因此不等于完全匿名。</p>
+                <p>无需实名；运营者可关联本机记录，服务器与获授权管理员可读取内容。访问与限流日志保留来源 IP 7 天、浏览器家族或机器人分类及路由模板，不保存完整浏览器信息、查询参数或含业务编号的路径；处理说明、评论与操作审计不保存管理员 IP。活动 IP 黑名单按到期或人工取消规则保留，因此不等于不可追踪的完全匿名。</p></>}
               </aside>
             </div>
           </section>
@@ -616,7 +733,7 @@ export default function HomePage() {
             <div className="identity-bar">
               <div className="identity-bar-code">
                 <span>本机恢复码</span>
-                <code>{recoveryCode || '正在生成…'}</code>
+                <code>{recoveryCode || (identityLoading ? '正在获取…' : identityError ? '身份加载失败，请刷新重试' : '本机未保存恢复码，可使用另存的旧码找回')}</code>
               </div>
               <div className="identity-bar-actions">
                 <button type="button" onClick={copyRecoveryCode} disabled={!recoveryCode}>{codeCopied ? '已复制' : '复制'}</button>
@@ -654,29 +771,31 @@ export default function HomePage() {
               </div>
             )}
             <div className="record-summary" aria-label="提交状态概览">
-              <div><span>{records.length}</span><small>全部提交</small></div>
-              <div><span>{recordCounts.pending ?? 0}</span><small>待受理</small></div>
-              <div><span>{recordCounts.in_progress ?? 0}</span><small>处理中</small></div>
-              <div><span>{recordCounts.resolved ?? 0}</span><small>已办结</small></div>
-              <div><span>{recordCounts.no_solution ?? 0}</span><small>暂无法处理</small></div>
+              <div><span>{visibleRecordCounts.total}</span><small>全部提交</small></div>
+              <div><span>{visibleRecordCounts.pending ?? 0}</span><small>待受理</small></div>
+              <div><span>{visibleRecordCounts.in_progress ?? 0}</span><small>处理中</small></div>
+              <div><span>{visibleRecordCounts.resolved ?? 0}</span><small>已办结</small></div>
+              <div><span>{visibleRecordCounts.no_solution ?? 0}</span><small>暂无法处理</small></div>
             </div>
             <div className="filters" aria-label="筛选提交记录">
               <input aria-label="搜索提交内容" value={searchKeyword} onChange={(event) => { recordsScrollTopRef.current = 0; setSearchKeyword(event.target.value) }} placeholder="搜索提交内容" />
               <select aria-label="按提交类型筛选" value={filterCategory} onChange={(event) => { recordsScrollTopRef.current = 0; setFilterCategory(event.target.value) }}><option value="all">全部类型</option>{categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select>
               <select aria-label="按处理状态筛选" value={filterStatus} onChange={(event) => { recordsScrollTopRef.current = 0; setFilterStatus(event.target.value) }}><option value="all">全部状态</option>{Object.entries(statusConfig).map(([key, value]) => <option value={key} key={key}>{value.label}</option>)}</select>
             </div>
+            {detailLoading && <p role="status">正在读取提交详情…</p>}
+            {detailError && <p role="alert">{detailError}</p>}
             <div className="records-results">
-              {recordsError && <div className="inline-error" role="alert"><span>{recordsError}</span><button type="button" onClick={fetchRecords}>重试</button></div>}
+              {recordsError && <div className="inline-error" role="alert"><span>{recordsError}</span><button type="button" onClick={() => fetchRecords(recordCursors[recordsPage], recordsPage)}>重试</button></div>}
               {identityLoading || recordsLoading ? (
                 <div className="records-loading" aria-live="polite"><span /><p>正在读取当前浏览器的提交记录…</p></div>
               ) : identityError ? (
                 <div className="inline-error" role="alert"><span>{identityError}</span><button type="button" onClick={() => window.location.reload()}>重新载入</button></div>
-              ) : filteredRecords.length === 0 ? (
-                <div className="empty-state"><strong>{records.length ? '没有符合当前条件的记录' : '当前浏览器暂无提交记录'}</strong><p>{records.length ? '调整搜索词或筛选条件后重试。' : '提交后，处理状态和沟通记录会显示在这里。'}</p>{!records.length && <button className="button button-primary" type="button" onClick={() => setView('category')}>提交第一条线索</button>}</div>
+              ) : visibleRecords.length === 0 ? (
+                <div className="empty-state"><strong>{visibleRecordCounts.total ? '没有符合当前条件的记录' : '当前浏览器暂无提交记录'}</strong><p>{visibleRecordCounts.total ? '调整搜索词或筛选条件后重试。' : '提交后，处理状态和沟通记录会显示在这里。'}</p>{!visibleRecordCounts.total && <button className="button button-primary" type="button" onClick={() => setView('category')}>提交第一条线索</button>}</div>
               ) : (
                 <div className="record-list" ref={recordsListRef} onScroll={(event) => { recordsScrollTopRef.current = event.currentTarget.scrollTop }}>
-                  {filteredRecords.map((record) => (
-                    <button key={record.id} type="button" onClick={() => openRecord(record)}>
+                  {visibleRecords.map((record) => (
+                    <button key={record.id} type="button" onClick={() => openRecord(record)} disabled={detailLoading}>
                       <span className="record-main">
                         <span className="record-meta">
                           <span className={`category-tag category-tag-${record.category}`}>{categoryName(record.category)}</span>
@@ -692,10 +811,15 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+            <div className="records-pagination" aria-label="提交记录分页">
+              <span>第 {recordsPage + 1} 页，符合条件共 {recordsOwnerRef.current === deviceId ? recordsTotal : 0} 条</span>
+              <button type="button" disabled={recordsLoading || recordsPage === 0} onClick={() => fetchRecords(recordCursors[recordsPage - 1], recordsPage - 1)}>上一页</button>
+              <button type="button" disabled={recordsLoading || !recordsNextCursor} onClick={() => fetchRecords(recordsNextCursor, recordsPage + 1)}>下一页</button>
+            </div>
           </section>
         )}
 
-        {view === 'detail' && selectedFeedback && (
+        {view === 'detail' && selectedFeedback && selectedOwnerRef.current === deviceId && (
           <section className="task-view detail-view">
             <div className="detail-head">
               <button className="back-link" type="button" onClick={() => setView('records')} aria-label="返回我的提交">
@@ -718,23 +842,29 @@ export default function HomePage() {
                 <section><h2>处理说明</h2>{selectedFeedback.solution ? <p>{selectedFeedback.solution}</p> : <p className="muted-copy">处理人员尚未填写说明，状态更新后会显示在这里。</p>}</section>
               </div>
               <aside className="conversation-panel">
-                <div className="conversation-head"><h2>沟通记录</h2><span>{comments.length} 条</span></div>
+                <div className="conversation-head"><h2>沟通记录</h2><span>{commentsTotal} 条</span></div>
                 <div className="comment-list">
-                  {commentsLoading ? <div className="records-loading" aria-live="polite"><span /><p>正在加载沟通记录…</p></div> : comments.length === 0 ? <p className="empty-compact">暂无沟通记录</p> : comments.map((comment) => (
+                  {commentsLoading && <p role="status">正在加载沟通记录…</p>}
+                  {hasOlderComments && <button type="button" disabled={commentsLoading || commentSending} onClick={() => fetchComments(selectedFeedback.id, 'older')}>加载较早沟通记录</button>}
+                  {comments.length === 0 && !commentsLoading ? <p className="empty-compact">暂无沟通记录</p> : comments.map((comment) => (
                     <article className={comment.commenter_type === 'admin' ? 'is-admin' : ''} key={comment.id}>
                       <div><strong>{comment.commenter_type === 'admin' ? '处理人员回复' : '提交人补充'}</strong><time>{formatDate(comment.created_at)}</time></div>
                       <p>{comment.content}</p>
                     </article>
                   ))}
                 </div>
-                {commentError && <p className="form-message form-error" role="alert">{commentError}</p>}
+                {commentError && <div className="form-message form-error" role="alert"><p>{commentError}</p><p>重试沿用原动作；请先检查沟通记录，修改失败内容需明确另作提交。</p><button type="button" disabled={commentSending} onClick={() => {
+                  if (!selectedFeedback || !window.confirm('上次补充可能已经成功。已检查沟通记录，确定另作一次提交吗？')) return
+                  try { pendingActions.abandon('user_comment', selectedFeedback.id, deviceId); setCommentError('') }
+                  catch (error) { setCommentError(getErrorMessage(error, '旧动作无法清除。')) }
+                }}>另作一次提交</button></div>}
                 <div className="comment-composer">
                   <div className="comment-input">
                     <label className="visually-hidden" htmlFor="comment">补充说明</label>
-                    <textarea id="comment" value={newComment} onChange={(event) => setNewComment(event.target.value)} placeholder="补充事实、线索或问题；最多 1000 字" maxLength={1000} />
+                    {!modeReady ? <p role="status">{demoError || '正在确认站点模式…'}</p> : demoMode ? <select id="comment" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示补充</option>{demoConfig?.userComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <textarea id="comment" value={newComment} onChange={(event) => setNewComment(event.target.value)} placeholder="补充事实、线索或问题；最多 1000 字" maxLength={1000} />}
                     {newComment.length >= 800 && <span className="comment-count" aria-live="polite">{newComment.length} / 1000</span>}
                   </div>
-                  <button className="button button-primary" type="button" disabled={commentSending || newComment.trim().length < 2} onClick={handleAddComment}>{commentSending ? '正在发送…' : '发送补充'}</button>
+                  <button className="button button-primary" type="button" disabled={commentSending || commentsLoading || !modeReady || (demoMode ? !demoCommentId : newComment.trim().length < 2)} onClick={handleAddComment}>{commentSending ? '正在发送…' : '发送补充'}</button>
                 </div>
               </aside>
             </div>

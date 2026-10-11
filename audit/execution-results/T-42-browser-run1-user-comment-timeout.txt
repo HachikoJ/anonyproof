@@ -1,0 +1,5 @@
+### Error
+TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.form-error') to be visible[22m
+

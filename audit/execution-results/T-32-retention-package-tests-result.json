@@ -1,0 +1,6 @@
+{
+  "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-32.test.ts tests/fix/T-32-candidate.test.ts tests/fix/T-32-retention-adapter.test.ts",
+  "exitCode": 0,
+  "syntheticOnly": true,
+  "includesNewProcessPackageRestore": true
+}

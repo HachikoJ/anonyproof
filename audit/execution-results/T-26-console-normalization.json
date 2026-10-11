@@ -1,0 +1,11 @@
+{
+  "rawEvidenceDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T26-raw-m2fg2s49",
+  "files": [
+    "T-26-build.txt",
+    "T-26-build-final.txt",
+    "T-26-backend-type.txt",
+    "T-26-main-proxy-build.txt",
+    "T-26-frontend-type.txt"
+  ],
+  "change": "console carriage returns/trailing whitespace/EOF blank only; exit codes and assertions unchanged"
+}

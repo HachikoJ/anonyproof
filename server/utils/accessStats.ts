@@ -1,5 +1,8 @@
 // 访问统计 API 工具
 import { openDatabase } from './database'
+import { cleanupRawLogBatch, RAW_LOG_RETENTION_MS, scheduleRawLogRetention } from './logRetention'
+import { logger } from './logger'
+import { displayAccessLog, accessRouteTemplate } from './accessPrivacy'
 
 const db = openDatabase()
 
@@ -9,7 +12,8 @@ export function getAccessStatsOverview() {
   
   // 今日统计
   const todayStats = db.prepare(
-    'SELECT * FROM access_stats WHERE date = ?'
+    `SELECT date, total_visits, unique_visitors, bot_visits,
+      suspicious_visits, avg_response_time FROM access_stats WHERE date = ?`
   ).get(today) as any || {
     total_visits: 0,
     unique_visitors: 0,
@@ -18,16 +22,20 @@ export function getAccessStatsOverview() {
     avg_response_time: 0,
   }
 
-  // 总统计
+  // Cumulative totals survive removal of the seven-day raw log window.
+  // Daily unique counts cannot recover a global distinct IP count: keep the
+  // existing unique_visitors field explicitly scoped to retained raw logs.
   const totalStats = db.prepare(`
     SELECT
-      COUNT(*) as total_visits,
-      COUNT(DISTINCT ip) as unique_visitors,
-      SUM(CASE WHEN is_bot = 1 THEN 1 ELSE 0 END) as bot_visits,
-      SUM(CASE WHEN is_suspicious = 1 THEN 1 ELSE 0 END) as suspicious_visits,
-      AVG(response_time) as avg_response_time
-    FROM access_logs
-  `).get() as any
+      COALESCE(SUM(total_visits), 0) as total_visits,
+      (SELECT COUNT(DISTINCT ip) FROM access_logs WHERE created_at >= ?) as unique_visitors,
+      COALESCE(SUM(bot_visits), 0) as bot_visits,
+      COALESCE(SUM(suspicious_visits), 0) as suspicious_visits,
+      CASE WHEN SUM(response_time_count) > 0
+        THEN SUM(response_time_total) / SUM(response_time_count) ELSE 0 END as avg_response_time
+    FROM access_stats
+  `).get(Date.now() - RAW_LOG_RETENTION_MS) as any
+  totalStats.unique_visitors_window_days = 7
 
   // 黑名单 IP 数量
   const blacklistedCount = db.prepare(
@@ -66,9 +74,10 @@ export function getRecentAccessLogs(limit: number = 100) {
       suspicious_reason,
       datetime(created_at / 1000, 'unixepoch', 'localtime') as created_at
     FROM access_logs
+    WHERE created_at >= ?
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => displayAccessLog(entry))
 }
 
 // 获取可疑访问日志
@@ -84,10 +93,10 @@ export function getSuspiciousAccessLogs(limit: number = 50) {
       suspicious_reason,
       datetime(created_at / 1000, 'unixepoch', 'localtime') as created_at
     FROM access_logs
-    WHERE is_suspicious = 1
+    WHERE is_suspicious = 1 AND created_at >= ?
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => displayAccessLog(entry))
 }
 
 // 获取爬虫访问日志
@@ -101,10 +110,10 @@ export function getBotAccessLogs(limit: number = 50) {
       method,
       datetime(created_at / 1000, 'unixepoch', 'localtime') as created_at
     FROM access_logs
-    WHERE is_bot = 1
+    WHERE is_bot = 1 AND created_at >= ?
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => displayAccessLog(entry))
 }
 
 // 获取热门路径
@@ -116,10 +125,11 @@ export function getTopPaths(limit: number = 10) {
       COUNT(DISTINCT ip) as unique_visitors,
       AVG(response_time) as avg_response_time
     FROM access_logs
+    WHERE created_at >= ?
     GROUP BY path
     ORDER BY visits DESC
     LIMIT ?
-  `).all(limit)
+  `).all(Date.now() - RAW_LOG_RETENTION_MS, limit).map((entry: any) => ({...entry, path: accessRouteTemplate(entry.path)}))
 }
 
 // 获取活跃 IP
@@ -186,12 +196,12 @@ export function getAccessTrend(hours: number = 24) {
   `).all(Date.now() - hours * 60 * 60 * 1000, hours)
 }
 
-// 清理旧日志（保留 30 天）
-export function cleanupOldLogs() {
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
-  
-  const stmt = db.prepare('DELETE FROM access_logs WHERE created_at < ?')
-  const result = stmt.run(thirtyDaysAgo)
-  
-  return result.changes
+// Each call is one bounded batch; the scheduler drains further batches while
+// yielding, without rebuilding or deleting already committed daily statistics.
+export function cleanupOldLogs(now = Date.now()) {
+  return cleanupRawLogBatch(db, now)
+}
+
+export function startLogRetention() {
+  return scheduleRawLogRetention(db, logger)
 }

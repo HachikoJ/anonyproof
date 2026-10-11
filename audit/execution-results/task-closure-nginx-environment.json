@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-08",
+  "scope": "read-only existing executable/image inventory; no install/pull/container or service mutation",
+  "nginxInPath": null,
+  "commonExistingPaths": [],
+  "dockerImages": {
+    "command": [
+      "/usr/local/bin/docker",
+      "image",
+      "ls",
+      "--format",
+      "{{.Repository}}:{{.Tag}} {{.ID}}"
+    ],
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "failed to connect to the docker API at unix:///Users/wilson/.docker/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /Users/wilson/.docker/run/docker.sock: connect: no such file or directory\n"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-08",
+  "baselineCommit": "a391c00ee043e80800b23b5f6e6df327d5db7356",
+  "status": "proposal only; source assets unchanged",
+  "proposal": "Move exact bytes to historical text files, add unsupported README; no deletion, upload capability, provider/API or dependency change",
+  "assets": [
+    {
+      "task": "T-28",
+      "source": "app/components/FileUpload.tsx",
+      "proposedTarget": "archive/unsupported-uploads/FileUpload.tsx.txt",
+      "sha256": "0eb8e346efd86cc5809672fb8892cf8d67cc4fc797e75d95e8c3cef18e87d484",
+      "bytes": 3009,
+      "gitMode": "100644",
+      "callers": [],
+      "reachableFromRouteEntry": false,
+      "sourceUnchanged": true,
+      "proposedTargetExists": false
+    },
+    {
+      "task": "T-28",
+      "source": "app/utils/imageUpload.ts",
+      "proposedTarget": "archive/unsupported-uploads/imageUpload.ts.txt",
+      "sha256": "8d1a3f2249c6f3ead0eed1f9195fd8b626610549d3d2282e8ac026a47ea68189",
+      "bytes": 1857,
+      "gitMode": "100644",
+      "callers": [],
+      "reachableFromRouteEntry": false,
+      "sourceUnchanged": true,
+      "proposedTargetExists": false
+    },
+    {
+      "task": "T-29",
+      "source": "app/components/LocalFileUpload.tsx",
+      "proposedTarget": "archive/unsupported-uploads/LocalFileUpload.tsx.txt",
+      "sha256": "3e0a902757ff4d0ddc770cce70ab656214a630e72c2785981d7897e1177e4f21",
+      "bytes": 3423,
+      "gitMode": "100644",
+      "callers": [],
+      "reachableFromRouteEntry": false,
+      "sourceUnchanged": true,
+      "proposedTargetExists": false
+    }
+  ],
+  "graph": {
+    "appSourceFiles": 16,
+    "entrypoints": [
+      "app/access-stats/page.tsx",
+      "app/foorpynona/page.tsx",
+      "app/layout.tsx",
+      "app/page.tsx"
+    ],
+    "reachableInternalSources": 10,
+    "nonCodeAssets": [
+      {
+        "file": "app/layout.tsx",
+        "module": "./globals.css",
+        "kind": "existing non-code CSS asset"
+      },
+      {
+        "file": "app/layout.tsx",
+        "module": "./admin.css",
+        "kind": "existing non-code CSS asset"
+      }
+    ],
+    "unresolvedLocalCodeImports": [],
+    "computedImports": []
+  },
+  "scopeLimits": [
+    "Static app graph only, not browser network proof",
+    "Current literal server upload-local search has zero matches; runtime refusal not claimed",
+    "No active source was moved/disabled and no upload request was sent"
+  ],
+  "remainingAcceptance": [
+    "Exact user disposition confirmation",
+    "Source/target hashes after approved moves",
+    "Per-task type-check/build/browser no-upload smoke",
+    "Independent T-28 and T-29 statuses and commits"
+  ]
+}

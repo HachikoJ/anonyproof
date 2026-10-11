@@ -25,46 +25,41 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+          server/package-lock.json
 
     # Node 20 自带的 npm 10.8.2 存在 "Exit handler never called!" 崩溃问题
     # （npm/cli#7666），固定到 npm 11 规避。
     - name: Upgrade npm
       run: npm install --global npm@11
 
-    # 崩溃时会留下残缺的 node_modules，因此重试并显式校验直接依赖是否装全。
+    # 每个安装树都使用 lockfile，允许 native 构建；失败的安装树保留在临时目录。
     - name: Install dependencies
       run: |
-        verify_dependencies() {
-          node -e '
-            const fs = require("fs");
-            const pkg = require("./package.json");
-            const required = [
-              ...Object.keys(pkg.dependencies || {}),
-              ...Object.keys(pkg.devDependencies || {}),
-            ];
-            const missing = required.filter(
-              (name) => !fs.existsSync("node_modules/" + name + "/package.json")
-            );
-            if (missing.length > 0) {
-              console.error("missing dependencies: " + missing.join(", "));
-              process.exit(1);
-            }
-            console.log("dependency tree verified: " + required.length + " direct dependencies");
-          '
+        install_dependencies() {
+          local project_dir="$1"
+          local attempt backup_dir
+          for attempt in 1 2 3; do
+            if (cd "$project_dir" && npm ci --no-audit --no-fund && npm ls --depth=0); then
+              echo "npm ci (${project_dir}) succeeded on attempt ${attempt}"
+              return 0
+            fi
+            echo "::warning::npm ci (${project_dir}) attempt ${attempt} failed or left an inconsistent tree"
+            if [ -d "$project_dir/node_modules" ]; then
+              backup_dir="$(mktemp -d "${RUNNER_TEMP:-/tmp}/anonyproof-ci-install.XXXXXX")"
+              mv "$project_dir/node_modules" "$backup_dir/node_modules"
+            fi
+            npm cache clean --force || true
+          done
+          echo "::error::npm ci (${project_dir}) failed after 3 attempts"
+          return 1
         }
+        install_dependencies .
+        install_dependencies server
 
-        for attempt in 1 2 3; do
-          if npm ci --no-audit --no-fund --ignore-scripts && verify_dependencies; then
-            echo "npm ci succeeded on attempt ${attempt}"
-            exit 0
-          fi
-          echo "::warning::npm ci attempt ${attempt} failed or left an incomplete tree, retrying"
-          rm -rf node_modules
-          npm cache clean --force || true
-        done
-
-        echo "::error::npm ci failed after 3 attempts"
-        exit 1
+    - name: Verify installed trees and SQLite native ABI
+      run: node scripts/check-runtime.cjs
 
     - name: Show npm debug log
       if: failure()
@@ -74,11 +69,63 @@ jobs:
           tail -n 60 "$(ls -t "$log_dir"/*.log | head -n 1)" || true
         fi
 
-    - name: Type check
+    - name: Frontend type check
       run: npm run type-check
+
+    - name: Backend type check
+      run: |
+        npm --prefix server run type-check
+        npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts
 
     - name: Build
       run: npm run build
+
+    - name: Backend smoke and repair regression tests
+      run: npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts
+
+    # 已知 advisory 不扩大本轮修复范围；审计服务错误和无效报告必须阻断。
+    - name: Audit production dependencies
+      run: |
+        node <<'NODE'
+        const { spawnSync } = require('node:child_process');
+        const fs = require('node:fs');
+        const path = require('node:path');
+        const reportDir = path.join(process.env.RUNNER_TEMP, 'anonyproof-dependency-audit');
+        fs.mkdirSync(reportDir, { recursive: true });
+        for (const [name, cwd] of [['root', '.'], ['server', 'server']]) {
+          const result = spawnSync('npm', ['audit', '--omit=dev', '--json'], { cwd, encoding: 'utf8' });
+          fs.writeFileSync(path.join(reportDir, `${name}.json`), result.stdout || '');
+          let report;
+          try { report = JSON.parse(result.stdout); } catch {
+            console.error(`::error::${name}: npm audit did not return valid JSON`);
+            process.exit(1);
+          }
+          const counts = report.metadata?.vulnerabilities;
+          const validCount = (value) => Number.isSafeInteger(value) && value >= 0;
+          const severities = ['info', 'low', 'moderate', 'high', 'critical'];
+          if (result.error || ![0, 1].includes(result.status) || report.error ||
+              !counts || !severities.every((key) => validCount(counts[key])) ||
+              !validCount(counts.total) || !validCount(report.metadata?.dependencies?.total) ||
+              !report.vulnerabilities || typeof report.vulnerabilities !== 'object' ||
+              severities.reduce((sum, key) => sum + counts[key], 0) !== counts.total ||
+              (result.status === 0) !== (counts.total === 0)) {
+            console.error(`::error::${name}: audit execution failed or metadata is invalid`);
+            if (result.stderr) console.error(result.stderr);
+            process.exit(1);
+          }
+          console.log(`${name}: npm audit exit ${result.status}; ${JSON.stringify(counts)}`);
+          if (counts.total > 0) {
+            console.log(`::warning::${name}: ${counts.total} known production dependency advisories; review the audit artifact`);
+          }
+        }
+        NODE
+
+    - name: Upload dependency audit reports
+      uses: actions/upload-artifact@v7
+      with:
+        name: dependency-audit-${{ matrix.node-version }}
+        path: ${{ runner.temp }}/anonyproof-dependency-audit/*.json
+        if-no-files-found: error
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v7

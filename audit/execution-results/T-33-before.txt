@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+not ok 1 - T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+  ---
+  duration_ms: 689.145
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:2:1175'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(logs.some(row=>row.user_agent==='browser:Chrome'))
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:20:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+not ok 2 - T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+  ---
+  duration_ms: 395.088666
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:3:791'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    '127.0.0.1' !== ''
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: '127.0.0.1'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:44:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+not ok 3 - T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+  ---
+  duration_ms: 592.570625
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:3:3108'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected retained marker: T33-private-marker-473911'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:69:91)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1870.912208

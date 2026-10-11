@@ -1,0 +1,35 @@
+{
+  "artifactFolder": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-ci-audit-n9isw333",
+  "counts": [
+    {
+      "tree": "root",
+      "counts": {
+        "info": 0,
+        "low": 1,
+        "moderate": 0,
+        "high": 3,
+        "critical": 0,
+        "total": 4
+      },
+      "packages": [
+        "esbuild",
+        "next",
+        "sharp",
+        "source-map-js"
+      ]
+    },
+    {
+      "tree": "server",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "packages": []
+    }
+  ],
+  "rawLog": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-ci-raw-rg0xmg5g/run-log.txt"
+}

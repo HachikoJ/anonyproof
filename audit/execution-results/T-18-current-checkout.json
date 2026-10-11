@@ -1,0 +1,328 @@
+{
+  "task": "T-18",
+  "date": "2026-10-08",
+  "sourceCommit": "dac38cea30fdbac0c2d23ec6a879bd76cd1c51bf",
+  "runDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c",
+  "checkout": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+  "localNode": "v20.20.2",
+  "localNpm": "11.21.0",
+  "scope": "current committed code, local macOS Node20 compatibility; not actual Ubuntu Actions",
+  "privateAssetsCopied": false,
+  "runnerScript": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/runner.py",
+  "recordFile": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/steps.json",
+  "actualVersionChecks": [
+    {
+      "command": [
+        "/tmp/anonyproof-runtime-20/node_modules/node/bin/node",
+        "--version"
+      ],
+      "exitCode": 0,
+      "stdout": "v20.20.2",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/tmp/anonyproof-runtime-20/node_modules/node/bin/node",
+        "/tmp/anonyproof-runtime-20/node_modules/npm/bin/npm-cli.js",
+        "--version"
+      ],
+      "exitCode": 0,
+      "stdout": "11.21.0",
+      "stderr": ""
+    }
+  ],
+  "workflowSha256": "30d236d9327aa6e235ac5ff6326ad57f648e0af4fb67a99fc893e27903c02058",
+  "runnerSha256": "30fcd535dff392c2dd2ba01c563f424713d55d0cad579ad1f987bdfefb2dfed7",
+  "repairTestFiles": [
+    "tests/fix/T-01.test.ts",
+    "tests/fix/T-03.test.ts",
+    "tests/fix/T-04.test.ts",
+    "tests/fix/T-05.test.ts",
+    "tests/fix/T-06.test.ts",
+    "tests/fix/T-07.test.ts",
+    "tests/fix/T-08.test.ts",
+    "tests/fix/T-09.test.ts",
+    "tests/fix/T-10.test.ts",
+    "tests/fix/T-12.test.ts",
+    "tests/fix/T-13.test.ts",
+    "tests/fix/T-14.test.ts",
+    "tests/fix/T-16.test.ts",
+    "tests/fix/T-17.test.ts",
+    "tests/fix/T-19.test.ts",
+    "tests/fix/T-20.test.ts",
+    "tests/fix/T-26.test.ts",
+    "tests/fix/T-27.test.ts",
+    "tests/fix/T-31.test.ts",
+    "tests/fix/T-32-candidate.test.ts",
+    "tests/fix/T-32.test.ts",
+    "tests/fix/T-40.test.ts",
+    "tests/fix/T-41.test.ts",
+    "tests/fix/T-43.test.ts"
+  ],
+  "notExecutedLocally": [
+    "Actions checkout/setup-node/cache/upload-artifact",
+    "Ubuntu runner",
+    "workflow install retry/cache-clean fallback",
+    "global npm installation"
+  ],
+  "coldCacheAttempt": {
+    "runDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-8dmdg7rg",
+    "recordFile": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-8dmdg7rg/steps.json",
+    "outcome": "deliberately interrupted slow registry transfer, not code/test failure",
+    "installExitCode": -15,
+    "command": "npm ci --no-audit --no-fund",
+    "filesRetained": true,
+    "otherStepsExecuted": false,
+    "actualRecordedSteps": [
+      {
+        "name": "root-ci",
+        "command": [
+          "npm",
+          "ci",
+          "--no-audit",
+          "--no-fund"
+        ],
+        "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-8dmdg7rg/source",
+        "exitCode": -15,
+        "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-8dmdg7rg/root-ci.txt"
+      }
+    ],
+    "elapsedSeconds": 742.8
+  },
+  "seedManifest": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/cache-seed.json",
+  "cachePolicy": "Fresh private cache seeded with SHA512-verified lockfile package bytes; clean npm ci with no node_modules reuse; permits network for missing packages/native installer and audit",
+  "steps": [
+    {
+      "name": "root-ci",
+      "command": [
+        "npm",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/root-ci.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-root-ci.txt",
+      "rawSha256": "a946534effc9c944dd706e2a4de68f9c3e9b1075bfc9f8b86bdaec7aece6f1e9",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "root-tree",
+      "command": [
+        "npm",
+        "ls",
+        "--depth=0"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/root-tree.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-root-tree.txt",
+      "rawSha256": "576192afdc829ebb767a1bf762cebcef300a557396b19c067b3b4e4c1c3361a1",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "server-ci",
+      "command": [
+        "npm",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source/server",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/server-ci.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-server-ci.txt",
+      "rawSha256": "850fce544880c9d8fd84ebc1f1676c68278cf4501ec908f46a68eb126380f5d1",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "server-tree",
+      "command": [
+        "npm",
+        "ls",
+        "--depth=0"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source/server",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/server-tree.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-server-tree.txt",
+      "rawSha256": "e1754058058d5429b1fe5ec4928e14278ffb66cab099b14b9c7dad80a1783f04",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "runtime",
+      "command": [
+        "node",
+        "scripts/check-runtime.cjs"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/runtime.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-runtime.txt",
+      "rawSha256": "ea417c99d9cd867df20d5276e95f0130266b66f610beea3a498c1ac05d51ee85",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "frontend-type",
+      "command": [
+        "npm",
+        "run",
+        "type-check"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/frontend-type.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-frontend-type.txt",
+      "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "server-existing-type",
+      "command": [
+        "npm",
+        "--prefix",
+        "server",
+        "run",
+        "type-check"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/server-existing-type.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-server-existing-type.txt",
+      "rawSha256": "d35ca6ca3b8bb471cdd772147d71664bdb3f0629e96a5384e7a4799c4f6f2675",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "actual-backend-type",
+      "command": [
+        "npx",
+        "--no-install",
+        "tsc",
+        "--noEmit",
+        "--target",
+        "ES2017",
+        "--module",
+        "commonjs",
+        "--esModuleInterop",
+        "--skipLibCheck",
+        "--strict",
+        "server/demo.ts",
+        "server/env.ts",
+        "server/index.ts",
+        "server/middleware/accessStats.ts",
+        "server/middleware/rateLimit.ts",
+        "server/middleware/rateLimitEnhanced.ts",
+        "server/middleware/requestOrigin.ts",
+        "server/utils/accessStats.ts",
+        "server/utils/comments.ts",
+        "server/utils/contentEncryption.ts",
+        "server/utils/database.ts",
+        "server/utils/logger.ts",
+        "server/utils/validation.ts"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/actual-backend-type.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-actual-backend-type.txt",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/build.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-build.txt",
+      "rawSha256": "1ed862783b2f965d5560b2cf5547a0c0b66919a6190eccba3a7a474040564d11",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "all-repair-tests",
+      "command": [
+        "npx",
+        "--no-install",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/fix/T-01.test.ts",
+        "tests/fix/T-03.test.ts",
+        "tests/fix/T-04.test.ts",
+        "tests/fix/T-05.test.ts",
+        "tests/fix/T-06.test.ts",
+        "tests/fix/T-07.test.ts",
+        "tests/fix/T-08.test.ts",
+        "tests/fix/T-09.test.ts",
+        "tests/fix/T-10.test.ts",
+        "tests/fix/T-12.test.ts",
+        "tests/fix/T-13.test.ts",
+        "tests/fix/T-14.test.ts",
+        "tests/fix/T-16.test.ts",
+        "tests/fix/T-17.test.ts",
+        "tests/fix/T-19.test.ts",
+        "tests/fix/T-20.test.ts",
+        "tests/fix/T-26.test.ts",
+        "tests/fix/T-27.test.ts",
+        "tests/fix/T-31.test.ts",
+        "tests/fix/T-32-candidate.test.ts",
+        "tests/fix/T-32.test.ts",
+        "tests/fix/T-40.test.ts",
+        "tests/fix/T-41.test.ts",
+        "tests/fix/T-43.test.ts"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/all-repair-tests.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-all-repair-tests.txt",
+      "rawSha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "audit-gate",
+      "command": [
+        "bash",
+        "-e",
+        "-o",
+        "pipefail"
+      ],
+      "cwd": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/source",
+      "exitCode": 0,
+      "log": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/audit-gate.txt",
+      "repositoryLog": "audit/execution-results/T-18-current-audit-gate.txt",
+      "rawSha256": "737f6e112e78c639dfffb77d1d70b9d53df29aacb617e16fe03625069eb57c7f",
+      "normalization": "trailing horizontal whitespace/extra EOF blank lines only; raw retained at log path"
+    },
+    {
+      "name": "root-audit-json",
+      "raw": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/runner-temp/anonyproof-dependency-audit/root.json",
+      "repositoryLog": "audit/execution-results/T-18-current-root-audit.json",
+      "rawSha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7",
+      "normalization": "none"
+    },
+    {
+      "name": "server-audit-json",
+      "raw": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-current-seeded-gotph_1c/runner-temp/anonyproof-dependency-audit/server.json",
+      "repositoryLog": "audit/execution-results/T-18-current-server-audit.json",
+      "rawSha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81",
+      "normalization": "none"
+    }
+  ],
+  "localGateExitCode": 0,
+  "counts": {
+    "tests": 124,
+    "pass": 123,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "todo": 0
+  },
+  "skip": "T-34 deletion semantics/transaction confirmation and implementation pending; not completed",
+  "remoteGateVerified": false,
+  "taskState": "blocked pending authorized push and actual Ubuntu Actions result",
+  "productSourceModified": false
+}

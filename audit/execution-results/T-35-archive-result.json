@@ -1,0 +1,166 @@
+{
+  "task": "T-35",
+  "assets": [
+    {
+      "source": "deploy/nginx/anonyproof-3000.conf",
+      "archived": "deploy/nginx/legacy/anonyproof-3000.conf",
+      "sha256": "baeab12488b09a4a3ef5e841af65e28ed546c57229916ebb8c744ea82404ba50",
+      "bytes": 501,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-api-fixed.conf",
+      "archived": "deploy/nginx/legacy/deline-top-api-fixed.conf",
+      "sha256": "4f4b864a30026dea04e544dc4b23ea439ba95a8cbbf2a7cd2ccf6bcda702620d",
+      "bytes": 1821,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-api.conf",
+      "archived": "deploy/nginx/legacy/deline-top-api.conf",
+      "sha256": "5c76711e7c7b19991d3122fcedb2ffb0d255963b0bd0d8821cc4b8e5cf01a372",
+      "bytes": 2536,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-clean.conf",
+      "archived": "deploy/nginx/legacy/deline-top-clean.conf",
+      "sha256": "2dc67d610903b74e5d9f7fd5a5396d836f7133d4387ba7be0dacbf63a44945dc",
+      "bytes": 1854,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-correct.conf",
+      "archived": "deploy/nginx/legacy/deline-top-correct.conf",
+      "sha256": "1c95ce57104cfd5910249bb7799fbf17c9dbc797d989d67a1b1cc699f76d6b0e",
+      "bytes": 1892,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-deline.com.conf",
+      "archived": "deploy/nginx/legacy/deline-top-deline.com.conf",
+      "sha256": "92bb9f3649d64a79cd8f697faf4691a18f6888f36e9cd7a834053c117a8785e3",
+      "bytes": 1430,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-final-fixed.conf",
+      "archived": "deploy/nginx/legacy/deline-top-final-fixed.conf",
+      "sha256": "7280318bd3a03cc9f66c1669e417543771a5a48658f5651e3e7914d6564cb6de",
+      "bytes": 2683,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-final.conf",
+      "archived": "deploy/nginx/legacy/deline-top-final.conf",
+      "sha256": "f230b9bdba3970f00a863cd3dc7ca02286d868bb0480f69184e126d8e49603bb",
+      "bytes": 2026,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-fixed-final.conf",
+      "archived": "deploy/nginx/legacy/deline-top-fixed-final.conf",
+      "sha256": "7fb30ab2ee6eec2050c8851923ce01212f93942253fea42c69301d20763818f2",
+      "bytes": 1847,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-fixed.conf",
+      "archived": "deploy/nginx/legacy/deline-top-fixed.conf",
+      "sha256": "a2c3c595d41c80bd2e3517bde6100b6dd8e0d0c2634b92077e93e08ce5bf8150",
+      "bytes": 2085,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-fixed2.conf",
+      "archived": "deploy/nginx/legacy/deline-top-fixed2.conf",
+      "sha256": "356aec37cbdb1a0b5e60e4e4abc3a104af1f449a36f35bf7363611300a2e99ad",
+      "bytes": 2008,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-nested-api.conf",
+      "archived": "deploy/nginx/legacy/deline-top-nested-api.conf",
+      "sha256": "86fe5fe628f9a6573eaca189b80f1827a08cb5be7748df250eadfda37e40b12c",
+      "bytes": 2251,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-precise.conf",
+      "archived": "deploy/nginx/legacy/deline-top-precise.conf",
+      "sha256": "ff4699f60ff5ee006783eb5dee94e40392aa954d5a41ac96a61426dbb99283a7",
+      "bytes": 2074,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-priority.conf",
+      "archived": "deploy/nginx/legacy/deline-top-priority.conf",
+      "sha256": "c0517efe800616201f90501e0d5e6e5a0bb3c19b6af02a88c94a29a978030303",
+      "bytes": 1911,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-simple-direct.conf",
+      "archived": "deploy/nginx/legacy/deline-top-simple-direct.conf",
+      "sha256": "33b8e5b62cb29a3f1576dde65af9527421f68580a2cd5e158f38c934a2ea363d",
+      "bytes": 1902,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-simple.conf",
+      "archived": "deploy/nginx/legacy/deline-top-simple.conf",
+      "sha256": "eb148844df8de5f5498ad3c3df0d17c303591a7f4ace2ebd976b88acfe7d35db",
+      "bytes": 1911,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-updated.conf",
+      "archived": "deploy/nginx/legacy/deline-top-updated.conf",
+      "sha256": "312ef63e5df44d9a529b195f5913f84f752af7ee6d2fe0aca70e603e970b97ee",
+      "bytes": 1787,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline-top-with-caret.conf",
+      "archived": "deploy/nginx/legacy/deline-top-with-caret.conf",
+      "sha256": "2e876d3f83ba199b1217b55deb1af855c24ed3fd6633563c2c8450775d2fa8e5",
+      "bytes": 2627,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline.top-anonyproof.conf",
+      "archived": "deploy/nginx/legacy/deline.top-anonyproof.conf",
+      "sha256": "543c40249bb8a536676b8b4a04ad82b6f7dcaf68b686018a0a3c5831ee1f2fee",
+      "bytes": 1191,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/deline.top.conf",
+      "archived": "deploy/nginx/legacy/deline.top.conf",
+      "sha256": "ae9ddbe9170cd946dd3264f8cc07abda9b0d66b11238dc1eee3b7238e1ef7dc6",
+      "bytes": 1864,
+      "sourceAbsent": true
+    },
+    {
+      "source": "deploy/nginx/security-fixed.conf",
+      "archived": "deploy/nginx/legacy/security-fixed.conf",
+      "sha256": "63e24f49a3cef363fc460391c82669c446941eb857cee3ca8cbca08e2f198573",
+      "bytes": 1884,
+      "sourceAbsent": true
+    }
+  ],
+  "scripts": [
+    {
+      "path": "deploy/scripts/legacy/fix-nginx.sh",
+      "originalSha256": "81acf04715ca41315a102de4514d961a99fbad328cc3d057f979711caa2baa97",
+      "guardedSha256": "3072c9d4169a76189933e35ebda21f57e21a2cd6d929816075a5c7ca8bcd20a0",
+      "originalBodyRetained": true
+    },
+    {
+      "path": "deploy/scripts/legacy/final-fix.sh",
+      "originalSha256": "53e00744b18c018a2c9ba7240718aa565d3396f69f63b2363fb3072e11280d55",
+      "guardedSha256": "c324dfb21d58a23827a95c3a6647b20b5e346f7b13004d6ab092a9313c6c5a9d",
+      "originalBodyRetained": true
+    }
+  ]
+}

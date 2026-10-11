@@ -1,0 +1,262 @@
+TAP version 13
+# Subtest: T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+ok 1 - T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+  ---
+  duration_ms: 714.06825
+  type: 'test'
+  ...
+# Subtest: T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+ok 2 - T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+  ---
+  duration_ms: 1491.55625
+  type: 'test'
+  ...
+# Subtest: T-02 invalid role/mode/path/password/key fails before DB creation
+ok 3 - T-02 invalid role/mode/path/password/key fails before DB creation
+  ---
+  duration_ms: 5547.956917
+  type: 'test'
+  ...
+# Subtest: T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+ok 4 - T-02 unknown nonempty legacy database fails read-only without adoption or schema writes
+  ---
+  duration_ms: 901.541583
+  type: 'test'
+  ...
+# Subtest: T-02 persisted role cannot be flipped and a formal key cannot be replaced
+ok 5 - T-02 persisted role cannot be flipped and a formal key cannot be replaced
+  ---
+  duration_ms: 2404.527084
+  type: 'test'
+  ...
+# Subtest: T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+ok 6 - T-02 valid separate demo/formal instances reject cross-role credentials and formal config hides password
+  ---
+  duration_ms: 1070.188583
+  type: 'test'
+  ...
+# Subtest: T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+ok 7 - T-02 PM2 uses explicit role, distinct names and ports, and rejects conflicting ports
+  ---
+  duration_ms: 158.378917
+  type: 'test'
+  ...
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 8 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2674.6025
+  type: 'test'
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 9 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 969.5345
+  type: 'test'
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 10 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 896.281333
+  type: 'test'
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 11 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 445.402042
+  type: 'test'
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 12 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 5331.165875
+  type: 'test'
+  ...
+# Subtest: T-05: restarting with the same fixture DB cannot reset durable identity capacity
+ok 13 - T-05: restarting with the same fixture DB cannot reset durable identity capacity
+  ---
+  duration_ms: 1039.468625
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and missing code preserves R1 and its records
+ok 14 - T-21: restart with valid Cookie and missing code preserves R1 and its records
+  ---
+  duration_ms: 928.602792
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+ok 15 - T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 889.321583
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and missing code preserves R1 and its records
+ok 16 - T-21: restart with valid installation key and missing code preserves R1 and its records
+  ---
+  duration_ms: 893.81825
+  type: 'test'
+  ...
+# Subtest: T-21: restart with valid installation key and mismatching code preserves R1 and its records
+ok 17 - T-21: restart with valid installation key and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 888.176167
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid Cookie never revokes R1
+ok 18 - T-21: expired display cache with valid Cookie never revokes R1
+  ---
+  duration_ms: 459.169292
+  type: 'test'
+  ...
+# Subtest: T-21: expired display cache with valid installation key never revokes R1
+ok 19 - T-21: expired display cache with valid installation key never revokes R1
+  ---
+  duration_ms: 456.750541
+  type: 'test'
+  ...
+# Subtest: T-21: two initializing tabs share one identity and matching codes remain valid
+ok 20 - T-21: two initializing tabs share one identity and matching codes remain valid
+  ---
+  duration_ms: 436.174375
+  type: 'test'
+  ...
+# Subtest: T-22 HTTP capacity refuses demo login before cookies/identity/clones, preserves valid sessions, timer reclaims and logout deletes
+ok 21 - T-22 HTTP capacity refuses demo login before cookies/identity/clones, preserves valid sessions, timer reclaims and logout deletes
+  ---
+  duration_ms: 912.698208
+  type: 'test'
+  ...
+# Subtest: T-22 HTTP full failure store rejects a new source, retains old lockout and automatically expires all 10000 entries
+ok 22 - T-22 HTTP full failure store rejects a new source, retains old lockout and automatically expires all 10000 entries
+  ---
+  duration_ms: 838.1625
+  type: 'test'
+  ...
+# Subtest: T-22 real display cache evicts oldest at 10000 without changing saved R1, and timer expires entries without reads
+ok 23 - T-22 real display cache evicts oldest at 10000 without changing saved R1, and timer expires entries without reads
+  ---
+  duration_ms: 826.343416
+  type: 'test'
+  ...
+# Subtest: T-22 demo identity failure releases the reserved admin session and never signs cookies
+ok 24 - T-22 demo identity failure releases the reserved admin session and never signs cookies
+  ---
+  duration_ms: 505.882833
+  type: 'test'
+  ...
+# Subtest: T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+ok 25 - T-25 formal: exact 90-day boundary, any business and recent child activity preserve identity; expiry does not resurrect
+  ---
+  duration_ms: 5.9165
+  type: 'test'
+  ...
+# Subtest: T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+ok 26 - T-25 demo: only current known synthetic markers retire after 30 days, cascade both notice recipients and preserve unknown history/templates
+  ---
+  duration_ms: 1.353958
+  type: 'test'
+  ...
+# Subtest: T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+ok 27 - T-25: transaction fault rolls back compatibility hash/session and all demo cascades; hourly retry drains bounded batches and close cancels
+  ---
+  duration_ms: 7.522458
+  type: 'test'
+  ...
+# Subtest: T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+ok 28 - T-25: demo cascade fault is atomic and a feedback backlog is limited to 500 per transaction
+  ---
+  duration_ms: 5.88275
+  type: 'test'
+  ...
+# Subtest: T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+ok 29 - T-25 live: restart cleans expired sessions without reviving old compatibility token; active Cookie and R1 recovery/binding preserve identity
+  ---
+  duration_ms: 1361.963208
+  type: 'test'
+  ...
+# Subtest: T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+ok 30 - T-25: expired child activity survives deletion and the session budget is shared across expired and retired identities
+  ---
+  duration_ms: 7.463
+  type: 'test'
+  ...
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 31 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 672.239334
+  type: 'test'
+  ...
+# Subtest: T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+ok 32 - T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+  ---
+  duration_ms: 910.846541
+  type: 'test'
+  ...
+# Subtest: T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+ok 33 - T-42 server: concurrent/repeated/lost-response feedback writes return original result; new action and identity are independent
+  ---
+  duration_ms: 505.038334
+  type: 'test'
+  ...
+# Subtest: T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+ok 34 - T-42 server: all comment roles/targets conflict safely, exact original id/time is replayed and deleted targets never resurrect
+  ---
+  duration_ms: 491.679084
+  type: 'test'
+  ...
+# Subtest: T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+ok 35 - T-42 server: business, notifications and metadata faults are one atomic transaction for feedback and both comment endpoints
+  ---
+  duration_ms: 501.908292
+  type: 'test'
+  ...
+# Subtest: T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+ok 36 - T-42 boundaries: exact 7-day expiry/skew, invalid headers, cleanup batch500/rollback/diagnostic do not change business
+  ---
+  duration_ms: 464.836459
+  type: 'test'
+  ...
+# Subtest: T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+ok 37 - T-42 encryption and durable user replay: SQLite/WAL/dump/logs exclude content/key/package, inventory recognizes new table and migration refuses unknown preservation
+  ---
+  duration_ms: 937.552375
+  type: 'test'
+  ...
+# Subtest: T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+ok 38 - T-42 frontend lifecycle: retry/refresh retains key only, edited failed content never auto-rekeys, explicit new action and storage failures
+  ---
+  duration_ms: 0.524208
+  type: 'test'
+  ...
+# Subtest: T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+ok 39 - T-42 demo: fixed choices replay and sandbox identities/admin sessions cannot reuse others results
+  ---
+  duration_ms: 472.440709
+  type: 'test'
+  ...
+# Subtest: T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+ok 40 - T-42 concurrent processes share user scope and unique transaction; retries retain normal source quota
+  ---
+  duration_ms: 1458.352291
+  type: 'test'
+  ...
+# Subtest: T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+ok 41 - T-42 exact expiry before/after metadata cleanup cannot run the mutation again
+  ---
+  duration_ms: 1.185084
+  type: 'test'
+  ...
+# Subtest: T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+ok 42 - T-42 frontend write/remove storage failures preserve the original key and never quietly create another
+  ---
+  duration_ms: 0.26975
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40572.283625

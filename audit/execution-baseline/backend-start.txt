@@ -1,0 +1,28 @@
+exit_code=1
+
+> anonyproof-server@1.0.0 start
+> tsx index.ts
+
+node:internal/modules/cjs/loader:1996
+  return process.dlopen(module, path.toNamespacedPath(filename));
+                 ^
+
+Error: The module '/Users/wilson/Documents/Codex/anonyproof/server/node_modules/better-sqlite3/build/Release/better_sqlite3.node'
+was compiled against a different Node.js version using
+NODE_MODULE_VERSION 127. This version of Node.js requires
+NODE_MODULE_VERSION 141. Please try re-compiling or re-installing
+the module (for instance, using `npm rebuild` or `npm install`).
+    at Module._extensions..node (node:internal/modules/cjs/loader:1996:18)
+    at Module.load (node:internal/modules/cjs/loader:1552:32)
+    at Module._load (node:internal/modules/cjs/loader:1354:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1575:12)
+    at require (node:internal/modules/helpers:191:16)
+    at bindings (/Users/wilson/Documents/Codex/anonyproof/server/node_modules/bindings/bindings.js:112:48)
+    at new Database (/Users/wilson/Documents/Codex/anonyproof/server/node_modules/better-sqlite3/lib/database.js:48:64)
+    at openDatabase (/Users/wilson/Documents/Codex/anonyproof/server/utils/database.ts:16:14)
+    at <anonymous> (/Users/wilson/Documents/Codex/anonyproof/server/utils/accessStats.ts:4:12) {
+  code: 'ERR_DLOPEN_FAILED'
+}
+
+Node.js v25.8.2

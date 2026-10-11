@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 1 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 736.469416
+  type: 'test'
+  ...
+# Subtest: T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+ok 2 - T-26 identity GET/HEAD is read-only: valid Cookie required, headers cannot create/bind/renew/clone
+  ---
+  duration_ms: 1015.028625
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1974.789583

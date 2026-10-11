@@ -1,0 +1,58 @@
+{
+  "task": "T-16",
+  "date": "2026-10-07T05:23:50.362Z",
+  "node": "v22.23.3",
+  "dependencyChanges": {
+    "root": {
+      "body-parser": "2.2.2 -> 2.3.0",
+      "path-to-regexp": "8.3.0 -> 8.4.0",
+      "qs": "6.15.0 -> 6.16.0",
+      "requiredChildren": [
+        "type-is2.1.0",
+        "body-parser/type-is scoped content-type2.1.0",
+        "side-channel1.1.1",
+        "side-channel-list1.0.1"
+      ]
+    },
+    "server": {
+      "qs": "6.15.3 -> 6.16.0",
+      "unchanged": "body-parser2.3.0/path-to-regexp8.4.2"
+    }
+  },
+  "advisories": [
+    "https://github.com/advisories/GHSA-v422-hmwv-36x6",
+    "https://github.com/advisories/GHSA-j3q9-mxjg-w52f",
+    "https://github.com/advisories/GHSA-27v5-c462-wpq7",
+    "https://github.com/advisories/GHSA-4mjr-xmp4-gh2g"
+  ],
+  "runtime": "Node22.23.3 at /tmp/anonyproof-runtime-22/node_modules/node/bin",
+  "commands": {
+    "npm ci --no-audit --no-fund": 0,
+    "npm --prefix server ci --no-audit --no-fund": 0,
+    "node scripts/check-runtime.cjs": 0,
+    "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-16.test.ts": 0,
+    "npm ls express path-to-regexp body-parser qs": 0,
+    "npm --prefix server ls express path-to-regexp body-parser qs": 0,
+    "npm run type-check": 0,
+    "npm --prefix server run type-check": 0,
+    "npm audit --omit=dev --json (both directories)": 1,
+    "npm run build": 0,
+    "git diff --check": 0
+  },
+  "tests": "3/3 pass; JSON malformed400/body1MiB413/health200/no extra feedback/route aliases and ownership checks/repeated and array query parser checks",
+  "targetedAdvisoriesAbsent": true,
+  "remainingAudit": {
+    "root": [
+      "esbuild",
+      "next",
+      "proxy-addr",
+      "sharp",
+      "source-map-js"
+    ],
+    "server": [
+      "ip-address",
+      "proxy-addr"
+    ]
+  },
+  "rollback": "Restore prior lockfiles and npm ci under Node22; retained pre-task installed dependencies at /tmp/anonyproof-T-16-dependency-backup. No API changes or data migration."
+}

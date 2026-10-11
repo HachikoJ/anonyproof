@@ -1,0 +1,442 @@
+{
+  "fixtureOnly": true,
+  "restartCount": 1,
+  "restarting": false,
+  "armed": [],
+  "dropped": [
+    "user_comment",
+    "admin_comment"
+  ],
+  "counts": {
+    "feedbacks": 4,
+    "feedback_comments": 7,
+    "notifications": 6,
+    "request_idempotency": 4
+  },
+  "initialCounts": {
+    "feedbacks": 4,
+    "feedback_comments": 3,
+    "notifications": 2,
+    "request_idempotency": 0
+  },
+  "requests": [
+    {
+      "sequence": 1,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 2,
+      "method": "POST",
+      "route": "identity",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 3,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 4,
+      "method": "POST",
+      "route": "identity",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 5,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 6,
+      "method": "POST",
+      "route": "identity",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 7,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 8,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 9,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 10,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 11,
+      "method": "PUT",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 12,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 13,
+      "method": "POST",
+      "route": "user_comment",
+      "action": "user_comment",
+      "status": 200,
+      "keyHash": "ed8d9702845652086c20ec9878c76a8f187fe6ae006b188f389e34c2df326d8b",
+      "acceptedId": 4,
+      "dropped": true,
+      "databaseCommitted": true,
+      "dropMode": "committed-success-body-truncated"
+    },
+    {
+      "sequence": 14,
+      "method": "POST",
+      "route": "user_comment",
+      "action": "user_comment",
+      "status": 200,
+      "keyHash": "ed8d9702845652086c20ec9878c76a8f187fe6ae006b188f389e34c2df326d8b",
+      "acceptedId": 4,
+      "dropped": false,
+      "databaseCommitted": true
+    },
+    {
+      "sequence": 15,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 16,
+      "method": "POST",
+      "route": "user_comment",
+      "action": "user_comment",
+      "status": 200,
+      "keyHash": "351349b61462b7ce850d570a0fad294d58acc6062325ca47bd22ca76ec222404",
+      "acceptedId": 5,
+      "dropped": false,
+      "databaseCommitted": true
+    },
+    {
+      "sequence": 17,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 18,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 19,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 20,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 21,
+      "method": "GET",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 22,
+      "method": "POST",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 23,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 24,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 25,
+      "method": "GET",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 26,
+      "method": "GET",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 27,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 28,
+      "method": "PUT",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 29,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 30,
+      "method": "POST",
+      "route": "admin_comment",
+      "action": "admin_comment",
+      "status": 200,
+      "keyHash": "ff0a10526337686f0b3d573eedcb52b5ab52a87007c879df7960fb48523636b6",
+      "acceptedId": 6,
+      "dropped": true,
+      "databaseCommitted": true,
+      "dropMode": "committed-success-body-truncated"
+    },
+    {
+      "sequence": 31,
+      "method": "POST",
+      "route": "admin_comment",
+      "action": "admin_comment",
+      "status": 200,
+      "keyHash": "ff0a10526337686f0b3d573eedcb52b5ab52a87007c879df7960fb48523636b6",
+      "acceptedId": 6,
+      "dropped": false,
+      "databaseCommitted": true
+    },
+    {
+      "sequence": 32,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 33,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 34,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 35,
+      "method": "POST",
+      "route": "admin_comment",
+      "action": "admin_comment",
+      "status": 200,
+      "keyHash": "1e807163df43b2ba371a7547cf80b2357a8e79695a6cdf02331a3c7ee2f774b3",
+      "acceptedId": 7,
+      "dropped": false,
+      "databaseCommitted": true
+    },
+    {
+      "sequence": 36,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 37,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 38,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 39,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 40,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 41,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 42,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 43,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 44,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 45,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 46,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 47,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 48,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 49,
+      "method": "GET",
+      "route": "admin_read_or_other",
+      "status": 401,
+      "dropped": false
+    },
+    {
+      "sequence": 50,
+      "method": "POST",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 51,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 52,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 53,
+      "method": "GET",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 54,
+      "method": "GET",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 55,
+      "method": "GET",
+      "route": "public_or_user_read",
+      "status": 200,
+      "dropped": false
+    },
+    {
+      "sequence": 56,
+      "method": "POST",
+      "route": "admin_read_or_other",
+      "status": 200,
+      "dropped": false
+    }
+  ]
+}

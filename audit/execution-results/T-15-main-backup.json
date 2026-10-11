@@ -1,0 +1,18 @@
+{
+  "backup": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T15-main-backup-w42uz112",
+  "sourceHead": "be05ea4e2229ee5f92ba662fb341e5ff2b133e77",
+  "changedLockPaths": [
+    "",
+    "node_modules/@next/env",
+    "node_modules/@next/swc-darwin-arm64",
+    "node_modules/@next/swc-darwin-x64",
+    "node_modules/@next/swc-linux-arm64-gnu",
+    "node_modules/@next/swc-linux-arm64-musl",
+    "node_modules/@next/swc-linux-x64-gnu",
+    "node_modules/@next/swc-linux-x64-musl",
+    "node_modules/@next/swc-win32-arm64-msvc",
+    "node_modules/@next/swc-win32-x64-msvc",
+    "node_modules/next"
+  ],
+  "unchangedServerLock": true
+}

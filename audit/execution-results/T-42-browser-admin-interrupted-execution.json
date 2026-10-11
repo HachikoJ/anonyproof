@@ -1,0 +1,9 @@
+{
+  "fixtureOnly": true,
+  "countAsPassed": false,
+  "source": "output/playwright/T-42-admin-T23-result.txt",
+  "sourceSha256": "3c70d745b81c4519f1f572cb4e16389cc88388853ed3d6f23103124af2387b83",
+  "observedOutput": "No Result; output reports a confirm modal. Original later notification selector .notification-panel does not match actual .admin-notification-panel.",
+  "resolution": "Dialog was handled in the live browser; a separate completed T-23-restart-flow independently checked all three admin mutation events and the 7-comment UI, then performed actual restart/session cleanup/relogin/logout.",
+  "notClaimed": "Unreturned assertions from the interrupted combined flow are not counted as passed. Original raw output is retained in output/playwright, with its synthetic password excluded from public evidence."
+}

@@ -1,0 +1,1 @@
+Native browser: feedback/comment/status each HTTP500 -> same retained draft HTTP200. SQLite: feedback1/comment1/notices3/update_audit1; all sensitive fields authenticated storage version1. No Base64 success or partial fault writes.

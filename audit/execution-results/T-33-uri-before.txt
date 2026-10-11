@@ -1,0 +1,33 @@
+TAP version 13
+# Subtest: T-33 malformed route parameters return 400 without persisting the raw business marker to stderr
+not ok 1 - T-33 malformed route parameters return 400 without persisting the raw business marker to stderr
+  ---
+  duration_ms: 672.662125
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:5:1981'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(!service.output().includes('T33-uri-marker-992'))
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-33.test.ts:117:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 887.492666

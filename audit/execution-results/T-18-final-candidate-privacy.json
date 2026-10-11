@@ -1,0 +1,14 @@
+{
+  "task": "T-18",
+  "head": "5adf8a22fb57050824ad34d19e3e0e355adc47b6",
+  "base": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb",
+  "queriedAtUtc": "2026-10-09T23:16:23.281178+00:00",
+  "trackedFiles": 861,
+  "changedPaths": 386,
+  "historyBlobsScanned": 450,
+  "forbiddenPaths": [],
+  "credentialPatternFindings": [],
+  "formattedRecoveryCodeAuditPaths": [],
+  "scope": "Tracked filenames and specified private-key/token/access-key patterns in new history blobs; current changed audit recovery-code syntax. Does not prove absence of every secret syntax.",
+  "safeForTheseChecks": true
+}

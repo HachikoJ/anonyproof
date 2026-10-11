@@ -1,0 +1,5 @@
+{
+  "allowed": "http://127.0.0.1:53395",
+  "sameSiteDenied": "http://127.0.0.1:53396",
+  "crossSiteDenied": "http://localhost:53396"
+}

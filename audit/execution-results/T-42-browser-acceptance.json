@@ -1,0 +1,350 @@
+{
+  "task": "T-42",
+  "fixtureOnly": true,
+  "capturedAtUtc": "2026-10-09T12:19:17.869Z",
+  "status": "Local browser acceptance passed for the explicitly listed checks; task closure and remote/deployment gates remain with main agent.",
+  "execution": {
+    "browser": "Independent terminal Playwright browser explicitly authorized by user",
+    "origin": "http://127.0.0.1:3044",
+    "backend": "Local synthetic formal fixture on loopback:4000",
+    "harness": "tests/fix/T-42.browser.ts",
+    "productionTouched": false
+  },
+  "checkTotals": {
+    "feedbackT42": 10,
+    "userCommentT42": 7,
+    "adminCommentT42": 2,
+    "t42Total": 19,
+    "supportingT33Notice": 1,
+    "sharedT23Restart": 6
+  },
+  "feedback": {
+    "task": "T-42",
+    "action": "feedback",
+    "fixtureOnly": true,
+    "checks": [
+      {
+        "name": "T33 notice before submit",
+        "pass": true
+      },
+      {
+        "name": "drop armed",
+        "pass": true
+      },
+      {
+        "name": "real committed lost response",
+        "pass": true
+      },
+      {
+        "name": "failure keeps draft",
+        "pass": true
+      },
+      {
+        "name": "pending storage only key/action/target",
+        "pass": true
+      },
+      {
+        "name": "edited failure no mutation/no new key",
+        "pass": true
+      },
+      {
+        "name": "reload does not preserve draft",
+        "pass": true
+      },
+      {
+        "name": "reload changed body conflict409 same key",
+        "pass": true
+      },
+      {
+        "name": "reload unchanged retry same record/counts",
+        "pass": true
+      },
+      {
+        "name": "dialog shows original ID",
+        "pass": true
+      },
+      {
+        "name": "success removes pending key",
+        "pass": true
+      }
+    ],
+    "before": {
+      "feedbacks": 4,
+      "feedback_comments": 3,
+      "notifications": 2,
+      "request_idempotency": 0
+    },
+    "after": {
+      "feedbacks": 5,
+      "feedback_comments": 3,
+      "notifications": 3,
+      "request_idempotency": 1
+    },
+    "acceptedId": "912018aa-63e4-487b-a2f2-0887825d973e",
+    "privacyNotice": "提交前检查\n删去姓名、电话、住址等身份信息\n区分亲历事实与转述内容\n保留时间、地点和可核实细节\n\n无需实名；运营者可关联本机记录，服务器与获授权管理员可读取内容。访问与限流日志保留来源 IP 7 天、浏览器家族或机器人分类及路由模板，不保存完整浏览器信息、查询参数或含业务编号的路径；处理说明、评论与操作审计不保存管理员 IP。活动 IP 黑名单按到期或人工取消规则保留，因此不等于不可追踪的完全匿名。",
+    "events": [
+      {
+        "sequence": 10,
+        "method": "POST",
+        "route": "feedback",
+        "action": "feedback",
+        "status": 200,
+        "keyHash": "1cb237a5c51eac6cc626ff8d0a20d28ace282277da2da3d93dc02692dd8f929d",
+        "acceptedId": "912018aa-63e4-487b-a2f2-0887825d973e",
+        "dropped": true,
+        "databaseCommitted": true
+      },
+      {
+        "sequence": 15,
+        "method": "POST",
+        "route": "feedback",
+        "action": "feedback",
+        "status": 409,
+        "keyHash": "1cb237a5c51eac6cc626ff8d0a20d28ace282277da2da3d93dc02692dd8f929d",
+        "dropped": false
+      },
+      {
+        "sequence": 20,
+        "method": "POST",
+        "route": "feedback",
+        "action": "feedback",
+        "status": 200,
+        "keyHash": "1cb237a5c51eac6cc626ff8d0a20d28ace282277da2da3d93dc02692dd8f929d",
+        "acceptedId": "912018aa-63e4-487b-a2f2-0887825d973e",
+        "dropped": false,
+        "databaseCommitted": true
+      }
+    ],
+    "resultSource": "output/playwright/T-42-feedback-result.txt",
+    "resultSourceSha256": "c0ca1141d87b47ad0a3b28b99c39461bc6c6271ebcd8224338c57247442a0a0a",
+    "run": "run1; original committed response lost before headers",
+    "networkSource": "T-42-browser-run1-network.json",
+    "flow": "T-42-browser-feedback-flow.js"
+  },
+  "userComment": {
+    "task": "T-42",
+    "action": "user_comment",
+    "fixtureOnly": true,
+    "checks": [
+      {
+        "name": "user comment committed before loss",
+        "pass": true
+      },
+      {
+        "name": "comment draft kept",
+        "pass": true
+      },
+      {
+        "name": "user retry same key/id and no new counts",
+        "pass": true
+      },
+      {
+        "name": "UI one copy after replay",
+        "pass": true
+      },
+      {
+        "name": "storage failure prevents network and DB write",
+        "pass": true
+      },
+      {
+        "name": "restored storage uses original unsent key",
+        "pass": true
+      },
+      {
+        "name": "all UI comments unique",
+        "pass": true
+      }
+    ],
+    "before": {
+      "feedbacks": 4,
+      "feedback_comments": 3,
+      "notifications": 2,
+      "request_idempotency": 0
+    },
+    "after": {
+      "feedbacks": 4,
+      "feedback_comments": 5,
+      "notifications": 4,
+      "request_idempotency": 2
+    },
+    "events": [
+      {
+        "sequence": 13,
+        "method": "POST",
+        "route": "user_comment",
+        "action": "user_comment",
+        "status": 200,
+        "keyHash": "ed8d9702845652086c20ec9878c76a8f187fe6ae006b188f389e34c2df326d8b",
+        "acceptedId": 4,
+        "dropped": true,
+        "databaseCommitted": true,
+        "dropMode": "committed-success-body-truncated"
+      },
+      {
+        "sequence": 14,
+        "method": "POST",
+        "route": "user_comment",
+        "action": "user_comment",
+        "status": 200,
+        "keyHash": "ed8d9702845652086c20ec9878c76a8f187fe6ae006b188f389e34c2df326d8b",
+        "acceptedId": 4,
+        "dropped": false,
+        "databaseCommitted": true
+      },
+      {
+        "sequence": 16,
+        "method": "POST",
+        "route": "user_comment",
+        "action": "user_comment",
+        "status": 200,
+        "keyHash": "351349b61462b7ce850d570a0fad294d58acc6062325ca47bd22ca76ec222404",
+        "acceptedId": 5,
+        "dropped": false,
+        "databaseCommitted": true
+      }
+    ],
+    "resultSource": "output/playwright/T-42-user-comment-result-final.txt",
+    "resultSourceSha256": "0967d2ed258e1caa437572fbd4873d7f11ccb1268e2a50c25f3f3e55e32cabb1",
+    "run": "run2; committed-success-body-truncated",
+    "flow": "T-42-browser-user-comment-flow.js"
+  },
+  "adminComment": {
+    "checks": [
+      {
+        "name": "admin actual lost-response retry identical",
+        "pass": true
+      },
+      {
+        "name": "explicit separate action only one new comment",
+        "pass": true
+      }
+    ],
+    "before": {
+      "feedbacks": 4,
+      "feedback_comments": 5,
+      "notifications": 4,
+      "request_idempotency": 2
+    },
+    "after": {
+      "feedbacks": 4,
+      "feedback_comments": 7,
+      "notifications": 6,
+      "request_idempotency": 4
+    },
+    "events": [
+      {
+        "sequence": 30,
+        "method": "POST",
+        "route": "admin_comment",
+        "action": "admin_comment",
+        "status": 200,
+        "keyHash": "ff0a10526337686f0b3d573eedcb52b5ab52a87007c879df7960fb48523636b6",
+        "acceptedId": 6,
+        "dropped": true,
+        "databaseCommitted": true,
+        "dropMode": "committed-success-body-truncated"
+      },
+      {
+        "sequence": 31,
+        "method": "POST",
+        "route": "admin_comment",
+        "action": "admin_comment",
+        "status": 200,
+        "keyHash": "ff0a10526337686f0b3d573eedcb52b5ab52a87007c879df7960fb48523636b6",
+        "acceptedId": 6,
+        "dropped": false,
+        "databaseCommitted": true
+      },
+      {
+        "sequence": 35,
+        "method": "POST",
+        "route": "admin_comment",
+        "action": "admin_comment",
+        "status": 200,
+        "keyHash": "1e807163df43b2ba371a7547cf80b2357a8e79695a6cdf02331a3c7ee2f774b3",
+        "acceptedId": 7,
+        "dropped": false,
+        "databaseCommitted": true
+      }
+    ],
+    "resultSource": "output/playwright/T-23-restart-result.txt",
+    "resultSourceSha256": "5d0ad628ae45685371fcba491e2d39188c77d8480f38980a48c7a4f30020ea62",
+    "run": "run2; committed-success-body-truncated",
+    "verificationFlow": "T-23-browser-restart-flow.js",
+    "interruptedOriginalFlow": "T-42-browser-admin-T23-interrupted-flow.js"
+  },
+  "finalCrossCheck": {
+    "liveState": "T-42-browser-run2-state.json",
+    "network": "T-42-browser-run2-network.json",
+    "networkMatchesLiveState": true,
+    "readOnlySqliteCounts": {
+      "feedbacks": 4,
+      "feedback_comments": 7,
+      "notifications": 6,
+      "request_idempotency": 4
+    },
+    "sqliteMatchesLiveState": true,
+    "restartCount": 1
+  },
+  "failedAttempts": [
+    {
+      "source": "T-42-browser-run1-user-comment-timeout.txt",
+      "networkSource": "T-42-browser-run1-network.json",
+      "countAsPassed": false,
+      "reason": "Run1 closed a socket before headers; Chromium automatically retried user POST. Two HTTP 200 events share the same key hash and accepted ID, with no duplicate DB row; the expected UI error never appeared and locator timed out.",
+      "resolution": "Only the fixture loss mechanism changed: forward real success headers, advertise complete Content-Length, send one byte, then close the socket. A fresh synthetic DB was used for run2 user/admin acceptance. Run1 feedback acceptance remains intact."
+    },
+    {
+      "fixtureOnly": true,
+      "countAsPassed": false,
+      "source": "output/playwright/T-42-admin-T23-result.txt",
+      "sourceSha256": "3c70d745b81c4519f1f572cb4e16389cc88388853ed3d6f23103124af2387b83",
+      "observedOutput": "No Result; output reports a confirm modal. Original later notification selector .notification-panel does not match actual .admin-notification-panel.",
+      "resolution": "Dialog was handled in the live browser; a separate completed T-23-restart-flow independently checked all three admin mutation events and the 7-comment UI, then performed actual restart/session cleanup/relogin/logout.",
+      "notClaimed": "Unreturned assertions from the interrupted combined flow are not counted as passed. Original raw output is retained in output/playwright, with its synthetic password excluded from public evidence."
+    }
+  ],
+  "safeFlowCopies": [
+    {
+      "source": "output/playwright/T-42-feedback-flow.js",
+      "target": "T-42-browser-feedback-flow.js",
+      "sourceSha256": "e61ebf65c6b93eef9b67ca34c6fdb328c457cc6f5fdf20690b0343d51be781fb",
+      "passwordLiteralReplaced": false,
+      "incompleteOriginalExecution": false
+    },
+    {
+      "source": "output/playwright/T-42-user-comment-flow.js",
+      "target": "T-42-browser-user-comment-flow.js",
+      "sourceSha256": "cefe5bfbc2d70346356eff9896a36b9965ef210f4185809114d17e05d85cd21c",
+      "passwordLiteralReplaced": false,
+      "incompleteOriginalExecution": false
+    },
+    {
+      "source": "output/playwright/T-42-admin-T23-flow.js",
+      "target": "T-42-browser-admin-T23-interrupted-flow.js",
+      "sourceSha256": "e2f8e3e80a239358d5febbe640d40c8354bbca17d5d7ab438da8a728049924f3",
+      "passwordLiteralReplaced": true,
+      "incompleteOriginalExecution": true
+    },
+    {
+      "source": "output/playwright/T-23-restart-flow.js",
+      "target": "T-23-browser-restart-flow.js",
+      "sourceSha256": "2205df9da3a43f185d8e6fcbea772aba0315a15e3a745f85359a409dfa484c90",
+      "passwordLiteralReplaced": true,
+      "incompleteOriginalExecution": false
+    }
+  ],
+  "screenshots": [
+    "T-42-feedback-replay-success.png",
+    "T-42-user-comments-final.png",
+    "T-42-admin-final.png"
+  ],
+  "limits": [
+    "Only these actual returned assertions and matching network/SQLite evidence are counted as passing.",
+    "Run1 and run2 are separate synthetic databases; their counts are not added together.",
+    "No raw Idempotency-Key, Cookie, recovery code, password or content/session/proxy key is stored in these generated evidence files.",
+    "Identity B access isolation was not newly browser-tested in these flows; existing T-42 backend tests remain the evidence for that case.",
+    "No production deploy, real-data migration or new remote CI run is implied.",
+    "Interrupted admin flow did not return a completed Result; its unreturned draft/edit assertions are not claimed as passed."
+  ]
+}

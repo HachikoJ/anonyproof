@@ -1,0 +1,1885 @@
+{
+  "date": "2026-10-08",
+  "reviewedCommit": "fb978d5cdf311559991aa635fe9190b88d7a494d",
+  "sourcePlanSha256": "2a246d3c7ac7520948df392d0a42a73d2dcbe2e5686c25f12879ae0cccee3ce7",
+  "scope": "原43任务的执行验收对应与当前授权/依赖缺口；不新增代码审查问题、不复跑已通过门禁、不声称全目标完成",
+  "counts": {
+    "已完成": 23,
+    "待办": 13,
+    "已阻塞": 5,
+    "进行中": 2
+  },
+  "latestCombinedTestResults": {
+    "pass": 123,
+    "fail": 0,
+    "skip": 1,
+    "skipBelongsTo": "T-34"
+  },
+  "productSourceEqualsTestedCommit": "dac38cea30fdbac0c2d23ec6a879bd76cd1c51bf",
+  "readyForImplementationWithoutNewConfirmationOrExternalChange": [],
+  "tasks": [
+    {
+      "id": "T-01",
+      "title": "公开演示后台与访客数据权限隔离",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P0（审查第 1 条）；优先级：A；工作量：L；前置依赖：T-19；已批准范围的本地权限/交互验收见第10节；未部署，T-02真实硬隔离仍待处理。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/demo.ts:4`公开演示密码，`server/index.ts:92`返回密码，登录接口接受它；`adminRecordScope()/adminListScope()`在演示模式仍让公开管理员读取实际访客正文及访问日志。2026-10-03线上登录和读取成功。",
+      "acceptanceCriteria": "两个独立访客A/B：公开管理员只能看合成数据或A的隔离沙箱；直接请求B的ID、通知、评论、日志均拒绝；演示UI仅提供合成案例/沙箱操作，直接向演示API发送任意正文不能作为真实材料接收入库；公开Cookie不能获得正式权限；正式模式真实管理员可完成正常处理。所有路由alias有同样结果，不能只靠UI隐藏入口验收。",
+      "plannedVerification": "`tests/fix/T-01.test.ts`双身份/公开与正式管理员权限矩阵；浏览器检查允许的演示流程；线上仅在批准发布后用预先批准的合成测试数据做必要补验。",
+      "latestTestResults": {
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-01: public demo isolates two identities, immutable templates and all legacy/private paths",
+          "T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies"
+        ]
+      },
+      "actualVerification": "2通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "A/B公开管理员归属、旧real/clone拒读、模板不可修改、原始日志403；固定示例全UI及独立库核对通过。",
+      "remainingLimitsOrBlocker": "未发布；库/凭证硬隔离与历史清除分别仍属T-02/T-32。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-01-browser.txt",
+          "sha256": "265cb3f66d60932382bbb0c85365f4c166490de4885153acfe96d42d78a1c9a9"
+        },
+        {
+          "path": "audit/execution-results/T-01-browser-db.txt",
+          "sha256": "d0e090ace9746add15db8087b02748fa9ba0e187e36503f20cc25eb63fb46fb9"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-02",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-02",
+      "title": "正式/演示部署硬隔离和失败关闭",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办；原始严重度：P0（审查第 1 条）；优先级：A；工作量：L；前置依赖：T-01、T-19；Q-01方向已确认，线上实施另需具体配置/发布授权。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`.env.example`默认demo=1、DEPLOY线上配置demo=1；同一套业务与DB可切换，demo开关决定公开密码及数据范围。误配置可把真实库交给公开演示管理员。",
+      "acceptanceCriteria": "配置矩阵中“正式+demo模式”“正式+公开演示密码”“错误/相同DB或密钥配置”按约定失败退出；合法独立demo和正式实例各自启动；demo Cookie/恢复码无法读正式实例；正式`/api/demo/config`不返回密码；部署前后库的归属和计数有证据。",
+      "plannedVerification": "`tests/fix/T-02.test.ts`两实例配置/凭证矩阵；发布前一致性快照与恢复测试；批准发布后检查正式配置响应、Cookie属性和隔离数据。未取得部署授权只完成本地部分，不能标整项完成。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "未实施role/DB归属方案；无T-02配置矩阵通过记录。",
+      "remainingLimitsOrBlocker": "等待已展示INSTANCE_ROLE/绝对DB/不可改角色/错误key与密码失败关闭方案确认；实际实例与发布另需授权。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-01",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "Q-01",
+          "state": "方向已确认",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [
+        "已展示本地角色/数据库归属与失败关闭方案的具体确认",
+        "实际独立实例/配置/发布授权"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-03",
+      "title": "正文与密钥不再同库存储",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P0（审查第 2 条）；优先级：A；工作量：L；前置依赖：T-12、T-19；Q-02方向和具体加密/兼容/恢复方案均已批准。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`app/page.tsx:337–342`发送originalContent；`server/index.ts:880–883`明文落库；`useCrypto.encrypt()`约176–206行把raw key与IV同密文封装。DB读权限足以还原全文。",
+      "acceptanceCriteria": "使用唯一合成标记分别提交正文、评论、处理说明和通知；扫描新库、WAL、SQL导出、日志均无这些明文或内容密钥。仅数据库副本无法解密；授权服务用正确独立密钥可读回原文，错误/缺失密钥拒绝启动或受控失败，绝不改写为空文/明文。每条加密使用唯一随机nonce和认证标签，篡改nonce/密文/tag、未知版本均明确失败。重启、找回、管理员处理、既有跨页检索/通知定位功能保持正确。新旧格式识别明确，旧数据风险只由T-32关闭。",
+      "plannedVerification": "`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-03.test.ts`覆盖已知向量、唯一nonce、篡改/错误密钥、四类内容读写、DB/WAL/导出和日志扫描；浏览器提交/找回/处理全过程。记录密钥配置位置、数据库与密钥分别恢复演练；丢失密钥时密文不可恢复，不能退回Base64或静默成功。",
+      "latestTestResults": {
+        "pass": 14,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector",
+          "T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips",
+          "T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back",
+          "T-03 module: explicit old-format reader compatibility and demo keylessness",
+          "T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags",
+          "T-03 module: missing, noncanonical and wrong-length key configuration fails closed",
+          "T-03 module: persisted key marker rejects wrong/lost key without overwriting marker",
+          "T-03 module: markerless existing ciphertext cannot be adopted with the wrong key",
+          "T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist",
+          "T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker",
+          "T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore",
+          "T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs",
+          "T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback",
+          "T-03 backup guide: real sqlite3 readonly online snapshot includes committed WAL and restores using a separate fixture key"
+        ]
+      },
+      "actualVerification": "14通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "14项AES-GCM向量/nonce/AAD/篡改/版本/错失key/四类内容HTTP及DB-WAL-dump-log扫描、实际SQLite在线快照独立key恢复通过；原生浏览器正文/评论/状态/通知/找回及独立解密核对通过。",
+      "remainingLimitsOrBlocker": "仅新正式写入及兼容reader关闭；旧明文/旧同库key由T-32处理，未迁移真实库/未发布。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-03-browser-verification.txt",
+          "sha256": "e64d8607b5a6307b69c07651de9d69466ea6db80714584616c0b62cbe2ab2f92"
+        },
+        {
+          "path": "audit/execution-results/T-03-browser-db-assert.txt",
+          "sha256": "92f16d099c4d37594df57f4cd716e04e3df24453fac461f2a21828e5cc4ffd00"
+        },
+        {
+          "path": "audit/execution-results/T-03-backup-guide-regressions.txt",
+          "sha256": "dfd1118def598f46b19ef423033bd9048ae25b32f66f8d95601e969d6ad26770"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-12",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "Q-02",
+          "state": "方向已确认",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-04",
+      "title": "取消“加密失败则Base64成功提交”",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P0（审查第 2 条）；优先级：A；工作量：S；前置依赖：T-03；Q-02方向已确认。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`app/hooks/useCrypto.ts:166–217 encrypt()`在WebCrypto缺失或异常时把正文Base64后照常提交，用户看到成功而实际无加密。",
+      "acceptanceCriteria": "注入服务器加密失败/缺失密钥，反馈、评论、状态和通知均不部分写入且响应非2xx，草稿保留；恢复正确密钥后正常提交成功；旧Base64值不能被当成已安全加密的数据。若兼容期保留客户端encrypt，注入subtle/generateKey/encrypt/export失败也不得产生伪加密成功；若该步骤由T-03正式退役，浏览器缺少WebCrypto仍须走实际服务器加密，检查数据库证明而非强制禁用正常提交。",
+      "plannedVerification": "`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-04.test.ts`故障注入/伪加密格式/错误传播及表计数；浏览器受控失败后观察网络、提示和草稿，正常提交作对照。验收从“浏览器必须加密”改为“存储必须实际加密且失败关闭”，理由为用户明确选择服务器静态加密；原始问题及编号不变。",
+      "latestTestResults": {
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-04: actual submit hook returns only the compatibility marker with no browser WebCrypto",
+          "T-04: real cipher failures roll back feedback/comment/status and later required notifications"
+        ]
+      },
+      "actualVerification": "2通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "无WebCrypto提交hook仅兼容marker；真实cipher及后续通知故障500、完整快照不变；原生浏览器三次500保留草稿→解除200，库v1通过。",
+      "remainingLimitsOrBlocker": "客户端旧未调用decrypt资产保留；旧Base64兼容字段不作为存储安全，历史包仍属T-32。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-04-browser-db-assert.txt",
+          "sha256": "311155cc9db015b64e31282f3c77ee2fd767d0efd2f0ee736a10892857ca8d14"
+        },
+        {
+          "path": "audit/execution-results/T-04-browser-network.json",
+          "sha256": "5698d7a4cc14d3faa55891fdaae1a4a79a657ac44388d4bdb3d304a412640ceb"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-03",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "Q-02",
+          "state": "方向已确认",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-05",
+      "title": "身份签发限流和资源上限",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 3 条）；优先级：A；工作量：M；前置依赖：T-19。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts` 的 `/api/identity`、`issueClientIdentity()`、`issueIdentitySession()`（约 500、536、810 行）没有请求限流；`server/demo.ts:520 cloneDemoDataForDevice()` 的 3000 上限只限制副本，身份表仍可无限增长。无 Cookie 请求反复签发身份会持续写库。",
+      "acceptanceCriteria": "隔离环境中同一来源在配置窗口内达到阈值后得到 429 和 `Retry-After`；被拒绝请求不会增加身份/session/副本计数；窗口结束后恢复；同一安装密钥重复初始化仍得到同一身份。到副本上限后不再复制，有限合法请求不返回 500。",
+      "plannedVerification": "`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-05.test.ts`；测试设置小阈值，断言 200/429、header 和 SQLite 三类计数。只做本地有限次数请求，禁止线上压力测试。",
+      "latestTestResults": {
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window",
+          "T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data",
+          "T-05: default source admits ten then rejects eleventh; configurable one rejects second",
+          "T-05: zero clone allowance creates identities without copies and never returns 500",
+          "T-05: invalid identity or clone capacity configuration fails startup explicitly",
+          "T-05: restarting with the same fixture DB cannot reset durable identity capacity"
+        ]
+      },
+      "actualVerification": "6通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "来源429/Retry-After无Cookie、三类身份/副本快照不变；窗口后同安装key续接；默认10/阈值1、持久容量503、零副本和重启容量不重置通过。",
+      "remainingLimitsOrBlocker": "长期身份清理待T-25；身份GET写语义待T-26，不以限额替代生命周期或CSRF修复。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-06",
+      "title": "反馈提交限流与配额",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 3 条）；优先级：A；工作量：M；前置依赖：T-19、T-12。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:861 POST /api/feedback` 未挂载 `feedbackSubmitLimiter`。取得合法身份后可无限写反馈、统计和通知。",
+      "acceptanceCriteria": "身份和来源两种限额分别可触发；第一个超额请求为 429，反馈/通知/统计计数不变；窗口后能再次提交；无身份仍为 401。不同身份不能绕过同一来源限制。",
+      "plannedVerification": "`tests/fix/T-06.test.ts`（统一命令）；fixture 配置小阈值，以两身份和同一来源复现并读取测试库计数。",
+      "latestTestResults": {
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-06: identity quota spans submissions and caller-supplied device IDs cannot select another quota",
+          "T-06: source quota cannot be evaded by changing identities or untrusted forwarded headers",
+          "T-06: default quota admits ten and blocks eleventh, boundary one is configurable",
+          "T-06: invalid source/identity/window configuration fails startup explicitly"
+        ]
+      },
+      "actualVerification": "4通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "身份与来源分别429、换deviceId403、跨身份不能换quota、伪造XFF不换本地受控来源、五表快照不变、窗口恢复/无身份401、配置拒启通过。",
+      "remainingLimitsOrBlocker": "生产真实代理来源仍待T-24；本地TRUST_PROXY=0测试不证明线上chain。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-12",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-07",
+      "title": "用户评论限流",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 3 条）；优先级：A；工作量：S；前置依赖：T-19、T-13。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:1227 POST /api/feedback/:feedbackId/comments` 只有内容长度和归属检查，无法防止同一身份无限刷评论/管理员通知。",
+      "acceptanceCriteria": "超额返回 429且评论/通知计数不变；跨身份评论返回 401/403；正常合法评论成功；窗口后恢复。攻击者更换反馈 ID 不能绕过身份限额。",
+      "plannedVerification": "`tests/fix/T-07.test.ts`；使用同一身份两条反馈和另一身份，断言响应与测试库计数。",
+      "latestTestResults": {
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-07: user quota spans feedback IDs, unauthorized identities stay rejected and no comments/notices appear on 429",
+          "T-07: source quota spans identities and changing untrusted XFF cannot reset it",
+          "T-07: default identity quota is twenty; threshold one can be configured",
+          "T-07: existing formal-admin access to the user-comment route is preserved and spans target IDs",
+          "T-07: invalid limiter configuration fails startup by its name"
+        ]
+      },
+      "actualVerification": "5通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "同身份跨两反馈配额、跨身份/未登录拒绝、429无评论/通知、来源跨身份配额/窗口恢复、默认20与正式管理员兼容通过。",
+      "remainingLimitsOrBlocker": "不改变管理员另一路回复契约；真实proxy另验。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-13",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-08",
+      "title": "恢复码尝试限流",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 3 条，安全子审计标 P2）；优先级：A；工作量：S；前置依赖：T-19。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:823 POST /api/identity/recover` 可无限在线尝试，成功时会写新一年会话、重新绑定安装密钥。",
+      "acceptanceCriteria": "超过失败阈值返回 429；失败不签发 Cookie、不增加 session、不改变安装密钥归属；合法码可在允许窗口恢复；失败响应不透露目标身份是否存在；多个不同无效码不能绕过来源限额。",
+      "plannedVerification": "`tests/fix/T-08.test.ts`；断言 response、Set-Cookie 缺失和表内容；测试码使用 fixture 生成。",
+      "latestTestResults": {
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials",
+          "T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh",
+          "T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not",
+          "T-08: invalid recovery limiter values reject startup by the offending configuration name"
+        ]
+      },
+      "actualVerification": "4通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "不同无效码共享额度，429无Cookie/session/install-key归属变动；成功也计数，畸形/超大JSON先限流、窗口后相同身份恢复、非法配置拒启通过。",
+      "remainingLimitsOrBlocker": "恢复码被动轮换问题仍属T-21；限流不证明R1重启后永不失效。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-09",
+      "title": "成功管理员登录限流",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 3 条）；优先级：A；工作量：S；前置依赖：T-19。验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:182` 登录尝试限制只累积失败，成功即删除失败计数。公开演示密码下可以无限成功登录并生成 Map session。",
+      "acceptanceCriteria": "两个 alias 共用限额，交替调用不能绕过；正确密码重复登录超额为 429，不再增加 session；错误密码仍按原正式模式阈值拒绝；正常登录/注销/再次登录可用。",
+      "plannedVerification": "`tests/fix/T-09.test.ts`；测试会话存储可通过受控 fixture 或模块测试计数，禁止增加公开调试接口。",
+      "latestTestResults": {
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-09: both login aliases share successful and failed request quota",
+          "T-09: default source quota permits ten logins and rejects the eleventh without signing a session",
+          "T-09: malformed and oversized JSON consume quota before parsing; preflight does not",
+          "T-09: five wrong passwords retain the separate fifteen-minute production lock",
+          "T-09: the published demo password is also limited across aliases",
+          "T-09: invalid login limiter configuration rejects startup explicitly"
+        ]
+      },
+      "actualVerification": "6通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "两个login alias共桶、正确/错误密码均计数、429无新增session、注销后窗口恢复、旧5错/15分钟锁保留、JSON/preflight/demo/配置矩阵通过。",
+      "remainingLimitsOrBlocker": "未证明会话跨重启或内存容量，分别T-23/T-22。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-10",
+      "title": "访问统计从逐请求全表聚合改为有界聚合",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：T-19。隔离迁移/性能验收见第10节，未执行真实库迁移或发布。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/middleware/accessStats.ts:183 updateDailyStats()` 在每个响应 `finish` 后做 `COUNT/DISTINCT/AVG`，日期表达式使 created_at 索引难以用于限定范围；同步写和扫描占用 Node 主线程。",
+      "acceptanceCriteria": "固定输入日志的次数、唯一访客、bot/可疑次数与平均耗时和独立 SQL 结果一致；重复批处理不重复计数；进程重启后可续算；实际请求路径无全表聚合。基准预置 1万和10万条历史记录，各执行500个本地请求，记录 p95/事件循环延迟；10倍历史量不能造成业务 p95超过2倍，且不出现锁错误/5xx。",
+      "plannedVerification": "`tests/fix/T-10.test.ts` 验证数值与重启；`npx --no-install tsx tests/fix/T-10.bench.ts` 记录固定机器/Node/数据规模与耗时；用 `EXPLAIN QUERY PLAN` 留下新查询索引证据。不得把一次 curl 耗时当性能验收。",
+      "latestTestResults": {
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact",
+          "T-10: failed legacy migration rolls back added columns and remains retryable",
+          "T-10: runtime statistics failure preserves responses and atomic log/stat consistency"
+        ]
+      },
+      "actualVerification": "3通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "UTC/NULL均值/独立SQL/重启幂等/迁移与runtime故障回滚及covering索引通过；历史10k/100k各500请求全200，p95比0.755≤2。",
+      "remainingLimitsOrBlocker": "基准为固定Node22/单并发本地，不承诺生产吞吐；真实库迁移/日志保留待授权与T-11。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-10-bench.txt",
+          "sha256": "b26942c8f1862f905d35aaa5648043db99f4a348e10412b30d02f1a6efb2b93d"
+        },
+        {
+          "path": "audit/execution-results/T-10-summary.txt",
+          "sha256": "504382ca12bab7416e2f0f66dee5e64f3f7aecb24c92efddf34bb8e1a2caf615"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-11",
+      "title": "原始访问日志保留窗口和清理",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-04）；原始严重度：P1（审查第 4 条）；优先级：A；工作量：M；前置依赖：Q-04、T-10、T-19。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`server/utils/accessStats.ts:190 cleanupOldLogs()`没有调用方；access_logs/rate_limit_logs无限增长。日志清理独立于T-10查询性能。",
+      "acceptanceCriteria": "边界前/后的fixture只有过期原始记录被清除；执行两次第二次无多删；每日聚合不会因原始日志清理变成错误总量；重启调度仍存在；清理失败可记录且业务可用。实际库清理前后计数与批准范围一致。",
+      "plannedVerification": "`tests/fix/T-11.test.ts`注入时间和边界数据；迁移先dry-run列数量，再快照、确认、执行、检查计数和恢复副本。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "未执行清理/新增TTL测试；统计优化T-10及最新全测试不是原始日志保留验收。",
+      "remainingLimitsOrBlocker": "Q-04需确定IP/UA原始日志期限/聚合策略，再给实际dry-run计数/快照/具体删除确认。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "Q-04",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "T-10",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [
+        "实际资产dry-run、保留期和删除确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-12",
+      "title": "反馈入口 schema 校验",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 7 条）；优先级：A；工作量：M；前置依赖：T-19。当前类型/长度契约已验收，加密格式追加验收属于T-03。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:861–889` 只检查 truthy/category/identity相等，未使用 `server/utils/validation.ts`；UI 的10000字符上限可绕过。`originalContent` 类型错误可能在写库后 `substring()` 报错。",
+      "acceptanceCriteria": "一字符合法文本仍可提交；纯空白、null、数组、对象、数字、非法category、超过10000字符、过大密文字段均返回400/413且所有业务表计数不变；边界10000中文字符成功；畸形JSON返回统一JSON 400，不泄露堆栈；身份不匹配为403。未经选择的最小长度契约不被偷偷改变。",
+      "plannedVerification": "`tests/fix/T-12.test.ts` 采用输入矩阵和表计数；后续 T-03 修改格式时只补格式案例，不重复改变长度契约。",
+      "latestTestResults": {
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-12: feedback input matrix rejects before business writes"
+        ]
+      },
+      "actualVerification": "1通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "类型/空白/category/长度/cipher大小矩阵400/413且四业务表不变，1字/10000中文/Unicode escape通过，跨身份403、JSON无stack通过。",
+      "remainingLimitsOrBlocker": "未擅改最小文本长度；加密内容格式另由T-03覆盖。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-13",
+      "title": "评论入口类型与字节校验",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 7 条）；优先级：B；工作量：S；前置依赖：T-19。验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:1148 addFeedbackComment()` 直接 `content.trim()`，没有类型校验；合法/非法值响应不稳定。现有2–1000字符规则仅覆盖字符串长度。",
+      "acceptanceCriteria": "null/对象/数组/数字/空白/1字符/1001字符返回400；2字符和1000中文字符成功；失败无评论和通知；跨身份无权操作。前端超长输入被限制或给明确错误，不能仅由500兜底。",
+      "plannedVerification": "`tests/fix/T-13.test.ts` 覆盖用户/管理员入口及表计数；浏览器检查管理输入的1000字符边界。",
+      "latestTestResults": {
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-13: both comment routes validate types and preserve bounded UTF-8 text"
+        ]
+      },
+      "actualVerification": "1通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "两角色评论null/对象/数组/数字/空白/1字/1001字400且评论/通知不变，2字/1000中文读回和跨身份拒绝；真实浏览器1001字被限为1000并独立DB精确3000字节通过。",
+      "remainingLimitsOrBlocker": "浏览器证据是2026-10-07实际记录，未伪称本轮重新点击；最新后端矩阵再次通过。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-13-browser.txt",
+          "sha256": "63b5ba1052b922f3fe6dcda423c927bdaff957c91f1929798fe838d0396568e0"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-14",
+      "title": "处理说明长度上限和错误响应",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 7 条的字段校验缺口）；优先级：B；工作量：S；前置依赖：T-19。10000字符边界已获用户批准，验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:994` 状态入口只做说明类型降级和办结最少10字符，没有上限；`app/foorpynona/page.tsx:917` 也无maxLength。超长说明可入库、拖慢详情。",
+      "acceptanceCriteria": "现有合法状态流程全部通过；说明超过配置上限为400且状态/日志/通知不变；对象/数组不是静默变空；边界中文成功；9字符办结失败、10字符成功。",
+      "plannedVerification": "`tests/fix/T-14.test.ts`；浏览器检查计数/错误提示与后台响应一致。",
+      "latestTestResults": {
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-14: approved solution length/type boundary rejects before status/log/notification writes"
+        ]
+      },
+      "actualVerification": "1通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "非法类型/状态/10001原长度/9字办结400并业务-日志-通知不变；处理中省略说明、10字办结、10000中文读回通过；浏览器10000 maxlength/按钮状态及DB核对通过。",
+      "remainingLimitsOrBlocker": "旧浏览器fixture早于后端patch，其正例只支持UI边界；拒绝矩阵来自后来新进程，最新也通过。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-14-browser.txt",
+          "sha256": "9f6460dd8edc651fbf44043ef4225d53e32f916a18d5345f712eadb0e6803152"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-15",
+      "title": "Next.js已知漏洞升级",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 8 条，advisory为critical）；优先级：A；工作量：M；前置依赖：T-19。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "根 `package.json/package-lock.json` 的 `next@16.3.3` 当时命中 `GHSA-vcvr-r3jv-pc5j`（next/og ImageResponse RCE；审查报告称修复16.3.6以上，建议16.3.8）。当前无已证明可达的next/og入口。",
+      "acceptanceCriteria": "安装树和lock版本一致；该advisory不再影响选定版本；类型/构建通过；三页面及静态资源为200；API代理、管理员登录Cookie、用户身份和通知正常。升级失败能恢复旧依赖/旧构建，不能只回退源码保留新node_modules。",
+      "plannedVerification": "`npm ls next --depth=0`；`npm audit --omit=dev --json`；两项type-check和build；隔离前端浏览器执行首页→提交→我的记录→后台→访问统计smoke。保存advisory结果和版本。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "实际Next16.3.6树/锁一致、原GHSA-vcvr-r3jv-pc5j不再在audit报告；干净安装/build/type、三页面/10静态asset200、代理/Cookie/API、原生UI、真实旧构建回滚通过。",
+      "remainingLimitsOrBlocker": "新N-04六advisory独立未修；不以旧advisory已修证明现在Next全部安全，未部署。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-15-main-http-smoke.txt",
+          "sha256": "1d2afae0b369095549a55243d6ba2d388f991b6a8bcb40ee2fcea94b5b9ddd12"
+        },
+        {
+          "path": "audit/execution-results/T-15-browser-verification.txt",
+          "sha256": "f56918cbb8c276e7d6c56e41773430a97ed5da3172bcf659b1a0b9b70009b035"
+        },
+        {
+          "path": "audit/execution-results/T-15-rollback-rehearsal.txt",
+          "sha256": "26cee317b6324a051d2404f4ecf37b752a06d9e05641d44bb22020a0000a6678"
+        },
+        {
+          "path": "audit/execution-results/task-closure-dependencies.json",
+          "sha256": "f130a9346c2e6b8bf403740222b3b94b16190193fad6bc1c233eb74c87eb8fa7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-root-audit.json",
+          "sha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-server-audit.json",
+          "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-16",
+      "title": "HTTP解析/路由依赖漏洞修复",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 8 条，含high/moderate/low）；优先级：A；工作量：M；前置依赖：T-19。验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "两个依赖树中的 `path-to-regexp`、`qs`、`body-parser` 当时报告漏洞。根树示例：path-to-regexp8.3.0、qs6.15.0、body-parser2.2.2。两个lockfile不能只更新一个。",
+      "acceptanceCriteria": "两个lockfile不再命中上述advisory；安装树一致；正常/畸形JSON、重复查询参数、数组参数、超限body响应明确，服务存活；路由别名和身份归属测试通过。",
+      "plannedVerification": "两目录 `npm audit --omit=dev --json`、`npm ls express path-to-regexp body-parser qs`；`tests/fix/T-16.test.ts` 加有界输入案例，复用T-12/T-13的入口断言。",
+      "latestTestResults": {
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-16: root HTTP parser dependencies reject known malformed shapes",
+          "T-16: server HTTP parser dependencies reject known malformed shapes",
+          "T-16: actual backend routes and bounded HTTP parser failures preserve availability"
+        ]
+      },
+      "actualVerification": "3通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "两树qs6.16/body-parser2.3/path-to-regexp≥8.4且目标包无当前audit项；有界异常JSON/超大body/数组重复参数、aliases/归属、health存活通过。",
+      "remainingLimitsOrBlocker": "root范围外esbuild/next/sharp/source-map-js告警未修；不是audit all0。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        },
+        {
+          "path": "audit/execution-results/task-closure-dependencies.json",
+          "sha256": "f130a9346c2e6b8bf403740222b3b94b16190193fad6bc1c233eb74c87eb8fa7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-root-audit.json",
+          "sha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-server-audit.json",
+          "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-17",
+      "title": "server的ip-address依赖漏洞修复",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 8 条，advisory为moderate）；优先级：B；工作量：S；前置依赖：T-19。验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "server lockfile中的 `ip-address<=10.7.0` 当时报告IPv6分类/信任边界/长输入DoS问题。现有调用路径未证明可达。",
+      "acceptanceCriteria": "server安装树与lock一致；该advisory清除；IPv4/IPv6来源的路由限流回归通过；类型/启动通过。",
+      "plannedVerification": "`npm --prefix server audit --omit=dev --json`；`npm --prefix server ls ip-address express-rate-limit`；受控IPv4/IPv6限流测试。无法绑定IPv6时记录环境缺口，不声称已验证IPv6。",
+      "latestTestResults": {
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-17: patched IP classifications and malformed inputs preserve address-family boundaries",
+          "T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route"
+        ]
+      },
+      "actualVerification": "2通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "server ip-address10.7.1及目标告警清除；地址族/私有/畸形长输入断言、实际127.0.0.1与::1各第11次429并health200通过。",
+      "remainingLimitsOrBlocker": "该socket矩阵是隔离路由；产品限流由T-05..09验证，生产chain仍待T-24。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        },
+        {
+          "path": "audit/execution-results/task-closure-dependencies.json",
+          "sha256": "f130a9346c2e6b8bf403740222b3b94b16190193fad6bc1c233eb74c87eb8fa7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-root-audit.json",
+          "sha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-server-audit.json",
+          "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-18",
+      "title": "CI覆盖实际后端运行",
+      "taskStatus": "已阻塞",
+      "originalStatusLine": "已阻塞（代码/本地验收通过，实际GitHub Actions待push授权）；原始严重度：P1（审查第 8 条）；优先级：A；工作量：M；前置依赖：T-19。未满足远端验收，不标已完成。",
+      "auditVerdict": "已阻塞（部分本地通过）",
+      "originalProblem": "`.github/workflows/ci.yml` 只安装根依赖、type-check/build；`--ignore-scripts` 不会构建native模块；未安装server依赖/启动服务，所以后端坏了CI仍可能绿。",
+      "acceptanceCriteria": "CI执行根和server各自`npm ci`、校验安装树、两type-check、前端build、隔离后端smoke和已存在的修复测试；故意在临时分支/本地fixture破坏后端启动时检查必失败；无测试或runtime安装被静默跳过。新增fixture不得上传Cookie/测试密钥/真实数据库到artifact。",
+      "plannedVerification": "干净临时checkout按workflow命令运行；获授权push后保留一次实际CI链接和结果。未获push授权时可完成本地验证，但“实际CI验证”明确记为未完成，不能杜撰链接。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "两树clean ci/ls、原生SQLite、前后端类型、build/123pass及audit gate实跑0；旧同门禁故意破坏启动退出1、还原0和invalid-audit阻断证据存在。",
+      "remainingLimitsOrBlocker": "仍缺具体push范围授权及真实Ubuntu Actions链接/结果；setup/cache/upload/tag存在不能替代实际运行。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-node20.md",
+          "sha256": "5ea40b22e56c84ada72daefb46081044975531151b764565ef28c14bb408079d"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-checkout.json",
+          "sha256": "1c2fc0ec028cfbd41487a12a44ea9ce5e5562b031d9360f06de6edbacaca0921"
+        },
+        {
+          "path": "audit/execution-results/T-18-startup-fault.txt",
+          "sha256": "ff456e7a22113b85ed1429ccf1f4a7a0ab008c9958e948876c588728925151d3"
+        },
+        {
+          "path": "audit/execution-results/T-18-dependency-audit.txt",
+          "sha256": "3a9d8e4f7b2c1c7e2ba8ddf97846011ef69e55c9eb5692a1c38267eff0969ac1"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [
+        "具体push范围授权",
+        "真实Ubuntu Actions结果/链接"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-19",
+      "title": "运行时/安装树一致和启动基线",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 8 条的实际启动阻断）；优先级：A；工作量：M；前置依赖：无。验收记录见第10节T-19。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`.nvmrc`/CI Node20、DEPLOY Node22、本地Node25；server实际better-sqlite3版本与声明不符，native ABI不兼容。本地生产配置缺SESSION_SECRET。编译通过不能证明server可运行。",
+      "acceptanceCriteria": "干净安装后`npm --prefix server ls better-sqlite3 --depth=0`无invalid；加载模块不报ABI错误；隔离生产配置能启动`/health=200`；缺/短SESSION_SECRET及正式模式缺/短ADMIN_PASSWORD时明确退出失败；测试不依赖真实.env.local中的密码或数据库。runtime版本明确可复现。",
+      "plannedVerification": "`node -v`、`npm -v`、两目录`npm ci`、安装树校验；`tests/fix/T-19.test.ts`启动配置矩阵；保存启动退出码和/health响应。禁止仅用现有node_modules的type-check完成任务。",
+      "latestTestResults": {
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-19: restarting an explicit fixture database returns and opens that same database",
+          "T-19: isolated production backend and existing authorized flow run",
+          "T-19: production rejects missing secret",
+          "T-19: production rejects short secret",
+          "T-19: production rejects missing password",
+          "T-19: production rejects short password"
+        ]
+      },
+      "actualVerification": "6通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "Node22基线实际安装/ABI/启动及Node20最新两树clean install/ABI通过；六项覆盖同fixture库重启、完整授权flow、缺短secret/缺短password拒启。",
+      "remainingLimitsOrBlocker": "不统一或升级生产Node/会话契约；Q-06未确认不自行扩大支持模型。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        },
+        {
+          "path": "audit/execution-results/task-closure-dependencies.json",
+          "sha256": "f130a9346c2e6b8bf403740222b3b94b16190193fad6bc1c233eb74c87eb8fa7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-root-audit.json",
+          "sha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-server-audit.json",
+          "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+        }
+      ],
+      "dependencyCheck": [],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-20",
+      "title": "敏感用户API缓存策略",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 5 条修复要求，线上子审计确认）；优先级：B；工作量：S；前置依赖：T-19。实际后端/Next代理/生产静态资源验收见第10节；未部署线上。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`/api/feedback/device/:deviceId`、`/api/feedback/:id/comments`、用户通知列表/计数没有统一no-store；管理员/identity已有局部设置，策略不一致。",
+      "acceptanceCriteria": "用户记录、评论、通知、身份、管理员数据均带`Cache-Control: no-store`；不同Cookie请求不会通过ETag/304复用他人内容；匿名/跨身份仍401/403；构建静态资源缓存保持可用。",
+      "plannedVerification": "`tests/fix/T-20.test.ts`使用两个Cookie jar和If-None-Match；隔离Next代理再检查一次header。线上补验只取header，不下载敏感正文。",
+      "latestTestResults": {
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-20: private responses and authorization errors never reuse a conditional cached body",
+          "T-20: actual Next rewrite preserves no-store while production static chunks retain caching"
+        ]
+      },
+      "actualVerification": "2通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "private/API错误均no-store；两个Cookie与If-None-Match不复用/不304；实际Next rewrite保持策略、生产静态chunk public/immutable一年200通过。",
+      "remainingLimitsOrBlocker": "本地代理验证；没有本轮线上body读取或宣称生产header已改变。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-21",
+      "title": "恢复码不因缓存丢失自动失效",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（已展示具体响应/展示方案，等待确认）；原始严重度：P2（审查第 10 条）；优先级：A；工作量：M；前置依赖：T-19；重大接口差异须按第1节展示并确认。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`resolveClientIdentity()`、`getRecentRecoveryCode()`、`rotateRecoveryCode()`（约434、639、670行）在Cookie或安装密钥有效、请求不提供匹配码且缓存消失时自动替换DB哈希。前端正常匹配码场景不受影响，但已保存旧码可在上述路径失效。",
+      "acceptanceCriteria": "生成并保存R1后，丢本地码但保留Cookie，模拟缓存失效或重启，GET identity不会改变recovery_hash；在全新浏览器用R1仍可恢复同一记录；安装密钥续接也不轮换；前端不会把缺失码显示成永久“正在生成”。正常匹配本地码、两标签页初始化、换浏览器恢复均通过。",
+      "plannedVerification": "`tests/fix/T-21.test.ts`跨进程/跨Cookie复现并比较DB哈希；真实浏览器手动清除仅RECOVERY_CODE_KEY，再重启测试server，检查恢复码展示/找回行为。采用可注入测试时钟验证TTL，禁止生产等待或暴露调试端点。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "未改被动恢复码轮换；新T-21跨重启/缓存过期/两标签页/browser验收未运行。",
+      "remainingLimitsOrBlocker": "等待已展示optional recoveryCode/不撤销R1/前端缺码提示/安全回滚的具体批准。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [
+        "已展示optional recoveryCode及不被动轮换的具体确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-22",
+      "title": "管理会话/失败尝试Map的过期清理和上限",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（容量整合先等待T-21）；原始严重度：P2（审查第 11 条）；优先级：B；工作量：M；前置依赖：T-19、T-09、T-21。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`sessions`、`loginAttempts`过期项只有再次命中时才被清理，`recentRecoveryCodes`亦有同类无界缓存行为；长时间进程可持续占用内存。",
+      "acceptanceCriteria": "注入时钟推进至TTL后，即便旧token未再次访问也从存储消失；容量达到上限时有确定可测试行为，不踢掉未过期合法会话而不说明；注销删除目标会话；清理不导致进程退出悬挂。合法会话与非法签名验证保持原结果。",
+      "plannedVerification": "`tests/fix/T-22.test.ts`模块级时钟/容量测试和登录/注销集成测试；不能用真实8小时等待作为唯一证据。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "未实现整组TTL/容量/可关闭timer；无T-22注入时钟+集成通过记录。",
+      "remainingLimitsOrBlocker": "先T-21；否则淘汰recentRecoveryCodes会更早触发现有被动轮换，不拆开先上线放大缺陷。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-09",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-21",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-23",
+      "title": "管理员会话跨重启/实例契约",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-06）；原始严重度：P2（审查第 11 条）；优先级：B；工作量：M；前置依赖：Q-06、T-22。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`sessions Map`重启即失效，实例不共享。实际目前单实例；多实例是风险边界而非已发生故障。",
+      "acceptanceCriteria": "持久方案：重启后有效会话可用，过期/注销会话不可用，两实例一致；单实例方案：配置明确instances=1，重启后UI能收到401并清理受保护状态、重新登录可用，文档准确。",
+      "plannedVerification": "`tests/fix/T-23.test.ts`重启/注销/TTL；浏览器查看401恢复。选择文档限定方案时不写“持久会话已修复”。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "持久与单实例重启UI契约尚未选择；无T-23重启/注销/TTL验收。",
+      "remainingLimitsOrBlocker": "Q-06选择支持Node与会话重启/多实例要求，并完成T-22；不自行引入Redis。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "Q-06",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "T-22",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-24",
+      "title": "可信代理链与IP限流来源",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-05）；原始严重度：P2（安全子审计存疑）；优先级：A；工作量：M；前置依赖：Q-05、T-19、T-35。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`server/index.ts:53 trust proxy=1`与多跳代理组合；旧Nginx配置使用追加XFF/错误header名。真实链路取值尚未证实。",
+      "acceptanceCriteria": "两来源的真实请求记录为对应源；伪造单/多值XFF后主体不变；直接访问后端不能借header伪造；同一来源用不同XFF登录仍达到同一限额。若Q-05证明当前正确，保留证据并只修确认的错误模板，不制造额外配置改动。",
+      "plannedVerification": "本地搭建同样代理链，`tests/fix/T-24.test.ts`；获线上只读探针授权后用固定测试UA低频请求，由受限日志核对并脱敏；禁止伪造实际第三方IP或大批登录尝试。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "T-43库级信任负对照/本地socket矩阵通过，但不能证明当前公网代理链；未执行生产低频日志核对。",
+      "remainingLimitsOrBlocker": "Q-05明确每跳XFF，T-35提供可测链路；README的TRUST_PROXY=1建议不算真实用户来源证据，缺授权不改生产信任。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "Q-05",
+          "state": "未查证",
+          "met": false
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-35",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "实际代理每跳XFF证据与必要低频探针授权"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-25",
+      "title": "身份/安装密钥/数据库会话生命周期",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-04）；原始严重度：P1（审查第 3 条的身份无界增长）；优先级：B；工作量：M；前置依赖：Q-04、T-05、T-21。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "client_identities/install_keys持续写入；session过期删除只有issueIdentitySession时触发。副本上限和内存Map清理不解决数据库长期残留。",
+      "acceptanceCriteria": "过期session可定时清除；有反馈/有效恢复关系的身份按确认策略保留；只有符合条件的无业务身份可清理；安装密钥与身份无孤儿；现存Cookie/恢复码的有效用户仍可找回。dry-run计数明确。",
+      "plannedVerification": "`tests/fix/T-25.test.ts`多种身份fixture和找回测试；历史库只在快照+确认后迁移，核对外键/关联和记录数量。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "持久容量T-05通过，但没有会话/身份/安装key生命周期清理实现或dry-run验收。",
+      "remainingLimitsOrBlocker": "Q-04保留/清理对象与期限、T-21，实际资产计数/快照和删除确认。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "Q-04",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "T-05",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-21",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "实际资产/清理对象与一致性快照及删除确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-26",
+      "title": "Cookie写接口统一来源/CSRF防护",
+      "taskStatus": "进行中",
+      "originalStatusLine": "进行中（普通unsafe方法已验收；身份接口具体兼容方案待确认）；原始严重度：P2（审查第 9 条）；优先级：A；工作量：M；前置依赖：Q-03、T-19。",
+      "auditVerdict": "部分解决",
+      "originalProblem": "`requireSameOrigin()`只用于部分写路由，反馈/用户评论/通知更新缺少一致检查，无Origin默认放行；identity GET还会创建/修改身份。外站Lax POST是否带Cookie不能想当然。",
+      "acceptanceCriteria": "合法origin成功，恶意同站子域/外站origin拒绝，缺Origin按已确认策略处理；拒绝时DB/通知/session不变；管理员与用户均覆盖；浏览器分别复现cross-site与same-site子域，记录Cookie实际是否发送，不只以curl伪造Origin证明浏览器漏洞。",
+      "plannedVerification": "`tests/fix/T-26.test.ts`路由矩阵；隔离本地域名/浏览器上下文做攻击页POST/PUT/恢复测试；正常用户提交和后台回复回归。",
+      "latestTestResults": {
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation"
+        ]
+      },
+      "actualVerification": "1通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "14条既有unsafe写路由及aliases×7恶意/缺来源403、无Cookie、九表快照及session签发计数不变；合法正常flow/真实同站Cookie攻击浏览器通过。",
+      "remainingLimitsOrBlocker": "身份GET仍创建/续签/绑定；POST创建+GET只读具体兼容方案待确认，不以普通guard测试关闭全项。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-26-browser-verification.txt",
+          "sha256": "1ba26dfd075e90844edb8084b8157c051caa0532aaf537988534d1da2d4c95f9"
+        },
+        {
+          "path": "audit/execution-results/T-26-normal-browser-verification.txt",
+          "sha256": "9de1f9403910d612c7e2c61f7b60fc51fba23c0b1ee5194dfc9ca3d249a97d72"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "Q-03",
+          "state": "已确认",
+          "met": true
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [
+        "POST身份创建/续签/绑定与GET只读具体兼容确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-27",
+      "title": "收紧CORS默认信任范围",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P2（审查第 9 条）；优先级：A；工作量：S；前置依赖：Q-03、T-19。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`server/index.ts:49`缺配置时默认允许主域、子域和localhost，且credentials=true；部署遗漏配置会扩大跨应用读取边界。",
+      "acceptanceCriteria": "允许origin的preflight和合法请求有准确ACAO；不允许origin无ACAO且浏览器不能读响应；正式缺配置按约定失败或同源限定，不能回退到主域；不存在凭证加`*`的组合。合法前端登录/identity/读取仍可用。",
+      "plannedVerification": "`tests/fix/T-27.test.ts`配置与preflight矩阵；浏览器跨origin实际fetch验证读取失败。",
+      "latestTestResults": {
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-27: only explicit canonical origin configuration is accepted",
+          "T-27: actual CORS preflight/read responses expose only approved exact origins",
+          "T-27: actual production backend rejects missing or invalid origin configuration",
+          "T-27: product backend preflight and authenticated reads use the exact configured origins"
+        ]
+      },
+      "actualVerification": "4通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "准确Origin配置/拒启/preflight/read矩阵4项及原生CORS读取拒绝通过；没有Host/XFH自动信任、无credentials通配符。",
+      "remainingLimitsOrBlocker": "Q-03仅本站和显式本地；同站Cookie实际发送但响应读不到，与T-26写拒绝独立；GET身份仍待T-26。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-27-browser-network.json",
+          "sha256": "04d66be74f7b5da500d15d4ba9ad4c3ba6ba00c7b1f7820480270ea7dac3e30a"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "Q-03",
+          "state": "已确认",
+          "met": true
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-28",
+      "title": "未接入第三方图床实现防误启用",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（具体三文件归档清单已展示；待Q-08）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`app/components/FileUpload.tsx`和`app/utils/imageUpload.ts`直接把文件发ImgBB/Imgur，NEXT_PUBLIC密钥客户端可见；当前未接入，不能称线上泄露。",
+      "acceptanceCriteria": "活跃页面/组件没有第三方图床上传调用或公开key要求；构建正常；浏览器现有流程不向ImgBB/Imgur发送文件请求；路线图仍准确标注附件未实现。",
+      "plannedVerification": "`rg -n 'api.imgbb|api.imgur|NEXT_PUBLIC_IMGBB|NEXT_PUBLIC_IMGUR|FileUpload' app`检查结果归属；build；浏览器网络观察。不得通过真实上传来验证风险。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "只读3资产清单/hash/调用图准备已验，两个第三方图床源未移动；没有归档后build/浏览器无上传验收。",
+      "remainingLimitsOrBlocker": "等待Q-08精确清单批准；不把caller0当已消除误启用资产，不真上传文件。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-28-T-29-proposal-check.txt",
+          "sha256": "236a31b62b8b9f7d7b8a07dcf8d7705828d63376e654195d020d19ae6597edf3"
+        },
+        {
+          "path": "audit/execution-results/T-28-T-29-asset-proposal.json",
+          "sha256": "973de28092974a8dddda7550f017dd4075233e8121782787296a73d216de3170"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "Q-08",
+          "state": "具体清单未确认",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "三文件清单中两图床源移动具体确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-29",
+      "title": "未实现本地上传接口的死组件",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（具体三文件归档清单已展示；待Q-08）；原始严重度：P3（审查第 14 条）；优先级：C；工作量：S；前置依赖：Q-08。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`app/components/LocalFileUpload.tsx:50`调用不存在的`/api/upload-local`；组件未接入，复用即404。",
+      "acceptanceCriteria": "当前运行页面无该调用；附件说明不宣称本地上传可用；归档/禁用后type-check/build通过，既有提交页面保持文本提交。",
+      "plannedVerification": "`rg -n 'upload-local|LocalFileUpload' app server --glob '!**/node_modules/**'`和diff审阅；type-check/build；无需为死组件新增上传测试。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "LocalFileUpload未接入口的只读图/hash准备已验；源仍原位置，服务器没有对应支持声明。",
+      "remainingLimitsOrBlocker": "等待同Q-08单文件归档具体批准，验收/提交仍独立于T-28。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-28-T-29-proposal-check.txt",
+          "sha256": "236a31b62b8b9f7d7b8a07dcf8d7705828d63376e654195d020d19ae6597edf3"
+        },
+        {
+          "path": "audit/execution-results/T-28-T-29-asset-proposal.json",
+          "sha256": "973de28092974a8dddda7550f017dd4075233e8121782787296a73d216de3170"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "Q-08",
+          "state": "具体清单未确认",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "三文件清单中LocalFileUpload移动具体确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-30",
+      "title": "API_TOKEN虚假安全配置",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：配置安全错觉（上一轮未单独赋P级）；优先级：B；工作量：S；前置依赖：无。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`.env.example`、README生产清单、`docs/DEPLOYMENT.md`要求修改API_TOKEN，但app/server没有读取它。部署者误以为已启用token鉴权。",
+      "acceptanceCriteria": "活跃说明不再要求无效API_TOKEN作为安全措施；明确管理Cookie、用户Cookie和公开接口边界；`rg -n 'API_TOKEN' .env.example README.md DEPLOY.md docs/DEPLOYMENT.md`只剩准确的弃用/说明（或零结果）。未新增API token请求契约。",
+      "plannedVerification": "以上rg结果和文档diff逐项审阅；不为文档修改新增业务测试。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "API_TOKEN活跃四份说明仅准确弃用/兼容引用，app/server无实际读取；文档diff与diff-check0，未新增HTTP token契约。",
+      "remainingLimitsOrBlocker": "旧占位变量保留避免未经批准删除；Cookie角色权限仍为实际鉴权。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-30-verification.txt",
+          "sha256": "b8b020d3d7c947a5940222f82af2e715ce04063d10e6c766e8a0f60c1a9b97da"
+        }
+      ],
+      "dependencyCheck": [],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-31",
+      "title": "RATE_LIMIT_MAX虚假配置",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：配置安全错觉（上一轮未单独赋P级）；优先级：B；工作量：S；前置依赖：T-05、T-06、T-07、T-08、T-09。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`.env.example`宣传`RATE_LIMIT_MAX`，实际没有读取；与未挂载middleware组合形成“配置了就有保护”的误解。",
+      "acceptanceCriteria": "每个公开的限流env有读取点和测试；设置阈值1与3时可观测到对应429边界；非法/负数配置启动失败或采用明确默认，不静默关闭限流；文档说明IP/身份/窗口单位。旧字段若不支持，明确弃用。",
+      "plannedVerification": "相关T-05..09测试增加配置矩阵；`rg -n 'RATE_LIMIT|LIMITER|限流' .env.example server README.md docs/DEPLOYMENT.md --glob '!**/node_modules/**'`人工对应配置与实现。",
+      "latestTestResults": {
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "LOGIN_RATE_LIMIT_MAX=1",
+          "LOGIN_RATE_LIMIT_MAX=3",
+          "IDENTITY_RATE_LIMIT_MAX=1",
+          "IDENTITY_RATE_LIMIT_MAX=3",
+          "RECOVERY_RATE_LIMIT_MAX=1",
+          "RECOVERY_RATE_LIMIT_MAX=3",
+          "FEEDBACK_RATE_LIMIT_MAX=1",
+          "FEEDBACK_RATE_LIMIT_MAX=3",
+          "FEEDBACK_IDENTITY_RATE_LIMIT_MAX=1",
+          "FEEDBACK_IDENTITY_RATE_LIMIT_MAX=3",
+          "COMMENT_RATE_LIMIT_MAX=1",
+          "COMMENT_RATE_LIMIT_MAX=3",
+          "COMMENT_IDENTITY_RATE_LIMIT_MAX=1",
+          "COMMENT_IDENTITY_RATE_LIMIT_MAX=3",
+          "T-31: each supported request maximum independently enforces configured boundaries one and three",
+          "T-31: legacy RATE_LIMIT_MAX is explicitly deprecated, cannot be mistaken for effective protection"
+        ]
+      },
+      "actualVerification": "16通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "7项真实max各1/3得到对应429与未写快照，窗口/非法配置由T-05..09覆盖；旧RATE_LIMIT_MAX明确警告且不生效，文档/读取点对应。",
+      "remainingLimitsOrBlocker": "这是单进程来源/身份窗口配置，真实代理、多实例和长期清理仍独立。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-31-config-lookup.txt",
+          "sha256": "017368efc8744611e35de899bc9e2a13904e5f9324f2640c6554fbe9d8e57c3b"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-05",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-06",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-07",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-08",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-09",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-32",
+      "title": "历史明文/可解密密文及备份处置",
+      "taskStatus": "进行中",
+      "originalStatusLine": "进行中（只读盘点及合成候选转换准备通过；真实迁移/处置待Q-04/Q-07及具体资产确认）；原始严重度：P0（审查第 2 条历史数据风险）；优先级：A；工作量：L；前置依赖：Q-04、Q-07、T-03；Q-02静态加密方向已确认。",
+      "auditVerdict": "部分解决",
+      "originalProblem": "即便改新写入，feedbacks.original_content、旧key+cipher字段、comments/notifications以及备份仍含敏感内容；单改代码不消除旧数据风险。",
+      "acceptanceCriteria": "迁移前后每身份记录/评论/通知数量符合批准映射；抽样可读/可解密；重复运行幂等；失败可恢复；新库/导出不存在应去除的明文和同库存储密钥。需要销毁的旧备份须逐个资产确认，有执行记录；不能仅因字段清空声称SQLite页/WAL/历史备份中已彻底抹除。",
+      "plannedVerification": "`tests/fix/T-32.test.ts`旧格式fixture、重复迁移、故障恢复；实际一致性快照上dry-run与抽样；授权后执行。若需物理清除，用验证后的重建库/受控备份策略，记录剩余不可验证资产。",
+      "latestTestResults": {
+        "pass": 20,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP",
+          "T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records",
+          "T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds",
+          "T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback",
+          "T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged",
+          "demo",
+          "clone",
+          "trigger",
+          "version",
+          "realVersion",
+          "nullSolution",
+          "ambiguousBody",
+          "schema",
+          "primary",
+          "T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file",
+          "T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries",
+          "T-32 candidate: mixed legacy and marked-v1 fields preserve valid ciphertext independently while sealing only legacy values",
+          "T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes",
+          "T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim",
+          "T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable"
+        ]
+      },
+      "actualVerification": "20通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "只读盘点3项+候选17项通过；四字段认证、全部数量/ownership、重复零reseal、晚故障回滚、已提交WAL、一份独立复制HTTP恢复与物理短marker/key扫描通过。",
+      "remainingLimitsOrBlocker": "未处理真实源/备份/私有working残留；Q-04/Q-07、T-02角色adoption、保留映射/源清单/最终停写快照/切换及逐资产销毁仍缺，准备20pass不代表迁移已完成。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-32-candidate-complete-prep-tests.txt",
+          "sha256": "49eab5d9f2bc2691dd47fca3094cff81b5d5f917a225463c7e8b117290d0f61e"
+        },
+        {
+          "path": "audit/execution-results/T-32-candidate-verification.json",
+          "sha256": "8ae1f694966d6f0cd9d1a5df7a383956f54e50606a1f0cd5aa8afcc826de98c6"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "Q-04",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "Q-07",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "T-03",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "Q-02",
+          "state": "方向已确认",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [
+        "实际保留映射/源备份清单/独立key与资产操作授权",
+        "T-02角色adoption与最终停写切换",
+        "旧源/working/备份逐项处置确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-33",
+      "title": "数据可关联性与匿名说明一致",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-07/Q-04）；原始严重度：P2（审查第 12 条）；优先级：A；工作量：M；前置依赖：Q-07、Q-04、T-11；若改正文模型再依赖T-03。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "access_logs的IP/UA/path、device_id与正文、管理员处理IP等能被运营者关联；“匿名”若被理解为不可追踪就超过实际能力。",
+      "acceptanceCriteria": "隔离请求的DB/日志/API输出只包含批准字段；完整原始IP/UA若不再允许，不会出现在DB/Winston/PM2输出中；保留期限由T-11验证；提交页面和README逐字匹配实际行为。",
+      "plannedVerification": "`tests/fix/T-33.test.ts`用固定合成IP/UA检查全部输出；浏览器提交前阅读路径检查；不得用真实用户样本或仅凭文案修改判定数据最小化完成。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "现有服务器可读提示不等于匿名数据最小化；未改可关联字段/日志输出或运行T-33验收。",
+      "remainingLimitsOrBlocker": "Q-07匿名目标+Q-04字段/期限，T-11；不擅自承诺抵抗运营者识别。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "Q-07",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "Q-04",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "T-11",
+          "state": "待办",
+          "met": false
+        },
+        {
+          "id": "T-03",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-34",
+      "title": "删除反馈的关联数据一致性",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-04）；原始严重度：P1（审查第 6 条）；优先级：A；工作量：M；前置依赖：Q-04、T-19。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`DELETE /api/admin/feedback/:id`约1058行只删除feedbacks；schema中comments/notifications无外键级联，私密沟通与摘要成为残留。",
+      "acceptanceCriteria": "包含评论/双方通知的反馈删除后，所有应删关联均为0；保留审计不含正文；其他反馈不变；任何一步故障整笔回滚；重新读取反馈/评论/通知不可见；历史孤儿按批准策略处置；`PRAGMA foreign_key_check`无错误。",
+      "plannedVerification": "`tests/fix/T-34.test.ts`删除矩阵/故障注入/重复删除404；一致性快照上试迁移并核对每表计数；授权后才作用于实际库。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "仅T-41删除故障矩阵明确SKIP；没有删除后关联0/审计最小化/故障回滚/孤儿迁移/foreign_key_check通过证据。",
+      "remainingLimitsOrBlocker": "Q-04确定硬/软删、评论/通知/审计去留；历史孤儿需实际计数/快照和处置批准。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "Q-04",
+          "state": "未确认",
+          "met": false
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-35",
+      "title": "唯一可用部署配置",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待确认具体保留/归档清单）；原始严重度：P2（审查第 13 条）；优先级：B；工作量：M；前置依赖：T-19；启用线上另依赖Q-01/T-02。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`deploy/nginx/`多个互相矛盾版本，错误header如`X-ForwardedFor`/`X-ForwardedProto`、80-only和错basePath；公开站真实生效配置未在仓库成为唯一模板。",
+      "acceptanceCriteria": "`nginx -t`通过；HTTP跳HTTPS；根路径按约定跳/anonyproof；三页面/静态资源/API可用；3000/4000不公开；Host/Proto/header准确；合法Cookie有Secure/HttpOnly/SameSite；状态PUT与删除在隔离库成功；文档只指向唯一配置。线上证书/端口须发布后实测，不能用旧文档代替。",
+      "plannedVerification": "隔离Nginx使用`nginx -t -c <绝对测试配置>`及curl/浏览器smoke；批准发布后`curl -I http://<域名>/`、`curl -I https://<域名>/anonyproof`、合法API探针和端口不可达检查。避免公开环境删除真实记录。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "只读21旧Nginx资产+2脚本hash/不存在目标预览检查0；本轮PATH/常规路径仍无nginx，Docker API不可连接，未运行nginx-t/TLS链路/公网端口验收。",
+      "remainingLimitsOrBlocker": "具体归档/禁旧脚本批准、原生验证环境、Q-05草案proxy前提，DELETE依赖T-34；线上另T-02/发布授权。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-35-proposal-check.txt",
+          "sha256": "def8b47a73236d2a49e814cac0d1f4b9ff1ebbf17f327e66f0550fa21998bd3d"
+        },
+        {
+          "path": "audit/execution-results/T-35-assets.json",
+          "sha256": "5bc2f2e17fb02676140b9f6b43f87127c6e190b5d412c31a4845e63aca64ab9c"
+        },
+        {
+          "path": "audit/execution-results/task-closure-nginx-environment.json",
+          "sha256": "9e9631ba3562923bad3277f7582456d5287c83d65524d637fbcfc413090e1545"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "Q-01",
+          "state": "方向已确认",
+          "met": true
+        },
+        {
+          "id": "T-02",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "21配置移动及2脚本禁用具体确认",
+        "可用Nginx验证环境：PATH/常规路径无nginx，本轮Docker不可连接",
+        "Q-05确认草案链路前提",
+        "删除一致性依赖T-34",
+        "线上补验需T-02/发布授权"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-36",
+      "title": "安全边界最小模块拆分",
+      "taskStatus": "待办",
+      "originalStatusLine": "待办（待Q-09）；原始严重度：P3（审查第 15 条）；优先级：C；工作量：M；前置依赖：Q-09、全部已选择的行为修复与对应API回归；T-18。",
+      "auditVerdict": "未解决（待确认/前置）",
+      "originalProblem": "`server/index.ts`混合建表/迁移、认证、身份、演示、路由、通知，校验与限流死代码分散，后续容易漏挂保护。",
+      "acceptanceCriteria": "HTTP路由/alias、状态码、Cookie、DB行为与拆分前回归完全相同；没有第二份互相冲突的验证/限流逻辑；入口注册顺序明确；全部编号测试、type-check、build通过；启动/迁移重复执行不破坏旧数据。",
+      "plannedVerification": "拆分前运行并保存回归基线，逐模块移动后执行相关测试，结束执行`npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts`、两type-check/build/diff-check。行为变化不能混进这个提交。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "未实施模块移动，完整行为修复尚有待确认部分；无拆分前后等价回归验收。",
+      "remainingLimitsOrBlocker": "Q-09确切文件/依赖边界、全部选定行为修复/T-18；不提前拆入口掩盖未完成行为。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "Q-09",
+          "state": "具体边界未确认",
+          "met": false
+        },
+        {
+          "id": "T-18",
+          "state": "已阻塞",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "全部选定行为修复完成且确切模块清单获批"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-37",
+      "title": "管理反馈列表分页",
+      "taskStatus": "已阻塞",
+      "originalStatusLine": "已阻塞（T-18实际远端CI未验收）；原始严重度：P1（审查第 5 条）；优先级：A；工作量：M；前置依赖：T-19、T-18。",
+      "auditVerdict": "已阻塞（未实施）",
+      "originalProblem": "`GET /api/admin/feedbacks`约929行全量返回正文及不使用的encrypted_content，前端全部内存筛选/搜索。大库请求和DOM都会增长。",
+      "acceptanceCriteria": "默认和最大页不超过100条；同created_at记录用id稳定排序；完整翻页无重/漏；筛选/搜索覆盖全部匹配记录；列表不返回密文/整篇正文以外的无用敏感字段（正文列表用确定摘要，详情另取）；通知指向非当前页记录可打开；后台概览不把当前页数误当总数。",
+      "plannedVerification": "`tests/fix/T-37.test.ts`1000条fixture/边界cursor/筛选；浏览器跨页筛选、通知跳转、详情与处理回归；API响应体大小有界。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "分页后端/前端未实施，无1000条cursor/跨页筛选/通知定位/响应有界通过记录。",
+      "remainingLimitsOrBlocker": "T-18真实远端门禁；100上限及跨页边界已获批，不重问，完成后按阶段先T-37。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-18",
+          "state": "已阻塞",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-38",
+      "title": "用户反馈列表分页",
+      "taskStatus": "已阻塞",
+      "originalStatusLine": "已阻塞（T-18实际远端CI未验收）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18。",
+      "auditVerdict": "已阻塞（未实施）",
+      "originalProblem": "`GET /api/feedback/device/:deviceId`约1231行全量记录和全文，用户端`records`全量筛选。",
+      "acceptanceCriteria": "每页≤100、稳定cursor无重漏；跨身份401/403；搜索/状态数是全部授权记录而非当前页；通知跨页能定位；恢复身份后不混入旧身份记录；重复时间边界通过。",
+      "plannedVerification": "`tests/fix/T-38.test.ts`两身份/1000记录；浏览器翻页、搜索、恢复、通知定位；记录网络响应有界。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "用户分页未实施，无双身份1000记录/稳定cursor/恢复/搜索/通知跨页验收。",
+      "remainingLimitsOrBlocker": "T-18真实远端门禁；阶段顺序T-37后T-38，不越过未满足前置。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-18",
+          "state": "已阻塞",
+          "met": false
+        },
+        {
+          "id": "T-37",
+          "state": "已阻塞",
+          "met": false,
+          "source": "计划阶段3明确执行顺序，非新增任务依赖"
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-39",
+      "title": "沟通记录分页",
+      "taskStatus": "已阻塞",
+      "originalStatusLine": "已阻塞（T-18实际远端CI未验收）；原始严重度：P1（审查第 5 条）；优先级：B；工作量：M；前置依赖：T-19、T-18。",
+      "auditVerdict": "已阻塞（未实施）",
+      "originalProblem": "`GET /api/feedback/:feedbackId/comments`约1130行全量comments；长线程会增加同步读取和DOM。",
+      "acceptanceCriteria": "每页≤100，完整翻页无重漏、同时间id稳定；用户/管理员各自有权；发出新评论后能看到自己的新消息，旧页不消失/重复；comment计数为真实总数；切换反馈不能显示上条反馈分页。",
+      "plannedVerification": "`tests/fix/T-39.test.ts`250条线程和跨身份；浏览器加载较早评论→发送→切换记录，核对顺序与计数。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "线程分页未实施，无250评论/同时间排序/发送后视图/切反馈计数验收。",
+      "remainingLimitsOrBlocker": "T-18真实远端门禁；阶段顺序T-38后T-39，100上限已批准。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-18",
+          "state": "已阻塞",
+          "met": false
+        },
+        {
+          "id": "T-38",
+          "state": "已阻塞",
+          "met": false,
+          "source": "计划阶段3明确执行顺序，非新增任务依赖"
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-40",
+      "title": "通知limit参数严格有界",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 5 条）；优先级：A；工作量：S；前置依赖：T-19。验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "`GET /api/notifications`约1343–1347行`Number(limit)`直接SQL绑定；负数返回全量，abc引发500。",
+      "acceptanceCriteria": "-1/0/101/小数/abc/数组/重复limit等输入返回400（若采用夹逼策略须先明确契约，本计划建议400）；缺参数为20；1和100成功且不超限；超过权限的recipient仍拒绝；SQL错误不变成500。",
+      "plannedVerification": "`tests/fix/T-40.test.ts`参数矩阵及≥150条通知fixture；验证返回数量、status和服务存活。",
+      "latestTestResults": {
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-40: notification limit stays bounded for users and admins without weakening access"
+        ]
+      },
+      "actualVerification": "1通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "两角色各150通知：缺省20、1..100返回数量/最新ID顺序、26非法输入每角色400、无权限401/403、未读总数150、health200通过。",
+      "remainingLimitsOrBlocker": "通知limit关闭；不能由此关闭其它三列表无界T-37..39。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-41",
+      "title": "多表业务写入原子性",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：P1（审查第 7 条部分落库场景及第6条删除一致性）；优先级：A；工作量：M；前置依赖：T-12、T-13、T-14、T-19；删除路径另依赖T-34且独立验收；本任务三类写入验收见第10节。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "反馈insert→updateStats→createNotification，评论insert→通知、状态日志→更新→通知都分离；createNotification吞错，失败时可能已写业务却返回失败或漏通知。校验修复不等于原子性修复。",
+      "acceptanceCriteria": "模拟统计/通知/日志写失败时业务表、统计、通知均不部分提交；成功一次只写一套记录；状态重复无变化不新增重复通知；正常反馈、评论和状态流程均可用。访问日志失败仍不影响核心成功响应。",
+      "plannedVerification": "`tests/fix/T-41.test.ts`在测试库用触发器故障或受控工具注入逐步失败；比较每表前后计数/字段；禁止给生产加故障header或调试接口。",
+      "latestTestResults": {
+        "pass": 14,
+        "fail": 0,
+        "skip": 1,
+        "names": [
+          "feedbacks INSERT failure",
+          "stats UPDATE failure",
+          "notifications INSERT failure",
+          "T-41: feedback statistics and required notification faults roll back the entire business write",
+          "user: feedback_comments INSERT failure",
+          "user: notifications INSERT failure",
+          "admin: feedback_comments INSERT failure",
+          "admin: notifications INSERT failure",
+          "T-41: user and admin comment notification faults cannot persist orphaned comments",
+          "admin_logs INSERT failure",
+          "feedbacks UPDATE failure",
+          "notifications INSERT failure",
+          "T-41: status audit/update/notification failures preserve all fields and related records",
+          "T-41: optional access logging faults leave core feedback/comment/status operations successful",
+          "T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults # SKIP T-34 deletion semantics/transaction confirmation and implementation are pending"
+        ]
+      },
+      "actualVerification": "14通过 / 0失败 / 1跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "三类业务写事务14含嵌套故障测试通过；每表完整字段回滚、成功一套记录、重复相同状态无重复notice、可选访问日志失败不影响成功。",
+      "remainingLimitsOrBlocker": "1删除SKIP归T-34；事务不保证网络重试幂等T-42。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-12",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-13",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-14",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-34",
+          "state": "待办",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-42",
+      "title": "网络重试导致重复写入",
+      "taskStatus": "已阻塞",
+      "originalStatusLine": "已阻塞（T-18远端验收及幂等有效期/清理确认）；原始严重度：P1（审查第 7 条重试重复场景）；优先级：B；工作量：M；前置依赖：T-41、T-18；请求边界已批准，保留有效期/清理边界待展示确认。",
+      "auditVerdict": "已阻塞（未实施）",
+      "originalProblem": "客户端超时/丢响应时保留输入供重试，反馈/评论POST每次生成新记录；第一次已成功但响应丢失时会重复提交。事务只解决部分落库，不解决此场景。",
+      "acceptanceCriteria": "同身份同key同payload重试/并发得到同一id，业务/通知各1；同key不同payload拒绝409；不同身份不能复用他人结果；新key同正文可创建新记录；模拟已提交响应丢失后手动重试不重复；刷新/失败重试的key生命周期明确。",
+      "plannedVerification": "`tests/fix/T-42.test.ts`重复/并发/冲突/跨身份矩阵；浏览器受控断响应→重试；记录数据库计数。适配前后端需同阶段完成。",
+      "latestTestResults": null,
+      "actualVerification": "无最新自动用例执行；专用历史实测/手工验证或未执行情况见下列证据与缺口",
+      "acceptanceProof": "尚无身份幂等key存储/前端重试生命周期及重复并发/409/跨身份/丢响应验收。",
+      "remainingLimitsOrBlocker": "T-18及幂等key有效期/清理边界；同payload同记录/冲突409一般边界已批，期限仍须明确。",
+      "evidence": [],
+      "dependencyCheck": [
+        {
+          "id": "T-41",
+          "state": "已完成",
+          "met": true
+        },
+        {
+          "id": "T-18",
+          "state": "已阻塞",
+          "met": false
+        }
+      ],
+      "outstandingConcreteGates": [
+        "幂等key有效期/清理边界的具体确认"
+      ],
+      "readyForRemainingImplementation": false
+    },
+    {
+      "id": "T-43",
+      "title": "proxy-addr已知IP信任漏洞的最小依赖修复",
+      "taskStatus": "已完成",
+      "originalStatusLine": "已完成；原始严重度：新增审计critical/CVSS9.1（N-02，非原42项）；优先级：A；工作量：M；前置依赖：T-19。用户2026-10-07明确批准新增最小任务。",
+      "auditVerdict": "已解决（计划已批准的本地范围）",
+      "originalProblem": "root/server锁文件的proxy-addr2.0.7命中`GHSA-jqcg-44mw-7w3h`，范围>=1.1.0<2.0.8，IPv4映射IPv6信任子网判断可能导致IP伪造；当前本站trust proxy=1真实链的特定可利用性未证明。证据两份实际npm audit `T-16-root-audit.json`、`T-17-server-audit.json`。",
+      "acceptanceCriteria": "两锁文件/安装树版本一致，目标advisory消失；IPv4、IPv6及映射IPv6信任范围正反例正确；同一来源限流和跨身份授权保持，合法/恶意X-Forwarded-For在隔离配置矩阵内得到明确结果；两type-check、真实后端文件编译、现有API回归通过。其他audit残留不能假称全安全。",
+      "plannedVerification": "`npm ls proxy-addr`、`npm --prefix server ls proxy-addr`、两目录`npm audit --omit=dev --json`；`npx --no-install tsx --test --test-concurrency=1 tests/fix/T-43.test.ts tests/fix/T-09.test.ts tests/fix/T-17.test.ts tests/fix/T-19.test.ts`；两type-check及第3节真实后端编译命令。实际生产链专项验证仍由T-24/Q-05执行。",
+      "latestTestResults": {
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "names": [
+          "T-43: root patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets",
+          "T-43: root real Express proxy-chain matrix distinguishes trusted hops and spoofed headers",
+          "T-43: server patched IPv4/IPv6/mapped trust boundaries reject spoofing subnets",
+          "T-43: server real Express proxy-chain matrix distinguishes trusted hops and spoofed headers",
+          "T-43: patched backend still binds feedback access to the authenticated identity"
+        ]
+      },
+      "actualVerification": "5通过 / 0失败 / 0跳过；命令为共享全回归中的对应测试文件，非新重跑",
+      "acceptanceProof": "两树proxy-addr2.0.8且目标GHSA-jqcg-44mw-7w3h消失；IPv4/IPv6/mapped正反、两Express实际12配置、跨身份授权5项通过，旧/新8组负对照已有证据。",
+      "remainingLimitsOrBlocker": "不改变TRUST_PROXY策略、不证明本站旧漏洞在线可利用；Q-05/T-24仍保留。",
+      "evidence": [
+        {
+          "path": "audit/execution-results/T-43-summary.txt",
+          "sha256": "30db9d4f53b596432b1cb2ff48c04e2b591490048fd636fa4fc3ebc7573e042f"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+          "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+        },
+        {
+          "path": "audit/execution-results/task-closure-dependencies.json",
+          "sha256": "f130a9346c2e6b8bf403740222b3b94b16190193fad6bc1c233eb74c87eb8fa7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-root-audit.json",
+          "sha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7"
+        },
+        {
+          "path": "audit/execution-results/T-18-current-server-audit.json",
+          "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+        }
+      ],
+      "dependencyCheck": [
+        {
+          "id": "T-19",
+          "state": "已完成",
+          "met": true
+        }
+      ],
+      "outstandingConcreteGates": [],
+      "readyForRemainingImplementation": false
+    }
+  ],
+  "queryConfirmationStates": {
+    "Q-01": "方向已确认",
+    "Q-02": "方向已确认",
+    "Q-03": "已确认",
+    "Q-04": "未确认",
+    "Q-05": "未查证",
+    "Q-06": "未确认",
+    "Q-07": "未确认",
+    "Q-08": "具体清单未确认",
+    "Q-09": "具体边界未确认"
+  },
+  "eligibilityRule": "只用于剩余代码实施：原任务依赖满足、计划明确阶段前序满足、已列具体外部门禁满足；不把方向确认替代接口/资产具体确认。方案准备不等同代码实施或任务完成。"
+}

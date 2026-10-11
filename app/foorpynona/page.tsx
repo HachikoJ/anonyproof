@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useCommentPagination } from "../hooks/useCommentPagination";
 import { useDemoConfig } from "../hooks/useDemoConfig";
 import ExternalLinks from "../components/ExternalLinks";
+import { createPendingActions, PendingActionError } from "../utils/pendingAction";
 import { recordCode } from "../utils/recordCode";
 
 type Feedback = {
@@ -17,8 +19,11 @@ type Feedback = {
   is_demo_template?: number;
   is_demo_clone?: number;
 };
+type FeedbackCounts = { total: number; pending: number; processing: number; resolved: number; noSolution: number };
+const emptyCounts: FeedbackCounts = { total: 0, pending: 0, processing: 0, resolved: 0, noSolution: 0 };
 type Comment = {
   id: number;
+  feedback_id: string;
   commenter_type: "user" | "admin";
   content: string;
   created_at: string;
@@ -91,7 +96,12 @@ function syncFeedbackQuery(id: string | null) {
 }
 
 export default function AdminPage() {
-  const { config: demoConfig } = useDemoConfig();
+  const { config: demoConfig, loading: demoLoading, error: demoError } = useDemoConfig();
+  const demoMode = demoConfig?.demoMode === true;
+  const modeReady = !!demoConfig && !demoLoading;
+  const pendingActions = useRef(createPendingActions()).current;
+  const [demoCommentId, setDemoCommentId] = useState("");
+  const [demoSolutionId, setDemoSolutionId] = useState("in_progress");
   const notificationPanelRef = useRef<HTMLDivElement>(null);
   const feedbackListRef = useRef<HTMLDivElement>(null);
   const feedbackListScrollTopRef = useRef(0);
@@ -103,8 +113,15 @@ export default function AdminPage() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [selected, setSelected] = useState<Feedback | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const selectionRequestRef = useRef(0);
+  const listRequestRef = useRef(0);
+  const cursorRef = useRef<string | null>(null);
+  const [cursorHistory, setCursorHistory] = useState<(string | null)[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [filteredTotal, setFilteredTotal] = useState(0);
+  const [counts, setCounts] = useState<FeedbackCounts>(emptyCounts);
+  const readOnly = !modeReady || (demoMode && !!selected?.is_demo_template);
   const [comment, setComment] = useState("");
   const [solution, setSolution] = useState("");
   const [search, setSearch] = useState("");
@@ -118,39 +135,68 @@ export default function AdminPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationError, setNotificationError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const authEpochRef = useRef(0);
+
+  const clearProtectedState = () => {
+    ++authEpochRef.current;
+    ++listRequestRef.current;
+    ++selectionRequestRef.current;
+    cursorRef.current = null;
+    setAuthenticated(false);
+    setFeedbacks([]);
+    setSelected(null);
+    setCursorHistory([]);
+    setNextCursor(null);
+    setFilteredTotal(0);
+    setCounts(emptyCounts);
+    setDetailLoading(false);
+    setLoading(false);
+    resetComments();
+    setComment("");
+    setSolution("");
+    setActionLoading("");
+    setNotifications([]);
+    setUnreadCount(0);
+    setNotificationError("");
+    setShowNotifications(false);
+    setMessage("");
+    setPassword("");
+    feedbacksLoadedRef.current = false;
+    syncFeedbackQuery(null);
+  };
 
   const handleRequestError = (error: unknown, fallback: string) => {
     if (error instanceof ApiError && error.status === 401) {
-      setAuthenticated(false);
-      setFeedbacks([]);
-      setSelected(null);
-      setShowNotifications(false);
-      setMessage("");
-      feedbacksLoadedRef.current = false;
+      clearProtectedState();
+      setLoginError("管理会话已失效，服务重启或超过8小时后需重新登录。");
       return;
     }
     setMessage(getRequestErrorMessage(error, fallback));
     setMessageTone("error");
   };
 
-  const fetchData = async (): Promise<Feedback[]> => {
+  const fetchData = async (cursor = cursorRef.current, history = cursorHistory): Promise<Feedback[]> => {
+    const request = ++listRequestRef.current;
     setLoading(true);
     try {
-      const response = await fetch("/anonyproof/api/admin/feedbacks", {
+      const query = new URLSearchParams({ pagination: "1", limit: "50", category, status, search });
+      if (cursor) query.set("cursor", cursor);
+      const response = await fetch(`/anonyproof/api/admin/feedbacks?${query}`, {
         credentials: "same-origin",
       });
       const data = await readApiJson(response);
+      if (request !== listRequestRef.current) return [];
       const nextFeedbacks = data.feedbacks as Feedback[];
       setFeedbacks(nextFeedbacks);
+      setFilteredTotal(data.pagination.total);
+      setNextCursor(data.pagination.nextCursor);
+      setCounts(data.counts);
+      cursorRef.current = cursor;
+      setCursorHistory(history);
       feedbacksLoadedRef.current = true;
-      setSelected((current) =>
-        current
-          ? nextFeedbacks.find((item) => item.id === current.id) ?? current
-          : current,
-      );
       return nextFeedbacks;
     } catch (error) {
-      handleRequestError(
+      if (request === listRequestRef.current) handleRequestError(
         error,
         feedbacksLoadedRef.current
           ? "无法连接管理服务，当前显示上次数据"
@@ -158,24 +204,27 @@ export default function AdminPage() {
       );
       return [];
     } finally {
-      setLoading(false);
+      if (request === listRequestRef.current) setLoading(false);
     }
   };
 
   const fetchUnreadCount = async () => {
+    const epoch = authEpochRef.current;
     try {
       const response = await fetch(
         "/anonyproof/api/notifications/unread-count?recipientType=admin&recipientId=admin",
         { credentials: "same-origin" },
       );
       const data = await readApiJson(response);
+      if (epoch !== authEpochRef.current) return;
       setUnreadCount(data.count);
     } catch (error) {
-      handleRequestError(error, "通知数量暂时无法加载");
+      if (epoch === authEpochRef.current) handleRequestError(error, "通知数量暂时无法加载");
     }
   };
 
   const fetchNotifications = async () => {
+    const epoch = authEpochRef.current;
     setNotificationError("");
     try {
       const [countResponse, listResponse] = await Promise.all([
@@ -192,9 +241,11 @@ export default function AdminPage() {
         readApiJson(countResponse),
         readApiJson(listResponse),
       ]);
+      if (epoch !== authEpochRef.current) return;
       setUnreadCount(countData.count);
       setNotifications(listData.notifications);
     } catch (error) {
+      if (epoch !== authEpochRef.current) return;
       if (error instanceof ApiError && error.status === 401) {
         handleRequestError(error, "");
       } else {
@@ -210,21 +261,10 @@ export default function AdminPage() {
     }
   };
 
-  const fetchComments = async (id: string) => {
-    setCommentsLoading(true);
-    setComments([]);
-    try {
-      const response = await fetch(`/anonyproof/api/feedback/${id}/comments`, {
-        credentials: "same-origin",
-      });
-      const data = await readApiJson(response);
-      setComments(data.comments);
-    } catch (error) {
-      handleRequestError(error, "沟通记录暂时无法加载，请稍后重试");
-    } finally {
-      setCommentsLoading(false);
-    }
-  };
+  const commentPages = useCommentPagination<Comment>(authenticated ? "admin" : "logged-out", readApiJson,
+    error => handleRequestError(error, "沟通记录暂时无法加载，请稍后重试"));
+  const { comments, total: commentsTotal, loading: commentsLoading, hasOlder: hasOlderComments, reset: resetComments } = commentPages;
+  const fetchComments = (id: string, mode: "latest" | "older" | "newer" = "latest") => commentPages.load(id, mode);
 
   useEffect(() => {
     fetch("/anonyproof/api/admin/auth/session", {
@@ -233,19 +273,8 @@ export default function AdminPage() {
       .then(async (data) => {
         setAuthenticated(data.authenticated);
         if (data.authenticated) {
-          const items = await fetchData();
           const targetId = new URLSearchParams(window.location.search).get("feedback");
-          const target = targetId
-            ? items.find((item) => item.id === targetId)
-            : undefined;
-          if (target) {
-            setSearch("");
-            setCategory("all");
-            setStatus("all");
-            selectFeedback(target, true);
-          } else if (targetId && feedbacksLoadedRef.current) {
-            syncFeedbackQuery(null);
-          }
+          if (targetId) await selectFeedback(targetId, true);
           fetchNotifications();
         }
       })
@@ -282,23 +311,28 @@ export default function AdminPage() {
     };
   }, [showNotifications]);
 
-  const filtered = useMemo(
-    () =>
-      feedbacks.filter((item) => {
-        const text = `${item.original_content} ${item.device_id}`.toLowerCase();
-        return (
-          (category === "all" || item.category === category) &&
-          (status === "all" || item.status === status) &&
-          (!search.trim() || text.includes(search.toLowerCase().trim()))
-        );
-      }),
-    [feedbacks, category, status, search],
-  );
+  // Filters run against the entire authorized collection, not just this page.
+  // Invalidate an old request immediately so a late response cannot replace a
+  // newer filter/page. Only retain the current page in browser memory and DOM.
+  useEffect(() => {
+    if (!authenticated) return;
+    ++listRequestRef.current;
+    cursorRef.current = null;
+    setCursorHistory([]);
+    setNextCursor(null);
+    setFeedbacks([]);
+    setFilteredTotal(0);
+    setLoading(true);
+    const timer = setTimeout(() => void fetchData(null, []), 250);
+    return () => { clearTimeout(timer); ++listRequestRef.current; };
+  }, [authenticated, category, status, search]);
 
   const clearSelection = (restoreListPosition = false) => {
+    ++selectionRequestRef.current;
+    setDetailLoading(false);
     syncFeedbackQuery(null);
     setSelected(null);
-    setComments([]);
+    resetComments();
     setSolution("");
     if (restoreListPosition) {
       window.requestAnimationFrame(() => {
@@ -308,15 +342,6 @@ export default function AdminPage() {
       });
     }
   };
-
-  useEffect(() => {
-    if (selected && !filtered.some((item) => item.id === selected.id)) {
-      // 后台列表会过滤逐浏览器的演示副本，但通知仍可能指向其中一条。
-      // 此时保留当前详情，避免用户点击通知后详情被立即清空。
-      if (selected.is_demo_clone) return;
-      clearSelection();
-    }
-  }, [filtered, selected]);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -339,7 +364,8 @@ export default function AdminPage() {
       setAuthenticated(true);
       setPassword("");
       setMessage("");
-      fetchData();
+      const targetId = new URLSearchParams(window.location.search).get("feedback");
+      if (targetId) await selectFeedback(targetId, true);
       fetchNotifications();
     } catch {
       setLoginError("无法连接管理服务，请稍后重试");
@@ -349,45 +375,62 @@ export default function AdminPage() {
   };
 
   const selectFeedback = async (
-    item: Feedback,
+    itemOrId: Feedback | string,
     forceReadNotifications = false,
   ) => {
+    const id = typeof itemOrId === "string" ? itemOrId : itemOrId.id;
+    const request = ++selectionRequestRef.current;
     feedbackListScrollTopRef.current =
       feedbackListRef.current?.scrollTop ?? feedbackListScrollTopRef.current;
-    syncFeedbackQuery(item.id);
-    setSelected(item);
+    setDetailLoading(true);
+    setSelected(null);
+    resetComments();
     setSolution("");
     setMessage("");
-    fetchComments(item.id);
-    if (forceReadNotifications || (item.unread_notifications ?? 0) > 0) {
-      try {
-        const response = await fetch(
+    try {
+      // A list row is a summary. Fetch full, authorized detail for every entry,
+      // including URL/notification targets that are outside this page/filter.
+      const response = await fetch(`/anonyproof/api/admin/feedback/${encodeURIComponent(id)}`, {
+        credentials: "same-origin",
+      });
+      const data = await readApiJson(response);
+      if (request !== selectionRequestRef.current) return;
+      const item = data.feedback as Feedback;
+      syncFeedbackQuery(item.id);
+      setSelected(item);
+      setDemoCommentId("");
+      setDemoSolutionId(item.status === "pending" ? "in_progress" : item.status);
+      fetchComments(item.id);
+      const unread = typeof itemOrId === "string" ? 0 : itemOrId.unread_notifications ?? 0;
+      if (!(demoMode && item.is_demo_template) && (forceReadNotifications || unread > 0)) {
+        const readResponse = await fetch(
           `/anonyproof/api/notifications/read-all?recipientType=admin&recipientId=admin&feedbackId=${encodeURIComponent(item.id)}`,
           { method: "PUT", credentials: "same-origin" },
         );
-        await readApiJson(response);
-        setFeedbacks((items) =>
-          items.map((entry) =>
-            entry.id === item.id
-              ? { ...entry, unread_notifications: 0 }
-              : entry,
-          ),
-        );
+        await readApiJson(readResponse);
+        if (request !== selectionRequestRef.current) return;
+        setFeedbacks((items) => items.map((entry) =>
+          entry.id === item.id ? { ...entry, unread_notifications: 0 } : entry));
         await fetchUnreadCount();
-      } catch (error) {
-        handleRequestError(error, "通知状态更新失败");
       }
+    } catch (error) {
+      if (request === selectionRequestRef.current) {
+        syncFeedbackQuery(null);
+        handleRequestError(error, "记录详情暂时无法打开");
+      }
+    } finally {
+      if (request === selectionRequestRef.current) setDetailLoading(false);
     }
   };
 
   const updateStatus = async (nextStatus: Feedback["status"]) => {
-    if (!selected) return;
+    if (!selected || readOnly) return;
     if (selected.status === nextStatus) {
       setMessage("");
       return;
     }
     if (
-      (nextStatus === "resolved" || nextStatus === "no_solution") &&
+      !demoMode && (nextStatus === "resolved" || nextStatus === "no_solution") &&
       solution.trim().length < 10
     ) {
       setMessage("办结或暂无法处理时，请填写至少 10 个字的处理说明");
@@ -395,6 +438,8 @@ export default function AdminPage() {
       return;
     }
     setActionLoading(nextStatus);
+    const epoch = authEpochRef.current;
+    const selection = selectionRequestRef.current;
     try {
       const response = await fetch(
         `/anonyproof/api/admin/feedback/${selected.id}/status`,
@@ -402,20 +447,21 @@ export default function AdminPage() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
-          body: JSON.stringify({ status: nextStatus, solution }),
+          body: JSON.stringify(demoMode ? { status: nextStatus, demoSolutionId } : { status: nextStatus, solution }),
         },
       );
       await readApiJson(response);
+      if (epoch !== authEpochRef.current || selection !== selectionRequestRef.current) return;
       setMessage("");
       setMessageTone("info");
       setSolution("");
       setSelected((current) =>
-        current ? { ...current, status: nextStatus, solution } : current,
+        current ? { ...current, status: nextStatus, solution: demoMode ? demoConfig?.solutions?.find(item => item.id === demoSolutionId)?.content : solution } : current,
       );
       await fetchData();
       fetchNotifications();
     } catch (error) {
-      handleRequestError(error, "状态更新失败，请稍后重试");
+      if (epoch === authEpochRef.current) handleRequestError(error, "状态更新失败，请稍后重试");
     } finally {
       setActionLoading("");
     }
@@ -423,83 +469,43 @@ export default function AdminPage() {
 
   const addComment = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!selected || comment.trim().length < 2) return;
+    if (!selected || readOnly || commentsLoading || (demoMode ? !demoCommentId : comment.trim().length < 2)) return;
+    const request = selectionRequestRef.current, id = selected.id, draft = comment, example = demoCommentId;
     setActionLoading("comment");
     try {
+      const requestKey = pendingActions.begin('admin_comment', id, 'admin', demoMode ? { demoCommentId } : { content: comment.trim() });
       const response = await fetch(
-        `/anonyproof/api/admin/feedback/${selected.id}/comments`,
+        `/anonyproof/api/admin/feedback/${id}/comments`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Idempotency-Key": requestKey },
           credentials: "same-origin",
-          body: JSON.stringify({ content: comment.trim() }),
+          body: JSON.stringify(demoMode ? { demoCommentId } : { content: comment.trim() }),
         },
       );
-      await readApiJson(response);
-      setComment("");
-      await fetchComments(selected.id);
+      const data = await readApiJson(response);
+      pendingActions.complete('admin_comment', id, 'admin');
+      if (request !== selectionRequestRef.current || !commentPages.appendPosted(data.comment, "admin")) return;
+      setComment(value => value === draft ? "" : value);
+      setDemoCommentId(value => value === example ? "" : value);
+      const loaded = await fetchComments(id, "newer");
+      if (request !== selectionRequestRef.current || !loaded) return;
       setMessage("回复已发送");
       setMessageTone("success");
       fetchNotifications();
     } catch (error) {
-      handleRequestError(error, "回复失败，请稍后重试");
+      if (request === selectionRequestRef.current) handleRequestError(error instanceof PendingActionError ? new ApiError(error.message) : error, "回复失败，请稍后重试");
     } finally {
       setActionLoading("");
     }
   };
 
   const markNotificationRead = async (notification: Notification) => {
-    let item = feedbacks.find(
-      (feedback) => feedback.id === notification.feedback_id,
-    );
-    if (!item) {
-      try {
-        const response = await fetch(
-          `/anonyproof/api/admin/feedback/${encodeURIComponent(notification.feedback_id)}`,
-          { credentials: "same-origin" },
-        );
-        const data = await readApiJson(response);
-        item = {
-          ...(data.feedback as Feedback),
-          unread_notifications: 0,
-        };
-        setFeedbacks((items) => [
-          item as Feedback,
-          ...items.filter((entry) => entry.id !== item?.id),
-        ]);
-      } catch (error) {
-        handleRequestError(error, "通知对应的记录暂时无法打开");
-        setShowNotifications(false);
-        return;
-      }
-    }
-    if (item) {
-      if (!filtered.some((feedback) => feedback.id === item.id)) {
-        setSearch("");
-        setCategory("all");
-        setStatus("all");
-      }
-      await selectFeedback(item, !notification.is_read);
-    } else if (!notification.is_read) {
-      try {
-        const response = await fetch(`/anonyproof/api/notifications/${notification.id}/read`, {
-          method: "PUT",
-          credentials: "same-origin",
-        });
-        await readApiJson(response);
-        setNotifications((items) =>
-          items.map((entry) =>
-            entry.id === notification.id ? { ...entry, is_read: 1 } : entry,
-          ),
-        );
-        await fetchUnreadCount();
-      } catch (error) {
-        handleRequestError(error, "通知状态更新失败");
-      }
-    }
+    await selectFeedback(notification.feedback_id, !notification.is_read);
     setShowNotifications(false);
   };
   const markAllNotificationsRead = async () => {
+    const epoch = authEpochRef.current;
     setNotificationError("");
     try {
       const response = await fetch(
@@ -507,9 +513,11 @@ export default function AdminPage() {
         { method: "PUT", credentials: "same-origin" },
       );
       await readApiJson(response);
+      if (epoch !== authEpochRef.current) return;
       setUnreadCount(0);
       setNotifications((items) => items.map((item) => ({ ...item, is_read: 1 })));
     } catch (error) {
+      if (epoch !== authEpochRef.current) return;
       if (error instanceof ApiError && error.status === 401) {
         handleRequestError(error, "");
       } else {
@@ -525,15 +533,8 @@ export default function AdminPage() {
       method: "POST",
       credentials: "same-origin",
     });
-    setAuthenticated(false);
-    setFeedbacks([]);
-    setSelected(null);
-    setNotifications([]);
-    setUnreadCount(0);
-    setShowNotifications(false);
-    setMessage("");
-    feedbacksLoadedRef.current = false;
-    syncFeedbackQuery(null);
+    clearProtectedState();
+    setLoginError("");
   };
 
   if (checking)
@@ -607,22 +608,13 @@ export default function AdminPage() {
               </button>
             </form>
             <p className="admin-auth-footnote">
-              会话仅保留在当前浏览器。
+              会话仅保留在当前浏览器，最长8小时；服务重启后需重新登录。
             </p>
           </div>
         </section>
       </main>
     );
 
-  const counts = {
-    total: feedbacks.length,
-    pending: feedbacks.filter((item) => item.status === "pending").length,
-    processing: feedbacks.filter((item) => item.status === "in_progress")
-      .length,
-    resolved: feedbacks.filter((item) => item.status === "resolved").length,
-    noSolution: feedbacks.filter((item) => item.status === "no_solution")
-      .length,
-  };
   return (
     <main className="admin-shell">
       <header className="admin-topbar">
@@ -635,7 +627,7 @@ export default function AdminPage() {
             <a className="is-active" href="/anonyproof/foorpynona">
               线索管理
             </a>
-            <a href="/anonyproof/access-stats">访问与风控</a>
+            {!demoMode && modeReady && <a href="/anonyproof/access-stats">访问与风控</a>}
           </nav>
           <div className="admin-tools">
             <ExternalLinks linkClassName="admin-external-link" />
@@ -717,7 +709,7 @@ export default function AdminPage() {
           </div>
           <button
             className="admin-secondary-button"
-            onClick={fetchData}
+            onClick={() => void fetchData()}
             disabled={loading}
           >
             {loading ? (
@@ -813,11 +805,11 @@ export default function AdminPage() {
           <section className="admin-list-panel">
             <div className="panel-heading">
               <h2>提交记录</h2>
-              <span>{filtered.length} 条</span>
+              <span>{filteredTotal} 条 · 当前页 {feedbacks.length} 条</span>
             </div>
-            {filtered.length === 0 ? (
+            {feedbacks.length === 0 ? (
               <div className="admin-empty">
-                <strong>暂无匹配提交</strong>
+                <strong>{loading ? "正在加载提交…" : "暂无匹配提交"}</strong>
                 <span>请调整筛选条件。</span>
               </div>
             ) : (
@@ -828,7 +820,7 @@ export default function AdminPage() {
                   feedbackListScrollTopRef.current = event.currentTarget.scrollTop;
                 }}
               >
-                {filtered.map((item) => (
+                {feedbacks.map((item) => (
                   <button
                     key={item.id}
                     className={`feedback-row ${selected?.id === item.id ? "is-selected" : ""}`}
@@ -861,9 +853,24 @@ export default function AdminPage() {
                 ))}
               </div>
             )}
+            <div className="panel-heading" aria-label="提交记录分页">
+              <button type="button" disabled={loading || cursorHistory.length === 0}
+                onClick={() => {
+                  clearSelection();
+                  const previous = cursorHistory.at(-1) ?? null;
+                  void fetchData(previous, cursorHistory.slice(0, -1));
+                }}>上一页</button>
+              <span>第 {cursorHistory.length + 1} 页</span>
+              <button type="button" disabled={loading || !nextCursor}
+                onClick={() => {
+                  if (!nextCursor) return;
+                  clearSelection();
+                  void fetchData(nextCursor, [...cursorHistory, cursorRef.current]);
+                }}>下一页</button>
+            </div>
           </section>
           <aside className="admin-detail-panel">
-            {!selected ? (
+            {detailLoading ? <div className="admin-inline-loading" role="status">正在加载记录详情…</div> : !selected ? (
               <div className="admin-detail-empty">
                 <span className="detail-icon">↗</span>
                 <h2>选择提交记录</h2>
@@ -914,19 +921,28 @@ export default function AdminPage() {
                     </div>
                     <div className="detail-section">
                       <h3>处理说明</h3>
+                      {!modeReady ? <p role="status">{demoError || "正在确认站点模式…"}</p> : demoMode && selected.is_demo_template ? <p>公开合成模板只读。请选择本浏览器沙箱副本体验处理流程。</p> : demoMode ? <>
+                        <label htmlFor="demo-solution">固定演示处理说明</label>
+                        <select id="demo-solution" value={demoSolutionId} onChange={event => setDemoSolutionId(event.target.value)}>
+                          {demoConfig?.solutions?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
+                        </select>
+                        <p>{demoConfig?.solutions?.find(item => item.id === demoSolutionId)?.content}</p>
+                      </> : <>
                       <textarea
                         id="solution"
                         aria-label="处理说明"
+                        maxLength={10000}
                         value={solution}
                         onChange={(event) => setSolution(event.target.value)}
                         placeholder="填写本次核查结论、处理动作或原因"
                         rows={3}
                       />
+                      </>}
                       <div className="status-actions">
                         <button
                           className={`process-action ${selected.status === "in_progress" ? "is-active" : ""}`}
                           aria-pressed={selected.status === "in_progress"}
-                          disabled={Boolean(actionLoading)}
+                          disabled={Boolean(actionLoading) || readOnly || (demoMode && demoSolutionId !== "in_progress")}
                           onClick={() => updateStatus("in_progress")}
                         >
                           {actionLoading === "in_progress"
@@ -936,7 +952,7 @@ export default function AdminPage() {
                         <button
                           className={`success-action ${selected.status === "resolved" ? "is-active" : ""}`}
                           aria-pressed={selected.status === "resolved"}
-                          disabled={Boolean(actionLoading)}
+                          disabled={Boolean(actionLoading) || readOnly || (demoMode && demoSolutionId !== "resolved")}
                           onClick={() => updateStatus("resolved")}
                         >
                           {actionLoading === "resolved"
@@ -946,7 +962,7 @@ export default function AdminPage() {
                         <button
                           className={`muted-action ${selected.status === "no_solution" ? "is-active" : ""}`}
                           aria-pressed={selected.status === "no_solution"}
-                          disabled={Boolean(actionLoading)}
+                          disabled={Boolean(actionLoading) || readOnly || (demoMode && demoSolutionId !== "no_solution")}
                           onClick={() => updateStatus("no_solution")}
                         >
                           {actionLoading === "no_solution"
@@ -958,15 +974,12 @@ export default function AdminPage() {
                   </div>
                   <div className="detail-conversation">
                     <h3>
-                      沟通记录 <span>{comments.length}</span>
+                      沟通记录 <span>{commentsTotal}</span>
                     </h3>
                     <div className="comment-list">
-                      {commentsLoading ? (
-                        <div className="admin-inline-loading">
-                          <span className="spinner" />
-                          正在加载沟通记录…
-                        </div>
-                      ) : comments.length ? (
+                      {commentsLoading && <div className="admin-inline-loading"><span className="spinner" />正在加载沟通记录…</div>}
+                      {hasOlderComments && <button type="button" disabled={commentsLoading || actionLoading === "comment"} onClick={() => selected && fetchComments(selected.id, "older")}>加载较早沟通记录</button>}
+                      {comments.length ? (
                         comments.map((item) => (
                           <div
                             className={`comment ${item.commenter_type === "admin" ? "comment-admin" : ""}`}
@@ -987,22 +1000,31 @@ export default function AdminPage() {
                             <p>{item.content}</p>
                           </div>
                         ))
-                      ) : (
+                      ) : !commentsLoading ? (
                         <p className="empty-inline">暂无补充说明。</p>
-                      )}
+                      ) : null}
                     </div>
+                    <p>发送失败后重试沿用原动作。重新登录后请先检查沟通记录，旧会话动作不能保证去重。</p>
+                    <button type="button" disabled={Boolean(actionLoading) || readOnly} onClick={() => {
+                      if (!selected || !window.confirm('上次回复可能已发送。已检查沟通记录，确定放弃旧动作并另作一次提交吗？')) return;
+                      try { pendingActions.abandon('admin_comment', selected.id, 'admin'); setMessage('已结束旧动作，下次发送作为独立提交。'); setMessageTone('info'); }
+                      catch (error) { handleRequestError(error instanceof PendingActionError ? new ApiError(error.message) : error, '旧动作无法清除。'); }
+                    }}>另作一次提交</button>
                     <form className="comment-form" onSubmit={addComment}>
+                      {readOnly ? <p>{demoMode ? "公开模板只读" : demoError || "正在确认站点模式…"}</p> : demoMode ? <select aria-label="固定演示回复" value={demoCommentId} onChange={event => setDemoCommentId(event.target.value)}><option value="">选择固定演示回复</option>{demoConfig?.adminComments?.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select> : <>
                       <input
                         value={comment}
+                        maxLength={1000}
                         onChange={(event) => setComment(event.target.value)}
                         placeholder="输入回复内容"
                         aria-label="回复内容"
                       />
+                      </>}
                       <button
                         type="submit"
                         disabled={
-                          actionLoading === "comment" ||
-                          comment.trim().length < 2
+                          actionLoading === "comment" || commentsLoading || readOnly ||
+                          (demoMode ? !demoCommentId : comment.trim().length < 2)
                         }
                       >
                         {actionLoading === "comment" ? "正在发送…" : "发送"}

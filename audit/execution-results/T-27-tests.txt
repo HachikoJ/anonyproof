@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: T-27: only explicit canonical origin configuration is accepted
+ok 1 - T-27: only explicit canonical origin configuration is accepted
+  ---
+  duration_ms: 1.184083
+  type: 'test'
+  ...
+# Subtest: T-27: actual CORS preflight/read responses expose only approved exact origins
+ok 2 - T-27: actual CORS preflight/read responses expose only approved exact origins
+  ---
+  duration_ms: 40.133917
+  type: 'test'
+  ...
+# Subtest: T-27: actual production backend rejects missing or invalid origin configuration
+ok 3 - T-27: actual production backend rejects missing or invalid origin configuration
+  ---
+  duration_ms: 2453.055541
+  type: 'test'
+  ...
+# Subtest: T-27: product backend preflight and authenticated reads use the exact configured origins
+ok 4 - T-27: product backend preflight and authenticated reads use the exact configured origins
+  ---
+  duration_ms: 467.111333
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3275.222041

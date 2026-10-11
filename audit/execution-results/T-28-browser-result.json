@@ -1,0 +1,24 @@
+{
+  "task": "T-28",
+  "date": "2026-10-08T08:22:24.819593+00:00",
+  "fixtureOnly": true,
+  "browser": "Codex in-app browser",
+  "observations": [
+    "text submission succeeded and generated record",
+    "record visible after recovery/restart",
+    "user text supplement visible",
+    "admin login, status changed to in_progress and reply succeeded",
+    "user reload shows in_progress and both comments"
+  ],
+  "resourceInventory": {
+    "source": "documented pageAssets.list resource observations at user detail/admin detail/refreshed user list",
+    "userDetailResources": 14,
+    "adminDetailResources": 18,
+    "independentUserDetailResources": 15,
+    "externalOrigins": [],
+    "fileInputs": 0,
+    "imgbbOrImgurRequests": 0,
+    "uploadLocalRequests": 0
+  },
+  "limitation": "Inventory covers these observed UI flows; no real files uploaded and no claim of implemented attachment support"
+}

@@ -1,0 +1,4 @@
+anonyproof@0.1.0 /Users/wilson/Documents/Codex/anonyproof
+├── next@16.3.6
+├── react-dom@18.3.1
+└── react@18.3.1

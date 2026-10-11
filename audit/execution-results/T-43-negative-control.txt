@@ -1,0 +1,12 @@
+Isolated library negative control only; not a live-site probe or evidence of its production exploitability.
+Initial attempt failed because renamed backup trees no longer have the node_modules basename; module resolution fixed only for this child using NODE_PATH pointing at the retained trees. Backup files were not rewritten.
+Retained2.0.7 vs installed2.0.8: short-prefix mapped/native-IPv6 subnets with IPv4 and mapped-IPv4 candidates.
+{"tree":"root","subnet":"::ffff:10.0.0.0/8","address":"192.0.2.1","before":true,"after":false}
+{"tree":"root","subnet":"::ffff:10.0.0.0/8","address":"::ffff:192.0.2.1","before":true,"after":false}
+{"tree":"root","subnet":"::/1","address":"192.0.2.1","before":true,"after":false}
+{"tree":"root","subnet":"::/1","address":"::ffff:192.0.2.1","before":true,"after":false}
+{"tree":"server","subnet":"::ffff:10.0.0.0/8","address":"192.0.2.1","before":true,"after":false}
+{"tree":"server","subnet":"::ffff:10.0.0.0/8","address":"::ffff:192.0.2.1","before":true,"after":false}
+{"tree":"server","subnet":"::/1","address":"192.0.2.1","before":true,"after":false}
+{"tree":"server","subnet":"::/1","address":"::ffff:192.0.2.1","before":true,"after":false}
+EXIT: 0

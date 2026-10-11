@@ -1,0 +1,54 @@
+{
+  "task": "T-36",
+  "stage": "S4",
+  "baselineHead": "b86e79873b2b9c144f378af8b97a3dc1ea02b70b",
+  "registrars": [
+    "registerPublicRoutes",
+    "registerAdminRoutes",
+    "registerAccessRoutes",
+    "registerIdentityRoutes",
+    "registerBusinessRoutes",
+    "registerFinalErrorHandler"
+  ],
+  "registrationCount": 43,
+  "allRegistrationCallsExactAst": true,
+  "movedHelpersExactAst": [
+    "readFeedback",
+    "readComment",
+    "readNotification",
+    "mutationScope",
+    "idempotencyHeader",
+    "sendIdempotencyError",
+    "adminRecordScope",
+    "userRecordScope",
+    "notificationVisibilitySql",
+    "notificationRecordVisible",
+    "logAdminAction",
+    "updateStats",
+    "addFeedbackComment",
+    "createNotification",
+    "identityCapacityErrorHandler"
+  ],
+  "sqlLiteralFragments": 56,
+  "sqlLiteralFragmentsByteExact": true,
+  "cursorAnchors": [
+    {
+      "name": "initializeAdminCursorIndex",
+      "precedingRegistrations": 27,
+      "call": "initializeAdminCursorIndex(db);"
+    },
+    {
+      "name": "initializeCommentCursorIndex",
+      "precedingRegistrations": 32,
+      "call": "initializeCommentCursorIndex(db);"
+    },
+    {
+      "name": "initializeDeviceCursorIndex",
+      "precedingRegistrations": 35,
+      "call": "initializeDeviceCursorIndex(db);"
+    }
+  ],
+  "routesTopLevelRuntimeInitializers": 0,
+  "entryListenClosureExactAst": true,
+  "moduleEvaluationNote": "Existing index -> accessStats -> database -> instanceIsolation -> demo still evaluates database/demo first. Rate limiter still imported by index before auth factory. Newly moved pagination modules contain declarations only; validation has fixed literal constants only. routes.ts has no top-level runtime initializer; no new timer/listener/DB singleton."
+}

@@ -72,7 +72,7 @@ function getRequestErrorMessage(error: unknown, fallback: string) {
 }
 
 export default function AccessStatsPage() {
-  const { config: demoConfig } = useDemoConfig()
+  const { config: demoConfig, loading: demoLoading, error: demoError } = useDemoConfig()
   const notificationPanelRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLElement>(null)
   const dataLoadedRef = useRef(false)
@@ -404,7 +404,13 @@ export default function AccessStatsPage() {
     }
   }
 
-  if (checking) {
+  if (!demoLoading && (!demoConfig || demoConfig.demoMode)) {
+    return <main className="admin-auth-page"><section className="admin-auth-card">
+      <h1>访问统计不可用</h1><p>{demoConfig?.demoMode ? '公开演示不开放原始访问日志、IP 和风控数据。可在管理台体验合成案例。' : demoError}</p>
+      <a href="/anonyproof/foorpynona">返回管理台</a>
+    </section></main>
+  }
+  if (checking || demoLoading) {
     return (
       <div className="admin-loading">
         <span className="spinner" />

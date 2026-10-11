@@ -1,0 +1,2612 @@
+{
+  "date": "2026-10-08",
+  "repository": "https://github.com/HachikoJ/anonyproof",
+  "baseCommit": "67a344af597bbeb3ec5f8ee3e6dbb7fcb2d697ba",
+  "candidateCommit": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb",
+  "candidateBranch": "codex/fix-plan-ci-20261008",
+  "commitCount": 39,
+  "commits": [
+    "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb docs(T-18): audit every repair task against acceptance evidence and remaining gates",
+    "fb978d5cdf311559991aa635fe9190b88d7a494d test(T-18): verify current Node20 clean install and repair regression gate",
+    "dac38cea30fdbac0c2d23ec6a879bd76cd1c51bf prep(T-28,T-29): verify exact unsupported-upload archive scope for confirmation",
+    "a872e8435d50ef9f59f5bc30a1e4d548c1c7b816 docs(T-32): align remaining-gate note with final 34-test acceptance",
+    "a391c00ee043e80800b23b5f6e6df327d5db7356 prep(T-32): verify isolated candidate conversion, authentication and rollback",
+    "8d7c5ee2a1d7fff5638f0d311e38fd5371235693 prep(T-35): record exact deployment preview and asset disposition for approval",
+    "b1ad195351518a7c371778ecdfa0fb8160898611 prep(T-32): add verified readonly migration inventory; conversion pending decisions",
+    "51b724f1e27de6bd05f35caf5c9dfcb01369deb3 docs(T-03): verify online SQLite backup and independent key recovery guide",
+    "694bcb81c612d1d2b5998a4543215027006c32fc docs(T-01): align deployment guidance with approved synthetic sandbox",
+    "d7386ab648612cfb3f2eab8cde16a7c71dec3a4b fix(T-31): expose verified quota settings and warn on obsolete limit",
+    "f415e017bdf754a0834a6b0e43424a7a4af533f4 fix(T-05): bound identity issuance and durable demo resources",
+    "13ac3db120ee27e2d7fa44417d60e528f967bca1 docs(T-30): mark unused API_TOKEN as deprecated without auth claims",
+    "db8adc513939456a5a61fac843ce188a91c0e502 fix(T-07): limit user comments by caller and source across records",
+    "8a941c5f48d75d917e30138c0fba4678e5f8011c fix(T-06): enforce source and verified identity submission quotas",
+    "16399cc150b8f5757088f12d7d821c595afdc6da fix(T-08): bound all recovery attempts before credential issuance",
+    "a1e8a9183b50877129ab170d1fc0ede804317e7a fix(T-26): guard unsafe cookie writes by exact origin; identity migration pending",
+    "e888ab3d45dfd31be2ae8cf5aa445f5e823f7993 fix(T-15): patch Next with verified minimal compatible release",
+    "be05ea4e2229ee5f92ba662fb341e5ff2b133e77 fix(T-04): retire client Base64 encryption fallback",
+    "3592264d3eea773581b6977216d736e304e6c778 fix(T-03): encrypt new formal content with an independent server key",
+    "903db49b13665fcd00d447db4547f1a884c4df8e fix(T-03): read explicit authenticated storage versions compatibly",
+    "69b634fd95e38b61ad71774e1d2bca608738829b fix(T-27): require explicit exact CORS origins",
+    "6349e17dd2e7aa9b1712857b60d0fb17ff9b9213 fix(T-41): commit required business writes atomically",
+    "b407c0d9a5ba0b9d30de8f8f61b40d118e6a703f fix(T-01): restrict public demo to synthetic browser sandboxes",
+    "6e4ba13bdeab944ffcb351628668315bf7314e17 fix(T-19): report the actual reused fixture database",
+    "e71cb9b59a86e67a49653ea6d3c17321877fd72d fix(T-03): prepare authenticated content encryption codec",
+    "ff37035a3ded533e298574b1038a8ee523659278 fix(T-18): compile actual backend entrypoints in CI",
+    "4f18482b2ec9d1a3f114f3ee7183176018bafacd fix(T-20): disable caching for private API responses",
+    "b59f7b9f1598dc412d6045e5140a70c8e4466391 fix(T-43): patch proxy address trust classification",
+    "68804dd23d7533117559feae9d5a9eb71901044a fix(T-10): increment access statistics without full scans",
+    "b6c1ad097835763c74fe2a0fb55d404b7ed8916a fix(T-09): limit all administrator login attempts",
+    "31f50f073fc1e39a28d66a5333f402ba6c7d5ac4 fix(T-14): enforce approved solution size boundary",
+    "9441e29435b6b943458232505c9d0ea86b92c395 fix(T-40): strictly bound notification list limits",
+    "c4fda89101a7cd5618af57781cf411183d46a47c fix(T-17): patch IP address parsing dependency",
+    "4e411ee84bfff6e10555258b335945e26e1fcf45 fix(T-13): bound and validate both comment inputs",
+    "87224b199215a72bf78ec6d048e8d69d27a70e6a fix(T-18): exercise backend runtime and repair tests in CI",
+    "8095f43582567ef682e8e324ddd2a45b58e1f2b9 fix(T-16): patch HTTP parsing and route dependencies",
+    "7f47812e092a79850032916b7617c6d8711409ae fix(T-12): validate feedback before business writes",
+    "d08b0a285a3be5dd0cd6244edb68c04e4feaa573 fix(T-19): verify runtime and isolated backend startup",
+    "b9281837d782428d0e50cef0d1095694573bd18c docs(T-19): record execution baseline and pending decisions"
+  ],
+  "fileChanges": [
+    "M\t.env.example",
+    "M\t.github/workflows/ci.yml",
+    "M\tDEPLOY.md",
+    "A\tFIX_PLAN.md",
+    "M\tREADME.md",
+    "M\tapp/access-stats/page.tsx",
+    "M\tapp/foorpynona/page.tsx",
+    "M\tapp/hooks/useCrypto.ts",
+    "M\tapp/hooks/useDemoConfig.ts",
+    "M\tapp/page.tsx",
+    "A\taudit/execution-baseline/backend-start.txt",
+    "A\taudit/execution-baseline/backend-type.txt",
+    "A\taudit/execution-baseline/build.txt",
+    "A\taudit/execution-baseline/diff-check.txt",
+    "A\taudit/execution-baseline/frontend-type.txt",
+    "A\taudit/execution-baseline/git-head.txt",
+    "A\taudit/execution-baseline/git-status.txt",
+    "A\taudit/execution-baseline/lint.txt",
+    "A\taudit/execution-results/N-04-next-patch-registry.json",
+    "A\taudit/execution-results/T-01-backend-tests.txt",
+    "A\taudit/execution-results/T-01-backend-type.txt",
+    "A\taudit/execution-results/T-01-browser-db.txt",
+    "A\taudit/execution-results/T-01-browser.txt",
+    "A\taudit/execution-results/T-01-build.txt",
+    "A\taudit/execution-results/T-01-dev-lock-conflict.txt",
+    "A\taudit/execution-results/T-01-docs-reconciliation.txt",
+    "A\taudit/execution-results/T-01-frontend-type.txt",
+    "A\taudit/execution-results/T-01-parent-tests.txt",
+    "A\taudit/execution-results/T-03-backup-guide-console-normalization.json",
+    "A\taudit/execution-results/T-03-backup-guide-regressions.txt",
+    "A\taudit/execution-results/T-03-backup-guide-tests.txt",
+    "A\taudit/execution-results/T-03-backup-guide-type.txt",
+    "A\taudit/execution-results/T-03-browser-db-assert.txt",
+    "A\taudit/execution-results/T-03-browser-fixture.json",
+    "A\taudit/execution-results/T-03-browser-verification.txt",
+    "A\taudit/execution-results/T-03-docs-reconciliation.txt",
+    "A\taudit/execution-results/T-03-module-backend-type.txt",
+    "A\taudit/execution-results/T-03-module-design.md",
+    "A\taudit/execution-results/T-03-module-frontend-type.txt",
+    "A\taudit/execution-results/T-03-module-tests.txt",
+    "A\taudit/execution-results/T-03-parent-module-tests.txt",
+    "A\taudit/execution-results/T-03-reader-backend-type.txt",
+    "A\taudit/execution-results/T-03-reader-build.txt",
+    "A\taudit/execution-results/T-03-reader-frontend-type.txt",
+    "A\taudit/execution-results/T-03-reader-regressions.txt",
+    "A\taudit/execution-results/T-03-reader-tests.txt",
+    "A\taudit/execution-results/T-03-writer-backend-type.txt",
+    "A\taudit/execution-results/T-03-writer-build.txt",
+    "A\taudit/execution-results/T-03-writer-first-tests.txt",
+    "A\taudit/execution-results/T-03-writer-frontend-type.txt",
+    "A\taudit/execution-results/T-03-writer-regressions.txt",
+    "A\taudit/execution-results/T-03-writer-storage-tests.txt",
+    "A\taudit/execution-results/T-03-writer-tests.txt",
+    "A\taudit/execution-results/T-04-backend-type.txt",
+    "A\taudit/execution-results/T-04-browser-db-assert.txt",
+    "A\taudit/execution-results/T-04-browser-fixture.json",
+    "A\taudit/execution-results/T-04-browser-network.json",
+    "A\taudit/execution-results/T-04-build.txt",
+    "A\taudit/execution-results/T-04-frontend-type.txt",
+    "A\taudit/execution-results/T-04-regressions.txt",
+    "A\taudit/execution-results/T-04-tests.txt",
+    "A\taudit/execution-results/T-05-backend-type.txt",
+    "A\taudit/execution-results/T-05-before.txt",
+    "A\taudit/execution-results/T-05-console-normalization.json",
+    "A\taudit/execution-results/T-05-frontend-type.txt",
+    "A\taudit/execution-results/T-05-regressions.txt",
+    "A\taudit/execution-results/T-05-tests.txt",
+    "A\taudit/execution-results/T-06-backend-type.txt",
+    "A\taudit/execution-results/T-06-before.txt",
+    "A\taudit/execution-results/T-06-console-normalization.json",
+    "A\taudit/execution-results/T-06-frontend-type.txt",
+    "A\taudit/execution-results/T-06-regressions.txt",
+    "A\taudit/execution-results/T-06-tests.txt",
+    "A\taudit/execution-results/T-07-backend-type.txt",
+    "A\taudit/execution-results/T-07-before.txt",
+    "A\taudit/execution-results/T-07-console-normalization.json",
+    "A\taudit/execution-results/T-07-frontend-type-final.txt",
+    "A\taudit/execution-results/T-07-frontend-type.txt",
+    "A\taudit/execution-results/T-07-regressions.txt",
+    "A\taudit/execution-results/T-07-tests.txt",
+    "A\taudit/execution-results/T-08-backend-type.txt",
+    "A\taudit/execution-results/T-08-before.txt",
+    "A\taudit/execution-results/T-08-console-normalization.json",
+    "A\taudit/execution-results/T-08-frontend-type-initial.txt",
+    "A\taudit/execution-results/T-08-frontend-type.txt",
+    "A\taudit/execution-results/T-08-harness-initial.txt",
+    "A\taudit/execution-results/T-08-regressions.txt",
+    "A\taudit/execution-results/T-08-tests.txt",
+    "A\taudit/execution-results/T-09-backend-type.txt",
+    "A\taudit/execution-results/T-09-diff.txt",
+    "A\taudit/execution-results/T-09-frontend-type.txt",
+    "A\taudit/execution-results/T-09-summary.txt",
+    "A\taudit/execution-results/T-09-tests.txt",
+    "A\taudit/execution-results/T-10-actual-backend-type.txt",
+    "A\taudit/execution-results/T-10-backend-type.txt",
+    "A\taudit/execution-results/T-10-bench.txt",
+    "A\taudit/execution-results/T-10-benchmark.json",
+    "A\taudit/execution-results/T-10-build.txt",
+    "A\taudit/execution-results/T-10-frontend-type.txt",
+    "A\taudit/execution-results/T-10-query-plan.txt",
+    "A\taudit/execution-results/T-10-summary.txt",
+    "A\taudit/execution-results/T-10-tests.txt",
+    "A\taudit/execution-results/T-12-backend-type.txt",
+    "A\taudit/execution-results/T-12-frontend-type.txt",
+    "A\taudit/execution-results/T-12-tests.txt",
+    "A\taudit/execution-results/T-13-backend-type.txt",
+    "A\taudit/execution-results/T-13-browser.txt",
+    "A\taudit/execution-results/T-13-build.txt",
+    "A\taudit/execution-results/T-13-frontend-type.txt",
+    "A\taudit/execution-results/T-13-tests.txt",
+    "A\taudit/execution-results/T-14-backend-type.txt",
+    "A\taudit/execution-results/T-14-browser.txt",
+    "A\taudit/execution-results/T-14-build.txt",
+    "A\taudit/execution-results/T-14-frontend-type.txt",
+    "A\taudit/execution-results/T-14-tests.txt",
+    "A\taudit/execution-results/T-15-browser-fixture.json",
+    "A\taudit/execution-results/T-15-browser-verification.txt",
+    "A\taudit/execution-results/T-15-console-normalization.json",
+    "A\taudit/execution-results/T-15-final-frontend-type.txt",
+    "A\taudit/execution-results/T-15-isolated-backend-type.txt",
+    "A\taudit/execution-results/T-15-isolated-build.txt",
+    "A\taudit/execution-results/T-15-isolated-frontend-start.txt",
+    "A\taudit/execution-results/T-15-isolated-frontend-type.txt",
+    "A\taudit/execution-results/T-15-isolated-http-smoke.txt",
+    "A\taudit/execution-results/T-15-isolated-lock-diff.json",
+    "A\taudit/execution-results/T-15-isolated-proxy-build.txt",
+    "A\taudit/execution-results/T-15-isolated-regressions.txt",
+    "A\taudit/execution-results/T-15-isolated-root-audit.json",
+    "A\taudit/execution-results/T-15-isolated-root-install.txt",
+    "A\taudit/execution-results/T-15-isolated-runtime.txt",
+    "A\taudit/execution-results/T-15-isolated-server-install.txt",
+    "A\taudit/execution-results/T-15-isolated-summary.md",
+    "A\taudit/execution-results/T-15-isolated-versions.txt",
+    "A\taudit/execution-results/T-15-isolated.patch",
+    "A\taudit/execution-results/T-15-main-backend-script-type.txt",
+    "A\taudit/execution-results/T-15-main-backend-type.txt",
+    "A\taudit/execution-results/T-15-main-backup.json",
+    "A\taudit/execution-results/T-15-main-build.txt",
+    "A\taudit/execution-results/T-15-main-frontend-start.txt",
+    "A\taudit/execution-results/T-15-main-frontend-type.txt",
+    "A\taudit/execution-results/T-15-main-http-smoke.txt",
+    "A\taudit/execution-results/T-15-main-install.txt",
+    "A\taudit/execution-results/T-15-main-proxy-build.txt",
+    "A\taudit/execution-results/T-15-main-regressions.txt",
+    "A\taudit/execution-results/T-15-main-root-audit.json",
+    "A\taudit/execution-results/T-15-main-runtime.txt",
+    "A\taudit/execution-results/T-15-main-server-audit.json",
+    "A\taudit/execution-results/T-15-main-versions.txt",
+    "A\taudit/execution-results/T-15-official-registry.json",
+    "A\taudit/execution-results/T-15-rollback-rehearsal.txt",
+    "A\taudit/execution-results/T-15-rollback-server.txt",
+    "A\taudit/execution-results/T-16-backend-type.txt",
+    "A\taudit/execution-results/T-16-build.txt",
+    "A\taudit/execution-results/T-16-frontend-type.txt",
+    "A\taudit/execution-results/T-16-root-audit.json",
+    "A\taudit/execution-results/T-16-root-install.txt",
+    "A\taudit/execution-results/T-16-root-tree.txt",
+    "A\taudit/execution-results/T-16-server-audit.json",
+    "A\taudit/execution-results/T-16-server-install.txt",
+    "A\taudit/execution-results/T-16-server-tree.txt",
+    "A\taudit/execution-results/T-16-summary.txt",
+    "A\taudit/execution-results/T-16-tests.txt",
+    "A\taudit/execution-results/T-17-backend-type.txt",
+    "A\taudit/execution-results/T-17-frontend-type.txt",
+    "A\taudit/execution-results/T-17-server-audit.json",
+    "A\taudit/execution-results/T-17-server-install.txt",
+    "A\taudit/execution-results/T-17-server-tree.txt",
+    "A\taudit/execution-results/T-17-summary.txt",
+    "A\taudit/execution-results/T-17-tests.txt",
+    "A\taudit/execution-results/T-18-backend-glob-node20.txt",
+    "A\taudit/execution-results/T-18-checkout.txt",
+    "A\taudit/execution-results/T-18-current-action-refs.json",
+    "A\taudit/execution-results/T-18-current-actual-backend-type.txt",
+    "A\taudit/execution-results/T-18-current-all-repair-tests.txt",
+    "A\taudit/execution-results/T-18-current-audit-gate.txt",
+    "A\taudit/execution-results/T-18-current-build.txt",
+    "A\taudit/execution-results/T-18-current-cache-seed.json",
+    "A\taudit/execution-results/T-18-current-checkout.json",
+    "A\taudit/execution-results/T-18-current-frontend-type.txt",
+    "A\taudit/execution-results/T-18-current-node20.md",
+    "A\taudit/execution-results/T-18-current-root-audit.json",
+    "A\taudit/execution-results/T-18-current-root-ci.txt",
+    "A\taudit/execution-results/T-18-current-root-tree.txt",
+    "A\taudit/execution-results/T-18-current-runtime.txt",
+    "A\taudit/execution-results/T-18-current-server-audit.json",
+    "A\taudit/execution-results/T-18-current-server-ci.txt",
+    "A\taudit/execution-results/T-18-current-server-existing-type.txt",
+    "A\taudit/execution-results/T-18-current-server-tree.txt",
+    "A\taudit/execution-results/T-18-dependency-audit.txt",
+    "A\taudit/execution-results/T-18-local-workflow.txt",
+    "A\taudit/execution-results/T-18-remote-ref-check.txt",
+    "A\taudit/execution-results/T-18-startup-fault.txt",
+    "A\taudit/execution-results/T-18-verification.txt",
+    "A\taudit/execution-results/T-19-backend-type.txt",
+    "A\taudit/execution-results/T-19-build.txt",
+    "A\taudit/execution-results/T-19-fixture-reuse.txt",
+    "A\taudit/execution-results/T-19-frontend-type.txt",
+    "A\taudit/execution-results/T-19-installation.txt",
+    "A\taudit/execution-results/T-19-runtime.txt",
+    "A\taudit/execution-results/T-19-tests.txt",
+    "A\taudit/execution-results/T-19-wrong-abi.txt",
+    "A\taudit/execution-results/T-20-backend-type.txt",
+    "A\taudit/execution-results/T-20-frontend-type.txt",
+    "A\taudit/execution-results/T-20-initial-tests.txt",
+    "A\taudit/execution-results/T-20-tests.txt",
+    "A\taudit/execution-results/T-26-backend-type.txt",
+    "A\taudit/execution-results/T-26-browser-fixture.json",
+    "A\taudit/execution-results/T-26-browser-network.json",
+    "A\taudit/execution-results/T-26-browser-verification.txt",
+    "A\taudit/execution-results/T-26-build-final.txt",
+    "A\taudit/execution-results/T-26-build.txt",
+    "A\taudit/execution-results/T-26-console-normalization.json",
+    "A\taudit/execution-results/T-26-frontend-type.txt",
+    "A\taudit/execution-results/T-26-main-frontend-start.txt",
+    "A\taudit/execution-results/T-26-main-proxy-build.txt",
+    "A\taudit/execution-results/T-26-normal-browser-db-verification.txt",
+    "A\taudit/execution-results/T-26-normal-browser-fixture.json",
+    "A\taudit/execution-results/T-26-normal-browser-verification.txt",
+    "A\taudit/execution-results/T-26-production-proxy-smoke.txt",
+    "A\taudit/execution-results/T-26-regressions.txt",
+    "A\taudit/execution-results/T-26-unsafe-route-tests.txt",
+    "A\taudit/execution-results/T-27-backend-type.txt",
+    "A\taudit/execution-results/T-27-browser-network.json",
+    "A\taudit/execution-results/T-27-browser-urls.json",
+    "A\taudit/execution-results/T-27-frontend-type.txt",
+    "A\taudit/execution-results/T-27-regressions.txt",
+    "A\taudit/execution-results/T-27-tests.txt",
+    "A\taudit/execution-results/T-28-T-29-asset-proposal.json",
+    "A\taudit/execution-results/T-28-T-29-disposition-proposal.md",
+    "A\taudit/execution-results/T-28-T-29-proposal-check.txt",
+    "A\taudit/execution-results/T-30-active-docs.txt",
+    "A\taudit/execution-results/T-30-runtime-lookup.txt",
+    "A\taudit/execution-results/T-30-verification.txt",
+    "A\taudit/execution-results/T-31-backend-type.txt",
+    "A\taudit/execution-results/T-31-before.txt",
+    "A\taudit/execution-results/T-31-config-lookup.txt",
+    "A\taudit/execution-results/T-31-console-normalization.json",
+    "A\taudit/execution-results/T-31-frontend-type.txt",
+    "A\taudit/execution-results/T-31-regressions.txt",
+    "A\taudit/execution-results/T-31-tests.txt",
+    "A\taudit/execution-results/T-32-candidate-backend-and-scripts-type.txt",
+    "A\taudit/execution-results/T-32-candidate-complete-prep-tests.txt",
+    "A\taudit/execution-results/T-32-candidate-complete-prep-type.txt",
+    "A\taudit/execution-results/T-32-candidate-design.md",
+    "A\taudit/execution-results/T-32-candidate-final-tests.txt",
+    "A\taudit/execution-results/T-32-candidate-final-type.txt",
+    "A\taudit/execution-results/T-32-candidate-first-tests.txt",
+    "A\taudit/execution-results/T-32-candidate-first-type.txt",
+    "A\taudit/execution-results/T-32-candidate-related-tests.txt",
+    "A\taudit/execution-results/T-32-candidate-tests.txt",
+    "A\taudit/execution-results/T-32-candidate-verification.json",
+    "A\taudit/execution-results/T-32-inventory-console-normalization.json",
+    "A\taudit/execution-results/T-32-inventory-related-tests.txt",
+    "A\taudit/execution-results/T-32-inventory-tests-final.txt",
+    "A\taudit/execution-results/T-32-inventory-tests.txt",
+    "A\taudit/execution-results/T-32-inventory-type-final.txt",
+    "A\taudit/execution-results/T-32-inventory-type.txt",
+    "A\taudit/execution-results/T-35-assets.json",
+    "A\taudit/execution-results/T-35-proposal-check.txt",
+    "A\taudit/execution-results/T-35-proposal.md",
+    "A\taudit/execution-results/T-40-backend-type.txt",
+    "A\taudit/execution-results/T-40-diff.txt",
+    "A\taudit/execution-results/T-40-frontend-type.txt",
+    "A\taudit/execution-results/T-40-summary.txt",
+    "A\taudit/execution-results/T-40-tests.txt",
+    "A\taudit/execution-results/T-41-after-tests.txt",
+    "A\taudit/execution-results/T-41-backend-type.txt",
+    "A\taudit/execution-results/T-41-before-tests.txt",
+    "A\taudit/execution-results/T-41-build.txt",
+    "A\taudit/execution-results/T-41-design.md",
+    "A\taudit/execution-results/T-41-feedback-step.txt",
+    "A\taudit/execution-results/T-41-frontend-type.txt",
+    "A\taudit/execution-results/T-41-regressions.txt",
+    "A\taudit/execution-results/T-43-actual-backend-glob.txt",
+    "A\taudit/execution-results/T-43-actual-backend-type.txt",
+    "A\taudit/execution-results/T-43-backend-type.txt",
+    "A\taudit/execution-results/T-43-checkout.txt",
+    "A\taudit/execution-results/T-43-diff.txt",
+    "A\taudit/execution-results/T-43-frontend-type.txt",
+    "A\taudit/execution-results/T-43-lock-scope.txt",
+    "A\taudit/execution-results/T-43-main-backup.txt",
+    "A\taudit/execution-results/T-43-main-root-audit.txt",
+    "A\taudit/execution-results/T-43-main-root-install.txt",
+    "A\taudit/execution-results/T-43-main-runtime.txt",
+    "A\taudit/execution-results/T-43-main-server-audit.txt",
+    "A\taudit/execution-results/T-43-main-server-install.txt",
+    "A\taudit/execution-results/T-43-main-server-tree.txt",
+    "A\taudit/execution-results/T-43-main-tree.txt",
+    "A\taudit/execution-results/T-43-negative-control-initial.txt",
+    "A\taudit/execution-results/T-43-negative-control.txt",
+    "A\taudit/execution-results/T-43-parent-integration.txt",
+    "A\taudit/execution-results/T-43-registry.txt",
+    "A\taudit/execution-results/T-43-root-audit.txt",
+    "A\taudit/execution-results/T-43-root-install.txt",
+    "A\taudit/execution-results/T-43-root-tree.txt",
+    "A\taudit/execution-results/T-43-runtime.txt",
+    "A\taudit/execution-results/T-43-server-audit.txt",
+    "A\taudit/execution-results/T-43-server-install.txt",
+    "A\taudit/execution-results/T-43-server-tree.txt",
+    "A\taudit/execution-results/T-43-summary.txt",
+    "A\taudit/execution-results/T-43-tests.txt",
+    "A\taudit/execution-results/task-closure-audit.json",
+    "A\taudit/execution-results/task-closure-audit.md",
+    "A\taudit/execution-results/task-closure-dependencies.json",
+    "A\taudit/execution-results/task-closure-nginx-environment.json",
+    "M\tdocs/DEPLOYMENT.md",
+    "M\tpackage-lock.json",
+    "M\tpackage.json",
+    "M\tscripts/README.md",
+    "A\tscripts/check-runtime.cjs",
+    "A\tscripts/content-migration-candidate.ts",
+    "A\tscripts/content-migration-inventory.ts",
+    "M\tscripts/start.sh",
+    "M\tserver/demo.ts",
+    "M\tserver/index.ts",
+    "M\tserver/middleware/accessStats.ts",
+    "M\tserver/middleware/rateLimit.ts",
+    "A\tserver/middleware/requestOrigin.ts",
+    "M\tserver/package-lock.json",
+    "M\tserver/utils/accessStats.ts",
+    "A\tserver/utils/contentEncryption.ts",
+    "M\tserver/utils/validation.ts",
+    "A\ttests/fix/T-01.test.ts",
+    "A\ttests/fix/T-03.browser-assert.ts",
+    "A\ttests/fix/T-03.browser.ts",
+    "A\ttests/fix/T-03.test.ts",
+    "A\ttests/fix/T-04.browser-assert.ts",
+    "A\ttests/fix/T-04.browser.ts",
+    "A\ttests/fix/T-04.fixture.ts",
+    "A\ttests/fix/T-04.test.ts",
+    "A\ttests/fix/T-05.test.ts",
+    "A\ttests/fix/T-06.test.ts",
+    "A\ttests/fix/T-07.test.ts",
+    "A\ttests/fix/T-08.test.ts",
+    "A\ttests/fix/T-09.test.ts",
+    "A\ttests/fix/T-10.bench.ts",
+    "A\ttests/fix/T-10.test.ts",
+    "A\ttests/fix/T-12.test.ts",
+    "A\ttests/fix/T-13.test.ts",
+    "A\ttests/fix/T-14.test.ts",
+    "A\ttests/fix/T-15.browser.ts",
+    "A\ttests/fix/T-15.rollback.ts",
+    "A\ttests/fix/T-15.smoke.ts",
+    "A\ttests/fix/T-16.test.ts",
+    "A\ttests/fix/T-17.test.ts",
+    "A\ttests/fix/T-19.test.ts",
+    "A\ttests/fix/T-20.test.ts",
+    "A\ttests/fix/T-26.browser-assert.ts",
+    "A\ttests/fix/T-26.browser.ts",
+    "A\ttests/fix/T-26.normal-browser.ts",
+    "A\ttests/fix/T-26.test.ts",
+    "A\ttests/fix/T-27.browser.ts",
+    "A\ttests/fix/T-27.test.ts",
+    "A\ttests/fix/T-31.test.ts",
+    "A\ttests/fix/T-32-candidate.test.ts",
+    "A\ttests/fix/T-32.test.ts",
+    "A\ttests/fix/T-40.test.ts",
+    "A\ttests/fix/T-41.test.ts",
+    "A\ttests/fix/T-43.test.ts",
+    "A\ttests/fix/helpers.ts"
+  ],
+  "authorization": "not yet authorized; read-only proposal only",
+  "remoteObservation": {
+    "date": "2026-10-08",
+    "command": [
+      "git",
+      "ls-remote",
+      "origin",
+      "HEAD",
+      "refs/heads/main",
+      "refs/heads/codex/fix-plan-ci-20261008"
+    ],
+    "exitCode": 0,
+    "mainAndHead": "67a344af597bbeb3ec5f8ee3e6dbb7fcb2d697ba",
+    "candidateBranchAdvertised": false,
+    "scope": "read-only current ref listing; race must be rechecked before any authorized push"
+  },
+  "files": [
+    {
+      "change": "M",
+      "path": ".env.example",
+      "bytes": 2722,
+      "sha256": "c0991de4138ab14bde9213667e9f5f7005267d9615189a74b87dec5420fad2f4"
+    },
+    {
+      "change": "M",
+      "path": ".github/workflows/ci.yml",
+      "bytes": 5348,
+      "sha256": "30d236d9327aa6e235ac5ff6326ad57f648e0af4fb67a99fc893e27903c02058"
+    },
+    {
+      "change": "M",
+      "path": "DEPLOY.md",
+      "bytes": 16868,
+      "sha256": "a3f339e31026cc1888ca11c1862afc41b7a9a35978acd32d5138a11abd41b878"
+    },
+    {
+      "change": "A",
+      "path": "FIX_PLAN.md",
+      "bytes": 163404,
+      "sha256": "7b3adfe0c06b6366db75e54ccbf5a12674a2d11d3a637281a817c0f2825c96e0"
+    },
+    {
+      "change": "M",
+      "path": "README.md",
+      "bytes": 16387,
+      "sha256": "cca7b723c0cb721e54e7d1f4e928db255c4a9ad429af28bdb407fc9379da317a"
+    },
+    {
+      "change": "M",
+      "path": "app/access-stats/page.tsx",
+      "bytes": 28973,
+      "sha256": "b4a7dbafc0fac5675fbf14af3fc5ccf64a1ff2a76691b70bbddd6ce924b64cb4"
+    },
+    {
+      "change": "M",
+      "path": "app/foorpynona/page.tsx",
+      "bytes": 38648,
+      "sha256": "e48c022ee46371ff4674e606c8cd74b11fc4c47e6f5cd8cec5ec80cfc1dcf314"
+    },
+    {
+      "change": "M",
+      "path": "app/hooks/useCrypto.ts",
+      "bytes": 6654,
+      "sha256": "d8f0cba3adfedbb9021a3fd60ff8ad8cef9da673f19d335611299cf614dbe237"
+    },
+    {
+      "change": "M",
+      "path": "app/hooks/useDemoConfig.ts",
+      "bytes": 1700,
+      "sha256": "6f2222bef21cd5461d28cfaebe8d5c3a4b22b9137fc6b784913a073011cc2d2f"
+    },
+    {
+      "change": "M",
+      "path": "app/page.tsx",
+      "bytes": 39237,
+      "sha256": "c68d7ed01bcd6a06920749121b6783ea9f7bc873a3bff25d6e52cc6b1f1e7bfd"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/backend-start.txt",
+      "bytes": 1407,
+      "sha256": "0c56e31a522814cc1fb2cb0214dfa13c0d1bae7f002c4b22c7f30462b71bb18d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/backend-type.txt",
+      "bytes": 65,
+      "sha256": "ebec10f05afb50ac891f6b36b0d9c380b434c41dc46e151c6cbeb64724f65651"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/build.txt",
+      "bytes": 1008,
+      "sha256": "34242bfda4147ddbc6563f830b078a5c06c69bc179ced1a104b7df27db1b0b7c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/diff-check.txt",
+      "bytes": 12,
+      "sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/frontend-type.txt",
+      "bytes": 58,
+      "sha256": "d09f4aee224aa594b509f67c622130c6b087f265cf79cdb56d9216762357ac22"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/git-head.txt",
+      "bytes": 41,
+      "sha256": "2787ab2c5b713d48b1377438ca49fd60e414ce6c2f4583b1bf63c2196213bfc1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/git-status.txt",
+      "bytes": 25,
+      "sha256": "91ef4bda708f4582c60354f78cf5f904168d20817a10170623328a09a68f5a07"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-baseline/lint.txt",
+      "bytes": 151,
+      "sha256": "d9c0e382fb963c40fb80248d5c90b5b22be91077833782e9740f07335de535f5"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/N-04-next-patch-registry.json",
+      "bytes": 528,
+      "sha256": "a70fc811f53058a0e91ec0de0247d690db1665152a561804185da973824c2640"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-backend-tests.txt",
+      "bytes": 1463,
+      "sha256": "83bcc66a014b6445a9e78e9248b72da22b19ad2ec6c0838b6d2af2b603dbf50f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-backend-type.txt",
+      "bytes": 9,
+      "sha256": "298efae0b98a561fd92c2fe3c10dd347640d4f873259c480efbc9d888408dd9a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-browser-db.txt",
+      "bytes": 192,
+      "sha256": "d0e090ace9746add15db8087b02748fa9ba0e187e36503f20cc25eb63fb46fb9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-browser.txt",
+      "bytes": 1941,
+      "sha256": "265cb3f66d60932382bbb0c85365f4c166490de4885153acfe96d42d78a1c9a9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-build.txt",
+      "bytes": 793,
+      "sha256": "b79be52626f1a2a00fb01355934bbbb1a71d509e6ee2898b78c3c939adbf55b6"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-dev-lock-conflict.txt",
+      "bytes": 3071,
+      "sha256": "a079a23608686f7033a883bd5962ce5f9be5c421f17965e17597d7c86937a015"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-docs-reconciliation.txt",
+      "bytes": 2842,
+      "sha256": "2611dc948d1d03346716cbbcc595df849c13e80cd1ec0ca3142e5e596cf66d4c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-frontend-type.txt",
+      "bytes": 56,
+      "sha256": "daba59f26a006a9031d17c493e5c51d1e65866395bcc1238c6b1553ec8f946cd"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-01-parent-tests.txt",
+      "bytes": 1969,
+      "sha256": "da0cecdde9ac17c102d3477aceb5122a18081f20367dc2acd419f016df129de5"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-backup-guide-console-normalization.json",
+      "bytes": 214,
+      "sha256": "6af1c6ec9a3177c7764c1bfa689878677e3ede7d61d0af4e37ae9d90b54f6133"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-backup-guide-regressions.txt",
+      "bytes": 3699,
+      "sha256": "dfd1118def598f46b19ef423033bd9048ae25b32f66f8d95601e969d6ad26770"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-backup-guide-tests.txt",
+      "bytes": 435,
+      "sha256": "9a2787988a40608ffe0131dac31814aeb8a467f8c5649f3741d528c3d19e82dc"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-backup-guide-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-browser-db-assert.txt",
+      "bytes": 240,
+      "sha256": "92f16d099c4d37594df57f4cd716e04e3df24453fac461f2a21828e5cc4ffd00"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-browser-fixture.json",
+      "bytes": 174,
+      "sha256": "5a32479b28e601d581704cabeef49804938e0967066225788b61e6866b492305"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-browser-verification.txt",
+      "bytes": 1634,
+      "sha256": "e64d8607b5a6307b69c07651de9d69466ea6db80714584616c0b62cbe2ab2f92"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-docs-reconciliation.txt",
+      "bytes": 1489,
+      "sha256": "ab225e9e1849989c75d573dfaadb7e97536b7bac26a2417eaee2af4929da24c4"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-module-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-module-design.md",
+      "bytes": 5138,
+      "sha256": "a2ce5695b3e5e4e9ad590c05c5ab00342316dd6a0c7296e3a2b1caa66eb5d506"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-module-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-module-tests.txt",
+      "bytes": 2547,
+      "sha256": "a3b25bd9f2db9e988cb222632912686974623d5ec8b884a42324aec24f4da891"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-parent-module-tests.txt",
+      "bytes": 2560,
+      "sha256": "0cc3f4cb1ed4bd8fae65ffe7e3a8289566b7770f40418ff69d0440e0b2d70a8b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-reader-backend-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-reader-build.txt",
+      "bytes": 790,
+      "sha256": "a1bfaaf6e64842b814a60b3c69829f0dee90bb93c0268c00b219ae352b76a55e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-reader-frontend-type.txt",
+      "bytes": 47,
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-reader-regressions.txt",
+      "bytes": 8215,
+      "sha256": "c1aebbd4b91fbfc23f7395809a60d70c2989a6208178445e7238f993e9c00d7b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-reader-tests.txt",
+      "bytes": 2832,
+      "sha256": "206c10f39b2263bdc413c9c82d3b8489b11f98ee8aed56f2b399d946f16c3d5b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-backend-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-build.txt",
+      "bytes": 791,
+      "sha256": "cb07174ea82f2483bfa16eb5329f882cc9dc6e565c808cbd71e43d786c27a019"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-first-tests.txt",
+      "bytes": 7331,
+      "sha256": "09a4c126f1562fc2b8c2ac115fcb0c35ee850ca3b6d3ead7d5fbe56cf1d42935"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-frontend-type.txt",
+      "bytes": 47,
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-regressions.txt",
+      "bytes": 15004,
+      "sha256": "3d3727a2ae713b97ca5b2c018ab23e9c55e7d4345e9b101014494ef7f4f35a67"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-storage-tests.txt",
+      "bytes": 3345,
+      "sha256": "a6176e2648671c7e7ffae8e700f5d58dffc81bd4fa758528a58a2f75397c29c9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-03-writer-tests.txt",
+      "bytes": 3382,
+      "sha256": "a0834649580d08d489a1bdc08c32493928de38effa43a5a10a831dd90b37a7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-backend-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-browser-db-assert.txt",
+      "bytes": 232,
+      "sha256": "311155cc9db015b64e31282f3c77ee2fd767d0efd2f0ee736a10892857ca8d14"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-browser-fixture.json",
+      "bytes": 289,
+      "sha256": "9767693123648958971dc8a5c62f1d9cc1de90fa417559918ff703c54447dbe9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-browser-network.json",
+      "bytes": 8694,
+      "sha256": "5698d7a4cc14d3faa55891fdaae1a4a79a657ac44388d4bdb3d304a412640ceb"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-build.txt",
+      "bytes": 791,
+      "sha256": "0168677f8f2d46596b4401e7455d065a0a62a0e90f27e009f5e13a0dcef3decc"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-frontend-type.txt",
+      "bytes": 47,
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-regressions.txt",
+      "bytes": 8522,
+      "sha256": "54b7bdfe35bdce3c0f310f746fbf8282070b901cd497f240da8ead8fc7f89b34"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-04-tests.txt",
+      "bytes": 622,
+      "sha256": "f1523f42d9ea6344b2fe14216ae3fd46d1aec55492e7f3c40a85dbe4b5b2c55c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-05-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-05-before.txt",
+      "bytes": 2846,
+      "sha256": "413d412ad8cf079bc39c98ed2fccb743b47cf86af5f1f99a247b31ff1e52552c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-05-console-normalization.json",
+      "bytes": 256,
+      "sha256": "37f8128acbaaeda20135fe9a37ea25ec48e0f7099369f85129e557c4edd10a15"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-05-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-05-regressions.txt",
+      "bytes": 20213,
+      "sha256": "de6f9460cf363c623f586544b0d8a0805dd099f1c77474852924d402c429ce3d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-05-tests.txt",
+      "bytes": 1429,
+      "sha256": "0401d36141ba4ca5b9eb7c4838bab94e55564ba27a4d72e6e55be2399ab1163a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-06-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-06-before.txt",
+      "bytes": 2749,
+      "sha256": "71c9d378db0b4868f5017f13ee80242a7279df85365b81598253bc5ce9505b0d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-06-console-normalization.json",
+      "bytes": 256,
+      "sha256": "24b18872d2426e36ec716b3601f8bf07ee64290fca7f92f74fe20fde6c1b6466"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-06-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-06-regressions.txt",
+      "bytes": 17454,
+      "sha256": "00ca3c8c61f0fa5ba7533a21b47fbf0d829f5263eb13d7014c1c90de89f80196"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-06-tests.txt",
+      "bytes": 1097,
+      "sha256": "7b362bd1ed3e1e5f4c4fc2617caac65e9a06a663e1b038036f634db35460aa90"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-before.txt",
+      "bytes": 2742,
+      "sha256": "87da98925de98c17fdcf08199fe9b05a5521074fe3b692a921e10cc4364a7010"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-console-normalization.json",
+      "bytes": 292,
+      "sha256": "d78dc80e3d37826d09ab46685bead20fc78b996327f123bc679c451686f62a2f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-frontend-type-final.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-regressions.txt",
+      "bytes": 11126,
+      "sha256": "f4673a6576c12047f0d2ece793aa176a2d7345b2d6369879f171729de0f9ba96"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-07-tests.txt",
+      "bytes": 1058,
+      "sha256": "9d12d2b4c79b7723b379c22774ade283e697e8aba1bc3d8ca39c5ade9df5164f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-before.txt",
+      "bytes": 2828,
+      "sha256": "997a35d2de71a0bd89f1ab0f071c6c94fe55f6b73cc22c10baac4fd468c779c3"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-console-normalization.json",
+      "bytes": 288,
+      "sha256": "3aa83496fd7cd99bfd2da698219264bf12b93209068fba9462d4194bf93e1c74"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-frontend-type-initial.txt",
+      "bytes": 269,
+      "sha256": "3c996fe1d5dc44310feed8c49bfd32ec18bd5cf94a6de9ec2108cbe959499276"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-harness-initial.txt",
+      "bytes": 2933,
+      "sha256": "209c426477a8c6baf420ca7c474b7598fab7ecd594a47686e09914f5b18f0b13"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-regressions.txt",
+      "bytes": 7021,
+      "sha256": "f18ebac745e325e5c29ee742b8ea58617999eab41a75687b49fff82d93ef2b32"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-08-tests.txt",
+      "bytes": 1200,
+      "sha256": "1d230883dfd1807ad6191515b78b39f79a65bdf7f128ecb36ac13cc6e1c64911"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-09-backend-type.txt",
+      "bytes": 106,
+      "sha256": "6c1c60b4a6f47678346b3eba262ba5113c60c1901448ea111a9ca82bc0e5da7e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-09-diff.txt",
+      "bytes": 34,
+      "sha256": "904c4032abdd152c23098c7475d30e49f488d9dca4e254d1383f50ad4d6348b5"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-09-frontend-type.txt",
+      "bytes": 83,
+      "sha256": "6e35cd81f8f6a165463764fca9d5c9eeb0a5dffec0fd23326154f4cd92a04005"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-09-summary.txt",
+      "bytes": 2397,
+      "sha256": "d1aa52c99cc0749aa1be9c31309d61aeffbbc43aa6887e5c37b32233247c0ab8"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-09-tests.txt",
+      "bytes": 2658,
+      "sha256": "293bbaa4e083bae71785adaae6684845a50f9e59cf1b5dfb4b48784fec2d8c84"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-actual-backend-type.txt",
+      "bytes": 190,
+      "sha256": "44d1e93887929697f11b6f40b11d1035fb679949c9f65be9563912509f2ca755"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-bench.txt",
+      "bytes": 1333,
+      "sha256": "b26942c8f1862f905d35aaa5648043db99f4a348e10412b30d02f1a6efb2b93d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-benchmark.json",
+      "bytes": 1333,
+      "sha256": "b26942c8f1862f905d35aaa5648043db99f4a348e10412b30d02f1a6efb2b93d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-build.txt",
+      "bytes": 782,
+      "sha256": "badb04c9211b51addf9c582c24c0c9dfc10d2b4504179109edf79af17238fd5a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-query-plan.txt",
+      "bytes": 188,
+      "sha256": "9a8c4f51c3fad9d2b6561dda1eaad6d51eaaeb6973fcc1b573e232399bab4f9f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-summary.txt",
+      "bytes": 4470,
+      "sha256": "504382ca12bab7416e2f0f66dee5e64f3f7aecb24c92efddf34bb8e1a2caf615"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-10-tests.txt",
+      "bytes": 1638,
+      "sha256": "b4f58338d7470f6947ca5401694a24bdb74bd3e967831de5c672d21700884742"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-12-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-12-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-12-tests.txt",
+      "bytes": 1117,
+      "sha256": "26b95f2f83fe905bb400fa3fb32cce9e73126c079aa8e62d5db5a3093c116b5c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-13-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-13-browser.txt",
+      "bytes": 479,
+      "sha256": "63b5ba1052b922f3fe6dcda423c927bdaff957c91f1929798fe838d0396568e0"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-13-build.txt",
+      "bytes": 783,
+      "sha256": "892438fdc3ea8c53966c57a1d3d48897cb95d7f0d022b99b52408c712e9d0165"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-13-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-13-tests.txt",
+      "bytes": 1334,
+      "sha256": "8d0bc61cdebdeca99e313490729ffb00880e2c5792116622896537246d3f50ea"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-14-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-14-browser.txt",
+      "bytes": 452,
+      "sha256": "9f6460dd8edc651fbf44043ef4225d53e32f916a18d5345f712eadb0e6803152"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-14-build.txt",
+      "bytes": 783,
+      "sha256": "56afe4415ce1e392c80efed5b0a98ac5dd03824f3406c8450b5a5f7bf2f758f2"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-14-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-14-tests.txt",
+      "bytes": 1182,
+      "sha256": "625abc7ea8d963e4ac9da723579d131d8312de3ea04257adaf3a9186c6fea4bf"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-browser-fixture.json",
+      "bytes": 174,
+      "sha256": "d908d3671cb06a71d21ef5d1d14b577518c01a328c1a4c3efd11c6b963a14d67"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-browser-verification.txt",
+      "bytes": 1014,
+      "sha256": "f56918cbb8c276e7d6c56e41773430a97ed5da3172bcf659b1a0b9b70009b035"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-console-normalization.json",
+      "bytes": 512,
+      "sha256": "e9b371de8698b1ad3f7489d8f4888f1b139dd10df24952b2128ac8a2db3c308a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-final-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-build.txt",
+      "bytes": 757,
+      "sha256": "99b0480c456c74b5f061c8acb9c1e04ff46f2ed41bd83993ce8da529a0fdd084"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-frontend-start.txt",
+      "bytes": 237,
+      "sha256": "6d8c44397f6376b57e0b86a5dd23f51e1f07876fd8eafe14ca81ed990810c12e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-http-smoke.txt",
+      "bytes": 187,
+      "sha256": "1d2afae0b369095549a55243d6ba2d388f991b6a8bcb40ee2fcea94b5b9ddd12"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-lock-diff.json",
+      "bytes": 1971,
+      "sha256": "a51a954d1db03ff5d6115ea90461f2d0f036de75b1fadf058c9cedec090c7275"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-proxy-build.txt",
+      "bytes": 755,
+      "sha256": "94c94bc52fa28f2e3141d07d4bb634bd2433685e25a94ba494e66bcddbe1c3c0"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-regressions.txt",
+      "bytes": 6228,
+      "sha256": "4cbc3c81261ddf1a5d2dc19ca6dc4e3283b004692cd5f23d11611ebe8f72c097"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-root-audit.json",
+      "bytes": 2749,
+      "sha256": "077aa16c33a2ba2680746e8d5134660897b0e5b74959d53c380d8ba2478bbe2a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-root-install.txt",
+      "bytes": 26,
+      "sha256": "be70d4d38042bba6bf081b01e43605547d9ff06cd795ce6fc3d043317c4681c6"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-runtime.txt",
+      "bytes": 54,
+      "sha256": "52d31eaf1bc3d1e60f2e9ed81d262fb0a9c2d2970749ea90f7e6227d0c9ac614"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-server-install.txt",
+      "bytes": 29,
+      "sha256": "05705e8074b74fe80f2b07f36f4cad17b68c98a93851e7d78b77f09fb117f734"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-summary.md",
+      "bytes": 3567,
+      "sha256": "f78c4ae1024819cedd3bb573a10e7f678f56fdff05935739810fbefe11bb93a2"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated-versions.txt",
+      "bytes": 124,
+      "sha256": "07e27a7b4069e98afad2be99653ffb7b464eefe892643b6fd565eab02a7e5287"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-isolated.patch",
+      "bytes": 7948,
+      "sha256": "dcf92d7b3ccc939088370d100ea01d9570cbba0db0f15cdd5432e24fef94190c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-backend-script-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-backup.json",
+      "bytes": 643,
+      "sha256": "176b8c8a7b610f0ec7af0621c24621a1503e9d6d399ace2f1ce970410d3e4c40"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-build.txt",
+      "bytes": 783,
+      "sha256": "75c75fea67ebf068f3cf95d8467e0b67b48614f0f4b5c98bb37c65049a6e9985"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-frontend-start.txt",
+      "bytes": 237,
+      "sha256": "f5e8db6dae96d8815b6ea1c33ce7255a37d59ba72d12b9135ee782f26f617083"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-http-smoke.txt",
+      "bytes": 187,
+      "sha256": "1d2afae0b369095549a55243d6ba2d388f991b6a8bcb40ee2fcea94b5b9ddd12"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-install.txt",
+      "bytes": 228,
+      "sha256": "f24815917e2cc4aeb5e54d39c2095ca981ed33b05d51358d2335f4274d893fc9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-proxy-build.txt",
+      "bytes": 784,
+      "sha256": "ea3557a897263c211e2c56399f1e408eaff50b610f6823f20da1acd06afde821"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-regressions.txt",
+      "bytes": 15532,
+      "sha256": "90b299cf02df3eee558cf133e218ed28856e5e04cdd485c255842855d868b7aa"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-root-audit.json",
+      "bytes": 2749,
+      "sha256": "077aa16c33a2ba2680746e8d5134660897b0e5b74959d53c380d8ba2478bbe2a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-runtime.txt",
+      "bytes": 54,
+      "sha256": "52d31eaf1bc3d1e60f2e9ed81d262fb0a9c2d2970749ea90f7e6227d0c9ac614"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-server-audit.json",
+      "bytes": 363,
+      "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-main-versions.txt",
+      "bytes": 130,
+      "sha256": "34c2a9547eb8c33cad92f34d36f6004c73b758046a33cb17fc5e3afa7cd44d98"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-official-registry.json",
+      "bytes": 1159,
+      "sha256": "92402e9403e4bce5448e5b245e9e9f0f9e31dc84844f6f7fde575f2489ae0f94"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-rollback-rehearsal.txt",
+      "bytes": 241,
+      "sha256": "26cee317b6324a051d2404f4ecf37b752a06d9e05641d44bb22020a0000a6678"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-15-rollback-server.txt",
+      "bytes": 154,
+      "sha256": "47bce13cfc69170a387bad9d7aa8d7c285438a29167ffc1b4703730dcbcbfe2a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-build.txt",
+      "bytes": 782,
+      "sha256": "6ea08a1556760c513c74c1c8740c32e24900d75668e213c2b169bfef52cd3006"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-root-audit.json",
+      "bytes": 4427,
+      "sha256": "e7607742fdb7e6a212eff3150210c1433f7ce077fa843ba19af8223f1f1ab6cc"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-root-install.txt",
+      "bytes": 26,
+      "sha256": "e8725b047a6ab2db51aa25894884fa595233ba5c9287f570a23b01c64eacc9d8"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-root-tree.txt",
+      "bytes": 228,
+      "sha256": "54f414412ac3a7de06bd16746c9b1d542c167f35d289b9b2138e168bfb9d4bc8"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-server-audit.json",
+      "bytes": 3849,
+      "sha256": "87a269d0e577fd70da6e3473b553b6d1c03a045c37b2170554c71f6d3b3c6466"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-server-install.txt",
+      "bytes": 29,
+      "sha256": "a699e5710b36bc2131bb122c215769c4fff209202902d87d851315db1307c101"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-server-tree.txt",
+      "bytes": 313,
+      "sha256": "e788d712c576de60e8255d0f83232531911b3469c641217165833957a9e4b669"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-summary.txt",
+      "bytes": 1981,
+      "sha256": "17c5d42123d7bfd9d331c8b6a00c745ef589c4176b77d5d9f2e756b5de95adc9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-16-tests.txt",
+      "bytes": 764,
+      "sha256": "d1289bc7b5bf9232019d1e81060e9de7b22bcc94c493c97f7b73b0ba6b2b83d5"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-server-audit.json",
+      "bytes": 1225,
+      "sha256": "c16f4e52feab1e63a8708ea5f50d1f625f38e99b4377e6140b59bbb003f0326f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-server-install.txt",
+      "bytes": 26,
+      "sha256": "8ec0deb1ad16eb371c187a81cec6d6a89994d932c1832f92a724c97254f65bea"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-server-tree.txt",
+      "bytes": 137,
+      "sha256": "8ddc93fa78a68a9e0ad060d075f19228d5e98be7965e0dcc7ecc7fc567ef4a98"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-summary.txt",
+      "bytes": 1897,
+      "sha256": "a257c599ece24507ba6e6f1132eb0847f4e56beed0387b0572660ac2c571ee00"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-17-tests.txt",
+      "bytes": 2067,
+      "sha256": "9fda0aa8ca23cc533a0781b2b29bdd8cd2b7156db4e516c3c9db3a8abafd8ced"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-backend-glob-node20.txt",
+      "bytes": 9,
+      "sha256": "298efae0b98a561fd92c2fe3c10dd347640d4f873259c480efbc9d888408dd9a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-checkout.txt",
+      "bytes": 268,
+      "sha256": "b3eeb70e2ecb0f39df951f90d48ff550fee063de5b65c48635d630db30a3708f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-action-refs.json",
+      "bytes": 1027,
+      "sha256": "3e89fde7f4a16bacdac1b348750ddc240e8ea438a543c06c6f4ba4b06d23d571"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-actual-backend-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-all-repair-tests.txt",
+      "bytes": 25379,
+      "sha256": "0e4d105f208f3446b31bd42a4dd2e4c2c696127c8b5027292be855397a3c69d4"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-audit-gate.txt",
+      "bytes": 263,
+      "sha256": "737f6e112e78c639dfffb77d1d70b9d53df29aacb617e16fe03625069eb57c7f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-build.txt",
+      "bytes": 758,
+      "sha256": "92db69215c2af975807414aed3a1daddeac035653a26364ea910f8deed731ab7"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-cache-seed.json",
+      "bytes": 52728,
+      "sha256": "07858dac363784cf303630cb948a04ea7880f5bbebb7aa3799be5f96e86da546"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-checkout.json",
+      "bytes": 13600,
+      "sha256": "1c2fc0ec028cfbd41487a12a44ea9ce5e5562b031d9360f06de6edbacaca0921"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-node20.md",
+      "bytes": 3848,
+      "sha256": "5ea40b22e56c84ada72daefb46081044975531151b764565ef28c14bb408079d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-root-audit.json",
+      "bytes": 6400,
+      "sha256": "a1f21eed78f27e91c638855f76a4262ec637c55fe8a4dff94c7a185bb6717bc7"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-root-ci.txt",
+      "bytes": 516,
+      "sha256": "a946534effc9c944dd706e2a4de68f9c3e9b1075bfc9f8b86bdaec7aece6f1e9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-root-tree.txt",
+      "bytes": 619,
+      "sha256": "af9b005a4755e4aa83a190e5702f35060e3b5c7331144573d9e314a802d83849"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-runtime.txt",
+      "bytes": 54,
+      "sha256": "ea417c99d9cd867df20d5276e95f0130266b66f610beea3a498c1ac05d51ee85"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-server-audit.json",
+      "bytes": 363,
+      "sha256": "4e8727e37a007f97120ec654ace1111610fb582fd4bc6d5f70f9122471af4e81"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-server-ci.txt",
+      "bytes": 362,
+      "sha256": "850fce544880c9d8fd84ebc1f1676c68278cf4501ec908f46a68eb126380f5d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-server-existing-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-current-server-tree.txt",
+      "bytes": 422,
+      "sha256": "f82943b4ecdd486eeb8be117d7e6bfb662ebf7df363f461e3cdd9df409c9193c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-dependency-audit.txt",
+      "bytes": 2901,
+      "sha256": "3a9d8e4f7b2c1c7e2ba8ddf97846011ef69e55c9eb5692a1c38267eff0969ac1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-local-workflow.txt",
+      "bytes": 4974,
+      "sha256": "aeaf1df09298d0bce6f6ff0ec8567a55057d100947956f6a35871f90dcee7c44"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-remote-ref-check.txt",
+      "bytes": 267,
+      "sha256": "f409ba7ce8b90e2f864589df64eea8542424a212ffd06d816ed46d3a00b0d243"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-startup-fault.txt",
+      "bytes": 18584,
+      "sha256": "ff456e7a22113b85ed1429ccf1f4a7a0ab008c9958e948876c588728925151d3"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-18-verification.txt",
+      "bytes": 1527,
+      "sha256": "53a2b27efb5779a828c547a3fd6100600eb0ff14e1757e13bd724f6bdb9c95fe"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-backend-type.txt",
+      "bytes": 53,
+      "sha256": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-build.txt",
+      "bytes": 782,
+      "sha256": "061ef4a199380cc3e695f5c8cca98248b78638d1c97b6dcf2ce84fefdbef40da"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-fixture-reuse.txt",
+      "bytes": 1704,
+      "sha256": "c1e268bd638d6f39427adc227ef56815fdd7f656295c598d2c668ca7094a78ed"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-installation.txt",
+      "bytes": 1025,
+      "sha256": "0ea4fda7acb7705b43a69eeedc63e2280588ac587bb2078e0a2ec61a2fc300e4"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-runtime.txt",
+      "bytes": 54,
+      "sha256": "52d31eaf1bc3d1e60f2e9ed81d262fb0a9c2d2970749ea90f7e6227d0c9ac614"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-tests.txt",
+      "bytes": 929,
+      "sha256": "24c42a1f7a6e558480dcabbaaf13c473de7ff651e579465af3ab385c0f4eecae"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-19-wrong-abi.txt",
+      "bytes": 87,
+      "sha256": "9d89c361d899dd1b1e94b004796a25290b68c724c8a797dba5118c3bc12d3934"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-20-backend-type.txt",
+      "bytes": 9,
+      "sha256": "298efae0b98a561fd92c2fe3c10dd347640d4f873259c480efbc9d888408dd9a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-20-frontend-type.txt",
+      "bytes": 56,
+      "sha256": "daba59f26a006a9031d17c493e5c51d1e65866395bcc1238c6b1553ec8f946cd"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-20-initial-tests.txt",
+      "bytes": 2230,
+      "sha256": "b2ff5fb7beb9ebf4032cb116735f2bf617faabc27d7908bdeb72a4783afb86ea"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-20-tests.txt",
+      "bytes": 1432,
+      "sha256": "e66a9d7985e08f062825d75b82bfe24b22813d41bb275bfb9e5feadf96409081"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-browser-fixture.json",
+      "bytes": 197,
+      "sha256": "008fdcab1d69bd5a3f7c31385e880eda4caf57722a218476e135734e70303efa"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-browser-network.json",
+      "bytes": 1469,
+      "sha256": "86d292ef235032881e8d79e5129098acff14856b26f9fac9320d364aafff5be1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-browser-verification.txt",
+      "bytes": 1174,
+      "sha256": "1ba26dfd075e90844edb8084b8157c051caa0532aaf537988534d1da2d4c95f9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-build-final.txt",
+      "bytes": 782,
+      "sha256": "1131462ef6c141d05b78e28cd889580cceb895b19051fbc09d32af8d72934252"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-build.txt",
+      "bytes": 783,
+      "sha256": "9ca6cd41b00463769930a7dee0ef59048f6c6995b07e870a3fca0033a1771c20"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-console-normalization.json",
+      "bytes": 380,
+      "sha256": "18d8925a8304f1336e83c9338e7ed15a5dfa88f689691fd6c16a5c15f5c6579d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-main-frontend-start.txt",
+      "bytes": 237,
+      "sha256": "d50ff0d61a2ea79720e206859fe8b176e31150c16730735b133580d7268e8f59"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-main-proxy-build.txt",
+      "bytes": 782,
+      "sha256": "b7045fb71c40c6ad68afa996468a6f79435fc1006a88d4d9f61cf4596f177243"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-normal-browser-db-verification.txt",
+      "bytes": 240,
+      "sha256": "92f16d099c4d37594df57f4cd716e04e3df24453fac461f2a21828e5cc4ffd00"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-normal-browser-fixture.json",
+      "bytes": 174,
+      "sha256": "de71a008561546ae6e7f56ae67c2eeaea116f8ec90f90d5a96d28a873361bf44"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-normal-browser-verification.txt",
+      "bytes": 943,
+      "sha256": "9de1f9403910d612c7e2c61f7b60fc51fba23c0b1ee5194dfc9ca3d249a97d72"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-production-proxy-smoke.txt",
+      "bytes": 187,
+      "sha256": "1d2afae0b369095549a55243d6ba2d388f991b6a8bcb40ee2fcea94b5b9ddd12"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-regressions.txt",
+      "bytes": 15395,
+      "sha256": "cfb2087ab5237b71d6c819ed04897d22cd7d9175757b4d3cbe7411feda755dc4"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-26-unsafe-route-tests.txt",
+      "bytes": 1317,
+      "sha256": "4ec840e07e64a6c50de378dc6a0eba1c5946f8876c2a273221e65a27fc4636a8"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-27-backend-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-27-browser-network.json",
+      "bytes": 1028,
+      "sha256": "04d66be74f7b5da500d15d4ba9ad4c3ba6ba00c7b1f7820480270ea7dac3e30a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-27-browser-urls.json",
+      "bytes": 135,
+      "sha256": "c1bf1b126dc8f94da9a338a2ecb72f512e931829b36d83c907f4d2467513db7a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-27-frontend-type.txt",
+      "bytes": 47,
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-27-regressions.txt",
+      "bytes": 5114,
+      "sha256": "5b73db2cfe1c25ec4c9d2a9c9986fcd55dde92158064327248bdf925fab8cbd2"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-27-tests.txt",
+      "bytes": 1022,
+      "sha256": "feaebfad5f325c5b8a6955f1476ce039e8781cd25419598a1b3141921d080022"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-28-T-29-asset-proposal.json",
+      "bytes": 2631,
+      "sha256": "973de28092974a8dddda7550f017dd4075233e8121782787296a73d216de3170"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-28-T-29-disposition-proposal.md",
+      "bytes": 5143,
+      "sha256": "78d7141222eb82a160346a31e6ac62d88a4e9d3d2934d483e7297a4412924e39"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-28-T-29-proposal-check.txt",
+      "bytes": 427,
+      "sha256": "236a31b62b8b9f7d7b8a07dcf8d7705828d63376e654195d020d19ae6597edf3"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-30-active-docs.txt",
+      "bytes": 1313,
+      "sha256": "84fb14c2894c40e8a3c8a301095ba656695a36fafaf0bfd421408884ede7da94"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-30-runtime-lookup.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-30-verification.txt",
+      "bytes": 422,
+      "sha256": "b8b020d3d7c947a5940222f82af2e715ce04063d10e6c766e8a0f60c1a9b97da"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-backend-type.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-before.txt",
+      "bytes": 3463,
+      "sha256": "e39eb958c8b4c62f3479e9aa5c8548e23adb95318661ec634d99c49f40ff9ddf"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-config-lookup.txt",
+      "bytes": 3995,
+      "sha256": "017368efc8744611e35de899bc9e2a13904e5f9324f2640c6554fbe9d8e57c3b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-console-normalization.json",
+      "bytes": 256,
+      "sha256": "a9d2dc9a10a93cb66dc09347ce50f07f7d654c56c7539ba742e24af5a08cf05d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-frontend-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-regressions.txt",
+      "bytes": 8941,
+      "sha256": "0dbc093d9bc3dd26033b2dfcd3cfd3b565e1a23fbab94abb82ab0941cf436a25"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-31-tests.txt",
+      "bytes": 2777,
+      "sha256": "d9ab0bb819aba1c53903df074e8f600ef6e40de6d0979ea1d2ef94900cbc6fcb"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-backend-and-scripts-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-complete-prep-tests.txt",
+      "bytes": 7905,
+      "sha256": "49eab5d9f2bc2691dd47fca3094cff81b5d5f917a225463c7e8b117290d0f61e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-complete-prep-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-design.md",
+      "bytes": 6667,
+      "sha256": "a66f0bd0145d8a22005d5018c2592482ee0a6a821813f8d30ca51542b8e6bc8e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-final-tests.txt",
+      "bytes": 7372,
+      "sha256": "aba2f953ba402aa6670f5ea36dfe832fe2f54afc6c4e0953d15ae080fdff5de6"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-final-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-first-tests.txt",
+      "bytes": 4125,
+      "sha256": "dc80e920af3d0435d7fb0755da66c2854dfb88edd7e366011d1e38db26cd92d2"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-first-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-related-tests.txt",
+      "bytes": 7250,
+      "sha256": "b9a0037c8dc16ae5d6574db9ccac3476486ee62c0ef0901bc267fd446cea54a3"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-tests.txt",
+      "bytes": 2693,
+      "sha256": "48ae717367b3514a410187a6bb7c379587a413d3e1d7992f6499d018f78f40d9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-candidate-verification.json",
+      "bytes": 2962,
+      "sha256": "8ae1f694966d6f0cd9d1a5df7a383956f54e50606a1f0cd5aa8afcc826de98c6"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-inventory-console-normalization.json",
+      "bytes": 252,
+      "sha256": "a5e75cb7c1e208837502e38545c25c235dc422090c64c4d17b292cde5a8c0876"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-inventory-related-tests.txt",
+      "bytes": 4554,
+      "sha256": "f4f7b08791b2dfbc5693981267a271a125d5ce38e127c55fe33db30c8c34e39d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-inventory-tests-final.txt",
+      "bytes": 973,
+      "sha256": "15b8778416e939f5db971d3c01aa6ab43002a02cfa1da526d3063e6354358364"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-inventory-tests.txt",
+      "bytes": 970,
+      "sha256": "8ac6bc237daeb98f82f991e4dc9ade5b621caedbc92da3493e0ff1080c128d61"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-inventory-type-final.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-32-inventory-type.txt",
+      "bytes": 46,
+      "sha256": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-35-assets.json",
+      "bytes": 7411,
+      "sha256": "5bc2f2e17fb02676140b9f6b43f87127c6e190b5d412c31a4845e63aca64ab9c"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-35-proposal-check.txt",
+      "bytes": 460,
+      "sha256": "def8b47a73236d2a49e814cac0d1f4b9ff1ebbf17f327e66f0550fa21998bd3d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-35-proposal.md",
+      "bytes": 7532,
+      "sha256": "8ce5938ce452564b6699c624c2e6e2a10b7880747e2a665effb652ae48486a86"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-40-backend-type.txt",
+      "bytes": 106,
+      "sha256": "6c1c60b4a6f47678346b3eba262ba5113c60c1901448ea111a9ca82bc0e5da7e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-40-diff.txt",
+      "bytes": 34,
+      "sha256": "904c4032abdd152c23098c7475d30e49f488d9dca4e254d1383f50ad4d6348b5"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-40-frontend-type.txt",
+      "bytes": 83,
+      "sha256": "6e35cd81f8f6a165463764fca9d5c9eeb0a5dffec0fd23326154f4cd92a04005"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-40-summary.txt",
+      "bytes": 1390,
+      "sha256": "ade4b96ef7b9337194dc929dc485d4c24b663d093a1cef1270217e906fb9ef96"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-40-tests.txt",
+      "bytes": 1281,
+      "sha256": "c8252fa2d4189d4597471cd779a9197c7caeba35dfd7094a056e6a0dafa90711"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-after-tests.txt",
+      "bytes": 3027,
+      "sha256": "6256c1577e9721dfd56d0e36a095133d20d3840c2e02dd5a928eb043473ff5d0"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-backend-type.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-before-tests.txt",
+      "bytes": 14062,
+      "sha256": "bdce65f3cba93029b89d144c5a87fcdfef2b8b41924f12373e826c9a6e5bea2d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-build.txt",
+      "bytes": 790,
+      "sha256": "d94321ea3c95d7ba3507426eba3c296d6b19d7e5b8508b610477f5e2effb2d98"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-design.md",
+      "bytes": 5749,
+      "sha256": "0e3f330d2e9511a60a8a21def23b0cd7a779ac64e8c8a5c45d741580246fd59d"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-feedback-step.txt",
+      "bytes": 826,
+      "sha256": "e9fe30f3fa0cd9899c3facfee8352512399eb5b4eae1e382a952670742f72a18"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-frontend-type.txt",
+      "bytes": 47,
+      "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-41-regressions.txt",
+      "bytes": 2364,
+      "sha256": "893333f44596514201c2df88f64793f74790b76cbe2328c82ffe6e094b9639a2"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-actual-backend-glob.txt",
+      "bytes": 268,
+      "sha256": "40a54b0a4012f75d0fbfb8bb78703910cdeb07cbed907783ddc42ebdf69c3814"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-actual-backend-type.txt",
+      "bytes": 443,
+      "sha256": "8a357726826e458abda9d1f4c2bbda6b95ddc1904bbfb2b6e646b46befbda1a1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-backend-type.txt",
+      "bytes": 198,
+      "sha256": "dad1b3bb9c417617d5ca9c340de70b45a9205866983694c912560af79eb76819"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-checkout.txt",
+      "bytes": 357,
+      "sha256": "3239e081be4f34b28710413676f25f78c233ec3534b300ab2d4dfb022d0567b6"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-diff.txt",
+      "bytes": 34,
+      "sha256": "904c4032abdd152c23098c7475d30e49f488d9dca4e254d1383f50ad4d6348b5"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-frontend-type.txt",
+      "bytes": 175,
+      "sha256": "f744803dbca5b8d72740766eea076814682f98dc5e8a9549f1bf02a8fb96943b"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-lock-scope.txt",
+      "bytes": 317,
+      "sha256": "31f8494f4401998b2589bc3691d81f600f0d9b129e0a2f7a50535c44cf168c5e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-backup.txt",
+      "bytes": 265,
+      "sha256": "e61c913887a75885f8e082734cecf95419472498d08e67bad1bc41f219f976f1"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-root-audit.txt",
+      "bytes": 3688,
+      "sha256": "17cc543fe01407fdbcf804c576ad8d982438df61c9b850c71dc55b89500c1409"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-root-install.txt",
+      "bytes": 71,
+      "sha256": "6a9e4157417febcf03db93a490d81a644199b09fd8c707532f5a2032fb286674"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-runtime.txt",
+      "bytes": 102,
+      "sha256": "502db5bc7d7fe47c45077999e5975a92b5b4b8a9549274d60f74f5d731e5f2a7"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-server-audit.txt",
+      "bytes": 484,
+      "sha256": "a1e10d8685e51207fe8349d6e09938c5b5e2a5f59564d5f05a8cfba2d658d465"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-server-install.txt",
+      "bytes": 90,
+      "sha256": "d52dec3d9fb399bd7c55c860ab1006adf2abac998b57c03c8d41d2efb5117efc"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-server-tree.txt",
+      "bytes": 177,
+      "sha256": "5eea56e9c577b414aaf6b8df90bfdf2a31ce5d0510811e57d057ec8d78695931"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-main-tree.txt",
+      "bytes": 147,
+      "sha256": "40c09cc785b84c7aeb944d3983c72b3f81f6714391c4371deca56e46032288e7"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-negative-control-initial.txt",
+      "bytes": 1489,
+      "sha256": "20e4b90aab90b34aca32e081e373b21abfeb9fcf66bc0a7214c600aec1f6f509"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-negative-control.txt",
+      "bytes": 1190,
+      "sha256": "5ce659373811338a230df8429d4d23b32e7b6db6bbc27198711d7c7afb0e49c9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-parent-integration.txt",
+      "bytes": 3973,
+      "sha256": "3ce6cde3a6a85f454c911164d48ec7c547d1e4d0936057f57944370031ac3146"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-registry.txt",
+      "bytes": 1161,
+      "sha256": "ec8cdac3e7141f85b69c7b65d07e7144d98d7712bf18ed4843015bb886b020df"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-root-audit.txt",
+      "bytes": 3818,
+      "sha256": "af86b787b147a85ca29e282aed6622f51cc22c8e05887fa367d4ce2637c05e7a"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-root-install.txt",
+      "bytes": 163,
+      "sha256": "ed3893126db15efc5ec1f2ac159bb20d630e2f95012c8e575117e3284c4ff6be"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-root-tree.txt",
+      "bytes": 288,
+      "sha256": "ebcc4f3d780040f39bb8056e73993a353970f12b585897f53896add04cab3cf7"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-runtime.txt",
+      "bytes": 194,
+      "sha256": "f44df46bb812a691665d33fb298903191f6e37a46dbc8d7e3c12249d668a258f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-server-audit.txt",
+      "bytes": 578,
+      "sha256": "e85b07d47c19aab57f078f14623437990a102ff8525ef47fcf654384fece244e"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-server-install.txt",
+      "bytes": 182,
+      "sha256": "68bfa4bb7a9ee5d2ef8f88aa809faffdcf2755831fcb6ff5f013898ca724932f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-server-tree.txt",
+      "bytes": 318,
+      "sha256": "b41b09c340cb4337b310f3e7e00601b84e2abb1c9fc51de089d31c5c4ccdedad"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-summary.txt",
+      "bytes": 3028,
+      "sha256": "30db9d4f53b596432b1cb2ff48c04e2b591490048fd636fa4fc3ebc7573e042f"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/T-43-tests.txt",
+      "bytes": 4205,
+      "sha256": "b21f113ddbc4eb184e94ea00f6b94d80cc1a5aef58769190043894660c656be9"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/task-closure-audit.json",
+      "bytes": 110811,
+      "sha256": "4fbc920e389ceb33216eb2e00be6484d084cab62b1c4fa84474fb0f869494f45"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/task-closure-audit.md",
+      "bytes": 21141,
+      "sha256": "560234a272a35c2118202523be5985267588dfa5b2c82e3c718ca9aebf4501ea"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/task-closure-dependencies.json",
+      "bytes": 5665,
+      "sha256": "f130a9346c2e6b8bf403740222b3b94b16190193fad6bc1c233eb74c87eb8fa7"
+    },
+    {
+      "change": "A",
+      "path": "audit/execution-results/task-closure-nginx-environment.json",
+      "bytes": 635,
+      "sha256": "9e9631ba3562923bad3277f7582456d5287c83d65524d637fbcfc413090e1545"
+    },
+    {
+      "change": "M",
+      "path": "docs/DEPLOYMENT.md",
+      "bytes": 10960,
+      "sha256": "0d8f5d35ae09576b2edf0dd20c21c713ddae85be6fc9fabd7fd53fe03b2490e5"
+    },
+    {
+      "change": "M",
+      "path": "package-lock.json",
+      "bytes": 112003,
+      "sha256": "d2cd4d7b83a9d5337c9ec7d4cee5876cb7c5d8dfd6ad2c7b05d1cbdd27a63842"
+    },
+    {
+      "change": "M",
+      "path": "package.json",
+      "bytes": 1034,
+      "sha256": "2938dee71ca3e4c6fd493c3ca4e742d404592e5282b5a90393a181841ca4ef3b"
+    },
+    {
+      "change": "M",
+      "path": "scripts/README.md",
+      "bytes": 785,
+      "sha256": "a990db840408f0ce033bba8af1ce5dcec80abcd17dc2dc6aaf76ba8e598285a0"
+    },
+    {
+      "change": "A",
+      "path": "scripts/check-runtime.cjs",
+      "bytes": 1241,
+      "sha256": "d92075f580fc789fe10ebcef6f840217f147919befb07c912ee7a3649437d36a"
+    },
+    {
+      "change": "A",
+      "path": "scripts/content-migration-candidate.ts",
+      "bytes": 12686,
+      "sha256": "152c87104ddfd8ffbbb0b7661bc6c10dbb3e5ec9c5c445ddcdcf07116aa92378"
+    },
+    {
+      "change": "A",
+      "path": "scripts/content-migration-inventory.ts",
+      "bytes": 6022,
+      "sha256": "638fc5cba6f7f26fa331ac962deb86b343a1768eb09eda498bfae1cd41e4b85f"
+    },
+    {
+      "change": "M",
+      "path": "scripts/start.sh",
+      "bytes": 1480,
+      "sha256": "5cfca2a3a282c8b2e36bab4dfe65b7c799803d4c717c2abee1bf6ca46a0e174d"
+    },
+    {
+      "change": "M",
+      "path": "server/demo.ts",
+      "bytes": 24833,
+      "sha256": "4eb99fc153a002287f3a02083e2f6a22898831f1143ed432c7c7403e4ddf3c22"
+    },
+    {
+      "change": "M",
+      "path": "server/index.ts",
+      "bytes": 67227,
+      "sha256": "ca8f90ccf10f7fda820d765e642030b9e15e9e251db0471279bf204624dc0251"
+    },
+    {
+      "change": "M",
+      "path": "server/middleware/accessStats.ts",
+      "bytes": 10466,
+      "sha256": "9de76a6624c4c4f9f5da8f810bb9c061e6d445b9bfc111776f9a192d5d1229c0"
+    },
+    {
+      "change": "M",
+      "path": "server/middleware/rateLimit.ts",
+      "bytes": 4155,
+      "sha256": "c9c20d621689e55c3d3690cbb001d9034eec03d340264d8bd726155f159a7ebe"
+    },
+    {
+      "change": "A",
+      "path": "server/middleware/requestOrigin.ts",
+      "bytes": 2086,
+      "sha256": "9271dedd206587992891953b76995e70c8e1dab74cc5503db8dd4e4402cd7461"
+    },
+    {
+      "change": "M",
+      "path": "server/package-lock.json",
+      "bytes": 66283,
+      "sha256": "fdad732f7418a49b61a5eef7ab703370b156899a478e80a8d1c6184e348966d3"
+    },
+    {
+      "change": "M",
+      "path": "server/utils/accessStats.ts",
+      "bytes": 5227,
+      "sha256": "60598adac1ae233ca9acb7a050e0f91dfaa7e15d2f6e862dcd13f76bd7c75d1f"
+    },
+    {
+      "change": "A",
+      "path": "server/utils/contentEncryption.ts",
+      "bytes": 8605,
+      "sha256": "a856c796674bb9c2f369a0861a49d58502b54164c29c0f8b1a16b5e36541e663"
+    },
+    {
+      "change": "M",
+      "path": "server/utils/validation.ts",
+      "bytes": 2867,
+      "sha256": "b0d08386d320d25014302535ed8775d9becaad757a3da3051329c4fd4616a8a7"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-01.test.ts",
+      "bytes": 11593,
+      "sha256": "c712966735beb13ae88f6e994dee5c816482a8f2c4e39448afb4d67573cbca13"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-03.browser-assert.ts",
+      "bytes": 3096,
+      "sha256": "4b1b279c1768a3897738f547701204a0cfc2c0920084e7bf262d41f82dbab084"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-03.browser.ts",
+      "bytes": 1963,
+      "sha256": "59ab71df2e96fcce636ebfa2a2867a40cedfab705244d0f7dfc524ad20e7e7d9"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-03.test.ts",
+      "bytes": 31031,
+      "sha256": "0ea266556d399d03b769395a0ca8e478cf6554996bbaff002fab3f4dba596db1"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-04.browser-assert.ts",
+      "bytes": 2410,
+      "sha256": "af78675acd574bf1d3ecf44a8e90baabe8d20250835630e4a3e326b306771ecf"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-04.browser.ts",
+      "bytes": 4393,
+      "sha256": "f07e270d9c665568bd08a286de629ad74361089f482be1f79af4fba6947a186e"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-04.fixture.ts",
+      "bytes": 1532,
+      "sha256": "24dbab2d56680d3a843662025b919cacef57eeacf0e81411d3cd31e98fb73ac4"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-04.test.ts",
+      "bytes": 4372,
+      "sha256": "d90515040dd2db8dd9af12d6b6e2af69eda7aad478b2d856930bbd5b808b1212"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-05.test.ts",
+      "bytes": 8165,
+      "sha256": "575f4c9b560996f57e45116935dff092c6e46b371eff4c91fdb0fdcd0b17d96c"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-06.test.ts",
+      "bytes": 5337,
+      "sha256": "72e07356e57a180878715c960279dc25fd6431e2341e51cb5f7aee3aa757d7c6"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-07.test.ts",
+      "bytes": 6682,
+      "sha256": "8185ddcb700962926dd88cae6e531032fe9f8d1458a784d5858763ceaebd693e"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-08.test.ts",
+      "bytes": 5727,
+      "sha256": "73a21eec2a2517415454e292867cbee41eafe1fc3b2e813cafee35dd576cacbf"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-09.test.ts",
+      "bytes": 8789,
+      "sha256": "34d0e3998e94c1e0e880d1cff9c3d61067ebe2af668f533aa6bf24728aae7132"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-10.bench.ts",
+      "bytes": 5215,
+      "sha256": "46dc3be2f66d3507b7dd9599bac35c3e531f1053f64916b2fdf567c3f71881fb"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-10.test.ts",
+      "bytes": 6913,
+      "sha256": "448e5391c64801887f67a1f0064671227d80dcc2ee4a93d29b44973109c669c3"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-12.test.ts",
+      "bytes": 3427,
+      "sha256": "6076d2d5776f7efb388d6fe199ab71e626670fe475f86593790968c22635a4a0"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-13.test.ts",
+      "bytes": 1820,
+      "sha256": "378b0e6e7def3236f01b64a0d20f44c22026f4ec8c3b719836ebd44ccfc403af"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-14.test.ts",
+      "bytes": 2813,
+      "sha256": "29583617ed525b7eeec370fee72656c66845fcf12ed735289ca1d7f47858b0d9"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-15.browser.ts",
+      "bytes": 1963,
+      "sha256": "1a07db85912f0e754c646e58270fb39a987729941b7a5fb71cd32a097a7cb536"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-15.rollback.ts",
+      "bytes": 2909,
+      "sha256": "7a6327905266ffd51b43c7254b54bc3cca139f99613490371247b70d4be5218c"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-15.smoke.ts",
+      "bytes": 4989,
+      "sha256": "bcff38b25d3ed7507c1b314049e9b8e4d979d3c87b775e3560711709de6ca6d1"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-16.test.ts",
+      "bytes": 3560,
+      "sha256": "1727e6fa7ec0d2c18126ca2ed1a1cad868129f78a9de53480055621ba725cc87"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-17.test.ts",
+      "bytes": 3554,
+      "sha256": "e25763320be776feb7d81b0f14f9165d590cdfbc5e4b008f98e2a97aa3964354"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-19.test.ts",
+      "bytes": 3625,
+      "sha256": "e42706c60b07de438a71705024ff6be06d63c885c85b24cd9dd6d8f082bfd3a0"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-20.test.ts",
+      "bytes": 7248,
+      "sha256": "3c1736fd631b80cf8ecd52bb2bba436769e3c845b53bf261e88c36b0cd310df9"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-26.browser-assert.ts",
+      "bytes": 3090,
+      "sha256": "a703caf6456356ba8114cf19b86d437a4e28d470d8ef843c74533e3a59303b80"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-26.browser.ts",
+      "bytes": 5224,
+      "sha256": "215829f7a2efe10f3d84be2c63d8608110305ea9f4351afaf3d2378f9c21cd73"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-26.normal-browser.ts",
+      "bytes": 1970,
+      "sha256": "5d00cbfd630940cf827f53fc6350427ecb73e4f11250e334f001b21c236de470"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-26.test.ts",
+      "bytes": 7460,
+      "sha256": "94d46815fb35952e9ca9986c6d9f88d7afd5da9294896771a801ff258349e403"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-27.browser.ts",
+      "bytes": 4937,
+      "sha256": "c81c3f2211ea604f4c96a72659c44846833eb9f71f328daaaf9954fa3e4396a1"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-27.test.ts",
+      "bytes": 6918,
+      "sha256": "bb6d9129285398c71a104a3bb0cf46bf8d8d1bd40a9b65bbff419d397b8c4a89"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-31.test.ts",
+      "bytes": 3546,
+      "sha256": "63bf5bf130922b0fcbbcbd98ac12ff9fc8d6d9c49163087b30fee74fd70571d1"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-32-candidate.test.ts",
+      "bytes": 25834,
+      "sha256": "cdb793fa468808f3b485eabb25074412549921f2de167a0237156fb4d2f6e719"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-32.test.ts",
+      "bytes": 5860,
+      "sha256": "3f176a41d51bafe17bd5394f8b4f86e17009d950b65c9afd0f6de11c16bfadc7"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-40.test.ts",
+      "bytes": 4286,
+      "sha256": "51dac68cde8545e1f21ffecb4c0f1f9ef55ff298ecef354abe8caa9087158eee"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-41.test.ts",
+      "bytes": 8559,
+      "sha256": "94665df9ff3c6de5efecc8a42649887c4d5ab6134ea5a5846bee59a152251448"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/T-43.test.ts",
+      "bytes": 6034,
+      "sha256": "4d6f1680fa8f471649d3d95ee0018287c202b6045c5dd1cead31cf253d6e5cc1"
+    },
+    {
+      "change": "A",
+      "path": "tests/fix/helpers.ts",
+      "bytes": 5591,
+      "sha256": "5ef69e8b13e3d99e6b509bf4873d406bd48978bab9b61c025b5b6d63f36f7cee"
+    }
+  ],
+  "candidateTrackedTree": "0e058511753c2777381110ce347d4c0669b55b48",
+  "publishVisibility": "Public (official repository page verified 2026-10-08)",
+  "plannedActions": [
+    "Push exact candidate SHA to new codex/fix-plan-ci-20261008 remote branch without force",
+    "Create draft PR from that branch to main to trigger existing pull_request CI",
+    "Attach created PR to this chat and inspect actual workflow result"
+  ],
+  "excludedActions": [
+    "Push/change main or develop",
+    "Merge PR",
+    "Deploy/restart live services",
+    "Read/write/migrate/delete real databases or keys",
+    "Install missing Nginx/start Docker",
+    "Delete branch/PR/retained fixtures"
+  ],
+  "existingGithubIdentity": "HachikoJ",
+  "authenticationState": "gh auth status exit1; existing keyring token reported invalid, no rate limit/network failure",
+  "pendingApprovalRequest": {
+    "submitted": true,
+    "received": false,
+    "scope": "exact candidate branch + draft PR + necessary T-18 CI fixes; no merge/deploy/real data actions",
+    "source": "user-provided AGENTS.md section7; commit authorization does not grant push/PR/public data authorization"
+  }
+}

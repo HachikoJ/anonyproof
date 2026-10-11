@@ -75,6 +75,7 @@ async function fetchIdentity(): Promise<IdentityResponse> {
   if (storedRecoveryCode) headers['X-AnonyProof-Recovery-Code'] = storedRecoveryCode
 
   const response = await fetch('/anonyproof/api/identity', {
+    method: 'POST',
     cache: 'no-store',
     headers,
   })
@@ -125,7 +126,9 @@ export function useCrypto() {
       .then((data) => {
         if (!active || !data.deviceId) return
         setDeviceId(data.deviceId)
-        setRecoveryCode(data.recoveryCode || readStored(RECOVERY_CODE_KEY))
+        // Only show a recovery code confirmed by this identity response. A local
+        // value may belong to another identity or fail the server hash check.
+        setRecoveryCode(data.recoveryCode || '')
         setIdentityError('')
       })
       .catch((error: unknown) => {
@@ -163,60 +166,10 @@ export function useCrypto() {
     return data.deviceId
   }, [])
 
-  // 加密函数 - 降级方案：如果Web Crypto API不可用，使用简单Base64编码
-  const encrypt = async (content: string): Promise<string> => {
-    try {
-      // 检查是否支持 Web Crypto API
-      if (!window.crypto || !window.crypto.subtle) {
-        console.warn('Web Crypto API不可用，使用Base64编码')
-        // 降级方案：简单Base64编码
-        return btoa(unescape(encodeURIComponent(content)))
-      }
-
-      // 生成随机密钥
-      const key = await crypto.subtle.generateKey(
-        { name: 'AES-GCM', length: 256 },
-        true,
-        ['encrypt', 'decrypt']
-      )
-
-      // 生成 IV
-      const iv = crypto.getRandomValues(new Uint8Array(12))
-
-      // 加密内容
-      const encodedContent = new TextEncoder().encode(content)
-      const encryptedContent = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
-        key,
-        encodedContent
-      )
-
-      // 导出密钥
-      const exportedKey = await crypto.subtle.exportKey('raw', key)
-
-      // 组合: iv + key + encrypted_content
-      const combined = new Uint8Array(
-        iv.length + exportedKey.byteLength + encryptedContent.byteLength
-      )
-      combined.set(iv)
-      combined.set(new Uint8Array(exportedKey), iv.length)
-      combined.set(new Uint8Array(encryptedContent), iv.length + exportedKey.byteLength)
-
-      // 转换为 base64
-      const base64 = btoa(Array.from(combined, b => String.fromCharCode(b)).join(''))
-
-      return base64
-    } catch (error) {
-      console.error('加密失败，使用降级方案:', error)
-      // 最终降级：Base64编码
-      try {
-        return btoa(unescape(encodeURIComponent(content)))
-      } catch (e) {
-        console.error('Base64编码也失败:', e)
-        throw new Error('加密失败，请使用现代浏览器访问')
-      }
-    }
-  }
+  // Compatibility name for the existing submit hook. This is only a request
+  // marker: the server encrypts originalContent with its independent key before
+  // committing. No client key package or Base64 "success" is generated.
+  const encrypt = async (_content: string): Promise<string> => 'server-encrypted:v1'
 
   // 解密函数（用于管理后台，如果需要）
   const decrypt = async (encryptedBase64: string): Promise<string> => {

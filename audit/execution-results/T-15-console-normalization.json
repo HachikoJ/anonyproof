@@ -1,0 +1,13 @@
+{
+  "rawEvidenceDirectory": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T15-main-backup-w42uz112/raw-evidence",
+  "normalizedFiles": [
+    "T-15-main-proxy-build.txt",
+    "T-15-main-build.txt",
+    "T-15-final-frontend-type.txt",
+    "T-15-main-frontend-type.txt",
+    "T-15-main-backend-script-type.txt",
+    "T-15-main-backend-type.txt",
+    "T-15-main-versions.txt"
+  ],
+  "transformation": "trim console trailing whitespace/CR and blank EOF lines only; test contents and exits unchanged"
+}

@@ -1,0 +1,84 @@
+{
+  "task": "T-33",
+  "status": "local backend and static copy acceptance passed; task remains in progress pending real browser and deployment/history gates",
+  "timestamp": "2026-10-09T02:04:00.774132+00:00",
+  "head": "08ad4c0f2c1c43c1423654c7957da861c1bef78d",
+  "scope": "new writes and authorized compatibility reads in local synthetic fixtures; no real assets/deployment",
+  "checks": [
+    {
+      "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-33.test.ts tests/fix/T-10.test.ts tests/fix/T-11.test.ts tests/fix/T-34.test.ts",
+      "exitCode": 0,
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "skip": 0,
+      "artifact": "audit/execution-results/T-33-complete-local-regression.txt"
+    },
+    {
+      "command": "npm run type-check",
+      "exitCode": 0,
+      "artifact": "audit/execution-results/T-33-type-final.txt"
+    },
+    {
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "artifact": "audit/execution-results/T-33-server-type-final.txt"
+    },
+    {
+      "command": "extract submission privacy paragraph and check exact inclusion in README.md and docs/ACCESS_PRIVACY.md",
+      "result": true
+    }
+  ],
+  "before": {
+    "initialHttpTests": {
+      "tests": 3,
+      "fail": 3,
+      "artifact": "audit/execution-results/T-33-before.txt"
+    },
+    "malformedUri": {
+      "status": 400,
+      "rawBusinessMarkerInStdout": true,
+      "artifact": "audit/execution-results/T-33-malformed-uri-probe.json"
+    },
+    "malformedUriRegression": {
+      "tests": 1,
+      "fail": 1,
+      "artifact": "audit/execution-results/T-33-uri-before.txt"
+    }
+  },
+  "verifiedBehavior": {
+    "ua": "fixed browser family / bot class / script / unknown only",
+    "path": "known static routes or parameter template; unmatched fallback; no query",
+    "sourceIp": "approved raw DB window plus active blacklist only; no app warning or access-error source identifiers",
+    "rawRetention": "T-11 tests included; 7-day read filter also excludes older rows without physical deletion",
+    "businessAdminIp": "new solution empty string, comment NULL, audit empty string; old HTTP fields removed without changing rows",
+    "legacyRows": "UA/path/reason transformed only on read; original DB row remains identical",
+    "directWriters": "recordAccess/logRateLimit also sanitize; unchanged ten-per-hour blacklist behavior verified",
+    "warnings": "source blacklist/suspicious events only fixed messages, classified reason/route; faults log bounded SQLite code only",
+    "malformedUri": "fixed 400 response, no raw route parameter to process stdout/stderr"
+  },
+  "privacyCopy": "无需实名；运营者可关联本机记录，服务器与获授权管理员可读取内容。访问与限流日志保留来源 IP 7 天、浏览器家族或机器人分类及路由模板，不保存完整浏览器信息、查询参数或含业务编号的路径；处理说明、评论与操作审计不保存管理员 IP。活动 IP 黑名单按到期或人工取消规则保留，因此不等于不可追踪的完全匿名。",
+  "sourceSha256": {
+    "server/middleware/accessStats.ts": "16666903af342fac3a893489479da272267d188cac9dad46f0e0db3d7c9d5610",
+    "server/utils/accessStats.ts": "bfd9abc196ae3c6303d0d4f2d78f92c80ae8661cae5fef330de454ba811c9d0a",
+    "server/utils/accessPrivacy.ts": "4ad79f863a5e0be272f1dfecf0f99c554f4ee342eb6f323e90ea33269af2723a",
+    "server/index.ts": "615be5c38a64ef823522455bb4594a492b65b1c283f5359f70e5f34520e2c7f0",
+    "tests/fix/T-10.test.ts": "21ce0f35024692a76609a92b1a4d3a6b4801c2ceca994b69747045214083c88a",
+    "tests/fix/T-33.test.ts": "ec47f5e1d90def9e0899465b72f19fc0f957164b4e58d1af3273c643038a2d95",
+    "docs/ACCESS_PRIVACY.md": "ee275e041a3a3968588b035e30cee6bd36fd5a929c6e70439627efeb8c56c904",
+    "app/page.tsx": "c03f84c75cfa5da0776d608b48aff127ffcaedf333f19062d4e552e37cc39406",
+    "README.md": "0c205f6a9cd6e610d4aa12c203fa0858231fc3d35d57c239f7ae6b9f3f8bcee4",
+    "audit/execution-results/T-33-complete-local-regression.txt": "981748ea3645611e3a1c42b77038f3df14a7ae57f3762e643f7e818abd3ffdee",
+    "audit/execution-results/T-33-type-final.txt": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+    "audit/execution-results/T-33-server-type-final.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "remaining": [
+    "Production build/rendered submission-before-input privacy text must be verified by main agent; browser tool currently unavailable, no fake browser acceptance",
+    "Actual historical DB/WAL/application and PM2 logs/backups retained; real asset confirmation and independent restore required before disposal",
+    "Supported Nginx template inherits global access/error logging; T-33/T-35 production plan must verify and handle this explicitly; template and real server were not modified"
+  ],
+  "nonScope": [
+    "Unreferenced legacy server/utils/comments.ts utility still accepts admin IP and bypasses content encryption; no live route imports it, left unchanged and recorded for separate scope."
+  ],
+  "rollback": "Do not restore additional identifying writes or raw route/error logging; no real database was touched"
+}

@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-08T08:21:59.351490+00:00",
+  "checks": [
+    {
+      "name": "T-21-final-type",
+      "argv": [
+        "npm",
+        "run",
+        "type-check"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "T-21-final-build",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "T-21-final-regression",
+      "argv": [
+        "npx",
+        "--no-install",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/fix/T-21.test.ts",
+        "tests/fix/T-05.test.ts",
+        "tests/fix/T-08.test.ts",
+        "tests/fix/T-26.test.ts"
+      ],
+      "exitCode": 0
+    }
+  ]
+}

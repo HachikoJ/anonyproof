@@ -1,0 +1,26 @@
+[
+  {
+    "path": "audit/execution-results/T-42-main-type.txt",
+    "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T42-log-raw-0s6af7q1/T-42-main-type.txt",
+    "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+    "terminalWhitespaceNormalized": true
+  },
+  {
+    "path": "audit/execution-results/T-42-regressions-first.txt",
+    "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T42-log-raw-0s6af7q1/T-42-regressions-first.txt",
+    "sha256": "c44de0ccf26fd3804a630b8339284c133ac83eafeb4c0baa729f92856ebeb1a6",
+    "terminalWhitespaceNormalized": true
+  },
+  {
+    "path": "audit/execution-results/T-42-tests-first.txt",
+    "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T42-log-raw-0s6af7q1/T-42-tests-first.txt",
+    "sha256": "555aed0c8582ea4feda99498c393b459b3c18f823b1813500025e8ae28541a01",
+    "terminalWhitespaceNormalized": true
+  },
+  {
+    "path": "audit/execution-results/T-42-type-first.txt",
+    "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T42-log-raw-0s6af7q1/T-42-type-first.txt",
+    "sha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519",
+    "terminalWhitespaceNormalized": true
+  }
+]

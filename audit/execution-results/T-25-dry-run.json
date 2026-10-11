@@ -1,0 +1,16 @@
+{
+  "fixture": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T25-dryrun-8HN1W7/fixture.db",
+  "role": "formal",
+  "readonly": true,
+  "beforeSha256": "867c9f5f3e946c37e15722e7dc22f2aa22393696553658c5b08702932c49c298",
+  "afterSha256": "867c9f5f3e946c37e15722e7dc22f2aa22393696553658c5b08702932c49c298",
+  "counts": {
+    "expiredSessions": 0,
+    "identitySessions": 0,
+    "installKeys": 0,
+    "identities": 0,
+    "feedbacks": 0,
+    "comments": 0,
+    "notifications": 0
+  }
+}

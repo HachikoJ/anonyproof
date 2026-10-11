@@ -1,0 +1,7 @@
+
+> anonyproof@0.1.0 type-check
+> tsc --noEmit
+
+app/foorpynona/page.tsx(684,13): error TS2322: Type '(cursor?: string | null, history?: (string | null)[]) => Promise<Feedback[]>' is not assignable to type 'MouseEventHandler<HTMLButtonElement>'.
+  Types of parameters 'cursor' and 'event' are incompatible.
+    Type 'MouseEvent<HTMLButtonElement, MouseEvent>' is not assignable to type 'string'.

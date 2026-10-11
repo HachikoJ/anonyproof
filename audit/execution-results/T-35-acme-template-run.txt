@@ -1,0 +1,1 @@
+{"passed": true, "checks": 9, "evidence": "/Users/wilson/Documents/Codex/anonyproof/audit/execution-results/T-35-acme-template-result.json"}

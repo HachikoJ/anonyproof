@@ -1,0 +1,13 @@
+{
+  "url": "http://127.0.0.1:3034/anonyproof",
+  "recoveryPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-aAREzy/T38-synthetic-recovery-codes.json",
+  "devices": {
+    "a": "device-dC5z25nr9zm9s7Xb_bMBH11l",
+    "b": "device-rpGVTRpgNrqh8WQVAetL-F-e"
+  },
+  "notificationTarget": "T38-0007",
+  "initialCount": 1000,
+  "fixturePid": 46966,
+  "databasePath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-aAREzy/fixture.db",
+  "fixtureOnly": true
+}

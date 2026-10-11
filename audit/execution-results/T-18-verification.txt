@@ -1,0 +1,9 @@
+T-18 verification scope
+Runtime: Node v20.20.2 / npm 11.21.0 (project-local prefix, system Node untouched).
+Checkout baseline: d08b0a2; git archive HEAD plus proposed CI workflow only.
+Executed unchanged workflow run commands: root+server npm ci/npm ls, check-runtime.cjs, both type-checks, build, tests/fix/*.test.ts. Every step exit 0; 5 tests passed and none skipped.
+Fault injection in isolated server/index.ts: top-level throw T18_INTENTIONAL_STARTUP_FAILURE. Same test gate exit 1; all 5 tests failed. Fixture source restored byte-for-byte; same gate exit 0 (5 tests passed).
+Ruby YAML parser validation exit 0: Node20 matrix retained, all required steps present and no continue-on-error/if override on gates.
+Repository git diff --check exit 0 at verification time.
+No commit/push/deploy made by delegated agent. No GitHub Actions link: real Ubuntu runner/actions/cache/upload behavior not executed without push authorization. Task cannot claim complete remote CI validation.
+Additional dependency safety requirement verified: exact production audit workflow step runs npm audit --omit=dev --json for root/server, writes two JSON reports and uploads only those reports. Valid advisory exits 1 produce warnings without requiring all out-of-scope advisories repaired. Baseline root total8/server total3; combined gate exit0. Missing metadata and simulated registry error each force exit1. Evidence: T-18-dependency-audit.txt. Updated YAML audit blocking/artifact validation exit0; remote artifact upload still unexecuted.

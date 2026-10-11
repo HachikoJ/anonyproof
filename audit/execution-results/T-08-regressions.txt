@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+ok 1 - T-03 module: AES-256-GCM known ciphertext, independently calculated authenticated vector
+  ---
+  duration_ms: 0.928291
+  type: 'test'
+  ...
+# Subtest: T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+ok 2 - T-03 module: unique random 96-bit nonces; exact empty/Unicode/max-size round trips
+  ---
+  duration_ms: 31.554625
+  type: 'test'
+  ...
+# Subtest: T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+ok 3 - T-03 module: altered cipher/tag/nonce/context/key and unknown versions cannot fall back
+  ---
+  duration_ms: 0.617375
+  type: 'test'
+  ...
+# Subtest: T-03 module: explicit old-format reader compatibility and demo keylessness
+ok 4 - T-03 module: explicit old-format reader compatibility and demo keylessness
+  ---
+  duration_ms: 0.235916
+  type: 'test'
+  ...
+# Subtest: T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+ok 5 - T-03 module: storage version is mandatory; sealed version rejects missing prefix and unknown flags
+  ---
+  duration_ms: 0.137166
+  type: 'test'
+  ...
+# Subtest: T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+ok 6 - T-03 module: missing, noncanonical and wrong-length key configuration fails closed
+  ---
+  duration_ms: 0.0805
+  type: 'test'
+  ...
+# Subtest: T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+ok 7 - T-03 module: persisted key marker rejects wrong/lost key without overwriting marker
+  ---
+  duration_ms: 8.261542
+  type: 'test'
+  ...
+# Subtest: T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+ok 8 - T-03 module: markerless existing ciphertext cannot be adopted with the wrong key
+  ---
+  duration_ms: 0.637542
+  type: 'test'
+  ...
+# Subtest: T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+ok 9 - T-03 module: row flags preserve legacy prefix collisions; old body and new solution coexist
+  ---
+  duration_ms: 0.948542
+  type: 'test'
+  ...
+# Subtest: T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+ok 10 - T-03 module: database version 1 bad prefix and unknown storage flags fail without a new marker
+  ---
+  duration_ms: 0.98025
+  type: 'test'
+  ...
+# Subtest: T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+ok 11 - T-03 reader: real HTTP preserves legacy literals and independently sealed fields across restart/restore
+  ---
+  duration_ms: 1624.913416
+  type: 'test'
+  ...
+# Subtest: T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+ok 12 - T-03 writer: four content classes have no plaintext/key copies in DB, WAL, SQL export or logs
+  ---
+  duration_ms: 822.751625
+  type: 'test'
+  ...
+# Subtest: T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+ok 13 - T-03 writer: nonce/cipher/tag/field-version tampering is a controlled HTTP failure without plaintext fallback
+  ---
+  duration_ms: 427.514209
+  type: 'test'
+  ...
+# Subtest: T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+ok 14 - T-08: different invalid recovery codes share source quota; rejected recovery cannot issue or rebind credentials
+  ---
+  duration_ms: 2560.696167
+  type: 'test'
+  ...
+# Subtest: T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+ok 15 - T-08: successful recovery also consumes quota, default ten-per-minute rejects the eleventh
+  ---
+  duration_ms: 470.765792
+  type: 'test'
+  ...
+# Subtest: T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+ok 16 - T-08: malformed/oversized recovery POSTs consume quota before parsing; wrong Origin and preflight do not
+  ---
+  duration_ms: 397.506875
+  type: 'test'
+  ...
+# Subtest: T-08: invalid recovery limiter values reject startup by the offending configuration name
+ok 17 - T-08: invalid recovery limiter values reject startup by the offending configuration name
+  ---
+  duration_ms: 3948.165
+  type: 'test'
+  ...
+# Subtest: T-09: both login aliases share successful and failed request quota
+ok 18 - T-09: both login aliases share successful and failed request quota
+  ---
+  duration_ms: 2556.062958
+  type: 'test'
+  ...
+# Subtest: T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+ok 19 - T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+  ---
+  duration_ms: 460.48025
+  type: 'test'
+  ...
+# Subtest: T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+ok 20 - T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+  ---
+  duration_ms: 396.618791
+  type: 'test'
+  ...
+# Subtest: T-09: five wrong passwords retain the separate fifteen-minute production lock
+ok 21 - T-09: five wrong passwords retain the separate fifteen-minute production lock
+  ---
+  duration_ms: 1518.500583
+  type: 'test'
+  ...
+# Subtest: T-09: the published demo password is also limited across aliases
+ok 22 - T-09: the published demo password is also limited across aliases
+  ---
+  duration_ms: 456.15525
+  type: 'test'
+  ...
+# Subtest: T-09: invalid login limiter configuration rejects startup explicitly
+ok 23 - T-09: invalid login limiter configuration rejects startup explicitly
+  ---
+  duration_ms: 4688.677834
+  type: 'test'
+  ...
+# Subtest: T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+ok 24 - T-26: every existing cookie write route and login/logout alias rejects untrusted origins before business mutation
+  ---
+  duration_ms: 523.601542
+  type: 'test'
+  ...
+# Subtest: T-27: only explicit canonical origin configuration is accepted
+ok 25 - T-27: only explicit canonical origin configuration is accepted
+  ---
+  duration_ms: 1.054167
+  type: 'test'
+  ...
+# Subtest: T-27: actual CORS preflight/read responses expose only approved exact origins
+ok 26 - T-27: actual CORS preflight/read responses expose only approved exact origins
+  ---
+  duration_ms: 38.362708
+  type: 'test'
+  ...
+# Subtest: T-27: actual production backend rejects missing or invalid origin configuration
+ok 27 - T-27: actual production backend rejects missing or invalid origin configuration
+  ---
+  duration_ms: 2210.708667
+  type: 'test'
+  ...
+# Subtest: T-27: product backend preflight and authenticated reads use the exact configured origins
+ok 28 - T-27: product backend preflight and authenticated reads use the exact configured origins
+  ---
+  duration_ms: 402.096
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24261.274958

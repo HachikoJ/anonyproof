@@ -1,0 +1,9 @@
+Actual native IAB browser verification, 2026-10-07, temporary formal fixture only.
+Command: Node22 npx --no-install tsx tests/fix/T-03.browser.ts
+UI: formal category report -> unique synthetic body -> success record -> user comment -> formal admin login -> search by body marker -> correct detail -> resolution and resolved state -> admin reply -> user notification plaintext summaries -> status notification click locates same record -> recovery UI reports restored identity -> same record/body/solution/two comments visible.
+UI privacy copy explicitly says server and authorized handlers can read encrypted stored contents.
+Independent DB assertion: npx --no-install tsx tests/fix/T-03.browser-assert.ts; exit0. See T-03-browser-db-assert.txt; 1 feedback/2 comments/4 notifications, sensitive versions1 and exact role plaintexts on authenticated decrypt; DB/liveWAL/SQL export no marker/content key.
+Screenshot of detail without recovery code was displayed through native screenshot API; no local screenshot artifact path invented. Saved evidence omits cookies, recovery codes, content keys and login passwords.
+Temporary browser tab closed. Fixture/Next processes stopped via harness SIGTERM; fixture database and separate synthetic key retained.
+Automated T-03 test separately covers fresh-service recovery after consistent database backup with the same independent key. This UI recovery was in the existing browser, so it is not falsely represented as a new browser context.
+Existing UI search/notification focus verified with the current one-record fixture; future cross-page contract acceptance remains independent T-37/38/39.

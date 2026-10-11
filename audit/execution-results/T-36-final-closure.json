@@ -1,0 +1,31 @@
+{
+  "task": "T-36",
+  "closedAtUtc": "2026-10-10T07:23:41.436493+00:00",
+  "fixedCodeHead": "5c23a042e807b92312dac8fa1a9dc2e6037f575d",
+  "actualCI": {
+    "runId": 38033385313,
+    "url": "https://github.com/HachikoJ/anonyproof/actions/runs/38033385313",
+    "conclusion": "success",
+    "tests": 252,
+    "pass": 251,
+    "fail": 0,
+    "skipped": 1,
+    "skip": "Existing T41 placeholder, transaction faults independently covered by T34; never counted as pass."
+  },
+  "allFourIndependentModules": true,
+  "actualRegistrationTrace43MatchesS0": true,
+  "actualAliasAndParameterizedHTTPPassed": true,
+  "repeatInitializationFaultAndRecoveryPassed": true,
+  "bothTypeChecksStrictBuildPassed": true,
+  "finalLocalProxyChain": {
+    "T24": 11,
+    "T35": 45,
+    "T33": 3,
+    "fail": 0
+  },
+  "sourceBehaviorChangedByRefactor": false,
+  "deployedByT36": false,
+  "originalCITextRawSha256": "83f5736275c7cc71026b723309cde4b06b5b6fd9f11a70303dd2346a2f6b934a",
+  "rawTextFormattingOnly": "Readable CI log whitespace normalized; substantive failed run retained separately.",
+  "remainingProductionHistoryTasksNotClosedByThisTask": true
+}

@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: T-23 single instance: same-secret restart invalidates old admin session, re-login and logout remain usable
+ok 1 - T-23 single instance: same-secret restart invalidates old admin session, re-login and logout remain usable
+  ---
+  duration_ms: 972.470916
+  type: 'test'
+  ...
+# Subtest: T-23 supported PM2 roles use one backend instance
+ok 2 - T-23 supported PM2 roles use one backend instance
+  ---
+  duration_ms: 1.090208
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1204.120708

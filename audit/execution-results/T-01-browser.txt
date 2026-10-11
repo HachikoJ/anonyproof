@@ -1,0 +1,11 @@
+T-01 actual local browser verification, 2026-10-07
+Origin http://127.0.0.1:3014/anonyproof; isolated synthetic DB and public demo fixture only.
+1. Home displays fixed synthetic-only/independent sandbox/read-only template notice. Public count stays seven preset cases.
+2. Compose flow offers fixed case select and immutable preview; no evidence textarea. Created one sandbox feedback, successful receipt and ID.
+3. Admin login (published demo credential) retains this browser identity and its record. Shared template selection disables all three status controls and Send; no solution/comment text editor.
+4. Own created record offers fixed solution/reply selects. Chose resolved preset and recorded checked resolved state; sent fixed reply and saw reply-sent message and exactly one conversation entry.
+5. User records show eight own entries (seven safe cloned presets plus new feedback). Own detail shows same resolved preset and fixed comment selector; selecting synthetic supplement and submitting shows exactly two comments, one per role. Screenshot rendered at this final detail state without showing recovery code.
+6. Independent read-only SQLite check matches body, solution and both comments against server preset definitions; see T-01-browser-db.txt (exit 0).
+Backend restarted after source change; original temporary database retained. Next dev supports HMR for final homepage copy. All browser actions use cua_repl; no real data or production writes.
+A stale temporary tab became an internal data URL after its fixture was stopped. Browser URL policy blocked navigation/closing it; recovered using a fresh tab in the same browser, without bypassing the policy. Active verification tab closed before stopping its fixture.
+One initial parent combined regression collided with the manual Next dev lock. Stopped the named browser fixture and reran all nine tests successfully; see T-01-dev-lock-conflict.txt and T-01-parent-tests.txt.

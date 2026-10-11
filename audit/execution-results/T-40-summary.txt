@@ -1,0 +1,9 @@
+T-40 notification-limit acceptance
+Runtime: project-local Node22.23.3; system and online runtime untouched.
+Changed only GET /api/notifications limit validation and SQL binding in server/index.ts. New tests/fix/T-40.test.ts uses an isolated database and random test credentials.
+Fixture: 150 visible user notifications + 150 visible admin notifications linked to an owned synthetic feedback; an extra user-recipient notification points to another identity feedback and remains hidden.
+Actual successful parameter cases for both roles: omitted=20, 1=1, 20=20, 30=30, 99=99, 100=100; exact newest-record IDs asserted.
+26 invalid parameter cases per role (52 requests) returned400: negative/zero/>100, fractions and decimal text, non-numeric/NaN/Infinity, empty and whitespace, plus/exponent/hex, JSON arrays/objects, unsafe and huge integers, duplicate keys, bracket-array/object encodings and mixed keys.
+Unread counts remain150; anonymous reads401, ordinary user admin reads401, cross-identity user reads403, non-admin recipient admin request401. Stored notification count remains301; /health200 and no notification SQL-error log.
+T-19+T-40 tests: 6/6 passed, no skipped tests, exit0. Root/server type-checks and git diff --check all exit0. Evidence: T-40-tests.txt, T-40-frontend-type.txt, T-40-backend-type.txt, T-40-diff.txt.
+No plan edit, commit, push or deployment by delegated agent.

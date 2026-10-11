@@ -1,0 +1,65 @@
+{
+  "task": "T-42",
+  "action": "feedback",
+  "fixtureOnly": true,
+  "checks": [
+    {
+      "name": "T33 notice before submit",
+      "pass": true
+    },
+    {
+      "name": "drop armed",
+      "pass": true
+    },
+    {
+      "name": "real committed lost response",
+      "pass": true
+    },
+    {
+      "name": "failure keeps draft",
+      "pass": true
+    },
+    {
+      "name": "pending storage only key/action/target",
+      "pass": true
+    },
+    {
+      "name": "edited failure no mutation/no new key",
+      "pass": true
+    },
+    {
+      "name": "reload does not preserve draft",
+      "pass": true
+    },
+    {
+      "name": "reload changed body conflict409 same key",
+      "pass": true
+    },
+    {
+      "name": "reload unchanged retry same record/counts",
+      "pass": true
+    },
+    {
+      "name": "dialog shows original ID",
+      "pass": true
+    },
+    {
+      "name": "success removes pending key",
+      "pass": true
+    }
+  ],
+  "before": {
+    "feedbacks": 4,
+    "feedback_comments": 3,
+    "notifications": 2,
+    "request_idempotency": 0
+  },
+  "after": {
+    "feedbacks": 5,
+    "feedback_comments": 3,
+    "notifications": 3,
+    "request_idempotency": 1
+  },
+  "acceptedId": "912018aa-63e4-487b-a2f2-0887825d973e",
+  "privacyNotice": "提交前检查\n删去姓名、电话、住址等身份信息\n区分亲历事实与转述内容\n保留时间、地点和可核实细节\n\n无需实名；运营者可关联本机记录，服务器与获授权管理员可读取内容。访问与限流日志保留来源 IP 7 天、浏览器家族或机器人分类及路由模板，不保存完整浏览器信息、查询参数或含业务编号的路径；处理说明、评论与操作审计不保存管理员 IP。活动 IP 黑名单按到期或人工取消规则保留，因此不等于不可追踪的完全匿名。"
+}

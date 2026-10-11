@@ -1,0 +1,4 @@
+Baseline commit: d08b0a285a3be5dd0cd6244edb68c04e4feaa573
+Isolated checkout: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g
+Local runtime prefix: /tmp/anonyproof-runtime-20
+No .env.local, real database, node_modules, or logs copied.

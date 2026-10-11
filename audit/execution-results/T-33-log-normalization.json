@@ -1,0 +1,17 @@
+[
+  {
+    "file": "T-33-nginx-privacy-log.txt",
+    "rawSha256": "5a70a871fe014c3eb62948e571ffad4bb355ba8aa5d9cd77bc10900750982b2d",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-raw-o7g2r08p/T-33-nginx-privacy-log.txt"
+  },
+  {
+    "file": "T-33-template-echo-log.txt",
+    "rawSha256": "b082223b2b5074eb6243f54843834c103f71fc0fc6f23bacc9acb9572218d07b",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-raw-o7g2r08p/T-33-template-echo-log.txt"
+  },
+  {
+    "file": "T-33-real-chain-log.txt",
+    "rawSha256": "751857b73da6b4aa35c88999a1d75652fdea483f8e8bcd34fba77d4691eaee1e",
+    "rawRetained": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-raw-o7g2r08p/T-33-real-chain-log.txt"
+  }
+]

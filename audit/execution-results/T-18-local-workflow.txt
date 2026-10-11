@@ -1,0 +1,173 @@
+v20.20.2
+11.21.0
+
+STEP: Install dependencies
+COMMAND:
+install_dependencies() {
+  local project_dir="$1"
+  local attempt backup_dir
+  for attempt in 1 2 3; do
+    if (cd "$project_dir" && npm ci --no-audit --no-fund && npm ls --depth=0); then
+      echo "npm ci (${project_dir}) succeeded on attempt ${attempt}"
+      return 0
+    fi
+    echo "::warning::npm ci (${project_dir}) attempt ${attempt} failed or left an inconsistent tree"
+    if [ -d "$project_dir/node_modules" ]; then
+      backup_dir="$(mktemp -d "${RUNNER_TEMP:-/tmp}/anonyproof-ci-install.XXXXXX")"
+      mv "$project_dir/node_modules" "$backup_dir/node_modules"
+    fi
+    npm cache clean --force || true
+  done
+  echo "::error::npm ci (${project_dir}) failed after 3 attempts"
+  return 1
+}
+install_dependencies .
+install_dependencies server
+
+added 174 packages in 20s
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   better-sqlite3@12.11.1 (install: prebuild-install || node-gyp rebuild --release)
+npm warn install-scripts   esbuild@0.27.3 (postinstall: node install.js)
+npm warn install-scripts   fsevents@2.3.3 (install: (install scripts present))
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+anonyproof@0.1.0 /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g
+├── @types/better-sqlite3@7.6.13
+├── @types/cors@2.8.19
+├── @types/express@5.0.6
+├── @types/node@20.19.35
+├── @types/react-dom@18.3.7
+├── @types/react@18.3.28
+├── @types/uuid@10.0.0
+├── axios@1.20.0
+├── better-sqlite3@12.11.1
+├── cors@2.8.6
+├── express@5.2.1
+├── next@16.3.3
+├── react-dom@18.3.1
+├── react-dropzone@15.0.0
+├── react@18.3.1
+├── tsx@4.21.0
+├── typescript@5.9.3
+└── uuid@13.0.2
+
+npm ci (.) succeeded on attempt 1
+
+added 151 packages in 16s
+npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn install-scripts   better-sqlite3@12.11.1 (install: prebuild-install || node-gyp rebuild --release)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+anonyproof-server@1.0.0 /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T18-checkout-k4rhdr9g/server
+├── @types/better-sqlite3@7.6.13
+├── @types/express@5.0.6
+├── @types/node@20.19.43
+├── better-sqlite3@12.11.1
+├── cors@2.8.6
+├── express-rate-limit@8.6.2
+├── express@5.2.1
+├── typescript@5.9.3
+├── uuid@14.0.2
+└── winston@3.19.0
+
+npm ci (server) succeeded on attempt 1
+EXIT: 0
+
+STEP: Verify installed trees and SQLite native ABI
+COMMAND:
+node scripts/check-runtime.cjs
+Runtime and dependency trees verified (Node 20.20.2).
+EXIT: 0
+
+STEP: Frontend type check
+COMMAND:
+npm run type-check
+
+> anonyproof@0.1.0 type-check
+> tsc --noEmit
+
+EXIT: 0
+
+STEP: Backend type check
+COMMAND:
+npm --prefix server run type-check
+
+> anonyproof-server@1.0.0 type-check
+> tsc --noEmit
+
+EXIT: 0
+
+STEP: Build
+COMMAND:
+npm run build
+
+> anonyproof@0.1.0 build
+> next build
+
+▲ Next.js 16.3.3 (Turbopack)
+✓ Running next.config.js took 11ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1954ms
+  Running TypeScript ...
+  Finished TypeScript in 1764ms ...
+  Collecting page data using 8 workers ...
+  Generating static pages using 8 workers (0/7) ...
+  Generating static pages using 8 workers (1/7)
+  Generating static pages using 8 workers (3/7)
+  Generating static pages using 8 workers (5/7)
+✓ Generating static pages using 8 workers (7/7) in 288ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /access-stats
+├ ○ /apple-icon.png
+├ ○ /foorpynona
+└ ○ /icon.svg
+
+
+○  (Static)  prerendered as static content
+
+EXIT: 0
+
+STEP: Backend smoke and repair regression tests
+COMMAND:
+npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts
+TAP version 13
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 1 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 591.610584
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 2 - T-19: production rejects missing secret
+  ---
+  duration_ms: 377.620541
+  ...
+# Subtest: T-19: production rejects short secret
+ok 3 - T-19: production rejects short secret
+  ---
+  duration_ms: 404.138666
+  ...
+# Subtest: T-19: production rejects missing password
+ok 4 - T-19: production rejects missing password
+  ---
+  duration_ms: 369.993542
+  ...
+# Subtest: T-19: production rejects short password
+ok 5 - T-19: production rejects short password
+  ---
+  duration_ms: 364.038292
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2305.222333
+EXIT: 0

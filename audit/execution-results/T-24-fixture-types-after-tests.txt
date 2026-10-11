@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: T-22 HTTP capacity refuses demo login before cookies/identity/clones, preserves valid sessions, timer reclaims and logout deletes
+ok 1 - T-22 HTTP capacity refuses demo login before cookies/identity/clones, preserves valid sessions, timer reclaims and logout deletes
+  ---
+  duration_ms: 971.96775
+  type: 'test'
+  ...
+# Subtest: T-22 HTTP full failure store rejects a new source, retains old lockout and automatically expires all 10000 entries
+ok 2 - T-22 HTTP full failure store rejects a new source, retains old lockout and automatically expires all 10000 entries
+  ---
+  duration_ms: 777.798875
+  type: 'test'
+  ...
+# Subtest: T-22 real display cache evicts oldest at 10000 without changing saved R1, and timer expires entries without reads
+ok 3 - T-22 real display cache evicts oldest at 10000 without changing saved R1, and timer expires entries without reads
+  ---
+  duration_ms: 769.8515
+  type: 'test'
+  ...
+# Subtest: T-22 demo identity failure releases the reserved admin session and never signs cookies
+ok 4 - T-22 demo identity failure releases the reserved admin session and never signs cookies
+  ---
+  duration_ms: 504.122459
+  type: 'test'
+  ...
+# Subtest: T-24 proxy configuration fails closed without a canonical independent key
+ok 5 - T-24 proxy configuration fails closed without a canonical independent key
+  ---
+  duration_ms: 0.749375
+  type: 'test'
+  ...
+# Subtest: T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local
+ok 6 - T-24 real backend rejects missing/wrong/repeated proxy keys and non-normalized source before writes; health stays local
+  ---
+  duration_ms: 488.096333
+  type: 'test'
+  ...
+# Subtest: T-24 unproxied requests ignore all supplied source headers
+ok 7 - T-24 unproxied requests ignore all supplied source headers
+  ---
+  duration_ms: 436.954042
+  type: 'test'
+  ...
+# Subtest: T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers
+ok 8 - T-24 middleware rejects a non-loopback peer even with the correct key and strips private raw headers
+  ---
+  duration_ms: 0.65025
+  type: 'test'
+  ...
+# Subtest: T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+ok 9 - T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+  ---
+  duration_ms: 530.990833
+  type: 'test'
+  ...
+# Subtest: T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+ok 10 - T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+  ---
+  duration_ms: 454.327708
+  type: 'test'
+  ...
+# Subtest: T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+ok 11 - T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+  ---
+  duration_ms: 593.073125
+  type: 'test'
+  ...
+# Subtest: T-33 classifications and routes never retain arbitrary input; all recognized outputs are idempotent
+ok 12 - T-33 classifications and routes never retain arbitrary input; all recognized outputs are idempotent
+  ---
+  duration_ms: 5.75675
+  type: 'test'
+  ...
+# Subtest: T-33 exported writers minimize direct calls and rate-limit blacklist warnings do not retain source identifiers
+ok 13 - T-33 exported writers minimize direct calls and rate-limit blacklist warnings do not retain source identifiers
+  ---
+  duration_ms: 163.387375
+  type: 'test'
+  ...
+# Subtest: T-33 malformed route parameters return 400 without persisting the raw business marker to stderr
+ok 14 - T-33 malformed route parameters return 400 without persisting the raw business marker to stderr
+  ---
+  duration_ms: 537.975709
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6723.892417

@@ -1,0 +1,72 @@
+{
+  "task": "T-23",
+  "fixtureOnly": true,
+  "source": "output/playwright/T-23-restart-result.txt",
+  "sourceSha256": "5d0ad628ae45685371fcba491e2d39188c77d8480f38980a48c7a4f30020ea62",
+  "checks": [
+    {
+      "name": "real same DB/key/secret restart",
+      "pass": true
+    },
+    {
+      "name": "expired session notice",
+      "pass": true
+    },
+    {
+      "name": "all protected DOM cleared",
+      "pass": true
+    },
+    {
+      "name": "password cleared",
+      "pass": true
+    },
+    {
+      "name": "relogin no old drafts",
+      "pass": true
+    },
+    {
+      "name": "logout still usable",
+      "pass": true
+    }
+  ],
+  "restart": {
+    "restarted": true,
+    "restartCount": 1,
+    "sameDatabase": true,
+    "sameContentKey": true,
+    "sameSessionSecret": true
+  },
+  "countsBeforeRestart": {
+    "feedbacks": 4,
+    "feedback_comments": 7,
+    "notifications": 6,
+    "request_idempotency": 4
+  },
+  "countsAfterRestart": {
+    "feedbacks": 4,
+    "feedback_comments": 7,
+    "notifications": 6,
+    "request_idempotency": 4
+  },
+  "expiredProtectedRead": {
+    "sequence": 49,
+    "method": "GET",
+    "route": "admin_read_or_other",
+    "status": 401,
+    "dropped": false
+  },
+  "reloginProtectedRead": {
+    "sequence": 53,
+    "method": "GET",
+    "route": "admin_read_or_other",
+    "status": 200,
+    "dropped": false
+  },
+  "flow": "T-23-browser-restart-flow.js",
+  "screenshot": "T-23-restart-login-cleared.png",
+  "limits": [
+    "Local synthetic single-process backend only.",
+    "The eight-hour boundary is covered separately by the existing backend/session tests; this browser run exercised actual process restart.",
+    "Two preceding shared-result checks belong to T-42, not to these six T-23 checks."
+  ]
+}

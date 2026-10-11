@@ -1,0 +1,4 @@
+2026-10-07 native IAB browser, fresh formal synthetic DB; exact configured Origin http://127.0.0.1:3022.
+Home ready -> report submission success c5bd32ef-7057-4b69-8502-4560a8f20913 -> my records -> detail -> user supplement visible -> administrator login -> same record (admin notices read) -> administrator reply visible -> nonempty solution and resolved checkbox persisted -> user notifications show reply/status -> notification click opens same resolved record with exact solution and both comments.
+All steps used visible UI controls, no browser-side injected requests. The final screenshot was displayed by the native tool; no unsupported filesystem screenshot path is claimed.
+Temporary tab closed; fixture SIGTERM exited 0; its synthetic DB and independent fixture key retained. No deployment/real DB used. Identity GET remains the old mutating compatibility branch pending specific approval; this observation does not close all T-26.

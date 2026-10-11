@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: T-21: restart with valid Cookie and missing code preserves R1 and its records
+not ok 1 - T-21: restart with valid Cookie and missing code preserves R1 and its records
+  ---
+  duration_ms: 913.134708
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:2:2715'
+  failureType: 'testCodeFailure'
+  error: |-
+    The server cannot redisplay an unavailable correct code
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:70:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+not ok 2 - T-21: restart with valid Cookie and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 770.272625
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:2:2715'
+  failureType: 'testCodeFailure'
+  error: |-
+    The server cannot redisplay an unavailable correct code
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:70:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-21: restart with valid installation key and missing code preserves R1 and its records
+not ok 3 - T-21: restart with valid installation key and missing code preserves R1 and its records
+  ---
+  duration_ms: 775.104417
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:2:2715'
+  failureType: 'testCodeFailure'
+  error: |-
+    The server cannot redisplay an unavailable correct code
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:70:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-21: restart with valid installation key and mismatching code preserves R1 and its records
+not ok 4 - T-21: restart with valid installation key and mismatching code preserves R1 and its records
+  ---
+  duration_ms: 765.712
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:2:2715'
+  failureType: 'testCodeFailure'
+  error: |-
+    The server cannot redisplay an unavailable correct code
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:70:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-21: expired display cache with valid Cookie never revokes R1
+not ok 5 - T-21: expired display cache with valid Cookie never revokes R1
+  ---
+  duration_ms: 392.502875
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:5:309'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:117:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-21: expired display cache with valid installation key never revokes R1
+not ok 6 - T-21: expired display cache with valid installation key never revokes R1
+  ---
+  duration_ms: 390.962958
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:5:309'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-21.test.ts:117:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-21: two initializing tabs share one identity and matching codes remain valid
+ok 7 - T-21: two initializing tabs share one identity and matching codes remain valid
+  ---
+  duration_ms: 384.356708
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 1
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4966.838

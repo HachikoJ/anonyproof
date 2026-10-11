@@ -1,0 +1,84 @@
+COMMAND: npx --no-install tsx --test --test-concurrency=1 tests/fix/T-09.test.ts tests/fix/T-19.test.ts tests/fix/T-40.test.ts
+TAP version 13
+# Subtest: T-09: both login aliases share successful and failed request quota
+ok 1 - T-09: both login aliases share successful and failed request quota
+  ---
+  duration_ms: 2756.176667
+  type: 'test'
+  ...
+# Subtest: T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+ok 2 - T-09: default source quota permits ten logins and rejects the eleventh without signing a session
+  ---
+  duration_ms: 516.880917
+  type: 'test'
+  ...
+# Subtest: T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+ok 3 - T-09: malformed and oversized JSON consume quota before parsing; preflight does not
+  ---
+  duration_ms: 398.555875
+  type: 'test'
+  ...
+# Subtest: T-09: five wrong passwords retain the separate fifteen-minute production lock
+ok 4 - T-09: five wrong passwords retain the separate fifteen-minute production lock
+  ---
+  duration_ms: 1519.903166
+  type: 'test'
+  ...
+# Subtest: T-09: the published demo password is also limited across aliases
+ok 5 - T-09: the published demo password is also limited across aliases
+  ---
+  duration_ms: 454.422583
+  type: 'test'
+  ...
+# Subtest: T-09: invalid login limiter configuration rejects startup explicitly
+ok 6 - T-09: invalid login limiter configuration rejects startup explicitly
+  ---
+  duration_ms: 4590.146916
+  type: 'test'
+  ...
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 7 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 428.361708
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 8 - T-19: production rejects missing secret
+  ---
+  duration_ms: 362.186084
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short secret
+ok 9 - T-19: production rejects short secret
+  ---
+  duration_ms: 358.623209
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing password
+ok 10 - T-19: production rejects missing password
+  ---
+  duration_ms: 360.699625
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short password
+ok 11 - T-19: production rejects short password
+  ---
+  duration_ms: 368.394
+  type: 'test'
+  ...
+# Subtest: T-40: notification limit stays bounded for users and admins without weakening access
+ok 12 - T-40: notification limit stays bounded for users and admins without weakening access
+  ---
+  duration_ms: 480.015709
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13009.173792
+EXIT: 0

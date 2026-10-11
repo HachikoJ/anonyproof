@@ -1,0 +1,815 @@
+{
+  "task": "T-35",
+  "scope": "Loopback synthetic echo upstream only; no real Next/API, database, UI, production TLS or external port acceptance",
+  "prefix": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75",
+  "nginx": "/opt/homebrew/bin/nginx",
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/bin/nginx",
+        "-V"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "nginx version: nginx/1.31.6\nbuilt by clang 21.0.0 (clang-2100.3.34.2)\nbuilt with OpenSSL 4.0.2 25 Aug 2026 (running with OpenSSL 4.0.3 29 Sep 2026)\nTLS SNI support enabled\nconfigure arguments: --prefix=/opt/homebrew/Cellar/nginx/1.31.6 --sbin-path=/opt/homebrew/Cellar/nginx/1.31.6/bin/nginx --with-cc-opt='-I/opt/homebrew/opt/pcre2/include -I/opt/homebrew/opt/openssl@4/include' --with-ld-opt='-L/opt/homebrew/opt/pcre2/lib -L/opt/homebrew/opt/openssl@4/lib' --conf-path=/opt/homebrew/etc/nginx/nginx.conf --pid-path=/opt/homebrew/var/run/nginx.pid --lock-path=/opt/homebrew/var/run/nginx.lock --http-client-body-temp-path=/opt/homebrew/var/run/nginx/client_body_temp --http-proxy-temp-path=/opt/homebrew/var/run/nginx/proxy_temp --http-fastcgi-temp-path=/opt/homebrew/var/run/nginx/fastcgi_temp --http-uwsgi-temp-path=/opt/homebrew/var/run/nginx/uwsgi_temp --http-scgi-temp-path=/opt/homebrew/var/run/nginx/scgi_temp --http-log-path=/opt/homebrew/var/log/nginx/access.log --error-log-path=/opt/homebrew/var/log/nginx/error.log --with-compat --with-debug --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_degradation_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_v3_module --with-ipv6 --with-mail --with-mail_ssl_module --with-pcre --with-pcre-jit --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/opt/openssl@3/bin/openssl",
+        "req",
+        "-x509",
+        "-newkey",
+        "rsa:2048",
+        "-nodes",
+        "-days",
+        "1",
+        "-subj",
+        "/CN=anonyproof.deline.top",
+        "-addext",
+        "subjectAltName=DNS:anonyproof.deline.top,IP:127.0.0.1",
+        "-keyout",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/fixture-key.pem",
+        "-out",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/fixture-cert.pem"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ".+.+++++++++++++++++++++++++++++++++++++++*.+.......+......+..+++++++++++++++++++++++++++++++++++++++*..........+..+....+.........+..+....++++++\n..+......+.......+++++++++++++++++++++++++++++++++++++++*........+.....+......+.+............+..+....+.....+++++++++++++++++++++++++++++++++++++++*..............+..+.......+......+......+...+...........+.+.....+...+............+.+..............+...+...+.......+..+.+...+..+...+.......+..+..........+...........++++++\n-----\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/nginx",
+        "-t",
+        "-p",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/",
+        "-c",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/nginx.conf"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "nginx: the configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/nginx.conf syntax is ok\nnginx: configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/nginx.conf test is successful\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/nginx",
+        "-s",
+        "quit",
+        "-p",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/",
+        "-c",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/nginx.conf"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "GET HTTP redirect",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "GET redirect exact URI",
+      "actual": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "POST HTTP redirect",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "POST redirect exact URI",
+      "actual": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "PUT HTTP redirect",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "PUT redirect exact URI",
+      "actual": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "DELETE HTTP redirect",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "DELETE redirect exact URI",
+      "actual": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS HTTP redirect",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "OPTIONS redirect exact URI",
+      "actual": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "HEAD HTTP redirect",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "HEAD redirect exact URI",
+      "actual": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "https://anonyproof.deline.top/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "TLS root redirect",
+      "actual": 301,
+      "expected": 301,
+      "pass": true
+    },
+    {
+      "name": "TLS root query retained",
+      "actual": "https://anonyproof.deline.top/anonyproof?synthetic=1",
+      "expected": "https://anonyproof.deline.top/anonyproof?synthetic=1",
+      "pass": true
+    },
+    {
+      "name": "Unknown Host rejected False",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Unknown Host rejected True",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Outside basePath /other",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Outside basePath /anonyproofevil",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Outside basePath /api/fixture",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "basePath passthrough /anonyproof",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "basePath preserved /anonyproof",
+      "actual": "/anonyproof",
+      "expected": "/anonyproof",
+      "pass": true
+    },
+    {
+      "name": "basePath passthrough /anonyproof/",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "basePath preserved /anonyproof/",
+      "actual": "/anonyproof/",
+      "expected": "/anonyproof/",
+      "pass": true
+    },
+    {
+      "name": "basePath passthrough /anonyproof/_next/static/fixture.js",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "basePath preserved /anonyproof/_next/static/fixture.js",
+      "actual": "/anonyproof/_next/static/fixture.js",
+      "expected": "/anonyproof/_next/static/fixture.js",
+      "pass": true
+    },
+    {
+      "name": "GET upstream status",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "GET method preserved",
+      "actual": "GET",
+      "expected": "GET",
+      "pass": true
+    },
+    {
+      "name": "GET body preserved",
+      "actual": "",
+      "expected": "",
+      "pass": true
+    },
+    {
+      "name": "GET query preserved",
+      "actual": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "GET canonical host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "GET canonical x-forwarded-host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "GET canonical x-forwarded-port",
+      "actual": "443",
+      "expected": "443",
+      "pass": true
+    },
+    {
+      "name": "GET canonical x-forwarded-proto",
+      "actual": "https",
+      "expected": "https",
+      "pass": true
+    },
+    {
+      "name": "GET canonical x-real-ip",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "GET canonical x-forwarded-for",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "GET private proxy header overwrites visitor value",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "GET cleared forwarded",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "GET cleared x-forwardedfor",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "GET cleared x-forwardedproto",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "GET Cache-Control unchanged",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "name": "GET two Cookies unchanged",
+      "actual": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "expected": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "pass": true
+    },
+    {
+      "name": "POST upstream status",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "POST method preserved",
+      "actual": "POST",
+      "expected": "POST",
+      "pass": true
+    },
+    {
+      "name": "POST body preserved",
+      "actual": "synthetic",
+      "expected": "synthetic",
+      "pass": true
+    },
+    {
+      "name": "POST query preserved",
+      "actual": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "POST canonical host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "POST canonical x-forwarded-host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "POST canonical x-forwarded-port",
+      "actual": "443",
+      "expected": "443",
+      "pass": true
+    },
+    {
+      "name": "POST canonical x-forwarded-proto",
+      "actual": "https",
+      "expected": "https",
+      "pass": true
+    },
+    {
+      "name": "POST canonical x-real-ip",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "POST canonical x-forwarded-for",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "POST private proxy header overwrites visitor value",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "POST cleared forwarded",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "POST cleared x-forwardedfor",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "POST cleared x-forwardedproto",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "POST Cache-Control unchanged",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "name": "POST two Cookies unchanged",
+      "actual": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "expected": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "pass": true
+    },
+    {
+      "name": "PUT upstream status",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "PUT method preserved",
+      "actual": "PUT",
+      "expected": "PUT",
+      "pass": true
+    },
+    {
+      "name": "PUT body preserved",
+      "actual": "synthetic",
+      "expected": "synthetic",
+      "pass": true
+    },
+    {
+      "name": "PUT query preserved",
+      "actual": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "PUT canonical host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "PUT canonical x-forwarded-host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "PUT canonical x-forwarded-port",
+      "actual": "443",
+      "expected": "443",
+      "pass": true
+    },
+    {
+      "name": "PUT canonical x-forwarded-proto",
+      "actual": "https",
+      "expected": "https",
+      "pass": true
+    },
+    {
+      "name": "PUT canonical x-real-ip",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "PUT canonical x-forwarded-for",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "PUT private proxy header overwrites visitor value",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "PUT cleared forwarded",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "PUT cleared x-forwardedfor",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "PUT cleared x-forwardedproto",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "PUT Cache-Control unchanged",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "name": "PUT two Cookies unchanged",
+      "actual": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "expected": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "pass": true
+    },
+    {
+      "name": "DELETE upstream status",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "DELETE method preserved",
+      "actual": "DELETE",
+      "expected": "DELETE",
+      "pass": true
+    },
+    {
+      "name": "DELETE body preserved",
+      "actual": "synthetic",
+      "expected": "synthetic",
+      "pass": true
+    },
+    {
+      "name": "DELETE query preserved",
+      "actual": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "DELETE canonical host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "DELETE canonical x-forwarded-host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "DELETE canonical x-forwarded-port",
+      "actual": "443",
+      "expected": "443",
+      "pass": true
+    },
+    {
+      "name": "DELETE canonical x-forwarded-proto",
+      "actual": "https",
+      "expected": "https",
+      "pass": true
+    },
+    {
+      "name": "DELETE canonical x-real-ip",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "DELETE canonical x-forwarded-for",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "DELETE private proxy header overwrites visitor value",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "DELETE cleared forwarded",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "DELETE cleared x-forwardedfor",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "DELETE cleared x-forwardedproto",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "DELETE Cache-Control unchanged",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "name": "DELETE two Cookies unchanged",
+      "actual": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "expected": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "pass": true
+    },
+    {
+      "name": "OPTIONS upstream status",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "OPTIONS method preserved",
+      "actual": "OPTIONS",
+      "expected": "OPTIONS",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS body preserved",
+      "actual": "",
+      "expected": "",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS query preserved",
+      "actual": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "expected": "/anonyproof/api/fixture?value=a%2Fb&n=2",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS canonical host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS canonical x-forwarded-host",
+      "actual": "anonyproof.deline.top",
+      "expected": "anonyproof.deline.top",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS canonical x-forwarded-port",
+      "actual": "443",
+      "expected": "443",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS canonical x-forwarded-proto",
+      "actual": "https",
+      "expected": "https",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS canonical x-real-ip",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS canonical x-forwarded-for",
+      "actual": "127.0.0.1",
+      "expected": "127.0.0.1",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS private proxy header overwrites visitor value",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "OPTIONS cleared forwarded",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "OPTIONS cleared x-forwardedfor",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "OPTIONS cleared x-forwardedproto",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "OPTIONS Cache-Control unchanged",
+      "actual": "no-store",
+      "expected": "no-store",
+      "pass": true
+    },
+    {
+      "name": "OPTIONS two Cookies unchanged",
+      "actual": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "expected": [
+        "fixture_identity=synthetic; Secure; HttpOnly; SameSite=Lax; Path=/anonyproof",
+        "fixture_admin=synthetic; Secure; HttpOnly; SameSite=Strict; Path=/anonyproof"
+      ],
+      "pass": true
+    },
+    {
+      "name": "TLSv1_2 allowed",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "TLSv1_2 negotiated",
+      "actual": "TLSv1.2",
+      "expected": "TLSv1.2",
+      "pass": true
+    },
+    {
+      "name": "TLSv1_3 allowed",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "TLSv1_3 negotiated",
+      "actual": "TLSv1.3",
+      "expected": "TLSv1.3",
+      "pass": true
+    },
+    {
+      "name": "TLS HEAD forwarded",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "TLS HEAD has no body",
+      "actual": "",
+      "expected": "",
+      "pass": true
+    },
+    {
+      "name": "Missing Host rejected",
+      "actual": 400,
+      "expected": 400,
+      "pass": true
+    },
+    {
+      "name": "Fixture master graceful exit",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "Fixture pid removed",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "HTTP fixture socket closed",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "TLS fixture socket closed",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    }
+  ],
+  "templateSha256": "ecba28d3b237bfdf001d8f4f3e4e1855edc11fc45c676d3d9314f8e43cc374e6",
+  "ports": {
+    "http": 62721,
+    "https": 62722,
+    "upstream": 62720
+  },
+  "start": {
+    "argv": [
+      "/opt/homebrew/bin/nginx",
+      "-p",
+      "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/",
+      "-c",
+      "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T35-nginx-sy_a9y75/nginx.conf",
+      "-g",
+      "daemon off;"
+    ],
+    "pid": 38387
+  },
+  "pass": true,
+  "stopped": true
+}

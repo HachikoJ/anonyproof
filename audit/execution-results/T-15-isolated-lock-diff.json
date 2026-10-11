@@ -1,0 +1,112 @@
+[
+  {
+    "path": "",
+    "before": "0.1.0",
+    "after": "0.1.0",
+    "fields": [
+      "dependencies"
+    ]
+  },
+  {
+    "path": "node_modules/@next/env",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-darwin-arm64",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-darwin-x64",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-linux-arm64-gnu",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-linux-arm64-musl",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-linux-x64-gnu",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-linux-x64-musl",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-win32-arm64-msvc",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/@next/swc-win32-x64-msvc",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "integrity",
+      "resolved",
+      "version"
+    ]
+  },
+  {
+    "path": "node_modules/next",
+    "before": "16.3.3",
+    "after": "16.3.6",
+    "fields": [
+      "dependencies",
+      "integrity",
+      "optionalDependencies",
+      "resolved",
+      "version"
+    ]
+  }
+]

@@ -1,0 +1,124 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/identity",
+    "origin": "http://app.fixture.localhost:50919",
+    "cookieSent": false,
+    "identityCookieSent": false,
+    "identityStateChanged": true,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:50919",
+    "setsCookie": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/identity",
+    "origin": "http://app.fixture.localhost:50919",
+    "cookieSent": false,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:50919",
+    "setsCookie": false
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/admin/auth/login",
+    "origin": "http://app.fixture.localhost:50919",
+    "cookieSent": false,
+    "identityCookieSent": false,
+    "identityStateChanged": false,
+    "status": 204,
+    "allowOrigin": "http://app.fixture.localhost:50919",
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/login",
+    "origin": "http://app.fixture.localhost:50919",
+    "cookieSent": false,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:50919",
+    "setsCookie": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/identity",
+    "origin": "http://evil.fixture.localhost:50920",
+    "cookieSent": true,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 403,
+    "allowOrigin": null,
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/logout",
+    "origin": "http://evil.fixture.localhost:50920",
+    "cookieSent": true,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 403,
+    "allowOrigin": null,
+    "setsCookie": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/identity",
+    "origin": "http://evil.fixture.localhost:50920",
+    "cookieSent": true,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 200,
+    "allowOrigin": null,
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/identity",
+    "origin": "http://outside.other.localhost:50920",
+    "cookieSent": false,
+    "identityCookieSent": false,
+    "identityStateChanged": false,
+    "status": 403,
+    "allowOrigin": null,
+    "setsCookie": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/auth/logout",
+    "origin": "http://outside.other.localhost:50920",
+    "cookieSent": false,
+    "identityCookieSent": false,
+    "identityStateChanged": false,
+    "status": 403,
+    "allowOrigin": null,
+    "setsCookie": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/auth/session",
+    "origin": "http://app.fixture.localhost:50919",
+    "cookieSent": true,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:50919",
+    "authenticated": true,
+    "setsCookie": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/identity",
+    "origin": "http://app.fixture.localhost:50919",
+    "cookieSent": true,
+    "identityCookieSent": true,
+    "identityStateChanged": false,
+    "status": 200,
+    "allowOrigin": "http://app.fixture.localhost:50919",
+    "setsCookie": false
+  }
+]

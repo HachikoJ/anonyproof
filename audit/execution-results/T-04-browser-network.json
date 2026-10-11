@@ -1,0 +1,372 @@
+[
+  {
+    "method": "GET",
+    "path": "/anonyproof",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/brand/anonyproof-mark.svg",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/app_1y06_mh._.css",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1di75ot._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_1amofcm._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_%40swc_helpers_cjs_1r9vbqw._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/_1anvha4._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/_219uq1s._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_client_0_90u2t._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_090k2jm.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/turbopack-_0cbf88f._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_20wefz_._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/app_1lu8v2a._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_react_0qox21c._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/icon.svg",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/demo/config",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/identity",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/stats",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/demo/config",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/stats",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/identity",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/anonyproof/api/feedback",
+    "status": 500
+  },
+  {
+    "method": "POST",
+    "path": "/anonyproof/api/feedback",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/feedback/device/device-t2HFY3CxazuhdgC1CJta9ZYJ",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/comments",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/anonyproof/api/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/comments",
+    "status": 500
+  },
+  {
+    "method": "POST",
+    "path": "/anonyproof/api/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/comments",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/comments",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/foorpynona",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1di75ot._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/app_1y06_mh._.css",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_1amofcm._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/_1anvha4._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_%40swc_helpers_cjs_1r9vbqw._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/_1_0fx3t._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_20wefz_._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/turbopack-_0cbf88f._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/app_1waozj7._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_react_0qox21c._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_090k2jm.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/node_modules_next_dist_client_0_90u2t._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/demo/config",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/admin/auth/session",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/demo/config",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/admin/auth/session",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/brand/anonyproof-mark.svg",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/anonyproof/api/admin/auth/login",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/admin/feedbacks",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications",
+    "status": 200
+  },
+  {
+    "method": "PUT",
+    "path": "/anonyproof/api/notifications/read-all",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/comments",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications",
+    "status": 200
+  },
+  {
+    "method": "PUT",
+    "path": "/anonyproof/api/admin/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/status",
+    "status": 500
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications",
+    "status": 200
+  },
+  {
+    "method": "PUT",
+    "path": "/anonyproof/api/admin/feedback/0577c3f3-a873-41a1-8a6e-445ef1f9ada4/status",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/admin/feedbacks",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/anonyproof/api/notifications",
+    "status": 200
+  }
+]

@@ -1,6 +1,6 @@
 # 部署指南
 
-本文档介绍如何将 AnonyProof 部署到生产环境。
+本文档介绍如何将 AnonyProof 部署到生产环境。功能说明对齐已在本地验收的修复代码，尚未发布；T-02实例硬隔离和T-35唯一配置仍待验收，文档示例不代表当前线上已经应用。
 
 ## 📋 部署前准备
 
@@ -63,7 +63,7 @@ cp .env.example .env.local
 nano .env.local
 ```
 
-**必须修改的配置**:
+**实际鉴权相关配置**（`API_TOKEN`仅保留旧模板兼容占位，不必设置）:
 ```env
 # 演示部署可保持 1，正式上线前必须改为 0
 DEMO_MODE=1
@@ -74,12 +74,18 @@ ADMIN_PASSWORD=your_strong_password_here
 # 至少 32 位随机字符
 SESSION_SECRET=your_random_secret_at_least_32_characters
 
-# API Token（生产环境必须修改）
+# 正式实例DEMO_MODE=0时必填：独立配置的32字节Base64内容密钥；演示保持空
+# 生成方式：openssl rand -base64 32；不得存入数据库或与数据库同包备份
+CONTENT_ENCRYPTION_KEY=
+
+# API_TOKEN 已弃用：服务端不读取，不提供API鉴权，不必设置
 API_TOKEN=your_api_token_here
 
 # 经 Nginx 等反向代理部署时启用
 TRUST_PROXY=1
 ```
+
+管理接口依赖管理员HttpOnly Cookie；用户记录、评论和通知依赖用户Cookie及归属校验，或合法管理员的授权范围。健康检查、公开汇总统计和演示配置为公开接口。`API_TOKEN`不参与这些权限判断，也不会限制公开接口；不要将占位值视为已启用的安全措施。
 
 ### 演示部署说明
 
@@ -87,20 +93,24 @@ TRUST_PROXY=1
 
 - 服务端会自动写入 7 条示例线索模板（覆盖企业、学校、组织等场景）及评论、通知、访问统计
 - 每个浏览器首次访问时会复制一份独立的示例副本，示例记录、未读状态和补充回复跨浏览器互不影响
-- 访客在“我的提交”页面提交的真实线索与后台处理记录联动，管理员同时能看到示例模板和真实提交
+- 公开演示只允许固定合成案例、固定补充和固定处理说明；后台只看只读模板及当前浏览器自己的沙箱，不能接收自由输入的真实材料或读取其它浏览器记录/原始日志
 - 用户端数据由 HttpOnly Cookie 与浏览器安装密钥绑定，恢复码用于换浏览器或清除数据后找回记录
 - 登录页会明确显示演示密码和清理提醒
 - 需要一份只含演示数据的干净数据库时，把 `DATABASE_PATH` 指向新文件（例如 `./data/anonyproof-demo.db`），首次启动会建库并写入示例数据，原有 `./data/anonyproof.db` 不受影响
 
-**正式部署前必须关闭演示模式**：
+**正式实例使用独立库、凭证和内容密钥，关闭演示模式**（不把演示库切换为正式库）：
 
 ```env
 DEMO_MODE=0
 ADMIN_PASSWORD=your_real_strong_password
 SESSION_SECRET=your_real_random_secret_at_least_32_characters
+CONTENT_ENCRYPTION_KEY=<独立安全配置的32字节Base64密钥>
+DATABASE_PATH=/absolute/path/to/formal.db
 ```
 
-修改后重启服务，通知、已读状态与沟通逻辑即恢复为正式行为。关闭演示模式后，`demo12345678` 将不再可用，`/api/demo/config` 也不会返回演示密码；示例模板与逐浏览器副本会自动从界面隐藏，但不会从数据库删除，真实提交不受影响。若确实需要清理演示数据，请按 `is_demo_template = 1` 或 `is_demo_clone = 1` 单独删除，不要直接删除包含真实提交的数据库。
+正式实例提供真实管理员流程；公开演示密码不会在正式demo/config中发布。固定模板和沙箱的界面过滤不等于数据库硬隔离，须分别部署对应库，T-02启动角色检查方案仍待具体确认。历史库、备份或演示记录均不按本段自动清除；保留/迁移/销毁范围由T-32及相关保留策略单独确认。
+
+正式服务使用已批准的AES-256-GCM静态加密，授权服务/管理员可读取原文。缺失、错误内容密钥必须失败关闭；密钥遗失无法恢复密文。版本0历史内容仍需T-32另行迁移，不因新写入加密便认为旧库/旧备份安全。新密文产生后，回滚需保留兼容reader和同一独立密钥，关闭正式写入；不得退回旧reader或以写明文作为回滚。
 
 ### 4. 构建前端
 
@@ -242,7 +252,17 @@ sudo tail -f /var/log/nginx/error.log
 
 ### 数据备份
 
+SQLite启用WAL。运行中只复制`.db`可能漏掉已提交的WAL数据；批准备份后使用SQLite在线backup或停写的一致性快照。数据库与内容密钥须分别保存，不把`.env.local`、key或明文导出混入数据库备份包；先在隔离环境用备份与独立相同key验证身份恢复和内容读回，错误/缺key应拒绝。密钥恢复与历史副本处置参见根目录DEPLOY及T-03/T-32。
+
+下面仅示范在线快照命令。路径必须替换为已确认的源和**全新**目标（不要覆盖现有备份）；目标目录应受限，示例路径中不要使用单引号或换行。该命令不会删除源库或历史备份，保留期限/销毁尚待Q-04和逐项资产确认：
+
 ```bash
+sqlite3 -readonly /absolute/path/to/formal.db ".backup '/absolute/path/to/separate-backup/formal-YYYYMMDD.db'"
+```
+
+以下保留为**历史不支持示例，禁止直接复制执行**。它的运行中`cp`和自动七天删除未满足当前一致性/保留审批要求，不是现行备份流程，也未由本轮运行或删除任何资产：
+
+```text
 # 创建备份脚本
 cat > backup.sh << 'EOF'
 #!/bin/bash
@@ -385,3 +405,7 @@ location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
 - GitHub Issues: [https://github.com/HachikoJ/anonyproof/issues](https://github.com/HachikoJ/anonyproof/issues)
 - 文档: [README.md](../README.md)
 - 贡献指南: [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+### 限流配置的实际边界（T-31）
+
+`RATE_LIMIT_MAX`已弃用且不生效，不能按旧注释理解为“每15分钟总上限”；启动时有明确警告。当前实际启用的是登录、身份初始化、恢复码、反馈提交和用户补充各自的次数/窗口配置，默认值、单位、来源/身份作用域及失败规则以根目录 [DEPLOY.md 的有效限流配置索引](../DEPLOY.md#有效限流配置索引t-31) 为准，`.env.example`已列出真实字段。所有窗口单位为毫秒；已有单进程限流不等于多跳代理或多实例限流已经验收。

@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-08",
+  "candidateCommit": "25e1c6aca958a5d414dc1956dd1e23cd2dd9f9bb",
+  "trackedFileCount": 529,
+  "changedFileCount": 360,
+  "forbiddenPaths": [],
+  "sensitiveJsonStringFields": [],
+  "scope": "filename/private-asset and structured evidence-field scan only; not a blanket secret-scan or publish approval",
+  "valueOutputPolicy": "sensitive matches only path/field/length/hash, never raw values",
+  "textPatternScan": {
+    "patterns": [
+      "private_key_header",
+      "github_token",
+      "aws_access_key",
+      "bearer_credential",
+      "cookie_credential",
+      "raw_sensitive_env_assignment"
+    ],
+    "findings": [
+      {
+        "file": ".env.example",
+        "line": 14,
+        "kind": "raw_sensitive_env_assignment",
+        "matchSha256": "a0962febf95569d10f88049eebd982ffaa6e8ac5558345c996009ed37056c517",
+        "classification": "documented placeholder",
+        "placeholderIndicators": [
+          "replace"
+        ],
+        "variableNames": [
+          "SESSION_SECRET"
+        ]
+      },
+      {
+        "file": "docs/DEPLOYMENT.md",
+        "line": 75,
+        "kind": "raw_sensitive_env_assignment",
+        "matchSha256": "6cc35992f3989f161e369c401fcc4ecc125d689f309ed70bce791f42e950b0d1",
+        "classification": "documented placeholder",
+        "placeholderIndicators": [
+          "your"
+        ],
+        "variableNames": [
+          "SESSION_SECRET"
+        ]
+      },
+      {
+        "file": "docs/DEPLOYMENT.md",
+        "line": 106,
+        "kind": "raw_sensitive_env_assignment",
+        "matchSha256": "30733e14010babdc6b8dc608abe4a973e7f88ec62b92026a6ae3d5ae8d6c6547",
+        "classification": "documented placeholder",
+        "placeholderIndicators": [
+          "your"
+        ],
+        "variableNames": [
+          "SESSION_SECRET"
+        ]
+      }
+    ],
+    "coverage": "all changed UTF8 files at exact candidate commit, including txt/Markdown/code/locks; no raw values output; detection is limited to listed syntax"
+  },
+  "formattedRecoveryCodeScan": {
+    "scope": "changed audit UTF8 files only; exact current product formatted recovery-code syntax",
+    "findings": []
+  }
+}

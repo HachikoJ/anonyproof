@@ -1,0 +1,30 @@
+{
+  "task": "T-17",
+  "date": "2026-10-07T05:27:00.475Z",
+  "node": "v22.23.3",
+  "modification": "server/package-lock.json ip-address10.5.0 -> 10.7.1 only, no direct dependency/semver/other versions changed",
+  "advisories": [
+    "https://github.com/advisories/GHSA-rpw4-54j3-4h4q",
+    "https://github.com/advisories/GHSA-2vr4-cq9g-pvrc",
+    "https://github.com/advisories/GHSA-j6r3-76f7-8jcv",
+    "https://github.com/advisories/GHSA-h3mg-xc3c-68pw"
+  ],
+  "commands": {
+    "npm --prefix server ci --no-audit --no-fund": 0,
+    "node scripts/check-runtime.cjs": 0,
+    "npm --prefix server ls ip-address express-rate-limit": 0,
+    "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-17.test.ts tests/fix/T-16.test.ts tests/fix/T-19.test.ts": 0,
+    "npm run type-check": 0,
+    "npm --prefix server run type-check": 0,
+    "git diff --check": 0,
+    "npm audit --omit=dev --json (server)": 1
+  },
+  "tests": "10/10 pass without skips. T-17 two tests: classifications/address-family rejection/1024-character bounded invalid-input error; actual 127.0.0.1 and ::1 loopback sockets pass 10 requests and receive 429 on 11th from existing feedbackSubmitLimiter, independent source buckets and healthy unthrottled route. T-16/T-19 backend smoke and configuration failures passed.",
+  "scopeBoundary": "Existing feedbackSubmitLimiter mounted only on isolated test route; production index did not mount it at test time. Enabling production identity/feedback/comment/login limits belongs to T-05..T-09. No online DoS payloads used.",
+  "targetedAdvisoriesAbsent": true,
+  "remainingServerAudit": [
+    "proxy-addr"
+  ],
+  "backup": "/tmp/anonyproof-T-17-dependency-backup/server-node_modules",
+  "rollback": "Restore prior server lockfile then npm --prefix server ci with Node 22, or restore retained dependency tree under matching runtime. No database migration or business API change."
+}

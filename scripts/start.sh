@@ -28,6 +28,9 @@ if [ ! -d "server/node_modules" ]; then
     cd server && npm install && cd ..
 fi
 
+# Check both installed trees and native SQLite ABI before reporting startup success.
+node scripts/check-runtime.cjs || exit 1
+
 # 创建数据目录
 mkdir -p data
 

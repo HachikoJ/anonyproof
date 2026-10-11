@@ -1,0 +1,39 @@
+{
+  "format": "AnonyProof/F-approved-preflight-blocker-redacted/1",
+  "verifiedAtUtc": "2026-10-11T10:56:49.917474+00:00",
+  "FHumanApprovalReceived": true,
+  "humanApprovedTwoOldPm2Backups": true,
+  "manifestSha256": "d42b0c6c494199a665aa8293b804d770ac3f4324bd864c9701161c76a275acf0",
+  "scopeFileCount": 768,
+  "serverTargetCount": 416,
+  "localTargetCount": 352,
+  "frozenToolTestAndSyntheticEvidenceVerified": true,
+  "serverFreshRootPreflightPassed": true,
+  "serverPreservedFilesVerified": 48,
+  "currentSyntheticSiteRuntimeAndOtherConfigurationGuardsPassed": true,
+  "localAdminRootInvocationReachedExecutor": true,
+  "localRootPreflightPassed": false,
+  "localActualFailure": {
+    "class": "PermissionError",
+    "errno": 1,
+    "operation": "read Document-folder old private recovery receipt",
+    "reason": "macOS privacy denied Documents access to administrator subprocess"
+  },
+  "all768TargetsStillPresent": true,
+  "actualFilesDeleted": 0,
+  "localEnumerationUnlistedFiles": 0,
+  "serverEnumerationExtrasAllExplicitlyExcludedSharedOrOtherSiteLogs": true,
+  "newUnlistedHistoricalResidualFound": false,
+  "scopeExpanded": false,
+  "completedTaskCount": 39,
+  "remainingTasks": [
+    "T-11",
+    "T-32",
+    "T-33",
+    "T-34"
+  ],
+  "nextRequired": "User own Terminal root preflight with macOS Documents permission, then verified equivalent privileged execution path; fresh dual-host gates before unlink",
+  "independentNewReconcileAgentAvailable": false,
+  "independentAgentFailure": "account usage limit; no new audit claim",
+  "physicalErasureClaimed": false
+}

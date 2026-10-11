@@ -1,0 +1,54 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "proxy-addr": {
+      "name": "proxy-addr",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1241210,
+          "name": "proxy-addr",
+          "dependency": "proxy-addr",
+          "title": "proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet",
+          "url": "https://github.com/advisories/GHSA-jqcg-44mw-7w3h",
+          "severity": "critical",
+          "cwe": [
+            "CWE-290",
+            "CWE-348",
+            "CWE-697"
+          ],
+          "cvss": {
+            "score": 9.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          "range": ">=1.1.0 <2.0.8"
+        }
+      ],
+      "effects": [],
+      "range": "1.1.0 - 2.0.7",
+      "nodes": [
+        "node_modules/proxy-addr"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 1,
+      "total": 1
+    },
+    "dependencies": {
+      "prod": 139,
+      "dev": 13,
+      "optional": 0,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 151
+    }
+  }
+}

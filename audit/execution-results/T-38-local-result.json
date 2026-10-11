@@ -1,0 +1,65 @@
+{
+  "task": "T-38",
+  "status": "local implementation and API/static acceptance passed; native-browser/build acceptance pending main agent",
+  "timeUTC": "2026-10-09T01:49:31.000149+00:00",
+  "scope": [
+    "server/index.ts user feedback/device list and authenticated full-detail route",
+    "server/utils/userFeedbackPagination.ts",
+    "app/page.tsx user list/search/global counts/detail/notification identity isolation",
+    "tests/fix/T-38.test.ts",
+    "tests/fix/T-38.browser.ts"
+  ],
+  "verification": [
+    {
+      "command": "npx --no-install tsx --test tests/fix/T-38.test.ts",
+      "exit": 0,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "log": "audit/execution-results/T-38-tests.txt"
+    },
+    {
+      "command": "npm run type-check",
+      "exit": 0,
+      "log": "audit/execution-results/T-38-type-final.txt"
+    },
+    {
+      "command": "npx --no-install tsc --noEmit --strict --esModuleInterop --skipLibCheck --target es2022 --module commonjs --moduleResolution node server/index.ts",
+      "exit": 0,
+      "log": "audit/execution-results/T-38-backend-type.txt"
+    },
+    {
+      "command": "npx --no-install tsx --test tests/fix/T-01.test.ts tests/fix/T-03.test.ts tests/fix/T-08.test.ts tests/fix/T-21.test.ts tests/fix/T-38.test.ts",
+      "exit": 0,
+      "pass": 31,
+      "fail": 0,
+      "skip": 0,
+      "log": "audit/execution-results/T-38-regression.txt"
+    },
+    {
+      "command": "git diff --check -- app/page.tsx server/index.ts",
+      "exit": 0
+    }
+  ],
+  "proofScope": [
+    "two authorized identities / 1000 total synthetic records with mixed old/new encrypted storage",
+    "stable created_at DESC/id DESC cursor, no gap/duplicate under tied timestamp",
+    "50 default / 100 maximum summaries <=160 Unicode codepoints and serialized response <100000 bytes",
+    "full-body search matches text beyond summary and original first page; counts span all authorized records",
+    "R1 recovery changes authorized list scope",
+    "independent full-detail authorizes cross-page notification target",
+    "demo excludes templates, other sandboxes and unapproved legacy rows",
+    "legacy parameter-free shape retained and capped at100"
+  ],
+  "remaining": [
+    "main agent native browser including page navigation, needle search, global overview, R1 identity changes, notification full-detail and captured network bounds",
+    "main agent coordinated final production build",
+    "do not mark task complete before remaining acceptance passes"
+  ],
+  "operationalChanges": {
+    "production": false,
+    "commit": false,
+    "push": false,
+    "FIX_PLAN_modified": false
+  }
+}

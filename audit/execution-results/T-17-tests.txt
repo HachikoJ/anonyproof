@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: T-16: root HTTP parser dependencies reject known malformed shapes
+ok 1 - T-16: root HTTP parser dependencies reject known malformed shapes
+  ---
+  duration_ms: 42.514041
+  type: 'test'
+  ...
+# Subtest: T-16: server HTTP parser dependencies reject known malformed shapes
+ok 2 - T-16: server HTTP parser dependencies reject known malformed shapes
+  ---
+  duration_ms: 22.848917
+  type: 'test'
+  ...
+# Subtest: T-16: actual backend routes and bounded HTTP parser failures preserve availability
+ok 3 - T-16: actual backend routes and bounded HTTP parser failures preserve availability
+  ---
+  duration_ms: 443.054584
+  type: 'test'
+  ...
+# Subtest: T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+ok 4 - T-17: patched IP classifications and malformed inputs preserve address-family boundaries
+  ---
+  duration_ms: 3.948917
+  type: 'test'
+  ...
+# Subtest: T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+ok 5 - T-17: existing limiter enforces independent IPv4/IPv6 socket sources on a local route
+  ---
+  duration_ms: 46.693375
+  type: 'test'
+  ...
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 6 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 435.236709
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 7 - T-19: production rejects missing secret
+  ---
+  duration_ms: 343.802833
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short secret
+ok 8 - T-19: production rejects short secret
+  ---
+  duration_ms: 345.831625
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing password
+ok 9 - T-19: production rejects missing password
+  ---
+  duration_ms: 349.059209
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short password
+ok 10 - T-19: production rejects short password
+  ---
+  duration_ms: 352.073416
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2865.250958

@@ -1,0 +1,3 @@
+Baseline HEAD: b6c1ad097835763c74fe2a0fb55d404b7ed8916a
+Independent checkout: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+Copied only the two changed locks and new T43 test over git archive HEAD. Real environment/DB/logs/node_modules never copied. Main checkout dependency trees untouched during isolated verification.

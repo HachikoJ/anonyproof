@@ -1,0 +1,8 @@
+{
+  "url": "http://127.0.0.1:3030/anonyproof/foorpynona",
+  "notificationTarget": "T37-0007",
+  "initialCount": 1000,
+  "fixturePid": 45046,
+  "databasePath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-T5vDOW/fixture.db",
+  "fixtureOnly": true
+}

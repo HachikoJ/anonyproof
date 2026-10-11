@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-08",
+  "command": [
+    "/tmp/anonyproof-runtime-20/node_modules/node/bin/node",
+    "/tmp/anonyproof-runtime-20/node_modules/npm/bin/npm-cli.js",
+    "view",
+    "next@16.3.8",
+    "version",
+    "engines",
+    "dist.integrity",
+    "--json"
+  ],
+  "exitCode": 0,
+  "stdout": "{\n  \"version\": \"16.3.8\",\n  \"engines\": {\n    \"node\": \">=20.9.0\"\n  },\n  \"dist.integrity\": \"sha512-U7QEZaTini6wKrb8A8hqLLqYQyCetegKjCpJOyxk642vWoMoU1x5PyZCJFvgYgiptA8xc5j/9xYlZFO7w9Sjmw==\"\n}\n",
+  "stderr": ""
+}

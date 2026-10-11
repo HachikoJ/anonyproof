@@ -1,0 +1,7 @@
+CHECKOUT: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+COMMAND: npm --prefix server run type-check
+
+> anonyproof-server@1.0.0 type-check
+> tsc --noEmit
+
+EXIT: 0

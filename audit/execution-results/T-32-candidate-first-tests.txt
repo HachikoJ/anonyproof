@@ -1,0 +1,110 @@
+TAP version 13
+# Subtest: T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+not ok 1 - T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+  ---
+  duration_ms: 575.24475
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:11:3087'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    404 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:119:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+ok 2 - T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+  ---
+  duration_ms: 25.668125
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+ok 3 - T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+  ---
+  duration_ms: 23.484541
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+ok 4 - T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+  ---
+  duration_ms: 16.186333
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+ok 5 - T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+  ---
+  duration_ms: 18.904625
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+    # Subtest: demo
+    not ok 1 - demo
+      ---
+      duration_ms: 5.753416
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:11:15467'
+      failureType: 'testCodeFailure'
+      error: 'no such column: "T32_PRIVATE_FEEDBACK_0" - should this be a string literal in single-quotes?'
+      code: 'SQLITE_ERROR'
+      stack: |-
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:11:15459)
+      ...
+    # Subtest: clone
+    not ok 2 - clone
+      ---
+      duration_ms: 5.230875
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:11:15467'
+      failureType: 'testCodeFailure'
+      error: 'no such column: "T32_PRIVATE_FEEDBACK_0" - should this be a string literal in single-quotes?'
+      code: 'SQLITE_ERROR'
+      stack: |-
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:11:15459)
+      ...
+    # Subtest: trigger
+    ok 3 - trigger
+      ---
+      duration_ms: 5.954334
+      type: 'test'
+      ...
+    # Subtest: version
+    ok 4 - version
+      ---
+      duration_ms: 8.513916
+      type: 'test'
+      ...
+    # Subtest: nullSolution
+    ok 5 - nullSolution
+      ---
+      duration_ms: 7.254584
+      type: 'test'
+      ...
+    1..5
+not ok 6 - T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+  ---
+  duration_ms: 47.187792
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-32-candidate.test.ts:11:14716'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 11
+# suites 0
+# pass 7
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 950.37725

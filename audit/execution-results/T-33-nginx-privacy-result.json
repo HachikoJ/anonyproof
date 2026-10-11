@@ -1,0 +1,296 @@
+{
+  "task": "T-33",
+  "scope": "Synthetic loopback template logging only; no production or historical-log disposal acceptance",
+  "prefix": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml",
+  "templateSha256": "69e7e5d37c1b183e1716aee7b765609f7b1e91eeac5c40b97e2dee21c26d21f7",
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/opt/openssl@4/bin/openssl",
+        "req",
+        "-x509",
+        "-newkey",
+        "rsa:2048",
+        "-nodes",
+        "-days",
+        "1",
+        "-subj",
+        "/CN=anonyproof.deline.top",
+        "-addext",
+        "subjectAltName=DNS:anonyproof.deline.top,IP:127.0.0.1",
+        "-keyout",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/fixture-key.pem",
+        "-out",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/fixture-cert.pem"
+      ],
+      "exit": 0,
+      "stderr": ".+..+.........+.........+...+.......+++++++++++++++++++++++++++++++++++++++*.+.........+.+..+.............+...+.....+.+...+..+.+..+.......+.........+..+...+......+...+...+............+.......+......+..+.+...............+...........+...+......+....+..+...+..........+...+...+..+.......+...+.................+...+....+........+.......+...+..+.+..............+...+.+++++++++++++++++++++++++++++++++++++++*..........+..++++++\n....+.+..+...+...+....+........+....+++++++++++++++++++++++++++++++++++++++*..+.....+.+++++++++++++++++++++++++++++++++++++++*......+...+....+.........+............+..+......+.......+.....+....+...........+...+....+..+....+......+...+...............+...+............+.....+......+.+......+...+.....+.........+............+....+..+...+....+......+..............+...+...+.+......+.........+........+.+...........+................+.....+...+.+..................+...++++++\n-----\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/nginx",
+        "-t",
+        "-p",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/",
+        "-c",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/nginx.conf"
+      ],
+      "exit": 0,
+      "stderr": "nginx: the configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/nginx.conf syntax is ok\nnginx: configuration file /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/nginx.conf test is successful\n"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/nginx",
+        "-s",
+        "quit",
+        "-p",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/",
+        "-c",
+        "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T33-nginx-ykhf63ml/nginx.conf"
+      ],
+      "exit": 0,
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "Other vhost normal response before",
+      "actual": 204,
+      "expected": 204,
+      "pass": true
+    },
+    {
+      "name": "Other vhost upstream fault before",
+      "actual": 502,
+      "expected": 502,
+      "pass": true
+    },
+    {
+      "name": "Other vhost inherits global access log before",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Other vhost inherits global error log before",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Site normal response False",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "Site unknown path False",
+      "actual": 308,
+      "expected": 308,
+      "pass": true
+    },
+    {
+      "name": "Site unknown host False",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Site invalid URI False",
+      "actual": 400,
+      "expected": 400,
+      "pass": true
+    },
+    {
+      "name": "Site normal response True",
+      "actual": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "Site unknown path True",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Site unknown host True",
+      "actual": 404,
+      "expected": 404,
+      "pass": true
+    },
+    {
+      "name": "Site invalid URI True",
+      "actual": 400,
+      "expected": 400,
+      "pass": true
+    },
+    {
+      "name": "Site actual upstream connection failure",
+      "actual": 502,
+      "expected": 502,
+      "pass": true
+    },
+    {
+      "name": "Other vhost normal response after",
+      "actual": 204,
+      "expected": 204,
+      "pass": true
+    },
+    {
+      "name": "Other vhost upstream fault after",
+      "actual": 502,
+      "expected": 502,
+      "pass": true
+    },
+    {
+      "name": "Other vhost inherits global access log after",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Other vhost inherits global error log after",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "No site URI or UA marker in access log",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "No site URI or UA marker in error log",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "No site URI or UA marker in master log",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "Both control stages retained in global access log",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Both control stages retained in global error log",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    }
+  ],
+  "requests": [
+    {
+      "path": "/ok?private=T33-CONTROL-before-98b86d0bc3b326cd",
+      "tls": false,
+      "control": true,
+      "status": 204
+    },
+    {
+      "path": "/fault?private=T33-CONTROL-before-98b86d0bc3b326cd",
+      "tls": false,
+      "control": true,
+      "status": 502
+    },
+    {
+      "path": "/anonyproof/api/stats?private=T33-SITE-http-2b11725d0550ea1d",
+      "tls": false,
+      "control": false,
+      "status": 308
+    },
+    {
+      "path": "/outside-T33-SITE-http-2b11725d0550ea1d?private=T33-SITE-http-2b11725d0550ea1d",
+      "tls": false,
+      "control": false,
+      "status": 308
+    },
+    {
+      "path": "/anonyproof?private=T33-SITE-http-2b11725d0550ea1d",
+      "tls": false,
+      "control": false,
+      "status": 404
+    },
+    {
+      "path": "/%ZZ?private=T33-SITE-http-2b11725d0550ea1d",
+      "tls": false,
+      "control": false,
+      "status": 400
+    },
+    {
+      "path": "/anonyproof/api/stats?private=T33-SITE-tls-41ae45fc4fe98cb9",
+      "tls": true,
+      "control": false,
+      "status": 200
+    },
+    {
+      "path": "/outside-T33-SITE-tls-41ae45fc4fe98cb9?private=T33-SITE-tls-41ae45fc4fe98cb9",
+      "tls": true,
+      "control": false,
+      "status": 404
+    },
+    {
+      "path": "/anonyproof?private=T33-SITE-tls-41ae45fc4fe98cb9",
+      "tls": true,
+      "control": false,
+      "status": 404
+    },
+    {
+      "path": "/%ZZ?private=T33-SITE-tls-41ae45fc4fe98cb9",
+      "tls": true,
+      "control": false,
+      "status": 400
+    },
+    {
+      "path": "/anonyproof/api/fault?private=T33-SITE-UPSTREAM-FAULT-09e5af0550f05c9a",
+      "tls": true,
+      "control": false,
+      "status": 502
+    },
+    {
+      "path": "/ok?private=T33-CONTROL-after-fe37fbc25e0a036f",
+      "tls": false,
+      "control": true,
+      "status": 204
+    },
+    {
+      "path": "/fault?private=T33-CONTROL-after-fe37fbc25e0a036f",
+      "tls": false,
+      "control": true,
+      "status": 502
+    }
+  ],
+  "cleanup": {
+    "nginxExit": 0,
+    "httpSocketClosed": true,
+    "tlsSocketClosed": true,
+    "controlSocketClosed": true,
+    "upstreamSocketClosed": true,
+    "nginxPidRemoved": true
+  },
+  "ports": {
+    "http": 50054,
+    "tls": 50055,
+    "control": 50056,
+    "upstream": 50053
+  },
+  "nginxPid": 46387,
+  "logEvidence": {
+    "globalAccessLogBytes": 540,
+    "globalErrorLogBytes": 1875,
+    "siteMarkersChecked": 6,
+    "otherVhostPositiveControls": 2,
+    "historicalFilesTouched": false
+  },
+  "summary": {
+    "passed": 22,
+    "failed": 0
+  },
+  "acceptanceComplete": true
+}

@@ -1,0 +1,11 @@
+{
+  "syntheticOnly": true,
+  "sameSiteCookiesActuallySent": true,
+  "crossSiteCookiesActuallySent": false,
+  "untrustedWritesRejectedWithoutIdentityMutations": 4,
+  "compatibilityGetReadOnly": true,
+  "adminSessionSurvived": true,
+  "productionFrontendIdentityPostAndSubmissionAndRecordRead": true,
+  "browserScreenshots": "Observed through native tool; no local image artifact saved",
+  "fixturesStopped": true
+}

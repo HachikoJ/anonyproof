@@ -1,0 +1,6 @@
+exit_code=1
+
+> anonyproof@0.1.0 lint
+> next lint
+
+Invalid project directory provided, no such directory: /Users/wilson/Documents/Codex/anonyproof/lint

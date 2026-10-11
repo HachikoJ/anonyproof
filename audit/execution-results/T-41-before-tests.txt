@@ -1,0 +1,397 @@
+TAP version 13
+# Subtest: T-41: feedback statistics and required notification faults roll back the entire business write
+    # Subtest: feedbacks INSERT failure
+    ok 1 - feedbacks INSERT failure
+      ---
+      duration_ms: 7.650334
+      type: 'test'
+      ...
+    # Subtest: stats UPDATE failure
+    not ok 2 - stats UPDATE failure
+      ---
+      duration_ms: 5.279459
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:1211'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+
+          {
+            admin_logs: [],
+            feedback_comments: [],
+        +   feedbacks: [
+        +     {
+        +       category: 'report',
+        +       created_at: 1791352486693,
+        +       device_id: 'device-ykGEvBj_eh1SAbHUiGRS7Jht',
+        +       encrypted_content: 'fixture-cipher',
+        +       id: '6822c318-87e8-4339-af11-1325bb094067',
+        +       is_demo_clone: 0,
+        +       is_demo_template: 0,
+        +       original_content: 'T41 synthetic report',
+        +       solution: '',
+        +       solution_admin_ip: '',
+        +       solution_updated_at: null,
+        +       status: 'pending'
+        +     }
+        +   ],
+        -   feedbacks: [],
+            notifications: [],
+            stats: [
+              {
+                encrypted_count: 0,
+                id: 1,
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        feedbacks:
+        feedback_comments:
+        notifications:
+        admin_logs:
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 0
+            encrypted_count: 0
+      actual:
+        feedbacks:
+          0:
+            id: '6822c318-87e8-4339-af11-1325bb094067'
+            category: 'report'
+            encrypted_content: 'fixture-cipher'
+            device_id: 'device-ykGEvBj_eh1SAbHUiGRS7Jht'
+            created_at: 1791352486693
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'T41 synthetic report'
+            solution: ''
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+        notifications:
+        admin_logs:
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 0
+            encrypted_count: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:47:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:41:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: notifications INSERT failure
+    not ok 3 - notifications INSERT failure
+      ---
+      duration_ms: 3.569542
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:1211'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:46:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:41:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..3
+not ok 1 - T-41: feedback statistics and required notification faults roll back the entire business write
+  ---
+  duration_ms: 557.298
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:875'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    3 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 3
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:53:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: T-41: user and admin comment notification faults cannot persist orphaned comments
+    # Subtest: user: feedback_comments INSERT failure
+    ok 1 - user: feedback_comments INSERT failure
+      ---
+      duration_ms: 5.527292
+      type: 'test'
+      ...
+    # Subtest: user: notifications INSERT failure
+    not ok 2 - user: notifications INSERT failure
+      ---
+      duration_ms: 2.76925
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:2504'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:75:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:70:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: admin: feedback_comments INSERT failure
+    ok 3 - admin: feedback_comments INSERT failure
+      ---
+      duration_ms: 2.08775
+      type: 'test'
+      ...
+    # Subtest: admin: notifications INSERT failure
+    not ok 4 - admin: notifications INSERT failure
+      ---
+      duration_ms: 2.655334
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:2504'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:75:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:70:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - T-41: user and admin comment notification faults cannot persist orphaned comments
+  ---
+  duration_ms: 467.83825
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:1938'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T-41: status audit/update/notification failures preserve all fields and related records
+    # Subtest: admin_logs INSERT failure
+    ok 1 - admin_logs INSERT failure
+      ---
+      duration_ms: 5.005292
+      type: 'test'
+      ...
+    # Subtest: feedbacks UPDATE failure
+    not ok 2 - feedbacks UPDATE failure
+      ---
+      duration_ms: 2.615917
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:3945'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+
+          {
+        +   admin_logs: [
+        +     {
+        +       action: 'update_status',
+        +       admin_ip: '127.0.0.1',
+        +       created_at: 1791352487631,
+        +       id: 1,
+        +       target_id: '55399e76-92b2-4a82-9494-8848dfb655cf'
+        +     }
+        +   ],
+        -   admin_logs: [],
+            feedback_comments: [],
+            feedbacks: [
+              {
+                category: 'report',
+                created_at: 1791352487624,
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        feedbacks:
+          0:
+            id: '55399e76-92b2-4a82-9494-8848dfb655cf'
+            category: 'report'
+            encrypted_content: 'fixture-cipher'
+            device_id: 'device-pDjwqog8eKxaC7BUS745uw1V'
+            created_at: 1791352487624
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'T41 synthetic report'
+            solution: ''
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+        notifications:
+          0:
+            id: 1
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '55399e76-92b2-4a82-9494-8848dfb655cf'
+            type: 'new_feedback'
+            title: '收到一条举报线索'
+            content: 'T41 synthetic report'
+            is_read: 0
+            created_at: 1791352487624
+        admin_logs:
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 1
+            encrypted_count: 1
+      actual:
+        feedbacks:
+          0:
+            id: '55399e76-92b2-4a82-9494-8848dfb655cf'
+            category: 'report'
+            encrypted_content: 'fixture-cipher'
+            device_id: 'device-pDjwqog8eKxaC7BUS745uw1V'
+            created_at: 1791352487624
+            status: 'pending'
+            is_demo_template: 0
+            is_demo_clone: 0
+            original_content: 'T41 synthetic report'
+            solution: ''
+            solution_updated_at: ~
+            solution_admin_ip: ''
+        feedback_comments:
+        notifications:
+          0:
+            id: 1
+            recipient_type: 'admin'
+            recipient_id: 'admin'
+            feedback_id: '55399e76-92b2-4a82-9494-8848dfb655cf'
+            type: 'new_feedback'
+            title: '收到一条举报线索'
+            content: 'T41 synthetic report'
+            is_read: 0
+            created_at: 1791352487624
+        admin_logs:
+          0:
+            id: 1
+            action: 'update_status'
+            target_id: '55399e76-92b2-4a82-9494-8848dfb655cf'
+            admin_ip: '127.0.0.1'
+            created_at: 1791352487631
+        stats:
+          0:
+            id: 1
+            total_feedbacks: 1
+            encrypted_count: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:106:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:101:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: notifications INSERT failure
+    not ok 3 - notifications INSERT failure
+      ---
+      duration_ms: 2.005875
+      type: 'test'
+      location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:3945'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+
+        200 !== 500
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 500
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:105:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:101:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - T-41: status audit/update/notification failures preserve all fields and related records
+  ---
+  duration_ms: 465.549417
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:3:3315'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 2
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-41.test.ts:114:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: T-41: optional access logging faults leave core feedback/comment/status operations successful
+ok 4 - T-41: optional access logging faults leave core feedback/comment/status operations successful
+  ---
+  duration_ms: 399.707167
+  type: 'test'
+  ...
+# Subtest: T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults
+ok 5 - T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults # SKIP T-34 deletion semantics/transaction confirmation and implementation are pending
+  ---
+  duration_ms: 0.070208
+  type: 'test'
+  ...
+1..5
+# tests 15
+# suites 0
+# pass 5
+# fail 9
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 2126.680417

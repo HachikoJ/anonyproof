@@ -1,0 +1,6 @@
+COMMAND: npm ls proxy-addr
+anonyproof@0.1.0 /Users/wilson/Documents/Codex/anonyproof
+└─┬ express@5.2.1
+  └── proxy-addr@2.0.8
+
+EXIT: 0

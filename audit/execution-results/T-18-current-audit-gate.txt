@@ -1,0 +1,3 @@
+root: npm audit exit 1; {"info":0,"low":1,"moderate":0,"high":3,"critical":0,"total":4}
+::warning::root: 4 known production dependency advisories; review the audit artifact
+server: npm audit exit 0; {"info":0,"low":0,"moderate":0,"high":0,"critical":0,"total":0}

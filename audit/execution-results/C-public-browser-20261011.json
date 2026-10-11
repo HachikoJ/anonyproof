@@ -1,0 +1,258 @@
+{
+  "scope": "C approved public synthetic only",
+  "checks": [
+    {
+      "name": "public home states fixed synthetic sandbox scope",
+      "pass": true
+    },
+    {
+      "name": "fixed synthetic demo config",
+      "pass": true
+    },
+    {
+      "name": "first browser has issued demo identity",
+      "pass": true
+    },
+    {
+      "name": "HTTP 308 preserves exact path and query",
+      "pass": true
+    },
+    {
+      "name": "HTTPS root 301 to configured app",
+      "pass": true
+    },
+    {
+      "name": "independent browser contexts have different identities",
+      "pass": true
+    },
+    {
+      "name": "page HTTP 200 /foorpynona",
+      "pass": true
+    },
+    {
+      "name": "page renders main content /foorpynona",
+      "pass": true
+    },
+    {
+      "name": "page HTTP 200 /access-stats",
+      "pass": true
+    },
+    {
+      "name": "page renders main content /access-stats",
+      "pass": true
+    },
+    {
+      "name": "identity cookie secure httponly samesite",
+      "pass": true
+    },
+    {
+      "name": "personal identity response no-store",
+      "pass": true
+    },
+    {
+      "name": "freeform feedback rejected",
+      "pass": true
+    },
+    {
+      "name": "compose only fixed choices without textarea",
+      "pass": true
+    },
+    {
+      "name": "actual server commit preceded intentional response loss",
+      "pass": true
+    },
+    {
+      "name": "fixed choice retained after lost response",
+      "pass": true
+    },
+    {
+      "name": "manual retry same key and same record",
+      "pass": true
+    },
+    {
+      "name": "committed feedback appears exactly once",
+      "pass": true
+    },
+    {
+      "name": "second user cannot read first clone",
+      "pass": true
+    },
+    {
+      "name": "user fixed comment rendered",
+      "pass": true
+    },
+    {
+      "name": "freeform user comment rejected",
+      "pass": true
+    },
+    {
+      "name": "admin fixed status saved",
+      "pass": true
+    },
+    {
+      "name": "admin fixed reply rendered",
+      "pass": true
+    },
+    {
+      "name": "second sandbox admin login",
+      "pass": true
+    },
+    {
+      "name": "second admin cannot read first clone",
+      "pass": true
+    },
+    {
+      "name": "second admin cannot mutate first clone",
+      "pass": true
+    },
+    {
+      "name": "template readable and explicitly readonly",
+      "pass": true
+    },
+    {
+      "name": "template status readonly",
+      "pass": true
+    },
+    {
+      "name": "template delete readonly",
+      "pass": true
+    },
+    {
+      "name": "template admin comment readonly",
+      "pass": true
+    },
+    {
+      "name": "freeform admin comment rejected",
+      "pass": true
+    },
+    {
+      "name": "freeform status explanation rejected",
+      "pass": true
+    },
+    {
+      "name": "public credentials forbidden raw telemetry /api/admin/logs",
+      "pass": true
+    },
+    {
+      "name": "public credentials forbidden raw telemetry /api/admin/access/logs",
+      "pass": true
+    },
+    {
+      "name": "public credentials forbidden raw telemetry /api/admin/access/stats",
+      "pass": true
+    },
+    {
+      "name": "public credentials forbidden raw telemetry /api/admin/access/suspicious",
+      "pass": true
+    },
+    {
+      "name": "public credentials forbidden raw telemetry /api/admin/access/blacklist",
+      "pass": true
+    },
+    {
+      "name": "status and admin reply both notify submitting identity",
+      "pass": true
+    },
+    {
+      "name": "second identity cannot list first notifications",
+      "pass": true
+    },
+    {
+      "name": "notification mark read",
+      "pass": true
+    },
+    {
+      "name": "notification read state persisted",
+      "pass": true
+    },
+    {
+      "name": "notification mark unread",
+      "pass": true
+    },
+    {
+      "name": "own newly created synthetic clone deleted",
+      "pass": true
+    },
+    {
+      "name": "deleted clone detail absent",
+      "pass": true
+    },
+    {
+      "name": "deleted clone comments absent",
+      "pass": true
+    },
+    {
+      "name": "deleted clone notices absent",
+      "pass": true
+    },
+    {
+      "name": "repeat delete inert",
+      "pass": true
+    },
+    {
+      "name": "admin cookie secure httponly samesite",
+      "pass": true
+    },
+    {
+      "name": "admin response no-store",
+      "pass": true
+    },
+    {
+      "name": "static assets actually loaded successfully",
+      "pass": true
+    },
+    {
+      "name": "no browser uncaught errors",
+      "pass": true
+    }
+  ],
+  "total": 51,
+  "allPassed": true,
+  "loadedAssetCount": 17,
+  "assetPaths": [
+    "/anonyproof/_next/static/chunks/1ol7ko56t5296.css",
+    "/anonyproof/_next/static/chunks/3l04zcqx63h3y.js",
+    "/anonyproof/_next/static/chunks/0frtubn3d_5lv.js",
+    "/anonyproof/_next/static/chunks/0bma92pht_c97.js",
+    "/anonyproof/_next/static/chunks/turbopack-2y2uka1upmxeu.js",
+    "/anonyproof/_next/static/chunks/3fntmmi971322.js",
+    "/anonyproof/_next/static/chunks/2r_-f4t9xa57h.js",
+    "/anonyproof/_next/static/chunks/0xybc0caf991u.js",
+    "/anonyproof/brand/anonyproof-mark.svg",
+    "/anonyproof/_next/static/chunks/0nvbtvcu-40je.js"
+  ],
+  "uncaughtErrorCount": 0,
+  "credentialsSaved": false,
+  "existingUserSessionsUsed": false,
+  "newSyntheticRecordDeleted": true,
+  "candidate": "5c23a042e807b92312dac8fa1a9dc2e6037f575d",
+  "verifiedAtUTC": "2026-10-11T05:22:47.534980+00:00",
+  "browser": {
+    "cliVersion": "0.1.22",
+    "existingChromiumRevision": 1243,
+    "newIsolatedMemorySession": true,
+    "personalProfileUsed": false,
+    "browserSessionClosed": true
+  },
+  "scriptSHA256": "8f5307c8bf40d8600736d4742e7c559903c6d75cb5f997d47dc9b746f5802916",
+  "rawEvidenceSHA256": "7e6c8e8db5d363ccfe9a1048046ab01f47dffd5ff507988e972b6a1937ce0a83",
+  "intermediateFailures": [
+    {
+      "run": 1,
+      "cause": "test assumed identity cookie name; actual anonyproof_device_session flags matched contract",
+      "productFailure": false
+    },
+    {
+      "run": 2,
+      "cause": "test clicked navigation behind expected submission success dialog; corrected to 查看处理进度",
+      "productFailure": false,
+      "newSyntheticCloneDeleted": true
+    },
+    {
+      "run": 3,
+      "cause": "test sent bare UUID rather than v1:timestamp:UUID; 400 IDEMPOTENCY_KEY_INVALID expected for malformed key; corrected input",
+      "productFailure": false,
+      "newSyntheticCloneDeleted": true
+    }
+  ]
+}

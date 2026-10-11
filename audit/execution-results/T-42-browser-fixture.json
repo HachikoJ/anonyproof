@@ -1,0 +1,30 @@
+{
+  "url": "http://127.0.0.1:3044/anonyproof",
+  "adminUrl": "http://127.0.0.1:3044/anonyproof/foorpynona",
+  "fixturePid": 14368,
+  "databasePath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-ZCWaNE/fixture.db",
+  "recoveryPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-fix-ZCWaNE/T42-synthetic-recovery-codes.json",
+  "devices": {
+    "a": "device-ZhLrRlAPFX4Oip7mOBxrPuGL",
+    "b": "device-qoM-vhetqOG0vcK0DsJGnwzk"
+  },
+  "threads": {
+    "a1": "T42-A-1",
+    "a2": "T42-A-2",
+    "b1": "T42-B-1",
+    "b2": "T42-B-2"
+  },
+  "initialCounts": {
+    "feedbacks": 4,
+    "feedback_comments": 3,
+    "notifications": 2,
+    "request_idempotency": 0
+  },
+  "controls": {
+    "state": "/__fixture/state",
+    "dropNext": "/__fixture/drop-next/{feedback|user_comment|admin_comment}",
+    "restart": "/__fixture/restart-backend"
+  },
+  "fixtureOnly": true,
+  "lossSemantics": "Each action may lose exactly one successful committed response body per run: real success headers plus Content-Length, then one body byte and socket close; all later responses forward normally."
+}

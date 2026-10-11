@@ -1,0 +1,83 @@
+TAP version 13
+# Subtest: T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+ok 1 - T-32 candidate: preserve exact rows/ownership, seal four content classes, compact residuals, authenticate and restore HTTP
+  ---
+  duration_ms: 577.439958
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+ok 2 - T-32 candidate: repeating on a completed candidate authenticates but never reseals/duplicates records
+  ---
+  duration_ms: 22.500959
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+ok 3 - T-32 candidate: late NULL failure rolls back schema/content/marker and preserves source; corrected synthetic retry succeeds
+  ---
+  duration_ms: 21.419583
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+ok 4 - T-32 candidate: wrong key and tampered marked-v1 contents fail, not plaintext fallback
+  ---
+  duration_ms: 18.430666
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+ok 5 - T-32 candidate: committed WAL snapshot is included while writer remains open; original logical data unchanged
+  ---
+  duration_ms: 16.729459
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+    # Subtest: demo
+    ok 1 - demo
+      ---
+      duration_ms: 6.451583
+      type: 'test'
+      ...
+    # Subtest: clone
+    ok 2 - clone
+      ---
+      duration_ms: 6.133
+      type: 'test'
+      ...
+    # Subtest: trigger
+    ok 3 - trigger
+      ---
+      duration_ms: 6.241042
+      type: 'test'
+      ...
+    # Subtest: version
+    ok 4 - version
+      ---
+      duration_ms: 7.958083
+      type: 'test'
+      ...
+    # Subtest: nullSolution
+    ok 5 - nullSolution
+      ---
+      duration_ms: 7.495333
+      type: 'test'
+      ...
+    1..5
+ok 6 - T-32 candidate: scope/triggers/schema/versions/missing key/paths rejected, and destination publication cannot overwrite a racing file
+  ---
+  duration_ms: 48.100333
+  type: 'test'
+  ...
+# Subtest: T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+ok 7 - T-32 candidate: bounded keyset batches convert every row beyond two batch boundaries
+  ---
+  duration_ms: 45.088584
+  type: 'test'
+  ...
+1..7
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 994.981791

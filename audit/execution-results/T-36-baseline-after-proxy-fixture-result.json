@@ -1,0 +1,160 @@
+{
+  "scope": "Full numbered repair regression and requested local Node22 type checks after fixture-only proxy contract adaptation; no production changes or remote CI claim",
+  "startedAt": "2026-10-09T12:18:09.291833+00:00",
+  "coordinatorPid": 26771,
+  "nodeVersion": "v22.23.3",
+  "startSnapshot": {
+    "head": "a6b8b7ce832b14760c114c4685746202dafba5ee",
+    "diffAffectedFiles": [
+      "tests/fix/T-22.integration.test.ts",
+      "tests/fix/T-33.test.ts"
+    ],
+    "diffFileSha256": {
+      "tests/fix/T-22.integration.test.ts": "938ee6303732218492f53f3eed36a37f2fcfaf2fc8214d5ecf3a592c7fd575f6",
+      "tests/fix/T-33.test.ts": "dd1a88b524d63287d61b0804ffdd91bc18488f7108b0965c3cd51fa7115e9c98"
+    }
+  },
+  "commands": [
+    {
+      "name": "numberedTests",
+      "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/*.test.ts",
+      "exitCode": 0,
+      "durationSeconds": 136.346,
+      "log": "audit/execution-results/T-36-baseline-after-proxy-fixture.txt",
+      "logSha256": "53b63b16e442b1b684f8998ace761a3be2c602780c2f64782261666f942d4302",
+      "testFiles": [
+        "tests/fix/T-01.test.ts",
+        "tests/fix/T-02.test.ts",
+        "tests/fix/T-03.test.ts",
+        "tests/fix/T-04.test.ts",
+        "tests/fix/T-05.test.ts",
+        "tests/fix/T-06.test.ts",
+        "tests/fix/T-07.test.ts",
+        "tests/fix/T-08.test.ts",
+        "tests/fix/T-09.test.ts",
+        "tests/fix/T-10.test.ts",
+        "tests/fix/T-11.test.ts",
+        "tests/fix/T-12.test.ts",
+        "tests/fix/T-13.test.ts",
+        "tests/fix/T-14.test.ts",
+        "tests/fix/T-16.test.ts",
+        "tests/fix/T-17.test.ts",
+        "tests/fix/T-19.test.ts",
+        "tests/fix/T-20.test.ts",
+        "tests/fix/T-21.test.ts",
+        "tests/fix/T-22.integration.test.ts",
+        "tests/fix/T-22.test.ts",
+        "tests/fix/T-23.test.ts",
+        "tests/fix/T-24.test.ts",
+        "tests/fix/T-25.test.ts",
+        "tests/fix/T-26.test.ts",
+        "tests/fix/T-27.test.ts",
+        "tests/fix/T-31.test.ts",
+        "tests/fix/T-32-candidate.test.ts",
+        "tests/fix/T-32.test.ts",
+        "tests/fix/T-33.test.ts",
+        "tests/fix/T-34.test.ts",
+        "tests/fix/T-37.test.ts",
+        "tests/fix/T-38.test.ts",
+        "tests/fix/T-39.test.ts",
+        "tests/fix/T-40.test.ts",
+        "tests/fix/T-41.test.ts",
+        "tests/fix/T-42.test.ts",
+        "tests/fix/T-43.test.ts"
+      ],
+      "totals": {
+        "tests": 208,
+        "suites": 0,
+        "pass": 207,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "skipDetails": [
+        "ok 154 - T-41 delete rollback matrix: every related row survives log/delete/stats/dependent-row faults # SKIP Deletion transaction is independently verified by T-34.test.ts; historical asset handling remains separately gated"
+      ],
+      "failureDetails": []
+    },
+    {
+      "name": "frontendTypes",
+      "command": "npm run type-check",
+      "exitCode": 2,
+      "durationSeconds": 1.537,
+      "log": "audit/execution-results/T-36-baseline-frontend-types.txt",
+      "logSha256": "b2a022f9abb0a397c26b41a6d3f321031b25942727ccd69b17b40f846eb00e3b"
+    },
+    {
+      "name": "backendTypes",
+      "command": "npm --prefix server run type-check",
+      "exitCode": 2,
+      "durationSeconds": 2.548,
+      "log": "audit/execution-results/T-36-baseline-backend-types.txt",
+      "logSha256": "4d590d1dfa5de3a253afda2cd46c22ee0134577609f80c002040fbccc96c7d41"
+    },
+    {
+      "name": "ciStrictBackendTypes",
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "durationSeconds": 1.088,
+      "log": "audit/execution-results/T-36-baseline-ci-strict-backend-types.txt",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "diffCheck",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "durationSeconds": 0.019,
+      "log": "audit/execution-results/T-36-baseline-diff-check.txt",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "completed": true,
+  "activeCommand": null,
+  "endSnapshot": {
+    "head": "6fdbb05bf7314931e42663a4f6f4e2835742bc3c",
+    "diffAffectedFiles": [],
+    "diffFileSha256": {}
+  },
+  "sourcesUnchangedDuringBaseline": false,
+  "finishedAt": "2026-10-09T12:20:30.919746+00:00",
+  "allChecksPassed": false,
+  "sourceContentUnchanged": true,
+  "contentAttestation": {
+    "verifiedAt": "2026-10-09T12:21:35.117693+00:00",
+    "scope": "Content comparison of the exact original modified-file set, not equality of Git bookkeeping snapshots",
+    "files": [
+      {
+        "file": "tests/fix/T-22.integration.test.ts",
+        "startSha256": "938ee6303732218492f53f3eed36a37f2fcfaf2fc8214d5ecf3a592c7fd575f6",
+        "currentSha256": "938ee6303732218492f53f3eed36a37f2fcfaf2fc8214d5ecf3a592c7fd575f6",
+        "sameContent": true
+      },
+      {
+        "file": "tests/fix/T-33.test.ts",
+        "startSha256": "dd1a88b524d63287d61b0804ffdd91bc18488f7108b0965c3cd51fa7115e9c98",
+        "currentSha256": "dd1a88b524d63287d61b0804ffdd91bc18488f7108b0965c3cd51fa7115e9c98",
+        "sameContent": true
+      }
+    ],
+    "headChangedDuringBaseline": true,
+    "commitDiffFiles": [
+      "FIX_PLAN.md",
+      "audit/execution-results/T-24-T-22-T-33-fixture-regression.txt",
+      "audit/execution-results/T-36-current-behavior-baseline-result.json",
+      "audit/execution-results/T-36-current-behavior-baseline.txt",
+      "audit/execution-results/T-36-interrupted-behavior-baseline.txt",
+      "tests/fix/T-22.integration.test.ts",
+      "tests/fix/T-33.test.ts"
+    ],
+    "commitDiffLimitedToOriginalFixtureFiles": false,
+    "explanation": "The two fixture files were committed during execution, so HEAD and diff-name membership changed. Both current contents have exactly the original SHA256. The original sourcesUnchangedDuringBaseline=false and all original exit codes are retained.",
+    "originalResultSha256": "756356454007469a068c95a08af9dab1d61233224ce8b5c61efb0797a42682fb",
+    "originalResultPreservedAt": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T36-baseline-original-y9ax9ybr/result.json",
+    "commitDiffSourceFiles": [
+      "tests/fix/T-22.integration.test.ts",
+      "tests/fix/T-33.test.ts"
+    ],
+    "commitDiffSourceLimitedToOriginalFixtureFiles": true
+  }
+}

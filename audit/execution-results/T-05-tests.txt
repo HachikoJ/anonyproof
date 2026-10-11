@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+ok 1 - T-05: identity source quota rejects before signing/creating/cloning; same install key reuses identity after window
+  ---
+  duration_ms: 2705.251917
+  type: 'test'
+  ...
+# Subtest: T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+ok 2 - T-05: durable identity capacity rejects all new issuers, keeps existing identities usable and never deletes data
+  ---
+  duration_ms: 869.861875
+  type: 'test'
+  ...
+# Subtest: T-05: default source admits ten then rejects eleventh; configurable one rejects second
+ok 3 - T-05: default source admits ten then rejects eleventh; configurable one rejects second
+  ---
+  duration_ms: 786.26925
+  type: 'test'
+  ...
+# Subtest: T-05: zero clone allowance creates identities without copies and never returns 500
+ok 4 - T-05: zero clone allowance creates identities without copies and never returns 500
+  ---
+  duration_ms: 442.499542
+  type: 'test'
+  ...
+# Subtest: T-05: invalid identity or clone capacity configuration fails startup explicitly
+ok 5 - T-05: invalid identity or clone capacity configuration fails startup explicitly
+  ---
+  duration_ms: 4748.628
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9670.596667

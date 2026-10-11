@@ -1,0 +1,274 @@
+{
+  "task": "T-36",
+  "stage": "S4 route extraction and local final integration",
+  "status": "Local S4 gates passed; T-36 task completion remains with parent review, independent commit and actual candidate CI/contract acceptance.",
+  "baselineHead": "b86e79873b2b9c144f378af8b97a3dc1ea02b70b",
+  "currentHead": "b86e79873b2b9c144f378af8b97a3dc1ea02b70b",
+  "recordedAtUtc": "2026-10-09T23:14:42.799Z",
+  "scope": [
+    "server/index.ts",
+    "server/routes.ts",
+    "tests/fix/T-36.test.ts"
+  ],
+  "committedByThisAgent": false,
+  "fixPlanModifiedByThisAgent": false,
+  "productionOrRealAssetsTouched": false,
+  "sourceHashes": {
+    "server/index.ts": "35b23e07695a9937f5ef4f3b34b64253c3a6b86e178579bcc4a4666aacc8edf4",
+    "server/routes.ts": "b0bf4c5f95128da9c6b9cfc163b3397c08a915866981f118bf90fd9e2bbf3c52",
+    "tests/fix/T-36.test.ts": "f40bb494ea2c423fd484635c42c5ee72168c08b99335e60fce1acb5757b90e81"
+  },
+  "sourceHashesEqualRunStart": true,
+  "allRecordedServerScriptTestSourcesEqualRunStart": true,
+  "concurrentRecordedSourceChanges": [],
+  "sourceFreezeNote": "Parent and T32 agent froze repository product/tests while final gates ran; 95 recorded server/scripts/tests source files stayed unchanged. No assertion about every ignored file or unrelated documents.",
+  "checks": [
+    {
+      "name": "tests",
+      "command": [
+        "npx",
+        "--no-install",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/fix/T-01.test.ts",
+        "tests/fix/T-02.test.ts",
+        "tests/fix/T-03.test.ts",
+        "tests/fix/T-04.test.ts",
+        "tests/fix/T-05.test.ts",
+        "tests/fix/T-06.test.ts",
+        "tests/fix/T-07.test.ts",
+        "tests/fix/T-08.test.ts",
+        "tests/fix/T-09.test.ts",
+        "tests/fix/T-10.test.ts",
+        "tests/fix/T-11.test.ts",
+        "tests/fix/T-12.test.ts",
+        "tests/fix/T-13.test.ts",
+        "tests/fix/T-14.test.ts",
+        "tests/fix/T-16.test.ts",
+        "tests/fix/T-17.test.ts",
+        "tests/fix/T-19.test.ts",
+        "tests/fix/T-20.test.ts",
+        "tests/fix/T-21.test.ts",
+        "tests/fix/T-22.integration.test.ts",
+        "tests/fix/T-22.test.ts",
+        "tests/fix/T-23.test.ts",
+        "tests/fix/T-24.test.ts",
+        "tests/fix/T-25.test.ts",
+        "tests/fix/T-26.test.ts",
+        "tests/fix/T-27.test.ts",
+        "tests/fix/T-31.test.ts",
+        "tests/fix/T-32-candidate.test.ts",
+        "tests/fix/T-32-retention-adapter.test.ts",
+        "tests/fix/T-32.test.ts",
+        "tests/fix/T-33.test.ts",
+        "tests/fix/T-34.test.ts",
+        "tests/fix/T-36.test.ts",
+        "tests/fix/T-37.test.ts",
+        "tests/fix/T-38.test.ts",
+        "tests/fix/T-39.test.ts",
+        "tests/fix/T-40.test.ts",
+        "tests/fix/T-41.test.ts",
+        "tests/fix/T-42.test.ts",
+        "tests/fix/T-43.test.ts"
+      ],
+      "startedAtUtc": "2026-10-09T23:10:37.368Z",
+      "completedAtUtc": "2026-10-09T23:12:59.525Z",
+      "exitCode": 0,
+      "signal": null,
+      "log": "audit/execution-results/T-36-S4-tests.txt"
+    },
+    {
+      "name": "frontend-types",
+      "command": [
+        "npm",
+        "run",
+        "type-check"
+      ],
+      "startedAtUtc": "2026-10-09T23:10:37.369Z",
+      "completedAtUtc": "2026-10-09T23:10:40.021Z",
+      "exitCode": 0,
+      "signal": null,
+      "log": "audit/execution-results/T-36-S4-frontend-types.txt"
+    },
+    {
+      "name": "backend-types",
+      "command": [
+        "npm",
+        "--prefix",
+        "server",
+        "run",
+        "type-check"
+      ],
+      "startedAtUtc": "2026-10-09T23:10:37.370Z",
+      "completedAtUtc": "2026-10-09T23:10:38.738Z",
+      "exitCode": 0,
+      "signal": null,
+      "log": "audit/execution-results/T-36-S4-backend-types.txt"
+    },
+    {
+      "name": "ci-strict-types",
+      "command": [
+        "npx",
+        "--no-install",
+        "tsc",
+        "--noEmit",
+        "--target",
+        "ES2017",
+        "--module",
+        "commonjs",
+        "--esModuleInterop",
+        "--skipLibCheck",
+        "--strict",
+        "server/adminAuth.ts",
+        "server/env.ts",
+        "server/index.ts",
+        "server/clientIdentity.ts",
+        "server/utils/instanceIsolation.ts",
+        "server/utils/contentEncryption.ts",
+        "server/utils/accessStats.ts",
+        "server/utils/adminFeedbackPagination.ts",
+        "server/utils/database.ts",
+        "server/utils/logger.ts",
+        "server/utils/expiringMap.ts",
+        "server/utils/commentPagination.ts",
+        "server/utils/accessPrivacy.ts",
+        "server/utils/identityRetention.ts",
+        "server/utils/userFeedbackPagination.ts",
+        "server/utils/logRetention.ts",
+        "server/utils/requestIdempotency.ts",
+        "server/utils/comments.ts",
+        "server/utils/validation.ts",
+        "server/demo.ts",
+        "server/middleware/requestOrigin.ts",
+        "server/middleware/accessStats.ts",
+        "server/middleware/rateLimit.ts",
+        "server/middleware/rateLimitEnhanced.ts",
+        "server/middleware/proxyBoundary.ts",
+        "server/routes.ts",
+        "server/schema.ts"
+      ],
+      "startedAtUtc": "2026-10-09T23:10:37.370Z",
+      "completedAtUtc": "2026-10-09T23:10:38.724Z",
+      "exitCode": 0,
+      "signal": null,
+      "log": "audit/execution-results/T-36-S4-ci-strict-types.txt"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAtUtc": "2026-10-09T23:13:24.269Z",
+      "completedAtUtc": "2026-10-09T23:13:28.705Z",
+      "exitCode": 0,
+      "signal": null,
+      "log": "audit/execution-results/T-36-S4-build.txt"
+    }
+  ],
+  "fullNumberedSuite": {
+    "tests": 251,
+    "pass": 250,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 1
+  },
+  "existingSkip": {
+    "task": "T-41",
+    "test": "delete rollback matrix: every related row survives log/delete/stats/dependent-row faults",
+    "reason": "Deletion transaction is independently verified by T-34.test.ts; historical asset handling remains separately gated",
+    "source": "tests/fix/T-41.test.ts:145",
+    "countedAsPass": false
+  },
+  "ownTests": {
+    "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-36.test.ts",
+    "exitCode": 0,
+    "summary": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "log": "audit/execution-results/T-36-S4-own-tests.txt"
+  },
+  "retainedInitialFailure": {
+    "exitCode": 1,
+    "summary": {
+      "tests": 5,
+      "pass": 4,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "log": "audit/execution-results/T-36-S4-own-tests-initial-failure.txt",
+    "cause": "New test assumed admin cookie Path=/api; original adminAuth.ts contract is Path=/. Updated only the newly added assertion to exact Path=/ and Max-Age=28800; product Cookie behavior unchanged.",
+    "productBehaviorChangedToPass": false
+  },
+  "mechanicalEvidence": "audit/execution-results/T-36-S4-mechanical-equivalence.json",
+  "runtimeRegistrationEvidence": "audit/execution-results/T-36-S4-runtime-registration-trace.json",
+  "runtimeHttpAcceptance": [
+    "Both login/session/logout alias groups; authenticated state checked through both session aliases before/after logout; exact existing secure cookie attributes",
+    "Actual initialized user feedback write/detail/device-list; comment write/read; authenticated admin detail/status/delete; notification read/unread",
+    "Anonymous access denied, missing records 404 and malformed encoded route parameter 400"
+  ],
+  "diffCheck": {
+    "startedAtUtc": "2026-10-09T23:13:42.805Z",
+    "completedAtUtc": "2026-10-09T23:13:42.869Z",
+    "checks": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0,
+        "output": ""
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--no-index",
+          "--check",
+          "/dev/null",
+          "server/routes.ts"
+        ],
+        "exitCode": 1,
+        "output": "",
+        "interpretation": "git --no-index returns 1 for the /dev/null-to-new-file difference; empty --check output means no whitespace diagnostics. This is not reported as command exit 0."
+      }
+    ],
+    "ownedFileTrailingWhitespaceDiagnostics": []
+  },
+  "rollback": "R4: independently reverse only route extraction/test addition; retain S1-S3 and all preceding behavior fixes. No schema/data-format change or data rollback. Run related regression/type checks after reversal.",
+  "limitations": [
+    "No remote push/CI or deployment performed by this agent.",
+    "S4 local success does not close T-36 before parent review and actual candidate CI/remaining contract acceptance.",
+    "T24/T35/T33 final real local proxy chain using latest ACME template is owned by parent.",
+    "Full numbered test command used existing verified frontend build for T20; final production build subsequently passed against unchanged frontend sources."
+  ],
+  "artifactsSha256": {
+    "T-36-S4-backend-types-exit.json": "acdcf766542dea6c5ea63bcda436f99cdc6dbe594c6f86751b6257b9fef3e477",
+    "T-36-S4-backend-types.txt": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1",
+    "T-36-S4-build-exit.json": "c423a33e5d117c7d843b89126755f4ba0cabdeaa9e68ebf42a3936027ee0c2da",
+    "T-36-S4-build.txt": "5c04068c0b93b0a06aa5b1be17a9b8c87cb6aea6a63dc8b1a492cf0bea53973b",
+    "T-36-S4-ci-strict-types-exit.json": "161096e9106f81c609376e227c01eae4f787cc0e48d2a89cae894381c7ed2b57",
+    "T-36-S4-ci-strict-types.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "T-36-S4-diff-check-exit.json": "fd312d2f50b7c2844e1b8d1af60e76790ddebeff26d0c144b433d38cb57d040c",
+    "T-36-S4-diff-check.txt": "cfb4ba1db03f2ee54865d339a8d599c0b5ab446debcfc4ad70415a49a98bbb92",
+    "T-36-S4-frontend-types-exit.json": "c5bc10b90b07a9933546c46c70447f29354e61994406c6f5107bbc07e5d21376",
+    "T-36-S4-frontend-types.txt": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63",
+    "T-36-S4-initial-backend-types.txt": "9cdce8ef2f4af21943a785b877c54dd49ae7fa8b18a69e50319a96843102b7d1",
+    "T-36-S4-mechanical-equivalence.json": "5c035af7d218a47d4377fd93f68a92455aa4b1bf4732b2e9a96cb0fafc86300c",
+    "T-36-S4-own-tests-initial-failure.txt": "1c9c47455f14d1a91b30226142f3a4753568b40732394ee2f672a2e7e0b09f47",
+    "T-36-S4-own-tests.txt": "8e50a51f1c4bfc37b814ae9aa670dcd7f8e7fd2db88d9e575f49ced673013da5",
+    "T-36-S4-runtime-registration-trace.json": "dffd4772d036c32e94da596f4cef053f77be192d878c378b57a867d93d1c970b",
+    "T-36-S4-start-snapshot.json": "fe431110da66c5eb98ebefccec46b0bac299e291a40ecc43b7978b6352e851e8",
+    "T-36-S4-tests-exit.json": "f2a82cbc058a408925668baeb5981ad329ab2e7932885c648a91e665d23aae16",
+    "T-36-S4-tests.txt": "5c4bcb8ac5f14ee9799c0b26b128c02550570ab6ceb878f9bb7f19284539ce08",
+    "T-36-S4-original-raw-logs.json": "5c4f3a42214d4d61e802eef4d610e003ab3146fbaf5fd4aa2a56a65e448ef4d0"
+  },
+  "originalRawLogEvidence": "audit/execution-results/T-36-S4-original-raw-logs.json"
+}

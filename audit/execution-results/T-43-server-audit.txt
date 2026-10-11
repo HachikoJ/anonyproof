@@ -1,0 +1,27 @@
+CHECKOUT: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu/server
+COMMAND: npm audit --omit=dev --json
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 139,
+      "dev": 13,
+      "optional": 0,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 151
+    }
+  }
+}
+EXIT: 0
+Target advisory/package absent: true
+Other remaining package names: []

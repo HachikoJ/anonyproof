@@ -1,0 +1,5 @@
+2026-10-07
+rg -n API_TOKEN .env.example README.md DEPLOY.md docs/DEPLOYMENT.md: exit 0; eight accurate deprecated/compatibility references, no claim of active API token authentication.
+rg -n API_TOKEN app server --glob !**/node_modules/**: exit 1, expected no source read.
+Reviewed diff: documentation/comments only; retained old placeholder assignment, no live environment or HTTP auth changes.
+git diff --check: exit 0.

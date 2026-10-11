@@ -1,0 +1,17 @@
+{
+  "tasks": [
+    "T-23",
+    "T-37",
+    "T-38",
+    "T-39",
+    "T-42"
+  ],
+  "command": "API_PROXY_TARGET=http://127.0.0.1:4000 npm run build",
+  "runtime": "Node22",
+  "exit": 0,
+  "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-final-build-raw-72jxqkq6/T-23-T-37-T-38-T-39-T-42-final-build.txt",
+  "rawSha256": "0d4a8db94269bac52aee61288e9ad436f2f8b3ecf46484f9c2335c8916e643ed",
+  "normalization": "terminal whitespace only",
+  "browserAcceptance": "not executed; native browser tool unavailable; no terminal fallback approval yet",
+  "deployment": false
+}

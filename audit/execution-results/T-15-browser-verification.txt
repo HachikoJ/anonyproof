@@ -1,0 +1,6 @@
+Actual native IAB, 2026-10-07, fresh temporary formal fixture under Next16.3.6.
+Command: Node22 npx --no-install tsx tests/fix/T-15.browser.ts
+Home ready -> report category -> synthetic T15 browser body -> success -> My records contains correct body/id -> admin login -> same record in admin authorized list -> notification decrypted summary -> click focuses same record -> access stats loads 28 local requests / 1 local source / seven-day trend.
+No real materials, credentials, environment, deployment or database involved. Fixture password is local-only. Recorded evidence omits cookies/recovery code/content key. Native screenshot showed the access stats page; no local screenshot file path invented.
+Temporary tab closed; fixture/Next processes stopped by SIGTERM. Generated fixture DB/separate random content key retained.
+Production pages/static assets and proxy API Cookie flow independently verified by T-15-main-http-smoke.txt (actual production build/start), not inferred from this development UI alone.

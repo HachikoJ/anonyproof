@@ -1,0 +1,148 @@
+Main checkout actual install and locks
+COMMAND: npm audit --omit=dev --json
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "esbuild": {
+      "name": "esbuild",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1120680,
+          "name": "esbuild",
+          "dependency": "esbuild",
+          "title": "esbuild allows arbitrary file read when running the development server on Windows",
+          "url": "https://github.com/advisories/GHSA-g7r4-m6w7-qqqr",
+          "severity": "low",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 2.5,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=0.27.3 <0.28.1"
+        }
+      ],
+      "effects": [],
+      "range": "0.27.3 - 0.28.0",
+      "nodes": [
+        "node_modules/esbuild"
+      ],
+      "fixAvailable": true
+    },
+    "next": {
+      "name": "next",
+      "severity": "critical",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1240609,
+          "name": "next",
+          "dependency": "next",
+          "title": "Next.js: Remote Code Execution in next/og ImageResponse",
+          "url": "https://github.com/advisories/GHSA-vcvr-r3jv-pc5j",
+          "severity": "critical",
+          "cwe": [
+            "CWE-1395"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=16.2.0 <16.3.6"
+        }
+      ],
+      "effects": [],
+      "range": "16.2.0 - 16.3.5",
+      "nodes": [
+        "node_modules/next"
+      ],
+      "fixAvailable": {
+        "name": "next",
+        "version": "16.4.0",
+        "isSemVerMajor": false
+      }
+    },
+    "sharp": {
+      "name": "sharp",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1241331,
+          "name": "sharp",
+          "dependency": "sharp",
+          "title": "sharp : Vulnerability in librsvg dependency CVE-2026-96889",
+          "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+          "severity": "high",
+          "cwe": [
+            "CWE-416",
+            "CWE-1395"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<0.35.5"
+        }
+      ],
+      "effects": [],
+      "range": "<0.35.5",
+      "nodes": [
+        "node_modules/sharp"
+      ],
+      "fixAvailable": true
+    },
+    "source-map-js": {
+      "name": "source-map-js",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1241209,
+          "name": "source-map-js",
+          "dependency": "source-map-js",
+          "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+          "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+          "severity": "high",
+          "cwe": [
+            "CWE-1284"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=1.0.0 <1.2.2"
+        }
+      ],
+      "effects": [],
+      "range": "1.0.0 - 1.2.1",
+      "nodes": [
+        "node_modules/source-map-js"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 0,
+      "high": 2,
+      "critical": 1,
+      "total": 4
+    },
+    "dependencies": {
+      "prod": 151,
+      "dev": 19,
+      "optional": 64,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 233
+    }
+  }
+}
+EXIT: 1
+Target advisory/package absent: true

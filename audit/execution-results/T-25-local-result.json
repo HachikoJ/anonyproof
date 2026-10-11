@@ -1,0 +1,77 @@
+{
+  "task": "T-25",
+  "scope": "local synthetic fixtures only; real assets not modified or authorized for cleanup",
+  "timestamp": "2026-10-09T01:49:01.468871+00:00",
+  "head": "edde3d4696c275fc233ede3d83f0c95dd92d23f0",
+  "status": "local implementation and acceptance passed; full historical task remains in progress",
+  "policy": {
+    "formalInactiveDays": 90,
+    "demoInactiveDays": 30,
+    "expiryInclusive": true,
+    "inactivityBoundaryRetained": true,
+    "sessionRowsPerTransaction": 500,
+    "feedbackRowsPerTransaction": 500,
+    "identityRowsPerTransaction": 100,
+    "sweepIntervalMs": 3600000,
+    "activity": "MAX identity/session/install-key created_at and last_seen_at, expired child activity persisted before delete",
+    "protected": "any formal feedback or user notice; demo template, unknown marker, mixed history, unassociated user notice"
+  },
+  "changes": {
+    "legacyExpiredTokenResurrection": "expired compatibility hash cleared in same transaction as deletion; issueIdentitySession no longer performs unrelated unbounded expired deletion",
+    "largeSessionBacklog": "expired and retiring session deletion share one 500-row budget; identity retained until all children removed",
+    "activityEvidence": "persist expired child last_seen_at/created_at before removing it"
+  },
+  "checks": [
+    {
+      "command": "npx --no-install tsx --test --test-concurrency=1 tests/fix/T-25.test.ts tests/fix/T-21.test.ts tests/fix/T-05.test.ts tests/fix/T-08.test.ts tests/fix/T-26.test.ts",
+      "exitCode": 0,
+      "tests": 25,
+      "pass": 25,
+      "fail": 0,
+      "skip": 0,
+      "artifact": "audit/execution-results/T-25-regression.txt"
+    },
+    {
+      "command": "npm run type-check",
+      "exitCode": 0,
+      "artifact": "audit/execution-results/T-25-type.txt"
+    },
+    {
+      "command": "npx --no-install tsc --noEmit --target ES2017 --module commonjs --esModuleInterop --skipLibCheck --strict server/*.ts server/middleware/*.ts server/utils/*.ts",
+      "exitCode": 0,
+      "artifact": "audit/execution-results/T-25-server-type.txt"
+    },
+    {
+      "command": "read-only countIdentityRetention on independently created synthetic disk fixture; compare SHA-256",
+      "exitCode": 0,
+      "artifact": "audit/execution-results/T-25-dry-run.json"
+    }
+  ],
+  "sourceSha256": {
+    "server/utils/identityRetention.ts": "d8f5ac8fdcc9fc09753d9d62e4296d03182752e105c0716aa8cc32846ae97bae",
+    "tests/fix/T-25.test.ts": "71b933e2e80be0aaefdd327f36d6fbf78093b2f41e9e2b4876d9fd557bec81cb",
+    "docs/IDENTITY_RETENTION.md": "029d36117053a9ba7409fc70068313a3c62098a191ae082bdb7540454dd93143",
+    "audit/execution-results/T-25-dry-run.json": "217a15ca0015a5a58129a4d01ab413b0f64bb15b5996b4d0b79d495c03d170b8",
+    "audit/execution-results/T-25-type.txt": "f7f5a237562a8681f69de498b2ee25a1ae4fd5e901950da54c0fd0177ddd9e63",
+    "audit/execution-results/T-25-server-type.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit/execution-results/T-25-regression.txt": "98c2c28c40a57285fd6552c8209273b34f6dd1cecab2d70d2e5ae4f08943fafc"
+  },
+  "remaining": "Real paths/counts/consistent snapshot/independent restore and corresponding asset approval before deployment or deletion; T-25 whole task remains in progress.",
+  "liveAcceptance": {
+    "realHttpFixture": true,
+    "expiredCookieAfterSweep": 401,
+    "activeRecoveredCookie": 200,
+    "originalRecoveryCodeR1StillRecoversSameDevice": true,
+    "installKeyBindingUpdatesActivity": true,
+    "unrelatedIdentityCreateDoesNotDeleteExpiredRowsWithoutClearingCompatibilityHash": true,
+    "secondRestartDoesNotReviveExpiredToken": true,
+    "temporaryKey": "random per fixture, never production"
+  },
+  "logFormatting": [
+    {
+      "file": "T-25-type.txt",
+      "rawPath": "/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T25-raw-vi7phrlo/T-25-type.txt",
+      "rawSha256": "e0be9bb805b6b24ae23437cc3d71a4113bc149dc39b356e3d0dfe611f7953519"
+    }
+  ]
+}

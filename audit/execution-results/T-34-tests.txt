@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+ok 1 - T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+  ---
+  duration_ms: 724.939
+  type: 'test'
+  ...
+# Subtest: T-34: audit/child/parent/statistics failures roll back every affected business row
+    # Subtest: admin_logs INSERT WHEN NEW.action='delete'
+    ok 1 - admin_logs INSERT WHEN NEW.action='delete'
+      ---
+      duration_ms: 514.207416
+      type: 'test'
+      ...
+    # Subtest: feedback_comments DELETE all rows
+    ok 2 - feedback_comments DELETE all rows
+      ---
+      duration_ms: 511.90575
+      type: 'test'
+      ...
+    # Subtest: notifications DELETE WHEN OLD.recipient_type='admin'
+    ok 3 - notifications DELETE WHEN OLD.recipient_type='admin'
+      ---
+      duration_ms: 460.436542
+      type: 'test'
+      ...
+    # Subtest: notifications DELETE WHEN OLD.recipient_type='user'
+    ok 4 - notifications DELETE WHEN OLD.recipient_type='user'
+      ---
+      duration_ms: 584.885583
+      type: 'test'
+      ...
+    # Subtest: feedbacks DELETE all rows
+    ok 5 - feedbacks DELETE all rows
+      ---
+      duration_ms: 829.447625
+      type: 'test'
+      ...
+    # Subtest: stats UPDATE all rows
+    ok 6 - stats UPDATE all rows
+      ---
+      duration_ms: 629.739541
+      type: 'test'
+      ...
+    1..6
+ok 2 - T-34: audit/child/parent/statistics failures roll back every affected business row
+  ---
+  duration_ms: 3531.527292
+  type: 'test'
+  ...
+# Subtest: T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+ok 3 - T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+  ---
+  duration_ms: 507.101292
+  type: 'test'
+  ...
+# Subtest: T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+ok 4 - T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+  ---
+  duration_ms: 523.161
+  type: 'test'
+  ...
+1..4
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5433.811167

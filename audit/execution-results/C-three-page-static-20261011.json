@@ -1,0 +1,149 @@
+{
+  "scope": "C public static resources only; no login/business mutations",
+  "pages": [
+    {
+      "path": "/anonyproof",
+      "status": 200,
+      "mainRendered": true
+    },
+    {
+      "path": "/anonyproof/foorpynona",
+      "status": 200,
+      "mainRendered": true
+    },
+    {
+      "path": "/anonyproof/access-stats",
+      "status": 200,
+      "mainRendered": true
+    }
+  ],
+  "assets": [
+    {
+      "path": "/anonyproof/_next/static/chunks/1ol7ko56t5296.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3l04zcqx63h3y.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0frtubn3d_5lv.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0bma92pht_c97.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/turbopack-2y2uka1upmxeu.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3fntmmi971322.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/2r_-f4t9xa57h.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0xybc0caf991u.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/brand/anonyproof-mark.svg",
+      "status": 304,
+      "type": "image"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/1ol7ko56t5296.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3l04zcqx63h3y.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0frtubn3d_5lv.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0bma92pht_c97.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/turbopack-2y2uka1upmxeu.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3fntmmi971322.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0nvbtvcu-40je.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/brand/anonyproof-mark.svg",
+      "status": 304,
+      "type": "image"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/1ol7ko56t5296.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3l04zcqx63h3y.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0frtubn3d_5lv.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/0bma92pht_c97.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/turbopack-2y2uka1upmxeu.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/3fntmmi971322.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "path": "/anonyproof/_next/static/chunks/2dzmvib5n_n7f.js",
+      "status": 200,
+      "type": "script"
+    }
+  ],
+  "failedRequests": [],
+  "uncaughtErrors": [],
+  "allPassed": true,
+  "candidate": "5c23a042e807b92312dac8fa1a9dc2e6037f575d",
+  "browserSessionClosed": true,
+  "verifiedAtUTC": "2026-10-11T05:23:29.873772+00:00",
+  "rawEvidenceSHA256": "62988e6ef326866678c80ef0b1e7e98e747f8e4b4e6943cbba1c60250fadc888"
+}

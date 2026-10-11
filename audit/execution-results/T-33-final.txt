@@ -1,0 +1,143 @@
+TAP version 13
+# Subtest: T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+ok 1 - T-10: atomic legacy migration, UTC day boundaries, null averages and restart are exact
+  ---
+  duration_ms: 609.242666
+  type: 'test'
+  ...
+# Subtest: T-10: failed legacy migration rolls back added columns and remains retryable
+ok 2 - T-10: failed legacy migration rolls back added columns and remains retryable
+  ---
+  duration_ms: 302.349875
+  type: 'test'
+  ...
+# Subtest: T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+ok 3 - T-10: runtime statistics failure preserves responses and atomic log/stat consistency
+  ---
+  duration_ms: 481.156584
+  type: 'test'
+  ...
+# Subtest: T-11: exact seven-day boundary, both raw tables, idempotence and aggregates/blacklists preserved
+ok 4 - T-11: exact seven-day boundary, both raw tables, idempotence and aggregates/blacklists preserved
+  ---
+  duration_ms: 5.3135
+  type: 'test'
+  ...
+# Subtest: T-11: bounded yielding batches drain backlog then schedule hourly and close cancels pending work
+ok 5 - T-11: bounded yielding batches drain backlog then schedule hourly and close cancels pending work
+  ---
+  duration_ms: 3.133875
+  type: 'test'
+  ...
+# Subtest: T-11: a failed second delete rolls back first; scheduler logs code only and retries
+ok 6 - T-11: a failed second delete rolls back first; scheduler logs code only and retries
+  ---
+  duration_ms: 0.636708
+  type: 'test'
+  ...
+# Subtest: T-11: live process failure is observable without breaking health, restart drains raw backlog and keeps daily totals
+ok 7 - T-11: live process failure is observable without breaking health, restart drains raw backlog and keeps daily totals
+  ---
+  duration_ms: 1510.27275
+  type: 'test'
+  ...
+# Subtest: T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+ok 8 - T-33 HTTP new writes retain only UA family and route template; legacy display does not rewrite history
+  ---
+  duration_ms: 656.46775
+  type: 'test'
+  ...
+# Subtest: T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+ok 9 - T-33 business and audit new writes omit admin IP; legacy HTTP output hides IP while records remain untouched
+  ---
+  duration_ms: 675.082458
+  type: 'test'
+  ...
+# Subtest: T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+ok 10 - T-33 access warnings and error handling never persist raw source IP, UA, path, query or exception content in Winston/stdout
+  ---
+  duration_ms: 637.509542
+  type: 'test'
+  ...
+# Subtest: T-33 classifications and routes never retain arbitrary input; all recognized outputs are idempotent
+ok 11 - T-33 classifications and routes never retain arbitrary input; all recognized outputs are idempotent
+  ---
+  duration_ms: 4.678584
+  type: 'test'
+  ...
+# Subtest: T-33 exported writers minimize direct calls and rate-limit blacklist warnings do not retain source identifiers
+ok 12 - T-33 exported writers minimize direct calls and rate-limit blacklist warnings do not retain source identifiers
+  ---
+  duration_ms: 172.446041
+  type: 'test'
+  ...
+# Subtest: T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+ok 13 - T-34: formal delete removes both notification recipients and all comments atomically with minimal audit
+  ---
+  duration_ms: 501.397833
+  type: 'test'
+  ...
+# Subtest: T-34: audit/child/parent/statistics failures roll back every affected business row
+    # Subtest: admin_logs INSERT WHEN NEW.action='delete'
+    ok 1 - admin_logs INSERT WHEN NEW.action='delete'
+      ---
+      duration_ms: 462.599458
+      type: 'test'
+      ...
+    # Subtest: feedback_comments DELETE all rows
+    ok 2 - feedback_comments DELETE all rows
+      ---
+      duration_ms: 515.036875
+      type: 'test'
+      ...
+    # Subtest: notifications DELETE WHEN OLD.recipient_type='admin'
+    ok 3 - notifications DELETE WHEN OLD.recipient_type='admin'
+      ---
+      duration_ms: 472.047959
+      type: 'test'
+      ...
+    # Subtest: notifications DELETE WHEN OLD.recipient_type='user'
+    ok 4 - notifications DELETE WHEN OLD.recipient_type='user'
+      ---
+      duration_ms: 470.239292
+      type: 'test'
+      ...
+    # Subtest: feedbacks DELETE all rows
+    ok 5 - feedbacks DELETE all rows
+      ---
+      duration_ms: 459.848417
+      type: 'test'
+      ...
+    # Subtest: stats UPDATE all rows
+    ok 6 - stats UPDATE all rows
+      ---
+      duration_ms: 572.370041
+      type: 'test'
+      ...
+    1..6
+ok 14 - T-34: audit/child/parent/statistics failures roll back every affected business row
+  ---
+  duration_ms: 2953.03225
+  type: 'test'
+  ...
+# Subtest: T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+ok 15 - T-34: unauthenticated and user-cookie requests cannot delete formal feedback
+  ---
+  duration_ms: 569.312083
+  type: 'test'
+  ...
+# Subtest: T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+ok 16 - T-34: demo administrator can delete only own sandbox and preserves shared templates and other identities
+  ---
+  duration_ms: 464.860166
+  type: 'test'
+  ...
+1..16
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10150.452291

@@ -1,0 +1,100 @@
+{
+  "format": "AnonyProof/F-final-dual-host-disposal-redacted/1",
+  "completedAtUtc": "2026-10-11T14:23:25.299232+00:00",
+  "manifestSha256": "d42b0c6c494199a665aa8293b804d770ac3f4324bd864c9701161c76a275acf0",
+  "genuineHumanApprovalBeforeExecution": true,
+  "scopeFileCount": 768,
+  "disposalOrPreserveScopeChanged": false,
+  "server": {
+    "exactFilesUnlinked": 416,
+    "strictEnoentRechecked": true,
+    "preservedItemsVerified": 48,
+    "canonicalFinalFilesVerified": 24,
+    "durableJournalRecordsExactlyReconciled": 832,
+    "noOldUnlinkedRawFileHeldOpen": true,
+    "allDirectoriesRetained": true,
+    "rootKeyMetadataVerifiedWithoutReadingOrHashing": true,
+    "completedAtUtc": "2026-10-11T13:59:00.979363+00:00"
+  },
+  "local": {
+    "exactFilesUnlinked": 352,
+    "strictEnoentVerified": true,
+    "preservedItemsVerified": 195,
+    "canonicalFinalFilesVerified": 24,
+    "durableJournalRecordsExactlyReconciled": 704,
+    "noOldUnlinkedRawFileHeldOpen": true,
+    "allDirectoriesRetained": true,
+    "directoryIdentityOwnerAndPermissionsVerified": true,
+    "rootKeyMetadataVerifiedWithoutReadingOrHashing": true,
+    "completedAtUtc": "2026-10-11T14:23:25.299232+00:00"
+  },
+  "noUnlistedResidualInApprovedDirectories": true,
+  "finalPackagesAndIndependentKeysContentAndPermissionsPreserved": true,
+  "noNewPlaintextRecoveryMaterialCreated": true,
+  "serverCurrentRuntimeUnchangedAndHealthyAfterBothHostDisposal": true,
+  "serverRuntimeFreshVerificationAtUtc": "2026-10-11T14:28:36.677171+00:00",
+  "rootOnlyRunsSystemLsofAndSystemShellMetadataCommandsLocally": true,
+  "ordinaryOwnerUsesExecutorCompiledFromSameVerifiedSourceBytes": true,
+  "originalExecutorShaUnchanged": true,
+  "writeAheadIntentAndPerFileDescriptorGuardsUnchanged": true,
+  "prototypeCacheTrustAndAbsenceDetectionIssuesCorrectedBeforeActualExecution": true,
+  "independentSafetyChecks": {
+    "originalExecutorSyntheticTestsPassed": 31,
+    "localBridgeSyntheticTestsPassed": 27,
+    "postVerifierAbsenceAndDirectoryBoundaryTestsPassed": 14,
+    "unlinkedFileParserPositiveAndNegativeTestsPassed": 8,
+    "allSyntheticUnlinkMocked": true,
+    "actualLocalFullPreflightPassedBeforeExecution": true,
+    "independentReviewFoundNoRemainingConfirmedBlocker": true
+  },
+  "executionEvidenceSha256": {
+    "f_exact_executor.py": "d91c42b614107c987e66610b7265c893775b3dbcd8780267094b71a7e9654b12",
+    "f_delegated_local_executor_v2.py": "44cba4229f0b043b8001b2dd18033c9c2a5b9b1fe72790fcb9b3268fffa77029",
+    "F-local-postverify-v3.py": "1f7566de033d54550195a36fb312fbb5958abe399ab57aa332a2c77396039def",
+    "F-local-execute-actual.private.json": "1b760a8d9caed8cde7ddd2412061197f267337075231dc109aced1a4c35523d5",
+    "F-local-postverify-actual.private.json": "e70cde4fe7400cbfe04d670d1f31c4e293775bc86701673ba6902bb6d5468c55",
+    "F-local-unlink.private.jsonl": "b2d597ebaac38340175c3540464ab6485743ba8596ad2b417b53170ebefaca8f",
+    "F-server-final-recheck.stdout.private.json": "a5be10d837859a7ad58e87183344ab81b280a462993c9c479396dffaa012cb19",
+    "test_f_delegated_v2_review.py": "a533329e8cc479ff01a4794233a0382ebfb61781d79696fea5014aa3a0c02a53",
+    "synthetic-delegated-v2-independent-review.private.log": "85bf8605ec25ebf018cabdb6d1026a6ca6974ccd45e274435331046934f25eca",
+    "synthetic-postverify-v3-independent-review.private.log": "015c6e62308b92429ee6207c9967759ecf808607613975390db41d23faa03c95",
+    "F-server-after-local-final-recheck.stdout.private.json": "4cfe1d0a89b4dea607eda5bb739c1bde4309692a38ca16b136f3561bca8c0236"
+  },
+  "independentTaskClosures": {
+    "T-11": {
+      "status": "已完成",
+      "retentionBoundariesSchedulingFailureAndAggregateChecksPassed": true,
+      "approvedHistoricalRawAndTransitionCopiesRetiredOnBothHosts": true
+    },
+    "T-32": {
+      "status": "已完成",
+      "sixPackagesAuthenticatedAndFullyRecoveredIndependentlyOnBothHostsBeforeDisposal": true,
+      "businessAndIdentityPreservedPerApprovedMapping": true,
+      "allApprovedOldDatabaseSidecarPlaintextAndTransitionPackagesRetired": true
+    },
+    "T-33": {
+      "status": "已完成",
+      "newFieldsPrivacyCopyAndProxyLoggingActuallyVerified": true,
+      "finalPackagesExcludeRawAndMinimizeAdminIpAsApproved": true,
+      "allListedHistoricalLogsAndActualIpProbeCopiesRetired": true
+    },
+    "T-34": {
+      "status": "已完成",
+      "onlineAtomicCascadeAndFaultMatrixPassed": true,
+      "historicalOrphansPreservedInIsolatedEncryptedPackages": true,
+      "listedOldAssociationCopiesRetired": true
+    }
+  },
+  "all43TasksComplete": true,
+  "closedTaskCount": 43,
+  "partialTaskCount": 0,
+  "unresolvedTaskCount": 0,
+  "blockedTaskCount": 0,
+  "directoriesDeleted": false,
+  "physicalErasureClaimed": false,
+  "unknownThirdPartyOrSharedLogsClaimedDeleted": false,
+  "privateManifestJournalBusinessContentAndKeysPublished": false,
+  "formalHttpServicePublished": false,
+  "githubMainMerged": false,
+  "productSourceCommit": "5c23a042e807b92312dac8fa1a9dc2e6037f575d"
+}

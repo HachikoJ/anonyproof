@@ -1,0 +1,6 @@
+Local browser: http://127.0.0.1:3013/anonyproof/foorpynona; independent synthetic fixture only.
+Actual admin login succeeded; opened synthetic feedback details.
+Native typeText of 1001 Chinese characters: DOM value length 1000, maxLength 1000.
+Clicked send; visible reply-success message and comments count 1.
+SQLite assertion: one administrator comment, exact 1000 Chinese characters (3000 UTF-8 bytes).
+No production data or credentials used; browser evaluation read DOM only.

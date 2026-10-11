@@ -1,0 +1,5 @@
+2026-10-08: proposal-only check exit0.
+Three tracked source byte hashes match baseline; targets absent; no source changes.
+Static graph: 16 app sources, 4 entrypoints, no upload caller/reachability, no unresolved local code/computed imports.
+Two existing layout CSS imports classified as non-code assets; not silently ignoring unknown code.
+Runtime/build/browser upload acceptance not performed; exact disposition awaits Q-08.

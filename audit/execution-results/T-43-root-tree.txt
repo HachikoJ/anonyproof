@@ -1,0 +1,7 @@
+CHECKOUT: /var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+COMMAND: npm ls proxy-addr
+anonyproof@0.1.0 /private/var/folders/84/szrnsvfd7xbfqjxw840q7z_40000gn/T/anonyproof-T43-checkout-5ur5psvu
+└─┬ express@5.2.1
+  └── proxy-addr@2.0.8
+
+EXIT: 0

@@ -1,0 +1,92 @@
+TAP version 13
+# Subtest: T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+ok 1 - T-01: public demo isolates two identities, immutable templates and all legacy/private paths
+  ---
+  duration_ms: 702.854875
+  type: 'test'
+  ...
+# Subtest: T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+ok 2 - T-01: existing cookie login after restart preserves recovery hash and upgrades only safe sandbox copies
+  ---
+  duration_ms: 1344.624583
+  type: 'test'
+  ...
+# Subtest: T-19: isolated production backend and existing authorized flow run
+ok 3 - T-19: isolated production backend and existing authorized flow run
+  ---
+  duration_ms: 432.666792
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing secret
+ok 4 - T-19: production rejects missing secret
+  ---
+  duration_ms: 370.388709
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short secret
+ok 5 - T-19: production rejects short secret
+  ---
+  duration_ms: 376.232583
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects missing password
+ok 6 - T-19: production rejects missing password
+  ---
+  duration_ms: 380.775708
+  type: 'test'
+  ...
+# Subtest: T-19: production rejects short password
+ok 7 - T-19: production rejects short password
+  ---
+  duration_ms: 382.846167
+  type: 'test'
+  ...
+# Subtest: T-20: private responses and authorization errors never reuse a conditional cached body
+ok 8 - T-20: private responses and authorization errors never reuse a conditional cached body
+  ---
+  duration_ms: 447.846917
+  type: 'test'
+  ...
+# Subtest: T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+not ok 9 - T-20: actual Next rewrite preserves no-store while production static chunks retain caching
+  ---
+  duration_ms: 2084.814041
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-20.test.ts:2:6352'
+  failureType: 'testCodeFailure'
+  error: |-
+    Next dev exited: ▲ Next.js 16.3.3 (Turbopack)
+    - Local:         http://127.0.0.1:51657
+    - Network:       http://127.0.0.1:51657
+    - Environments: .env.local
+    ✓ Ready in 319ms
+    ✓ Running next.config.js took 13ms
+    ⨯ Another next dev server is already running.
+
+    - Local:        http://127.0.0.1:3014
+    - PID:          96658
+    - Dir:          /Users/wilson/Documents/Codex/anonyproof
+    - Log:          .next/dev/logs/next-development.log
+
+    You can access the existing server at http://127.0.0.1:3014,
+    or run kill 96658 to stop it and start a new one.
+
+
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.ready (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-20.test.ts:37:44)
+    async TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-20.test.ts:124:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7010.769583
+
+EXIT: 1

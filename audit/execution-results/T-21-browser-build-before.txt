@@ -1,0 +1,35 @@
+
+> anonyproof@0.1.0 build
+> next build
+
+▲ Next.js 16.3.6 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.js took 7ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 303ms
+  Running TypeScript ...
+tests/fix/T-21.browser.ts(19,72): error TS2769: No overload matches this call.
+  Overload 3 of 8, '(command: string, args?: readonly string[] | undefined, options?: SpawnSyncOptions | undefined): SpawnSyncReturns<string | NonSharedBuffer>', gave the following error.
+    Type '{ API_PROXY_TARGET: string; NODE_ENV: string; }' is not assignable to type 'ProcessEnv'.
+      Types of property 'NODE_ENV' are incompatible.
+        Type 'string' is not assignable to type '"development" | "production" | "test"'.
+tests/fix/T-21.browser.ts(25,23): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type '{ API_PROXY_TARGET: string; NODE_ENV: string; }' is not assignable to type 'ProcessEnv'.
+      Types of property 'NODE_ENV' are incompatible.
+        Type 'string' is not assignable to type '"development" | "production" | "test"'.
+tests/fix/T-21.browser.ts(29,9): error TS2339: Property 'stdout' does not exist on type 'never'.
+  The intersection 'ChildProcessWithoutNullStreams & ChildProcessByStdio<Writable, Readable, Readable> & ... 7 more ... & ChildProcess' was reduced to 'never' because property 'stdin' has conflicting types in some constituents.
+tests/fix/T-21.browser.ts(29,28): error TS7006: Parameter 'c' implicitly has an 'any' type.
+tests/fix/T-21.browser.ts(30,9): error TS2339: Property 'stderr' does not exist on type 'never'.
+  The intersection 'ChildProcessWithoutNullStreams & ChildProcessByStdio<Writable, Readable, Readable> & ... 7 more ... & ChildProcess' was reduced to 'never' because property 'stdin' has conflicting types in some constituents.
+tests/fix/T-21.browser.ts(30,28): error TS7006: Parameter 'c' implicitly has an 'any' type.
+tests/fix/T-21.browser.ts(31,53): error TS2339: Property 'once' does not exist on type 'never'.
+  The intersection 'ChildProcessWithoutNullStreams & ChildProcessByStdio<Writable, Readable, Readable> & ... 7 more ... & ChildProcess' was reduced to 'never' because property 'stdin' has conflicting types in some constituents.
+tests/fix/T-21.browser.ts(65,14): error TS2339: Property 'trim' does not exist on type 'NonSharedBuffer'.
+tests/fix/T-21.browser.ts(75,21): error TS2339: Property 'pid' does not exist on type 'never'.
+  The intersection 'ChildProcessWithoutNullStreams & ChildProcessByStdio<Writable, Readable, Readable> & ... 7 more ... & ChildProcess' was reduced to 'never' because property 'stdin' has conflicting types in some constituents.
+tests/fix/T-21.browser.ts(75,46): error TS2339: Property 'pid' does not exist on type 'never'.
+  The intersection 'ChildProcessWithoutNullStreams & ChildProcessByStdio<Writable, Readable, Readable> & ... 7 more ... & ChildProcess' was reduced to 'never' because property 'stdin' has conflicting types in some constituents.
+Failed to type check.

@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+ok 1 - T-32 inventory: legacy version columns absent, orphan/scopes reported without contents or source writes
+  ---
+  duration_ms: 15.995
+  type: 'test'
+  ...
+# Subtest: T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+ok 2 - T-32 inventory: marked v1, unknown storage flags and missing schema stay distinct; no encryption claim
+  ---
+  duration_ms: 5.895167
+  type: 'test'
+  ...
+# Subtest: T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+ok 3 - T-32 inventory CLI: explicit source only, unavailable sources fail without creating a DB; redacted JSON is usable
+  ---
+  duration_ms: 1437.046834
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1691.670166

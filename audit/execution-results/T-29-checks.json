@@ -1,0 +1,33 @@
+[
+  {
+    "name": "T-29-active-search",
+    "argv": [
+      "rg",
+      "-n",
+      "upload-local|LocalFileUpload",
+      "app",
+      "server",
+      "--glob",
+      "!**/node_modules/**"
+    ],
+    "exitCode": 1
+  },
+  {
+    "name": "T-29-type",
+    "argv": [
+      "npm",
+      "run",
+      "type-check"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "T-29-build",
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0
+  }
+]

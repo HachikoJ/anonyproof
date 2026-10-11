@@ -1,0 +1,57 @@
+TAP version 13
+# Subtest: T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+ok 1 - T-36 formal: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+  ---
+  duration_ms: 1359.564791
+  type: 'test'
+  ...
+# Subtest: T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+ok 2 - T-36 demo: labelled old schema survives three real starts and repeat initializer without duplicated business/seed/session/idempotency
+  ---
+  duration_ms: 1163.467167
+  type: 'test'
+  ...
+# Subtest: T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+ok 3 - T-36 missing/wrong content key rejects repeatedly before business migration, then the correct key can start and restart
+  ---
+  duration_ms: 2019.002958
+  type: 'test'
+  ...
+# Subtest: T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+ok 4 - T-36 failed schema initialization is not swallowed; retry still fails until synthetic fault is disabled
+  ---
+  duration_ms: 1486.15725
+  type: 'test'
+  ...
+# Subtest: T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior
+not ok 5 - T-36 real Express registration trace matches all 43 S0 entries; both auth aliases and parameter routes retain HTTP behavior
+  ---
+  duration_ms: 559.169584
+  type: 'test'
+  location: '/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-36.test.ts:26:790'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(login.response.headers.getSetCookie().some(cookie =>
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/Users/wilson/Documents/Codex/anonyproof/tests/fix/T-36.test.ts:250:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6816.087875
