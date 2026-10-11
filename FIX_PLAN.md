@@ -1635,3 +1635,4 @@ T-18规定的实际audit新增next包high告警；旧T-15-main-root-audit仅esbu
 - 实际双机逐路径复查768目标全在、无unlink journal；没有因本机权限失败先删服务器。枚举本机151已盘点目录没有清单外文件；服务器所有194额外目录项均是清单明确排除的共享/其他站日志，没有扩大删除。当前39完成、4部分解决/已阻塞；公开新合成站仍正常。
 - 下一步：解决本机终端的真实权限访问路径；执行前双机fresh预检/运行基线复核；当前v4写前journal与逐文件pinned fd guards执行768路径；逐路径ENOENT、保留档案内容/权限/调整后nlink与新合成站/其他站不变通过后，分别关闭T11/T32/T33/T34。无须重审或重跑既有全量UI/CI；未授权删除审批清单/私有inventory，物理擦除和共享日志归属限制继续保留。
 - 本轮只读复核子代理因账号用量限制未执行，不作为新的独立完成证据；前序35项逐项审计与C/E四项实际独立验收仍为已有证据。公开脱敏状态证据：`audit/execution-results/F-approved-preflight-blocker-20261011.json`。
+- 权限补充实测：用户再次回复“给你授权”后，尝试专用Computer Use控制Terminal被工具明确拒绝（`Computer Use is not allowed to use the app com.apple.Terminal for safety reasons`）。不是F批准缺失，不能改用AppleScript或其他UI技术绕过此限制；需用户亲自在终端运行上面的只读预检。再次逐路径确认本机352目标仍在，没有删除；该工具拒绝私有receipt已保存。
