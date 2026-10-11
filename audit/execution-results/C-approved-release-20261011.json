@@ -1,0 +1,81 @@
+{
+  "format": "AnonyProof/C-approved-release-redacted/1",
+  "candidate": "5c23a042e807b92312dac8fa1a9dc2e6037f575d",
+  "approvedScope": "2026-10-11 user confirmed C and E; C only here",
+  "sourceFiles": 60,
+  "tarSHA256": "a40d78b7376c28b87b1a5da671ec47a337c20ed8b948c2f5e301ef6dedc3935c",
+  "frozenSourceVerified": true,
+  "installationAndBuildSteps": [
+    {
+      "step": "root-ci",
+      "exitCode": 0
+    },
+    {
+      "step": "server-ci",
+      "exitCode": 0
+    },
+    {
+      "step": "root-ls",
+      "exitCode": 0
+    },
+    {
+      "step": "server-ls",
+      "exitCode": 0
+    },
+    {
+      "step": "native-runtime",
+      "exitCode": 0
+    },
+    {
+      "step": "next-typegen",
+      "exitCode": 0
+    },
+    {
+      "step": "front-types",
+      "exitCode": 0
+    },
+    {
+      "step": "server-types",
+      "exitCode": 0
+    },
+    {
+      "step": "server-strict",
+      "exitCode": 0
+    },
+    {
+      "step": "build",
+      "exitCode": 0
+    }
+  ],
+  "sourceUnchangedAfterBuild": true,
+  "newExclusiveSyntheticDatabase": true,
+  "initialSevenExactCandidateSeedIdsVerified": true,
+  "oldDatabaseFilesUnchanged": true,
+  "privateRuntimeAndIndependentKeys": true,
+  "archiveKeyNotReadByDemo": true,
+  "twoNewSingleDemoProcessesOnly": true,
+  "primaryAndFallbackStartupDemoOnly": true,
+  "proxyShadowAndInstalledNginxPassed": true,
+  "otherNginxIncludesAndControlSiteUnchanged": true,
+  "frontendAndBackendLoopbackOnly": true,
+  "external3000And4000Unreachable": true,
+  "backendMissingOrWrongProxyKey403": true,
+  "healthLocal200": true,
+  "actualTwoSourcesIndependentAndForgeriesNormalized": true,
+  "actualMultiValueForwardedHeadersOverwritten": true,
+  "sourceProbeLoginRequests": 5,
+  "productionQuotaExhaustionNotPerformed": true,
+  "fullSameSourceQuotaAndDifferentSourceRegression": "T-24-authenticated-chain-result.json 11/11, identical fixed candidate header wiring",
+  "newDbIntegrityAndForeignKeysPassed": true,
+  "applicationLogsExcludeObservedSourceIpAndProbeMaterial": true,
+  "siteLogsUnchangedAroundActualFourRequestProbe": true,
+  "currentPrivateDirs0700AndFiles0600": true,
+  "publicBrowserAcceptance": "51/51 business/security and 24/24 three-page resource responses; separate receipts",
+  "rollback": "approved 503 maintenance only; stop new demo apps, never reactivate old real materials",
+  "historicalAssetDeletionPerformed": false,
+  "intermediateHarnessCorrections": [
+    "exact demo-v2 seven IDs rather than old prefix; stopped new apps under maintenance before correction",
+    "route telemetry is normalized to /unmatched for mounted auth path, source probe selected 401 records",
+    "previous-day log inode metadata can rotate; fresh before/after metadata around actual requests used"
+  ]
+}
